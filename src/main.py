@@ -25,7 +25,10 @@ subreddit = reddit.subreddit(subreddit_name)
 commands = ["!create", "!invest", "!balance", "!help", "!broke"]
 starter = 1000
 
-users = {}
+users = utils.read_investors()
+
+print(list(users.keys()))
+print(list(users.values())[-1].get())
 done = []
 awaiting = []
 

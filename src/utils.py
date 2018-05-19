@@ -24,13 +24,13 @@ def write_investors(investors):
             investments = len(invests)
             w.writelines(str(investments))
             for j in range(investments):
-                w.writelines(str(invests[j].get_post()) + "\n")
+                w.writelines(str(invests[j].get_post().get_ID()) + "\n")
+                w.writelines(str(invests[j].get_post().get_upvotes()) + "\n")
                 w.writelines(str(invests[j].get_name()) + "\n")
                 w.writelines(str(invests[j].get_amount()) + "\n")
                 w.writelines(str(invests[j].get_done()) + "\n")
                 w.writelines(str(invests[j].get_time()) + "\n")
                 w.writelines(str(invests[j].get_head()) + "\n")
-                w.writelines(str(invests[j].get_post_upvotes()) + "\n")
                 
                 gr = invests[j].get_growth()
                 grl = len(gr)
@@ -39,19 +39,50 @@ def write_investors(investors):
                     w.writelines(str(gr[k]) + "\n")
     w.close()
 
+c = 0
+def read_lines(array):
+    global c
+    elem = array[c]
+    c += 1
+    return elem
+    
 def read_investors():
     investors = {}
     with open(data_folder + "investors.txt", "r") as r:
-        invs = r.readlines()
+        file_data = r.readlines()
+        file_data = [x.replace("\n", "") for x in file_data]
+        invs = int(float(read_lines(file_data)))
         for _ in range(invs):
-            investor = r.readlines()
-            investors[investor] = Investor(investor, starter)
-            investors[investor].set_name(r.readlines())
-            investors[investor].set_balance(r.readlines())
-            investors[investor].set_active(r.readlines())
-            investors[investor].set_completed(r.readlines())
+            investor = read_lines(file_data)
+            investors[investor] = Investor(investor, 1000)
+            investors[investor].set_name(read_lines(file_data))
+            investors[investor].set_balance(read_lines(file_data))
+            investors[investor].set_active(read_lines(file_data))
+            investors[investor].set_completed(read_lines(file_data))
 
-            number_of_investments = r.readlines()
+            number_of_investments = int(float(read_lines(file_data)))
             
             for _ in range(number_of_investments):
-                investors[investor].invest()
+
+                post_ID = read_lines(file_data)
+                post_upvotes = int(float(read_lines(file_data)))
+                amount = int(float(read_lines(file_data)))
+                done = int(float(read_lines(file_data)))
+                time = int(float(read_lines(file_data)))
+                head = int(float(read_lines(file_data)))
+
+                investors[investor].append(Investment(post_ID,
+                                                      post_upvotes,
+                                                      investor,
+                                                      amount))
+
+                investor[investor].invests[-1].set_done(done)
+                investor[investor].invests[-1].set_time(time)
+                investor[investor].invests[-1].set_head(head)
+
+                growth_length = int(float(read_lines(file_data)))
+
+                for _ in range(growth_length):
+                    investor[investor].invests[-1].growth.append(int(float(read_lines(file_data))))
+
+    return investors

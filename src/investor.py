@@ -46,7 +46,7 @@ class Investment:
         self.post = Post(post, upvotes)
         self.name = name
         self.amount = amount
-        self.done = False
+        self.done = 0
         self.time = time.time()
         self.head = self.post.get_upvotes()
         self.growth = []
@@ -61,25 +61,37 @@ class Investment:
         
     def get_post(self):
         return self.post
-
+    
     def get_name(self):
         return self.name
 
+    def set_name(self, nam):
+        self.name = nam
+    
     def get_amount(self):
         return self.amount
 
+    def set_amount(self, amoun):
+        self.amount = amoun
+    
     def get_done(self):
         return self.done
-        
+
+    def set_done(self, don):
+        self.done = don
+    
     def get_time(self):
         return self.time
 
+    def set_time(self, tim):
+        self.time = tim
+    
     def get_head(self):
         return self.head
 
-    def set_head(self, head):
-        self.head = head
-    
+    def set_head(self, hea):
+        self.head = hea
+        
     def get_growth(self):
         return self.growth
 
@@ -156,7 +168,7 @@ class Investor:
         if (success):
             self.balance += investment.amount
             self.balance *= multiplier
-        investment.done = True
+        investment.done = 1
         self.completed += 1
         self.active -= 1
 
