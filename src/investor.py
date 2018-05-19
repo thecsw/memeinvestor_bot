@@ -29,16 +29,38 @@ class Investment:
     
 class Investor:
 
+    """
+    This is a class Investor where 1 instance stores data
+    on one individual meme investor.
+    The following attributes are defined when Investor
+    class instance is created:
+
+    1. name - this is the user's unique subreddit name
+    or in common, the reddit user id. u/
+
+    2. balance - the amount of memecoins the user 
+    currently has in his bank.
+
+    3. completed - the number of completed investments.
+    Doesn't matter, successfull or unseccussfull.
+
+    4. invests - is the array of Investment class
+    instances that holds every data on every investment
+    that the user made.
+
+    For each attribute there is an appropriate GET method.
+    """
+    
     def __init__(self, name, balance):
         self.name = name
-        self.balance= balance
+        self.balance = balance
         self.completed = 0
         self.invests = []
 
     def invest(self, post, amount):
         self.balance -= amount
         self.invests.append(Investment(post, self.name, amount))
-
+        
     def profit(self, investment, amount):
         self.balance += amount
         investment.done = True
@@ -58,3 +80,4 @@ class Investor:
 
     def get(self):
         return [self.name, self.balance, self.invests, self.completed]
+
