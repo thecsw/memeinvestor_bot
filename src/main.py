@@ -119,7 +119,10 @@ def invest(comment, author, text):
             print(message.modify_invest(investm, investor.get_balance()))
         else:
             comment.reply(message.modify_invest(investm, investor.get_balance()))
+
         awaiting.append(inv)
+        print(awaiting)
+        save_data()
         return True
     else:
         if (debug):
@@ -168,7 +171,6 @@ def comment_thread():
         comment_ID = comment.id
 
         if (comment_ID in checked_comments):
-            print("It's been checked before")
             continue
         
         checked_comments.append(comment_ID)
@@ -216,19 +218,26 @@ def comment_thread():
             continue
         
 def check_investments():
-    time.sleep(60)
-    investment = awaiting[0]
-    investor_id = investment.get_name()
-    investor = users[investor_id]
-    post = investment.get_ID()
-    upvotes = reddit.submission(post).ups
+    while True:
+        
+        if (len(awaiting) > 0):
+            investment = awaiting[0]
+            investor_id = investment.get_name()
+            investor = users[investor_id]
+            post = investment.get_ID()
+            upvotes = reddit.submission(post).ups
+            donep = investment.check()
+            print(donep)
+            if (donep):
+                investor.calculate(investment, upvotes)
+                done.append(awaiting.pop(0))
+                save_data()
 
-    if (investment.check()):
-        investor.calculate(investment, upvotes)
-        done.append(awaiting.pop(0))
-
+        time.sleep(5)
+        
 def threads():
     Thread(name="Comments", target=comment_thread).start()
+    Thread(name="Investments", target=check_investments).start()
 
 if __name__ == "__main__":
     threads()
