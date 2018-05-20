@@ -152,6 +152,7 @@ def broke(comment, author):
                 investor.set_balance(100)
             else:
                 comment.reply(message.broke_org)
+                investor.set_balance(100)
         else:
             if (debug):
                 print(message.modify_broke_active(active))
