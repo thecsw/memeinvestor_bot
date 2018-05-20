@@ -52,6 +52,11 @@ done_file = "done.txt"
 # File to store checked comments
 checked_file = "checked_comments.txt"
 
+# DEBUG mode
+# In the debug mode, instead of sending replies
+# with praw, it just prints everything on tty
+debug = 1
+
 # Dictionary of all the investors
 users = utils.read_investors(data_folder + investors_file)
 
@@ -73,11 +78,18 @@ def save_data():
     utils.write_array(data_folder + checked_file, checked_comments)
 
 def help(comment):
-    comment.reply(message.help_org)
+    if (debug):
+        print(message.help_org)
+    else:
+        comment.reply(message.help_org)
 
 def create(comment, author):
     users[author] = Investor(author, starter)
-    comment.reply(message.modify_create(author, users[author].get_balance()))
+
+    if (debug):
+        print(message.modify_create(author, users[author].get_balance()))
+    else:
+        comment.reply(message.modify_create(author, users[author].get_balance()))
     
 def invest(comment, author, text):
     post = reddit.submission(comment.submission)
@@ -92,24 +104,37 @@ def invest(comment, author, text):
         return False
 
     if (investm < 100):
-        comment.reply(message.min_invest_org)
+        
+        if (debug):
+            print(message.min_invest_org)
+        else:
+            comment.reply(message.min_invest_org)
         return
     
     is_enough = investor.enough(investm)
     
     if (is_enough):
         inv =investor.invest(post_ID, upvotes, investm)
-        comment.reply(message.modify_invest(investm, investor.get_balance()))
+        if (debug):
+            print(message.modify_invest(investm, investor.get_balance()))
+        else:
+            comment.reply(message.modify_invest(investm, investor.get_balance()))
         awaiting.append(inv)
         return True
     else:
-        comment.reply(message.insuff_org)
+        if (debug):
+            print(message.insuff_org)
+        else:
+            comment.reply(message.insuff_org)
         return True
         
 def balance(comment, author):
     investor = users[author] 
     balance = investor.get_balance()
-    comment.reply(message.modify_balance(balance))
+    if (debug):
+        print(message.modify_balance(balance))
+    else:
+        comment.reply(message.modify_balance(balance))
     return True
 
 def broke(comment, author):
@@ -119,17 +144,35 @@ def broke(comment, author):
 
     if (balance < 100):
         if (active == 0):
-            comment.reply(message.broke_org)
+            if (debug):
+                print(message.broke_org)
+                investor.set_balance(100)
+            else:
+                comment.reply(message.broke_org)
         else:
-            comment.reply(message.modify_broke_active(active))
+            if (debug):
+                print(message.modify_broke_active(active))
+            else:
+                comment.reply(message.modify_broke_active(active))
     else:
-        comment.reply(message.modify_broke_money(balance))
+        if (debug):
+            print(message.modify_broke_money(balance))
+        else:
+            comment.reply(message.modify_broke_money(balance))
     return True
             
 def comment_thread():
 
     for comment in subreddit.stream.comments():
         author = comment.author.name.lower()
+        comment_ID = comment.id
+
+        if (comment_ID in checked_comments):
+            print("It's been checked before")
+            continue
+        
+        checked_comments.append(comment_ID)
+        utils.write_array(data_folder + checked_file, checked_comments)
 
         # We don't serve your kind around here
         if ("_bot" in author):
@@ -150,7 +193,10 @@ def comment_thread():
             continue
 
         if (not exist):
-            comment.reply(message.no_account_org)
+            if (debug):
+                print(message.no_account_org)
+            else:
+                comment.reply(message.no_account_org)
             continue
 
         # The !invest command
