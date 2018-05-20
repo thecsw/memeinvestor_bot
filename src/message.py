@@ -21,6 +21,7 @@ create_org = """
 Thank you %USERNAME% for creating a bank account in r/MemeEconomy!
 
 Your current balance is %BALANCE% MemeCoins.
+
 %DESCRIPTION%
 """.replace("%DESCRIPTION%", help_mess)
 
@@ -36,12 +37,10 @@ def modify_create(username, balance):
 invest_org = """
 *%AMOUNT% MemeCoins were successfully invested!*
 
-You new balance is %BALANCE%
+You new balance is %BALANCE% MemeCoins
 
-In 6 hours your investment will be evaluated and
-depending on how well the memes does, your investment
-can be returned with bonuses or your would just lose
-your MemeCoins.
+In 6 hours your investment will be evaluated.
+
 %DESCRIPTION%
 """.replace("%DESCRIPTION%", help_mess)
 
@@ -55,6 +54,7 @@ def modify_invest(amount, balance):
 # say that
 insuff_org = """
 You do not have enough MemeCoins to make the investment.
+
 %DESCRIPTION%
 """.replace("%DESCRIPTION%", help_mess)
 
@@ -64,6 +64,7 @@ Welp, you are broke.
 
 Your balance has been resetted to 100 MemeCoins. Be careful
 next time.
+
 %DESCRIPTION%
 """.replace("%DESCRIPTION%", help_mess)
 
@@ -73,13 +74,15 @@ You still have %ACTIVE% investment(s).
 
 You need to wait until they are fully 
 evaluated.
+
 %DESCRIPTION%
 """.replace("%DESCRIPTION%", help_mess)
 
 def modify_broke_active(active):
     broke_active = broke_active_org
     broke_active = broke_active.replace("%ACTIVE%", str(active))
-
+    return broke_active
+    
 # Message if you are broke and have more than 100 MemeCoins
 broke_money_org = """
 You are not broke. You still have %AMOUNT% MemeCoins.
@@ -90,6 +93,7 @@ You are not broke. You still have %AMOUNT% MemeCoins.
 def modify_broke_money(amount):
     broke_money = broke_money_org
     broke_money = broke_money.replace("%AMOUNT%", str(amount))
+    return broke_money
     
 help_org = """
 *Welcome to MemeInvestment!*
@@ -115,6 +119,7 @@ account and sets your balance to 100 MemeCoins(Minumum possible
  investment).
 
 5. !help - returns this help message
+
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", bot_desc)
 
@@ -122,6 +127,7 @@ no_account_org = """
 You do not have permission to make this operation.
 
 Please create an account with !create command.
+
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", help_mess)
 
@@ -132,5 +138,12 @@ Currently, your account balance is %BALANCE%
 """.replace("%DESCRIPTION%", help_mess)
 
 def modify_balance(balance):
-    balance = balance_org
-    balance = balance.replace("%BALANCE%", str(balance))
+    balance_t = balance_org
+    balance_t = balance_t.replace("%BALANCE%", str(balance))
+    return balance_t
+    
+min_invest_org = """
+The minumum possible investment is 100 MemeCoins.
+
+%DESCRIPTION% 
+""".replace("%DESCRIPTION%", help_mess)
