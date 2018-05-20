@@ -62,7 +62,7 @@ class Investment:
         change = time.time() - self.get_time()
 
         # 6 hours of waiting
-        if (change > 60):
+        if (change > 6 * 60 * 60):
             return True
         return False
 
