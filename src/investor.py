@@ -23,7 +23,7 @@ class Post:
         return self.ID
 
     def get_upvotes(self):
-        return self.upvotes
+        return int(float(self.upvotes))
 
     # SET METHODS
 
@@ -62,7 +62,7 @@ class Investment:
         change = time.time() - self.get_time()
 
         # 6 hours of waiting
-        if (change > 6 * 60 * 60):
+        if (change > 60):
             return True
         return False
 
@@ -145,27 +145,34 @@ class Investor:
         
     def calculate(self, investment, upvotes):
         du = upvotes - investment.post.get_upvotes()
-
+        
         if (du < 1000):
-            self.proft(investment, False, 0)
+            self.profit(investment, False, 0)
+            return True
             
         if (du >= 1000 and du < 1500):
             self.profit(investment, True, 1)
+            return True
             
         if (du >= 1500 and du < 2500):
             self.profit(investment, True, 1.10)
-
+            return True
+            
         if (du >= 2500 and du < 5000):
             self.profit(investment, True, 1.25)
-
+            return True
+            
         if (du >= 5000 and du < 10000):
             self.profit(investment, True, 1.50)
-
+            return True
+            
         if (du >= 10000 and du < 15000):
             self.profit(investment, True, 1.75)
-
+            return True
+            
         if (du >= 15000):
             self.proft(investment, True, 2.00)
+            return True
             
     def profit(self, investment, success, multiplier):
         if (success):
