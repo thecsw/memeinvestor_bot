@@ -1,3 +1,12 @@
+"""
+ __  __                     ___                     _             
+|  \/  | ___ _ __ ___   ___|_ _|_ ____   _____  ___| |_ ___  _ __ 
+| |\/| |/ _ \ '_ ` _ \ / _ \| || '_ \ \ / / _ \/ __| __/ _ \| '__|
+| |  | |  __/ | | | | |  __/| || | | \ V /  __/\__ \ || (_) | |   
+|_|  |_|\___|_| |_| |_|\___|___|_| |_|\_/ \___||___/\__\___/|_|   
+                                                                  
+"""
+
 # Standard scripts
 import time
 from threading import Thread
@@ -22,15 +31,46 @@ reddit = praw.Reddit(client_id=config.client_id,
 subreddit_name = "pewds_test"
 subreddit = reddit.subreddit(subreddit_name)
 
+# A list of available commands:
 commands = ["!create", "!invest", "!balance", "!help", "!broke"]
+
+# The amount of MemeCoins given by default
 starter = 1000
 
-users = utils.read_investors()
+# Data folder
+data_folder = "./data/"
 
-print(list(users.keys()))
-print(list(users.values())[-1].get())
-done = []
-awaiting = []
+# File to store all investors
+investors_file = "investors.txt"
+
+# File to store all awaiting investments
+awaiting_file = "awaiting.txt"
+
+# File to store all done investments
+done_file = "done.txt"
+
+# File to store checked comments
+checked_file = "checked_comments.txt"
+
+# Dictionary of all the investors
+users = utils.read_investors(data_folder + investors_file)
+
+print(users)
+
+# Array to store done and awaiting investments
+done = utils.read_investments(data_folder + done_file)
+awaiting = utils.read_investments(data_folder + awaiting_file)
+
+# Array to store IDs of parsed comment, so we won't parse the same
+# comment multiple times
+checked_comments = utils.read_array(data_folder + checked_file)
+
+def save_data():
+    global users, awaiting, done
+    utils.write_investors(data_folder + investors_file, users)
+    utils.write_investments(data_folder + awaiting_file, awaiting)
+    utils.write_investments(data_folder + done_file, done)
+    utils.write_array(data_folder + checked_file, checked_comments)
 
 def help(comment):
     comment.reply(message.help_org)
@@ -38,31 +78,39 @@ def help(comment):
 def create(comment, author):
     users[author] = Investor(author, starter)
     comment.reply(message.modify_create(author, users[author].get_balance()))
-    utils.write_investors(users)
     
 def invest(comment, author, text):
-    post = comment.submission
+    post = reddit.submission(comment.submission)
+    post_ID = post.id
     upvotes = post.ups
     investor = users[author]
     
     # If it can't extract the invest amount, abandon the operation
     try:
-        invest = int(float(text.replace("!invest", "").replace(" ", "")))
+        investm = int(float(text.replace("!invest", "").replace(" ", "")))
     except ValueError as ve:
         return False
+
+    if (investm < 100):
+        comment.reply(message.min_invest_org)
+        return
     
-    # Returns false if there is not enough money
-    new_investment = investor.invest(post, upvotes, invest)
+    is_enough = investor.enough(investm)
     
-    if (new_investment):
-        comment.reply(message.modify_invest(invest, investor.get_balance()))
+    if (is_enough):
+        inv =investor.invest(post_ID, upvotes, investm)
+        comment.reply(message.modify_invest(investm, investor.get_balance()))
+        awaiting.append(inv)
+        return True
     else:
         comment.reply(message.insuff_org)
-
+        return True
+        
 def balance(comment, author):
     investor = users[author] 
     balance = investor.get_balance()
     comment.reply(message.modify_balance(balance))
+    return True
 
 def broke(comment, author):
     investor = users[author]
@@ -76,12 +124,15 @@ def broke(comment, author):
             comment.reply(message.modify_broke_active(active))
     else:
         comment.reply(message.modify_broke_money(balance))
+    return True
             
 def comment_thread():
 
     for comment in subreddit.stream.comments():
         author = comment.author.name.lower()
-        if ("bot" in author):
+
+        # We don't serve your kind around here
+        if ("_bot" in author):
             continue
         
         text = comment.body.lower()
@@ -95,55 +146,40 @@ def comment_thread():
         # The !create command
         if (("!create" in text) and (not exist)):
             create(comment, author)
+            save_data()
             continue
-        
+
+        if (not exist):
+            comment.reply(message.no_account_org)
+            continue
+
         # The !invest command
         if ("!invest" in text):
-            if (exist):
-                invest(comment, author, text)
-                continue
-            else:
-                comment.reply(message.no_account_org)
-
+            invest(comment, author, text)
+            save_data()
+            continue
+                
         if ("!balance" in text):
-            if (exist):
-                balance()
-                continue
-            else:
-                comment.reply(message.no_account_org)
+            balance(comment, author)
+            save_data()
+            continue
 
         if ("!broke" in text):
-            if (exist):
-                broke(comment, author)
-                continue
-            else:
-                comment.reply(message.no_account_org)
-
-        time.sleep(20)
-
+            broke(comment, author)
+            save_data()
+            continue
+        
 def check_investments():
     time.sleep(60)
     investment = awaiting[0]
-    investor_id = investment.name
+    investor_id = investment.get_name()
     investor = users[investor_id]
-    post = investment.post.get_ID()
+    post = investment.get_ID()
     upvotes = reddit.submission(post).ups
 
     if (investment.check()):
         investor.calculate(investment, upvotes)
         done.append(awaiting.pop(0))
-
-def monitor_investments():
-
-    for investment in awating:
-        post = investment.post.get_ID()
-        upvotes = reddit.submission(post).ups
-        prev = investment.get_head()
-        investment.set_head(upvotes)
-        change = upvotes - prev
-        investment.growth.append(change)
-
-    time.sleep(60)
 
 def threads():
     Thread(name="Comments", target=comment_thread).start()
