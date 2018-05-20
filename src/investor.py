@@ -17,12 +17,22 @@ class Post:
         self.ID = ID
         self.upvotes = upvotes
 
+    # GET METHODS
+        
     def get_ID(self):
         return self.ID
 
     def get_upvotes(self):
         return self.upvotes
-        
+
+    # SET METHODS
+
+    def set_ID(self, i):
+        self.ID = i
+
+    def set_upvotes(self, ups):
+        self.upvotes = ups
+    
 class Investment:
 
     """
@@ -42,14 +52,11 @@ class Investment:
 
     """
     
-    def __init__(self, post, upvotes, name, amount):
-        self.post = Post(post, upvotes)
+    def __init__(self, postID, upvotes, name, amount):
+        self.post = Post(postID, upvotes)
         self.name = name
         self.amount = amount
-        self.done = 0
         self.time = time.time()
-        self.head = self.post.get_upvotes()
-        self.growth = []
         
     def check(self):
         change = time.time() - self.get_time()
@@ -58,48 +65,40 @@ class Investment:
         if (change > 6 * 60 * 60):
             return True
         return False
-        
-    def get_post(self):
-        return self.post
+
+    # GET METHODS
+    
+    def get_ID(self):
+        return self.post.get_ID()
+
+    def get_upvotes(self):
+        return int(float(self.post.get_upvotes()))
     
     def get_name(self):
         return self.name
+    
+    def get_amount(self):
+        return int(float(self.amount))
+    
+    def get_time(self):
+        return int(float(self.time))
+
+    # SET METHODS
+
+    def set_ID(self, i):
+        self.post.set_ID(i)
+
+    def set_upvotes(self, ups):
+        self.post.set_upvotes(ups)
 
     def set_name(self, nam):
         self.name = nam
-    
-    def get_amount(self):
-        return self.amount
-
+        
     def set_amount(self, amoun):
         self.amount = amoun
-    
-    def get_done(self):
-        return self.done
-
-    def set_done(self, don):
-        self.done = don
-    
-    def get_time(self):
-        return self.time
 
     def set_time(self, tim):
         self.time = tim
-    
-    def get_head(self):
-        return self.head
-
-    def set_head(self, hea):
-        self.head = hea
-        
-    def get_growth(self):
-        return self.growth
-
-    def get_post_upvotes(self):
-        return self.post.get_upvotes()
-    
-    def get(self):
-        return [self.post, self.name, self.amount, self.done, self.time]
     
 class Investor:
 
@@ -132,13 +131,17 @@ class Investor:
         self.completed = 0
         self.invests = []
 
-    def invest(self, post, upvotes, amount):
+    def enough(self, amount):
         if (self.get_balance() < amount):
             return False
-        self.balance -= amount
-        self.invests.append(Investment(post, upvotes, self.name, amount))
-        self.active += 1
         return True
+        
+    def invest(self, postID, upvotes, amount):
+        self.balance = self.get_balance() - amount
+        inv = Investment(postID, upvotes, self.name, amount)
+        self.invests.append(inv)
+        self.set_active(self.get_active() + 1)
+        return inv
         
     def calculate(self, investment, upvotes):
         du = upvotes - investment.post.get_upvotes()
@@ -166,38 +169,42 @@ class Investor:
             
     def profit(self, investment, success, multiplier):
         if (success):
-            self.balance += investment.amount
-            self.balance *= multiplier
+            self.balance = self.get_balance() + investment.amount
+            self.balance = self.get_balance() * multiplier
         investment.done = 1
         self.completed += 1
         self.active -= 1
 
+    # GET METHODS
+        
     def get_name(self):
         return self.name
+    
+    def get_balance(self):
+        return int(float(self.balance))
+
+    def get_active(self):
+        return int(float(self.active))
+
+    def get_completed(self):
+        return int(float(self.completed))
+
+    def get_invests(self):
+        return self.invests
+
+    # SET METHODS
+    
+    def set_balance(self, balanc):
+        self.balance = balanc
 
     def set_name(self, nam):
         self.name = nam
-    
-    def get_balance(self):
-        return self.balance
-
-    def set_balance(self, balanc):
-        self.balance = balanc
-    
-    def get_active(self):
-        return self.active
 
     def set_active(self, activ):
-        self.active = activ
+        self.active = activ    
     
-    def get_completed(self):
-        return self.completed
-
     def set_completed(self, complete):
         self.completed = complete
-    
-    def get_invests(self):
-        return self.invests
-    
-    def get(self):
-        return [self.name, self.balance, self.invests, self.completed]
+
+    def add_investment(self, investment):
+        self.invests.append(investment)
