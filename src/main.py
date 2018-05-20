@@ -77,19 +77,19 @@ def save_data():
     utils.write_investments(data_folder + done_file, done)
     utils.write_array(data_folder + checked_file, checked_comments)
 
-def help(comment):
+def send_not(comment, string):
+    global debug
     if (debug):
-        print(message.help_org)
+        print(string)
     else:
-        comment.reply(message.help_org)
+        comment.reply(string)
+    
+def help(comment):
+    send_not(comment, message.help_org)
 
 def create(comment, author):
     users[author] = Investor(author, starter)
-
-    if (debug):
-        print(message.modify_create(author, users[author].get_balance()))
-    else:
-        comment.reply(message.modify_create(author, users[author].get_balance()))
+    send_not(comment, message.modify_create(author, users[author].get_balance()))
     
 def invest(comment, author, text):
     post = reddit.submission(comment.submission)
@@ -104,40 +104,27 @@ def invest(comment, author, text):
         return False
 
     if (investm < 100):
-        
-        if (debug):
-            print(message.min_invest_org)
-        else:
-            comment.reply(message.min_invest_org)
-        return
+        send_not(comment, message.min_invest_org)
+        return False
     
     is_enough = investor.enough(investm)
     
     if (is_enough):
-        inv =investor.invest(post_ID, upvotes, investm)
-        if (debug):
-            print(message.modify_invest(investm, investor.get_balance()))
-        else:
-            comment.reply(message.modify_invest(investm, investor.get_balance()))
-
+        inv = investor.invest(post_ID, upvotes, investm)
+        send_not(comment, message.modify_invest(investm, investor.get_balance()))
+        
         awaiting.append(inv)
         print(awaiting)
         save_data()
         return True
     else:
-        if (debug):
-            print(message.insuff_org)
-        else:
-            comment.reply(message.insuff_org)
+        send_not(comment, message.insuff_org)
         return True
         
 def balance(comment, author):
     investor = users[author] 
     balance = investor.get_balance()
-    if (debug):
-        print(message.modify_balance(balance))
-    else:
-        comment.reply(message.modify_balance(balance))
+    send_not(comment, message.modify_balance(balance))
     return True
 
 def broke(comment, author):
@@ -147,22 +134,12 @@ def broke(comment, author):
 
     if (balance < 100):
         if (active == 0):
-            if (debug):
-                print(message.broke_org)
-                investor.set_balance(100)
-            else:
-                comment.reply(message.broke_org)
-                investor.set_balance(100)
+            send_not(comment, message.broke_org)
+            investor.set_balance(100)
         else:
-            if (debug):
-                print(message.modify_broke_active(active))
-            else:
-                comment.reply(message.modify_broke_active(active))
+            send_not(comment, message.modify_broke_active(active))
     else:
-        if (debug):
-            print(message.modify_broke_money(balance))
-        else:
-            comment.reply(message.modify_broke_money(balance))
+        send_not(comment, message.modify_broke_money(balance))
     return True
             
 def comment_thread():
@@ -196,10 +173,7 @@ def comment_thread():
             continue
 
         if (not exist):
-            if (debug):
-                print(message.no_account_org)
-            else:
-                comment.reply(message.no_account_org)
+            send_not(comment, message.no_account_org)
             continue
 
         # The !invest command
@@ -219,8 +193,8 @@ def comment_thread():
             continue
         
 def check_investments():
-    while True:
-        
+
+    while True:    
         if (len(awaiting) > 0):
             investment = awaiting[0]
             investor_id = investment.get_name()
@@ -228,7 +202,6 @@ def check_investments():
             post = investment.get_ID()
             upvotes = reddit.submission(post).ups
             donep = investment.check()
-            print(donep)
             if (donep):
                 investor.calculate(investment, upvotes)
                 done.append(awaiting.pop(0))
