@@ -1,88 +1,134 @@
 from investor import *
 
-data_folder = "./data/"
+def strn(arg):
+    return f"{str(arg)}\n"
 
-def write_investors(investors):
+def addl(w, arg):
+    w.writelines(strn(arg))
+
+def write_investors(file_name, investors):
     length = len(investors)
     keys = list(investors.keys())
     values = list(investors.values())
     
-    with open(data_folder + "investors.txt", "w") as w:
-        w.writelines(str(length) + "\n")
-        for i in range(len(keys)):
-            # Just the name
-            investor = keys[i]
-            w.writelines(investor + "\n")
-            # Array of Investor objects
-            data = values[i]
-            w.writelines(str(data.get_name()) + "\n")
-            w.writelines(str(data.get_balance()) + "\n")
-            w.writelines(str(data.get_active()) + "\n")
-            w.writelines(str(data.get_completed()) + "\n")
+    with open(file_name, "w") as w:
+        # Number of Investors
+        addl(w, length)
 
-            invests = data.get_invests()
-            investments = len(invests)
-            w.writelines(str(investments))
-            for j in range(investments):
-                w.writelines(str(invests[j].get_post().get_ID()) + "\n")
-                w.writelines(str(invests[j].get_post().get_upvotes()) + "\n")
-                w.writelines(str(invests[j].get_name()) + "\n")
-                w.writelines(str(invests[j].get_amount()) + "\n")
-                w.writelines(str(invests[j].get_done()) + "\n")
-                w.writelines(str(invests[j].get_time()) + "\n")
-                w.writelines(str(invests[j].get_head()) + "\n")
-                
-                gr = invests[j].get_growth()
-                grl = len(gr)
-                w.writelines(str(grl) + "\n")
-                for k in range(grl):
-                    w.writelines(str(gr[k]) + "\n")
-    w.close()
-
-c = 0
-def read_lines(array):
-    global c
-    elem = array[c]
-    c += 1
-    return elem
-    
-def read_investors():
-    investors = {}
-    with open(data_folder + "investors.txt", "r") as r:
-        file_data = r.readlines()
-        file_data = [x.replace("\n", "") for x in file_data]
-        invs = int(float(read_lines(file_data)))
-        for _ in range(invs):
-            investor = read_lines(file_data)
-            investors[investor] = Investor(investor, 1000)
-            investors[investor].set_name(read_lines(file_data))
-            investors[investor].set_balance(read_lines(file_data))
-            investors[investor].set_active(read_lines(file_data))
-            investors[investor].set_completed(read_lines(file_data))
-
-            number_of_investments = int(float(read_lines(file_data)))
+        for i in range(length):
+            # Investor instance
+            ivi = values[i]
             
-            for _ in range(number_of_investments):
+            addl(w, ivi.get_name())
+            addl(w, ivi.get_balance())
+            addl(w, ivi.get_active())
+            addl(w, ivi.get_completed())
 
-                post_ID = read_lines(file_data)
-                post_upvotes = int(float(read_lines(file_data)))
-                amount = int(float(read_lines(file_data)))
-                done = int(float(read_lines(file_data)))
-                time = int(float(read_lines(file_data)))
-                head = int(float(read_lines(file_data)))
+            # Array of Investments
+            arr = ivi.get_invests()
+            arrl = len(arr)
 
-                investors[investor].append(Investment(post_ID,
-                                                      post_upvotes,
-                                                      investor,
-                                                      amount))
+            addl(w, arrl)
+            # For each investment
+            for j in range(arrl):
+                addl(w, arr[j].get_ID())
+                addl(w, arr[j].get_upvotes())
+                addl(w, arr[j].get_name())
+                addl(w, arr[j].get_amount())
+                addl(w, arr[j].get_time())
+        w.close()
+        
+    return True
 
-                investor[investor].invests[-1].set_done(done)
-                investor[investor].invests[-1].set_time(time)
-                investor[investor].invests[-1].set_head(head)
+def read_investors(file_name):
+    with open(file_name, "r") as r:
+        data = r.readlines()
+        data = [x.replace("\n", "") for x in data]
+        arr = {}
 
-                growth_length = int(float(read_lines(file_data)))
+        # Number of investors
+        nofinv = int(float(data.pop(0)))
 
-                for _ in range(growth_length):
-                    investor[investor].invests[-1].growth.append(int(float(read_lines(file_data))))
+        for _ in range(nofinv):
+            name = data.pop(0)
+            balance = int(float(data.pop(0)))
+            active = int(float(data.pop(0)))
+            completed = int(float(data.pop(0)))
 
-    return investors
+            arr[name] = Investor(name, balance)
+            arr[name].set_active(active)
+            arr[name].set_completed(completed)
+
+            # Invests
+            invs = int(float(data.pop(0)))
+            
+            for _ in range(invs):
+                post_ID = data.pop(0)
+                post_upvotes = int(float(data.pop(0)))
+                inv_name = data.pop(0)
+                inv_amount = int(float(data.pop(0)))
+                inv_time = int(float(data.pop(0)))
+
+                arr[name].add_investment(Investment(post_ID,
+                                                    post_upvotes,
+                                                    inv_name,
+                                                    inv_amount))
+                arr[name].invests[-1].set_time(inv_time)
+        r.close()
+        
+    return arr
+
+def write_investments(file_name, arr):
+    invl = len(arr)
+    with open(file_name, "w") as w:
+        
+        addl(w, invl)
+        
+        for i in range(invl):
+            addl(w, arr[i].get_ID())
+            addl(w, arr[i].get_upvotes())
+            addl(w, arr[i].get_name())
+            addl(w, arr[i].get_amount())
+            addl(w, arr[i].get_time())
+
+        w.close()
+
+def read_investments(file_name):
+
+    arr = []
+    with open(file_name, "r") as r:
+        data = r.readlines()
+        data = [x.replace("\n", "") for x in data]
+
+        num = int(float(data.pop(0)))
+
+        for _ in range(num):
+            post_ID = data.pop(0)
+            post_upvotes = int(float(data.pop(0)))
+            inv_name = data.pop(0)
+            inv_amount = int(float(data.pop(0)))
+            inv_time = int(float(data.pop(0)))
+
+            arr.append(Investment(post_ID,
+                                  post_upvotes,
+                                  inv_name,
+                                  inv_amount))
+            arr[-1].set_time(inv_time)
+        r.close()
+
+    return arr
+
+def write_array(file_name, arr):
+    with open(file_name, "w") as w:
+        for i in arr:
+            w.writelines(f"{str(i)}\n")
+    w.close
+    return True
+    
+def read_array(file_name):
+    arr = []
+    with open(file_name, "r") as r:
+        arr = r.readlines()
+        arr = [x.replace("\n", "") for x in arr]
+        r.close()
+    return arr
