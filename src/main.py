@@ -176,7 +176,7 @@ def comment_thread():
             save_data()
             continue
 
-        if ((not exist) or ("!invest" in text) or ("!balance" in text) or ("!broke" in text)):
+        if ((not exist) and (("!invest" in text) or ("!balance" in text) or ("!broke" in text))):
             send_not(comment, message.no_account_org)
             continue
 
