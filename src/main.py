@@ -1,3 +1,4 @@
+
 """
  __  __                     ___                     _             
 |  \/  | ___ _ __ ___   ___|_ _|_ ____   _____  ___| |_ ___  _ __ 
@@ -78,14 +79,16 @@ def save_data():
     utils.write_array(data_folder + checked_file, checked_comments)
 
 def send_not(comment, string):
+    save_data()
     global debug
     commentID = 0
     if (debug):
         print(string)
     else:
         commentID = comment.reply(string)
-        time.sleep(60 * 15)
+        
         print("Sleeping for 15 mins")
+        time.sleep(60 * 15)
         return commentID
     
 def help(comment):
@@ -115,7 +118,7 @@ def invest(comment, author, text):
     
     if (is_enough):
         
-        commentID = send_not(comment, message.modify_invest(investm, investor.get_balance()))
+        commentID = send_not(comment, message.modify_invest(investm, investor.get_balance() - investm))
         inv = investor.invest(post_ID, upvotes, commentID, investm)
         
         awaiting.append(inv)
@@ -140,6 +143,7 @@ def broke(comment, author):
         if (active == 0):
             send_not(comment, message.broke_org)
             investor.set_balance(100)
+            save_data()
         else:
             send_not(comment, message.modify_broke_active(active))
     else:
@@ -173,7 +177,6 @@ def comment_thread():
         # The !create command
         if (("!create" in text) and (not exist)):
             create(comment, author)
-            save_data()
             continue
 
         if ((not exist) and (("!invest" in text) or ("!balance" in text) or ("!broke" in text))):
@@ -183,17 +186,14 @@ def comment_thread():
         # The !invest command
         if ("!invest" in text):
             invest(comment, author, text)
-            save_data()
             continue
                 
         if ("!balance" in text):
             balance(comment, author)
-            save_data()
             continue
 
         if ("!broke" in text):
             broke(comment, author)
-            save_data()
             continue
         
 def check_investments():
