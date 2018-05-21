@@ -32,6 +32,7 @@ def write_investors(file_name, investors):
             # For each investment
             for j in range(arrl):
                 addl(w, arr[j].get_ID())
+                addl(w, arr[j].get_comment())
                 addl(w, arr[j].get_upvotes())
                 addl(w, arr[j].get_name())
                 addl(w, arr[j].get_amount())
@@ -64,12 +65,14 @@ def read_investors(file_name):
             
             for _ in range(invs):
                 post_ID = data.pop(0)
+                commentID = data.pop(0)
                 post_upvotes = int(float(data.pop(0)))
                 inv_name = data.pop(0)
                 inv_amount = int(float(data.pop(0)))
                 inv_time = int(float(data.pop(0)))
 
                 arr[name].add_investment(Investment(post_ID,
+                                                    commentID,
                                                     post_upvotes,
                                                     inv_name,
                                                     inv_amount))

@@ -50,6 +50,33 @@ def modify_invest(amount, balance):
     invest = invest.replace("%BALANCE%", str(balance))
     return invest
 
+invest_return_org = """
+%INVESTMENT%
+
+UPDATE: Your investment was successfull!
+
+This investment has brought you %WIN% MemeCoins. 
+
+%DESCRIPTION%
+""".replace("%DESCRIPTION%", help_mess)
+
+def modify_invest_return(text, win):
+    invest_return = invest_return_org
+    invest_return = invest_return.replace("%INVESTMENT%", str(text))
+    invest_return = invest_return.replace("%WIN%", str(win))
+
+invest_lose_org = """
+%INVESTMENT%
+
+UPDATE: Your investment was unsuccessfull!
+
+%DESCRIPTION%
+""".replace("%DESCRIPTION%", help_mess)
+
+def modify_invest_lose(text):
+    invest_lose = invest_lose_org
+    invest_lose = invest_lose.replace("INVESTMENT", str(text))
+    
 # If funds are insufficient to make an investment
 # say that
 insuff_org = """

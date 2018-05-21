@@ -52,8 +52,9 @@ class Investment:
 
     """
     
-    def __init__(self, postID, upvotes, name, amount):
+    def __init__(self, postID, commentID, upvotes, name, amount):
         self.post = Post(postID, upvotes)
+        self.comment = commentID
         self.name = name
         self.amount = amount
         self.time = time.time()
@@ -71,6 +72,9 @@ class Investment:
     def get_ID(self):
         return self.post.get_ID()
 
+    def get_comment(self):
+        return self.comment
+    
     def get_upvotes(self):
         return int(float(self.post.get_upvotes()))
     
@@ -88,6 +92,9 @@ class Investment:
     def set_ID(self, i):
         self.post.set_ID(i)
 
+    def set_comment(self, commentID):
+        self.comment = commentID
+        
     def set_upvotes(self, ups):
         self.post.set_upvotes(ups)
 
@@ -136,51 +143,49 @@ class Investor:
             return False
         return True
         
-    def invest(self, postID, upvotes, amount):
+    def invest(self, postID, upvotes, commentID, amount):
         self.balance = self.get_balance() - amount
-        inv = Investment(postID, upvotes, self.name, amount)
+        inv = Investment(postID, commentID, upvotes, self.name, amount)
         self.invests.append(inv)
         self.set_active(self.get_active() + 1)
         return inv
         
     def calculate(self, investment, upvotes):
         du = upvotes - investment.post.get_upvotes()
-        
+        win = 0
         if (du < 1000):
-            self.profit(investment, False, 0)
-            return True
+            return self.profit(investment, False, 0)
             
         if (du >= 1000 and du < 1500):
-            self.profit(investment, True, 1)
-            return True
-            
+            return self.profit(investment, True, 1)
+        
         if (du >= 1500 and du < 2500):
-            self.profit(investment, True, 1.10)
-            return True
+            return self.profit(investment, True, 1.10)
             
         if (du >= 2500 and du < 5000):
-            self.profit(investment, True, 1.25)
-            return True
+            return self.profit(investment, True, 1.25)
             
         if (du >= 5000 and du < 10000):
-            self.profit(investment, True, 1.50)
-            return True
+            return self.profit(investment, True, 1.50)
             
         if (du >= 10000 and du < 15000):
-            self.profit(investment, True, 1.75)
-            return True
+            return self.profit(investment, True, 1.75)
             
         if (du >= 15000):
-            self.proft(investment, True, 2.00)
-            return True
+            return self.proft(investment, True, 2.00)
             
     def profit(self, investment, success, multiplier):
+        orig = self.balance
         if (success):
             self.balance = self.get_balance() + investment.amount
             self.balance = self.get_balance() * multiplier
         investment.done = 1
         self.completed += 1
         self.active -= 1
+        if (success):
+            change = self.get_balance() - orig
+            return change
+        return 0
 
     # GET METHODS
         

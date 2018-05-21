@@ -28,7 +28,7 @@ reddit = praw.Reddit(client_id=config.client_id,
                      user_agent=config.user_agent)
 
 # Subreddit initialization
-subreddit_name = "pewds_test"
+subreddit_name = "MemeEconomy"
 subreddit = reddit.subreddit(subreddit_name)
 
 # A list of available commands:
@@ -55,7 +55,7 @@ checked_file = "checked_comments.txt"
 # DEBUG mode
 # In the debug mode, instead of sending replies
 # with praw, it just prints everything on tty
-debug = 1
+debug = 0
 
 # Dictionary of all the investors
 users = utils.read_investors(data_folder + investors_file)
@@ -79,10 +79,14 @@ def save_data():
 
 def send_not(comment, string):
     global debug
+    commentID = 0
     if (debug):
         print(string)
     else:
-        comment.reply(string)
+        commentID = comment.reply(string)
+        time.sleep(60 * 15)
+        print("Sleeping for 15 mins")
+        return commentID
     
 def help(comment):
     send_not(comment, message.help_org)
@@ -110,11 +114,11 @@ def invest(comment, author, text):
     is_enough = investor.enough(investm)
     
     if (is_enough):
-        inv = investor.invest(post_ID, upvotes, investm)
-        send_not(comment, message.modify_invest(investm, investor.get_balance()))
+        
+        commentID = send_not(comment, message.modify_invest(investm, investor.get_balance()))
+        inv = investor.invest(post_ID, upvotes, commentID, investm)
         
         awaiting.append(inv)
-        print(awaiting)
         save_data()
         return True
     else:
@@ -172,7 +176,7 @@ def comment_thread():
             save_data()
             continue
 
-        if (not exist):
+        if ((not exist) or ("!invest" in text) or ("!balance" in text) or ("!broke" in text)):
             send_not(comment, message.no_account_org)
             continue
 
@@ -194,6 +198,9 @@ def comment_thread():
         
 def check_investments():
 
+    if (debug == 1):
+        return
+    
     while True:    
         if (len(awaiting) > 0):
             investment = awaiting[0]
@@ -201,13 +208,23 @@ def check_investments():
             investor = users[investor_id]
             post = investment.get_ID()
             upvotes = reddit.submission(post).ups
+            
+            commentID = investment.get_comment()
+            comment = reddit.comment(id=commentID)
+            
             donep = investment.check()
             if (donep):
-                investor.calculate(investment, upvotes)
+                win = investor.calculate(investment, upvotes)
+                if (win > 0):
+                    comment.edit(message.modify_invest_return(comment.body, win))
+                else:
+                    comment.edit(message.modify_invest_lose(comment.body))
+                    
                 done.append(awaiting.pop(0))
+                comment.edit()
                 save_data()
 
-        time.sleep(5)
+        time.sleep(10)
         
 def threads():
     Thread(name="Comments", target=comment_thread).start()
