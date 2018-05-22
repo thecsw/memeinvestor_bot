@@ -88,8 +88,8 @@ def send_not(comment, string):
         else:
             commentID = comment.reply(string)
             
-            print("Sleeping for 1 min")
-            time.sleep(60)
+            print("Sleeping for 1 sec")
+            time.sleep(1)
             return commentID
     except Exception as e:
         print ("Caught an exception!{}".format(e))
