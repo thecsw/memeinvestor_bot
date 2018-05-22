@@ -37,7 +37,7 @@ def modify_create(username, balance):
 invest_org = """
 *%AMOUNT% MemeCoins were successfully invested!*
 
-You new balance is %BALANCE% MemeCoins
+Your new balance is %BALANCE% MemeCoins
 
 In 6 hours your investment will be evaluated.
 
@@ -142,7 +142,7 @@ possible investment is 100 MemeCoins.
 
 4. !broke - only if your balance is less than 100 MemeCoins and you 
 do not have any active investments, declares bankruptcy on your 
-account and sets your balance to 100 MemeCoins(Minumum possible
+account and sets your balance to 100 MemeCoins(Minimum possible
  investment).
 
 5. !help - returns this help message
@@ -170,7 +170,7 @@ def modify_balance(balance):
     return balance_t
     
 min_invest_org = """
-The minumum possible investment is 100 MemeCoins.
+The minimum possible investment is 100 MemeCoins.
 
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", help_mess)
