@@ -175,13 +175,13 @@ class Investor:
             return self.proft(investment, True, 2.00)
             
     def profit(self, investment, success, multiplier):
-        orig = self.balance
+        orig = self.get_balance()
         if (success):
-            self.balance = self.get_balance() + investment.amount
-            self.balance = self.get_balance() * multiplier
+            self.set_balance(self.get_balance() + investment.amount)
+            self.set_balance(self.get_balance() * multiplier)
         investment.done = 1
-        self.completed += 1
-        self.active -= 1
+        self.set_completed(self.get_completed() + 1)
+        self.set_active(self.get_active() - 1)
         if (success):
             change = self.get_balance() - orig
             return change
