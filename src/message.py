@@ -39,7 +39,8 @@ invest_org = """
 
 Your new balance is %BALANCE% MemeCoins
 
-In 6 hours your investment will be evaluated.
+In 6 hours your investment will be evaluated and
+I will update this comment. Stay tuned!
 
 %DESCRIPTION%
 """.replace("%DESCRIPTION%", help_mess)
@@ -101,8 +102,7 @@ next time.
 broke_active_org = """
 You still have %ACTIVE% investment(s).
 
-You need to wait until they are fully 
-evaluated.
+You need to wait until they are fully evaluated.
 
 %DESCRIPTION%
 """.replace("%DESCRIPTION%", help_mess)
@@ -161,7 +161,7 @@ Please create an account with !create command.
 """.replace("%DESCRIPTION%", help_mess)
 
 balance_org = """
-Currently, your account balance is %BALANCE%
+Currently, your account balance is %BALANCE% MemeCoins.
 
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", help_mess)
