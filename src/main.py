@@ -87,8 +87,8 @@ def send_not(comment, string):
     else:
         commentID = comment.reply(string)
         
-        print("Sleeping for 15 mins")
-        time.sleep(60 * 15)
+        print("Sleeping for 1 min")
+        time.sleep(60)
         return commentID
     
 def help(comment):
@@ -140,7 +140,7 @@ def broke(comment, author):
     active = investor.get_active()
 
     if (balance < 100):
-        if (active == 0):
+        if (active < 1):
             send_not(comment, message.broke_org)
             investor.set_balance(100)
             save_data()
@@ -221,7 +221,6 @@ def check_investments():
                     comment.edit(message.modify_invest_lose(comment.body))
                     
                 done.append(awaiting.pop(0))
-                comment.edit()
                 save_data()
 
         time.sleep(10)
