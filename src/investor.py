@@ -144,7 +144,7 @@ class Investor:
         return True
         
     def invest(self, postID, upvotes, commentID, amount):
-        self.balance = self.get_balance() - amount
+        self.set_balance(self.get_balance() - amount)
         inv = Investment(postID, commentID, upvotes, self.name, amount)
         self.invests.append(inv)
         self.set_active(self.get_active() + 1)
