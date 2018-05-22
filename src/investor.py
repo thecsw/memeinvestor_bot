@@ -172,7 +172,7 @@ class Investor:
             return self.profit(investment, True, 1.75)
             
         if (du >= 15000):
-            return self.proft(investment, True, 2.00)
+            return self.profit(investment, True, 2.00)
             
     def profit(self, investment, success, multiplier):
         self.set_completed(self.get_completed() + 1)
