@@ -6,7 +6,7 @@ _______________________
 ^(I am a MemeInvestor. I help investing in memes.
 Improve me by contributing to source code!)
 
-[Source code](https://github.com/thecsw/prequelmemes_bot)
+[Source code](https://github.com/thecsw/memeinvestor_bot)
 """
 
 help_mess = """
