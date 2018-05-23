@@ -197,7 +197,7 @@ There are %HODL% MemeCoins detained in investments.
 
 def modify_market(inves, cap, invs_cap):
     market = market_org
-    market = market.replace("%NUMBER%", inves)
-    market = market.replace("%MONEY%", cap)
-    market = market.replace("%HODL%", invs_cap)
+    market = market.replace("%NUMBER%", str(inves))
+    market = market.replace("%MONEY%", str(cap))
+    market = market.replace("%HODL%", str(invs_cap))
     return market

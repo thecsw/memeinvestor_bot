@@ -208,7 +208,7 @@ def comment_thread():
             create(comment, author)
             continue
 
-        if ((not exist) and (("!invest" in text) or ("!balance" in text) or ("!broke" in text) or ("!active" in text) or ("!market"))):
+        if ((not exist) and (("!invest" in text) or ("!balance" in text) or ("!broke" in text) or ("!active" in text) or ("!market" in text))):
             send_not(comment, message.no_account_org, False)
             continue
 
