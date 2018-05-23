@@ -226,7 +226,7 @@ def check_investments():
                 done.append(awaiting.pop(0))
                 save_data()
 
-        time.sleep(10)
+        time.sleep(1)
         
 def threads():
     Thread(name="Comments", target=comment_thread).start()
