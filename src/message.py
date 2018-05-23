@@ -3,8 +3,7 @@
 # every message
 bot_desc = """
 _______________________
-^(I am a MemeInvestor. I help you invest in memes.
-Improve me by contributing to source code!)
+^(I am a MemeInvestor. I help you invest in memes. Improve me by contributing to source code!)
 
 [Source code](https://github.com/thecsw/memeinvestor_bot)
 """
@@ -41,8 +40,7 @@ You bought in at %ENTRY% upvotes
 
 Your new balance is %BALANCE% MemeCoins
 
-In 6 hours your investment will be evaluated and
-I will update this comment. Stay tuned!
+In 6 hours your investment will be evaluated and I will update this comment. Stay tuned!
 
 %DESCRIPTION%
 """.replace("%DESCRIPTION%", help_mess)
@@ -130,27 +128,21 @@ def modify_broke_money(amount):
 help_org = """
 *Welcome to MemeInvestment!*
 
-I am a bot that will help you invest in memes and make
-a fortune out of it!
+I am a bot that will help you invest in memes and make a fortune out of it!
 
 Here is a list of commands that summon me:
 
-1. !create - creates a bank account for you with a new balance
-of 1000 MemeCoins
+1. !create - creates a bank account for you with a new balance of 1000 MemeCoins
 
-2. !invest AMOUNT - invests AMOUNT in the meme (post). Six
-hours after the investment, the meme growth will be evaluated
-and your investment can profit you or make you bankrupt. Minimum
-possible investment is 100 MemeCoins.
+2. !invest AMOUNT - invests AMOUNT in the meme (post). Six hours after the investment, the meme growth will be evaluated and your investment can profit you or make you bankrupt. Minimum possible investment is 100 MemeCoins.
 
-3. !balance - returns your current balance, if you have an account
+3. !balance - returns your current balance.
 
-4. !broke - only if your balance is less than 100 MemeCoins and you 
-do not have any active investments, declares bankruptcy on your 
-account and sets your balance to 100 MemeCoins (minimum possible 
-investment).
+4. !active - returns a number of active investments.
 
-5. !help - returns this help message
+5. !broke - only if your balance is less than 100 MemeCoins and you do not have any active investments, declares bankruptcy on your account and sets your balance to 100 MemeCoins (minimum possible investment).
+
+6. !help - returns this help message
 
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", bot_desc)
@@ -173,7 +165,18 @@ def modify_balance(balance):
     balance_t = balance_org
     balance_t = balance_t.replace("%BALANCE%", str(balance))
     return balance_t
-    
+
+active_org = """
+Currently, you have %NUMBER% active investments.
+
+%DESCRIPTION% 
+""".replace("%DESCRIPTION%", help_mess)
+
+def modify_active(active):
+    active_t = active_org
+    active_t = active_t.replace("%NUMBER%", str(active))
+    return active_t
+
 min_invest_org = """
 The minimum possible investment is 100 MemeCoins.
 

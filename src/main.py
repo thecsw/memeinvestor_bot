@@ -78,9 +78,10 @@ def save_data():
     utils.write_investments(data_folder + done_file, done)
     utils.write_array(data_folder + checked_file, checked_comments)
 
-def send_not(comment, string):
+def send_not(comment, string, save):
     try:
-        save_data()
+        if (save):
+            save_data()
         global debug
         commentID = 0
         if (debug):
@@ -95,11 +96,11 @@ def send_not(comment, string):
         print ("Caught an exception!{}".format(e))
         
 def help(comment):
-    send_not(comment, message.help_org)
+    send_not(comment, message.help_org, False)
 
 def create(comment, author):
     users[author] = Investor(author, starter)
-    send_not(comment, message.modify_create(author, users[author].get_balance()))
+    send_not(comment, message.modify_create(author, users[author].get_balance()), True)
     
 def invest(comment, author, text):
     post = reddit.submission(comment.submission)
@@ -114,26 +115,32 @@ def invest(comment, author, text):
         return False
 
     if (investm < 100):
-        send_not(comment, message.min_invest_org)
+        send_not(comment, message.min_invest_org, False)
         return False
     
     is_enough = investor.enough(investm)
     
     if (is_enough):
-        commentID = send_not(comment, message.modify_invest(investm, upvotes, investor.get_balance() - investm))
+        commentID = send_not(comment, message.modify_invest(investm, upvotes, investor.get_balance() - investm), False)
         inv = investor.invest(post_ID, upvotes, commentID, investm)
         
         awaiting.append(inv)
         save_data()
         return True
     else:
-        send_not(comment, message.insuff_org)
+        send_not(comment, message.insuff_org, False)
         return True
         
 def balance(comment, author):
     investor = users[author] 
     balance = investor.get_balance()
-    send_not(comment, message.modify_balance(balance))
+    send_not(comment, message.modify_balance(balance), False)
+    return True
+
+def activity(comment, author):
+    investor = users[author] 
+    active = investor.get_active()
+    send_not(comment, message.modify_active(active), False)
     return True
 
 def broke(comment, author):
@@ -143,13 +150,13 @@ def broke(comment, author):
 
     if (balance < 100):
         if (active < 1):
-            send_not(comment, message.broke_org)
+            send_not(comment, message.broke_org, True)
             investor.set_balance(100)
             save_data()
         else:
-            send_not(comment, message.modify_broke_active(active))
+            send_not(comment, message.modify_broke_active(active), False)
     else:
-        send_not(comment, message.modify_broke_money(balance))
+        send_not(comment, message.modify_broke_money(balance), False)
     return True
             
 def comment_thread():
@@ -181,8 +188,8 @@ def comment_thread():
             create(comment, author)
             continue
 
-        if ((not exist) and (("!invest" in text) or ("!balance" in text) or ("!broke" in text))):
-            send_not(comment, message.no_account_org)
+        if ((not exist) and (("!invest" in text) or ("!balance" in text) or ("!broke" in text) or ("!active" in text))):
+            send_not(comment, message.no_account_org, False)
             continue
 
         # The !invest command
@@ -194,6 +201,10 @@ def comment_thread():
             balance(comment, author)
             continue
 
+        if ("!active" in text):
+            activity(comment, author)
+            continue
+        
         if ("!broke" in text):
             broke(comment, author)
             continue
@@ -223,7 +234,8 @@ def check_investments():
                     comment.edit(message.modify_invest_lose(comment.body))
                     
                 done.append(awaiting.pop(0))
-                save_data()
+                print("Investment returned!")
+#                save_data()
 
         time.sleep(1)
         
