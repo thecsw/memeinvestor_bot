@@ -1,4 +1,5 @@
 import time
+import math
 
 class Post:
 
@@ -153,9 +154,41 @@ class Investor:
     def calculate(self, investment, upvotes):
         du = upvotes - investment.post.get_upvotes()
         win = 0
-        if (du < 1000):
-            return self.profit(investment, False, 0)
-            
+        
+        """
+        Investment return multiplier was previously determined with a block of if statements.
+        Performed a linear fit to a log-log plot of mutliplier vs upvotes based on the original values for the if block.
+        Used the gradient/intercept to generate a power function that approximates (and extends) the original mutliplier
+        calculation to all upvote values.
+        
+        Functional form: y = (10^c)x^m ;
+          y = multiplier,
+          x = du (change in upvotes),
+          m = gradient of linear fit to log-log plot (= -0.7603),
+          c = intercept of linear fit to log-log plot (= 0.2527).
+        """
+        #Allow custom upper du limit to cap maximum investment profit multiplier (set as desired)
+        success_cap = 100000
+        
+        #Safeguard: if du is -ve function cannot be evaluated and mult remains zero.
+        mult = 0
+        if (du >= 0):
+            mult = math.pow(10, -0.7603) * math.pow(du, 0.2527)
+        
+        #Failure is defined as a profit multiplier less than 1.
+        if (mult < 1):
+            return self.profit(investment, False, mult)
+        
+        #Return multiplier value for du upper limit if du is at or above the limit
+        elif (du >= success_cap):
+            capped_mult = math.pow(10,-0.7603) * math.pow(success_cap, 0.2527)
+            return self.profit(investment, True, capped_mult)
+        
+        else:
+            return self.profit(investment, True, mult)
+        
+        #OLD METHOD:
+        '''           
         if (du >= 1000 and du < 1500):
             return self.profit(investment, True, 1)
         
@@ -173,7 +206,8 @@ class Investor:
             
         if (du >= 15000):
             return self.profit(investment, True, 2.00)
-            
+        '''
+        
     def profit(self, investment, success, multiplier):
         self.set_completed(self.get_completed() + 1)
         self.set_active(self.get_active() - 1)
