@@ -3,7 +3,7 @@
 # every message
 bot_desc = """
 _______________________
-^(I am a MemeInvestor. I help investing in memes.
+^(I am a MemeInvestor. I help you invest in memes.
 Improve me by contributing to source code!)
 
 [Source code](https://github.com/thecsw/memeinvestor_bot)
@@ -32,7 +32,7 @@ def modify_create(username, balance):
     return create
 
 # This message will be sent when an investment
-# was successfull
+# was successful
 
 invest_org = """
 *%AMOUNT% MemeCoins were successfully invested!*
@@ -56,7 +56,7 @@ def modify_invest(amount, entry, balance):
 invest_return_org = """
 %INVESTMENT%
 
-UPDATE: Your investment was successfull!
+UPDATE: Your investment was successful!
 
 This investment has brought you %WIN% MemeCoins. 
 
@@ -72,7 +72,7 @@ def modify_invest_return(text, win):
 invest_lose_org = """
 %INVESTMENT%
 
-UPDATE: Your investment was unsuccessfull!
+UPDATE: Your investment was unsuccessful!
 
 %DESCRIPTION%
 """.replace("%DESCRIPTION%", help_mess)
@@ -94,7 +94,7 @@ You do not have enough MemeCoins to make the investment.
 broke_org = """
 Welp, you are broke.
 
-Your balance has been resetted to 100 MemeCoins. Be careful
+Your balance has been reset to 100 MemeCoins. Be careful
 next time.
 
 %DESCRIPTION%
@@ -129,7 +129,7 @@ def modify_broke_money(amount):
 help_org = """
 *Welcome to MemeInvestment!*
 
-I am a bot that will help you investing in memes and make
+I am a bot that will help you invest in memes and make
 a fortune out of it!
 
 Here is a list of commands that summon me:
@@ -137,17 +137,17 @@ Here is a list of commands that summon me:
 1. !create - creates a bank account for you with a new balance
 of 1000 MemeCoins
 
-2. !invest AMOUNT - invests AMOUNT in the meme (post). After 6
+2. !invest AMOUNT - invests AMOUNT in the meme (post). Six
 hours after the investment, the meme growth will be evaluated
 and your investment can profit you or make you bankrupt. Minimum
 possible investment is 100 MemeCoins.
 
-3. !balance - returns your current balance, if you have and account.
+3. !balance - returns your current balance, if you have an account
 
 4. !broke - only if your balance is less than 100 MemeCoins and you 
 do not have any active investments, declares bankruptcy on your 
-account and sets your balance to 100 MemeCoins(Minimum possible
- investment).
+account and sets your balance to 100 MemeCoins (minimum possible 
+investment).
 
 5. !help - returns this help message
 
