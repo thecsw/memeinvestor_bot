@@ -37,6 +37,7 @@ def modify_create(username, balance):
 invest_org = """
 *%AMOUNT% MemeCoins were successfully invested!*
 
+You bought in at %ENTRY% upvotes
 Your new balance is %BALANCE% MemeCoins
 
 In 6 hours your investment will be evaluated and
@@ -45,9 +46,10 @@ I will update this comment. Stay tuned!
 %DESCRIPTION%
 """.replace("%DESCRIPTION%", help_mess)
 
-def modify_invest(amount, balance):
+def modify_invest(amount, entry, balance):
     invest = invest_org
     invest = invest.replace("%AMOUNT%", str(amount))
+    invest = invest.replace("%ENTRY%", str(entry))
     invest = invest.replace("%BALANCE%", str(balance))
     return invest
 
