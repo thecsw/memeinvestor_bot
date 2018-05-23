@@ -164,8 +164,8 @@ class Investor:
         Functional form: y = (10^c)x^m ;
           y = multiplier,
           x = du (change in upvotes),
-          m = gradient of linear fit to log-log plot (= -0.7603),
-          c = intercept of linear fit to log-log plot (= 0.2527).
+          m = gradient of linear fit to log-log plot (= 0.2527),
+          c = intercept of linear fit to log-log plot (= -0.7603).
         """
         #Allow custom upper du limit to cap maximum investment profit multiplier (set as desired)
         success_cap = 100000
@@ -173,7 +173,7 @@ class Investor:
         #Safeguard: if du is -ve function cannot be evaluated and mult remains zero.
         mult = 0
         if (du >= 0):
-            mult = math.pow(10, -0.7603) * math.pow(du, 0.2527)
+            mult = 0.17366 * math.pow(du, 0.2527)
         
         #Failure is defined as a profit multiplier less than 1.
         if (mult < 1):
@@ -181,7 +181,7 @@ class Investor:
         
         #Return multiplier value for du upper limit if du is at or above the limit
         elif (du >= success_cap):
-            capped_mult = math.pow(10,-0.7603) * math.pow(success_cap, 0.2527)
+            capped_mult = 0.17366 * math.pow(success_cap, 0.2527)
             return self.profit(investment, True, capped_mult)
         
         else:
