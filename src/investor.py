@@ -122,7 +122,7 @@ class Investor:
     currently has in his bank.
 
     3. completed - the number of completed investments.
-    Doesn't matter, successfull or unseccussfull.
+    Doesn't matter, successful or unsuccessful.
 
     4. invests - is the array of Investment class
     instances that holds every data on every investment
