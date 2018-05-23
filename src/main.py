@@ -120,8 +120,7 @@ def invest(comment, author, text):
     is_enough = investor.enough(investm)
     
     if (is_enough):
-        
-        commentID = send_not(comment, message.modify_invest(investm, investor.get_balance() - investm))
+        commentID = send_not(comment, message.modify_invest(investm, upvotes, investor.get_balance() - investm))
         inv = investor.invest(post_ID, upvotes, commentID, investm)
         
         awaiting.append(inv)
