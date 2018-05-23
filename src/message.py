@@ -38,6 +38,7 @@ invest_org = """
 *%AMOUNT% MemeCoins were successfully invested!*
 
 You bought in at %ENTRY% upvotes
+
 Your new balance is %BALANCE% MemeCoins
 
 In 6 hours your investment will be evaluated and
