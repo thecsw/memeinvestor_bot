@@ -142,7 +142,9 @@ Here is a list of commands that summon me:
 
 5. !broke - only if your balance is less than 100 MemeCoins and you do not have any active investments, declares bankruptcy on your account and sets your balance to 100 MemeCoins (minimum possible investment).
 
-6. !help - returns this help message
+6. !market - gives an overview for the whole Meme market.
+
+7. !help - returns this help message
 
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", bot_desc)
@@ -182,3 +184,20 @@ The minimum possible investment is 100 MemeCoins.
 
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", help_mess)
+
+market_org = """
+The market has %NUMBER% active investments.
+
+ALl investors possess %MONEY% MemeCoins.
+
+There are %HODL% MemeCoins detained in investments.
+
+%DESCRIPTION% 
+""".replace("%DESCRIPTION%", help_mess)
+
+def modify_market(inves, cap, invs_cap):
+    market = market_org
+    market = market.replace("%NUMBER%", inves)
+    market = market.replace("%MONEY%", cap)
+    market = market.replace("%HODL%", invs_cap)
+    return market

@@ -143,6 +143,26 @@ def activity(comment, author):
     send_not(comment, message.modify_active(active), False)
     return True
 
+def all_balance():
+    sum = 0
+    keys_u = list(users.keys())
+    for i in range(len(keys_u)):
+        sum += users[keys_u[i]].get_balance()
+    return sum
+        
+def all_investments():
+    sum = 0
+    for i in range(len(awaiting)):
+        sum += awaiting[i].get_amount()
+    return sum
+
+def market(comment, author):
+    number_of_invs = len(awaiting)
+    users_balance = all_balance()
+    invest_balance = all_investments()
+    send_not(comment, message.modify_market(number_of_invs, users_balance, invest_balance), False)
+    return True
+
 def broke(comment, author):
     investor = users[author]
     balance = investor.get_balance()
@@ -188,7 +208,7 @@ def comment_thread():
             create(comment, author)
             continue
 
-        if ((not exist) and (("!invest" in text) or ("!balance" in text) or ("!broke" in text) or ("!active" in text))):
+        if ((not exist) and (("!invest" in text) or ("!balance" in text) or ("!broke" in text) or ("!active" in text) or ("!market"))):
             send_not(comment, message.no_account_org, False)
             continue
 
@@ -205,6 +225,10 @@ def comment_thread():
             activity(comment, author)
             continue
         
+        if ("!market" in text):
+            market(comment, author)
+            continue
+
         if ("!broke" in text):
             broke(comment, author)
             continue
@@ -236,8 +260,6 @@ def check_investments():
                 done.append(awaiting.pop(0))
                 print("Investment returned!")
 #                save_data()
-
-        time.sleep(1)
         
 def threads():
     Thread(name="Comments", target=comment_thread).start()
