@@ -188,7 +188,7 @@ The minimum possible investment is 100 MemeCoins.
 market_org = """
 The market has %NUMBER% active investments.
 
-ALl investors possess %MONEY% MemeCoins.
+All investors currently possess %MONEY% MemeCoins.
 
 There are %HODL% MemeCoins detained in investments.
 
