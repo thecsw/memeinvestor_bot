@@ -95,8 +95,15 @@ Welp, you are broke.
 
 Your balance has been reset to 100 MemeCoins. Be careful next time.
 
+You have gone broke %NUMBER% time(s).
+
 %DESCRIPTION%
 """.replace("%DESCRIPTION%", help_mess)
+
+def modify_broke(times):
+    broke = broke_org
+    broke = broke.replace("%NUMBER%", times)
+    return broke
 
 # Message if you are broke and have active investments
 broke_active_org = """

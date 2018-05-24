@@ -6,7 +6,12 @@ def init_investors():
     c = conn.cursor()
     c.execute('''
     CREATE TABLE IF NOT EXISTS Investors 
-    (ID INTEGER PRIMARY KEY AUTOINCREMENT, Name CHAR(8), Balance INT, Active SMALLINT, Completed SMALLINT)''')
+    (ID INTEGER PRIMARY KEY AUTOINCREMENT, 
+    Name CHAR(8), 
+    Balance INTEGER, 
+    Active INTEGER, 
+    Completed INTEGER, 
+    Broke INTEGER)''')
     c.close()
     conn.close()
         
@@ -16,8 +21,8 @@ def investor_insert(name, balance):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
     c.execute("""
-    INSERT INTO Investors (Name, Balance, Active, Completed)
-    VALUES (?, ?, 0, 0)""", (name, balance,))
+    INSERT INTO Investors (Name, Balance, Active, Completed, Broke)
+    VALUES (?, ?, ?, ?, ?)""", (name, balance, 0, 0, 0))
     conn.commit()
     c.close()
     conn.close()
@@ -42,6 +47,14 @@ def investor_update_completed(name, completed):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
     c.execute("UPDATE Investors SET Completed = ? WHERE Name = ?", (completed, name,))
+    conn.commit()
+    c.close()
+    conn.close()
+
+def investor_update_broke(name, broke):
+    conn = sqlite3.connect("data.db")
+    c = conn.cursor()
+    c.execute("UPDATE Investors SET Broke = ? WHERE Name = ?", (completed, name,))
     conn.commit()
     c.close()
     conn.close()
@@ -72,7 +85,16 @@ def investor_get_completed(name):
     c.close()
     conn.close()
     return completed
-    
+
+def investor_get_broke(name):
+    conn = sqlite3.connect("data.db")
+    c = conn.cursor()
+    c.execute("SELECT Broke FROM Investors WHERE Name = ?", (name,))
+    completed = c.fetchone()[0]
+    c.close()
+    conn.close()
+    return completed
+
 # Investment operations
 
 def init_investments():
@@ -80,7 +102,16 @@ def init_investments():
     c = conn.cursor()
     c.execute('''
     CREATE TABLE IF NOT EXISTS Investments
-    (ID INTEGER PRIMARY KEY AUTOINCREMENT, Post CHAR(8), Upvotes INT, Comment CHAR(8), Name CHAR(8), Amount INT, Time INT, Done BIT, Response CHAR(8), Success BIT)''')
+    (ID INTEGER PRIMARY KEY AUTOINCREMENT, 
+    Post CHAR(8), 
+    Upvotes INTEGER, 
+    Comment CHAR(8), 
+    Name CHAR(8), 
+    Amount INTEGER, 
+    Time INTEGER, 
+    Done BIT, 
+    Response CHAR(8), 
+    Success BIT)''')
     c.close()
     conn.close()
 

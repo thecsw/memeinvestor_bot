@@ -108,7 +108,14 @@ def broke(comment, author):
             # Indeed, broke
             database.investor_update_balance(author, 100)
             database.investor_update_active(author, 0)
-            comment.reply(message.broke_org)
+            broke_times = databaes.investor_get_broke(author)
+            broke_times += 1
+            database.investor_get_broke(author, broke_times)
+            # Sure, you can do it like
+            # database.investor_get_broke(author, databaes.investor_get_broke(author) + 1)
+            # But it is way to messy, we are for the code understandability
+            
+            comment.reply(message.modify_broke(broke_times))
         else:
             # Still has investments
             comment.reply(message.modify_broke_active(active_number))
