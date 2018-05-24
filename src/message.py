@@ -78,7 +78,7 @@ UPDATE: Your investment was unsuccessful!
 
 def modify_invest_lose(text):
     invest_lose = invest_lose_org
-    invest_lose = invest_lose.replace("INVESTMENT", str(text))
+    invest_lose = invest_lose.replace("%INVESTMENT%", str(text))
     return invest_lose
     
 # If funds are insufficient to make an investment
