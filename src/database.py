@@ -236,3 +236,31 @@ def find_comment(comment):
     c.close()
     conn.close()
     return result
+
+# Submission logging
+
+def init_submissions():
+    conn = sqlite3.connect("data.db")
+    c = conn.cursor()
+    c.execute('''
+    CREATE TABLE IF NOT EXISTS Submissions
+    (ID INTEGER PRIMARY KEY AUTOINCREMENT, Submission CHAR(8))''')
+    c.close()
+    conn.close()
+
+def log_submission(submission):
+    conn = sqlite3.connect("data.db")
+    c = conn.cursor()
+    c.execute("INSERT INTO Submissions (Submission) VALUES (?)", (submission.id,))
+    conn.commit()
+    c.close()
+    conn.close()
+    
+def find_submission(submission):
+    conn = sqlite3.connect("data.db")
+    c = conn.cursor()
+    c.execute("SELECT COUNT(ID) FROM Submissions WHERE Submissions = ?", (submission.id,))
+    result = c.fetchone()[0]
+    c.close()
+    conn.close()
+    return result
