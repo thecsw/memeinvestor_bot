@@ -1,4 +1,5 @@
 import sqlite3
+import time
 
 def init_investors():
     conn = sqlite3.connect("data.db")
@@ -139,7 +140,7 @@ def investment_get_amount(number):
 def investment_get_upvotes(number):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
-    c.execute("SELECT Post FROM Investments WHERE ID = ?", (number,))
+    c.execute("SELECT Upvotes FROM Investments WHERE ID = ?", (number,))
     upvotes = c.fetchone()[0]
     c.close()
     conn.close()
@@ -157,11 +158,14 @@ def investment_get_response(number):
 # Return Investments
 
 def investment_find_done():
+    unix = time.time()
+    ready = unix + 10
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
-    c.execute("SELECT ID From Investments WHERE Time > 14400 AND Done = 0")
+    c.execute("SELECT ID From Investments WHERE Time < ? AND Done = 0", (ready,))
     arr = c.fetchall()
     arr = [x[0] for x in arr]
+    print(arr)
     c.close()
     conn.close()
     return arr
