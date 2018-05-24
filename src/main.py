@@ -150,6 +150,10 @@ def comment_thread():
         # The thread is locked
         if (submission.locked):
             continue
+
+        # If the comment is deleted
+        if (not comment == None):
+            continue
         
         # We don't serve bots
         if ("_bot" in author):
