@@ -220,7 +220,7 @@ def calculate(new, old):
 
 def check_investments():
     while True:
-        time.sleep(10)
+        time.sleep(60)
         done_ids = database.investment_find_done()
         print(len(done_ids))
         for id_number in done_ids:
