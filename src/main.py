@@ -108,7 +108,14 @@ def broke(comment, author):
             # Indeed, broke
             database.investor_update_balance(author, 100)
             database.investor_update_active(author, 0)
-            comment.reply(message.broke_org)
+            broke_times = database.investor_get_broke(author)
+            broke_times += 1
+            database.investor_update_broke(author, broke_times)
+            # Sure, you can do it like
+            # database.investor_get_broke(author, database.investor_get_broke(author) + 1)
+            # But it is way to messy, we are for the code understandability
+            
+            comment.reply(message.modify_broke(broke_times))
         else:
             # Still has investments
             comment.reply(message.modify_broke_active(active_number))
@@ -123,21 +130,28 @@ def market(comment):
     comment.reply(message.modify_market(active_number, user_cap, invest_cap))
 
 def comment_thread():
+
     for comment in subreddit.stream.comments():
+
         author = comment.author.name.lower()
         text = comment.body.lower()
         checked = database.find_comment(comment)
         if (checked):
-            continue
-        
+            continue     
         database.log_comment(comment)
 
-        print("{}\n{}\n".format(author, text))
+        submission = reddit.submission(comment.submission)
+
+        # The thread is locked
+        if (submission.locked):
+            continue
         
         # We don't serve bots
         if ("_bot" in author):
             continue
 
+        print("{}\n{}\n".format(author, text))
+        
         if ("!ignore" in text):
             continue
         
@@ -267,6 +281,7 @@ def check_investments():
             text = response.body
             if (factor > 0):
                 response.edit(message.modify_invest_return(text, change))
+                database.investment_update_success(id_number)
             else:
                 response.edit(message.modify_invest_lose(text))
 
@@ -276,7 +291,12 @@ def submission_thread():
         if (checked):
             continue
         database.log_submission(submission)
-                
+
+        commentID = submission.reply(message.invest_place_here)
+
+        # Making the comment sticky
+        commentID.mod.distinguish(how='yes', sticky=True)
+        
 def threads():
     Thread(name="Comments", target=comment_thread).start()
     Thread(name="Investments", target=check_investments).start()
