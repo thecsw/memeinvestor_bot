@@ -267,6 +267,7 @@ def check_investments():
             text = response.body
             if (factor > 0):
                 response.edit(message.modify_invest_return(text, change))
+                database.investment_update_success(id_number)
             else:
                 response.edit(message.modify_invest_lose(text))
 

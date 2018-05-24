@@ -80,15 +80,15 @@ def init_investments():
     c = conn.cursor()
     c.execute('''
     CREATE TABLE IF NOT EXISTS Investments
-(ID INTEGER PRIMARY KEY AUTOINCREMENT, Post CHAR(8), Upvotes INT, Comment CHAR(8), Name CHAR(8), Amount INT, Time INT, Done BIT, Response CHAR(8))''')
+    (ID INTEGER PRIMARY KEY AUTOINCREMENT, Post CHAR(8), Upvotes INT, Comment CHAR(8), Name CHAR(8), Amount INT, Time INT, Done BIT, Response CHAR(8), Success BIT)''')
     c.close()
     conn.close()
 
 def investment_insert(post, upvotes, comment, name, amount, unix, response):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
-    c.execute("""INSERT INTO Investments (Post, Upvotes, Comment, Name, Amount, Time, Done, Response)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)""", (post.id, upvotes, comment.id, name, amount, unix, 0, response.id,))
+    c.execute("""INSERT INTO Investments (Post, Upvotes, Comment, Name, Amount, Time, Done, Response, Success)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""", (post.id, upvotes, comment.id, name, amount, unix, 0, response.id, 0,))
     conn.commit()
     c.close()
     conn.close()
@@ -101,6 +101,14 @@ def investment_update_done(number):
     c.close()
     conn.close()
 
+def investment_update_success(number):
+    conn = sqlite3.connect("data.db")
+    c = conn.cursor()
+    c.execute("UPDATE Investments SET Success = 1 WHERE ID = ?", (number,))
+    conn.commit()
+    c.close()
+    conn.close()
+    
 def investment_get_name(number):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
