@@ -54,7 +54,7 @@ def investor_update_completed(name, completed):
 def investor_update_broke(name, broke):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
-    c.execute("UPDATE Investors SET Broke = ? WHERE Name = ?", (completed, name,))
+    c.execute("UPDATE Investors SET Broke = ? WHERE Name = ?", (broke, name,))
     conn.commit()
     c.close()
     conn.close()
