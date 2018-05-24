@@ -4,3 +4,6 @@ client_secret = ''
 username = ''
 password = ''
 user_agent = ''
+
+subreddits = []
+name = ''
