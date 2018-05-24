@@ -108,11 +108,11 @@ def broke(comment, author):
             # Indeed, broke
             database.investor_update_balance(author, 100)
             database.investor_update_active(author, 0)
-            broke_times = databaes.investor_get_broke(author)
+            broke_times = database.investor_get_broke(author)
             broke_times += 1
-            database.investor_get_broke(author, broke_times)
+            database.investor_update_broke(author, broke_times)
             # Sure, you can do it like
-            # database.investor_get_broke(author, databaes.investor_get_broke(author) + 1)
+            # database.investor_get_broke(author, database.investor_get_broke(author) + 1)
             # But it is way to messy, we are for the code understandability
             
             comment.reply(message.modify_broke(broke_times))
@@ -130,21 +130,28 @@ def market(comment):
     comment.reply(message.modify_market(active_number, user_cap, invest_cap))
 
 def comment_thread():
+
     for comment in subreddit.stream.comments():
+
         author = comment.author.name.lower()
         text = comment.body.lower()
         checked = database.find_comment(comment)
         if (checked):
-            continue
-        
+            continue     
         database.log_comment(comment)
 
-        print("{}\n{}\n".format(author, text))
+        submission = reddit.submission(comment.submission)
+
+        # The thread is locked
+        if (submission.locked):
+            continue
         
         # We don't serve bots
         if ("_bot" in author):
             continue
 
+        print("{}\n{}\n".format(author, text))
+        
         if ("!ignore" in text):
             continue
         
