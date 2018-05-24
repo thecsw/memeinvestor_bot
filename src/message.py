@@ -73,12 +73,15 @@ invest_lose_org = """
 
 UPDATE: Your investment was unsuccessful!
 
+You lost %NUMBER% MemeCoins.
+
 %DESCRIPTION%
 """.replace("%DESCRIPTION%", help_mess)
 
-def modify_invest_lose(text):
+def modify_invest_lose(text, lost):
     invest_lose = invest_lose_org
     invest_lose = invest_lose.replace("%INVESTMENT%", str(text))
+    invest_lose = invest_lose.replace("%NUMBER%", str(lost))
     return invest_lose
     
 # If funds are insufficient to make an investment
