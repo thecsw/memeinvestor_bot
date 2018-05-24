@@ -35,6 +35,12 @@ between 1020 and 1021 upvotes, and levelling off towards higher upvote changes.
 There is also an upper cap imposed on the function at 750,000 upvotes with a max multiplier of approximately
 5.30063 times the original investment. Any gain in upvotes at or above this cap will recieve this maximum multiplier. 
 
+#+CAPTION: Investment Return Multiplier Graph
+#+LABEL: irm
+[[./data/investment_return_multiplier.png]]
+
+** Commands
+
 Currently, it has 8 commands:
 
 + !create - creates a bank account for you with a new balance of 1000
