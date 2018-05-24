@@ -199,14 +199,14 @@ def calculate(new, old):
     #Allow custom upper du limit to cap maximum investment profit multiplier (set as desired)
     success_cap = 750000
     
-    #Safeguard: if du is -ve function cannot be evaluated and mult remains zero.
-    mult = 0
-
     if (du >= success_cap):
         capped_mult = 0.17366 * math.pow(success_cap, 0.2527)
         return capped_mult
-
-    mult = 0.17366 * math.pow(du, 0.2527)
+      
+    #Safeguard: if du is negative, function cannot be evaluated and mult remains zero.
+    mult = 0
+    if (du >= 0):
+       mult = 0.17366 * math.pow(du, 0.2527)
 
     # We are kind
     if (mult < 0.95):
