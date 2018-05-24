@@ -96,7 +96,8 @@ def send_not(comment, string, save):
         print ("Caught an exception!{}".format(e))
         
 def help(comment):
-    send_not(comment, message.help_org, False)
+    if comment.author.name != config.username: 
+        send_not(comment, message.help_org, False)
 
 def create(comment, author):
     users[author] = Investor(author, starter)
