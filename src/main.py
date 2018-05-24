@@ -41,9 +41,11 @@ commands = ["!invest",
             "!balance",
             "!active"]
 
+# Database initialization
 database.init_investors()
 database.init_investments()
 database.init_comments()
+database.init_submissions()
 
 def create(comment, author):
     database.investor_insert(author, starter)
@@ -267,7 +269,14 @@ def check_investments():
                 response.edit(message.modify_invest_return(text, change))
             else:
                 response.edit(message.modify_invest_lose(text))
-        
+
+def submission_thread():
+    for submission in subreddit.stream.submissions():
+        checked = database.find_submission(submission)
+        if (checked):
+            continue
+        database.log_submission(submission)
+                
 def threads():
     Thread(name="Comments", target=comment_thread).start()
     Thread(name="Investments", target=check_investments).start()
