@@ -198,7 +198,8 @@ def investment_get_response(number):
 
 def investment_find_done():
     unix = time.time()
-    ready = unix + 10
+    # Four hour difference
+    ready = unix + (4 * 3600)
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
     c.execute("SELECT ID From Investments WHERE Time < ? AND Done = 0", (ready,))
