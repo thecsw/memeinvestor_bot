@@ -1,3 +1,4 @@
+
 """
  __  __                     ___                     _             
 |  \/  | ___ _ __ ___   ___|_ _|_ ____   _____  ___| |_ ___  _ __ 
@@ -10,16 +11,15 @@
 # Standard scripts
 import time
 from threading import Thread
-import sqlite3
-import math
 
 # Third-party library
 import praw
 
 # Our own scripts and files
 import config
+from investor import *
 import message
-import database
+import utils
 
 # Reddit instance initialization
 reddit = praw.Reddit(client_id=config.client_id,
@@ -29,242 +29,237 @@ reddit = praw.Reddit(client_id=config.client_id,
                      user_agent=config.user_agent)
 
 # Subreddit initialization
-subreddit_name = "memeinvestor_test"
+subreddit_name = "MemeEconomy"
 subreddit = reddit.subreddit(subreddit_name)
 
-# Starter money
+# A list of available commands:
+commands = ["!create", "!invest", "!balance", "!help", "!broke"]
+
+# The amount of MemeCoins given by default
 starter = 1000
 
-# Commands that require an account!
-commands = ["!invest",
-            "!broke",
-            "!balance",
-            "!active"]
+# Data folder
+data_folder = "./data/"
 
-database.init_investors()
-database.init_investments()
-database.init_comments()
+# File to store all investors
+investors_file = "investors.txt"
+
+# File to store all awaiting investments
+awaiting_file = "awaiting.txt"
+
+# File to store all done investments
+done_file = "done.txt"
+
+# File to store checked comments
+checked_file = "checked_comments.txt"
+
+# DEBUG mode
+# In the debug mode, instead of sending replies
+# with praw, it just prints everything on tty
+debug = 0
+
+# Dictionary of all the investors
+users = utils.read_investors(data_folder + investors_file)
+
+print(users)
+
+# Array to store done and awaiting investments
+done = utils.read_investments(data_folder + done_file)
+awaiting = utils.read_investments(data_folder + awaiting_file)
+
+# Array to store IDs of parsed comment, so we won't parse the same
+# comment multiple times
+checked_comments = utils.read_array(data_folder + checked_file)
+
+def save_data():
+    global users, awaiting, done
+    utils.write_investors(data_folder + investors_file, users)
+    utils.write_investments(data_folder + awaiting_file, awaiting)
+    utils.write_investments(data_folder + done_file, done)
+    utils.write_array(data_folder + checked_file, checked_comments)
+
+def send_not(comment, string, save):
+    try:
+        if (save):
+            save_data()
+        global debug
+        commentID = 0
+        if (debug):
+            print(string)
+        else:
+            commentID = comment.reply(string)
+            
+            print("Sleeping for 1 sec")
+            time.sleep(1)
+            return commentID
+    except Exception as e:
+        print ("Caught an exception!{}".format(e))
+        
+def help(comment):
+    send_not(comment, message.help_org, False)
 
 def create(comment, author):
-    database.investor_insert(author, starter)
-    comment.reply(message.modify_create(author, starter))
-
-def invest(comment, author):
-
-    # Post related vars
+    users[author] = Investor(author, starter)
+    send_not(comment, message.modify_create(author, users[author].get_balance()), True)
+    
+def invest(comment, author, text):
     post = reddit.submission(comment.submission)
-    postID = post.id
+    post_ID = post.id
     upvotes = post.ups
-
-    # UNIX timestamp
-    unix = time.time() 
-
-    # The invest amount, if fails, return False
-    text = comment.body.lower()
-    invest_string = text.replace("!invest", "").replace(" ", "")
+    investor = users[author]
+    
+    # If it can't extract the invest amount, abandon the operation
     try:
-        invest_amount = int(float(invest_string))
-    except ValueError:
+        investm = int(float(text.replace("!invest", "").replace(" ", "")))
+    except ValueError as ve:
         return False
-    if (invest_amount < 100):
-        comment.reply(message.min_invest_org)
+
+    if (investm < 100):
+        send_not(comment, message.min_invest_org, False)
         return False
     
-    # Balance operations
-    balance = database.investor_get_balance(author)
-    active = database.investor_get_active(author)
-    new_balance = balance - invest_amount
-
-    if (new_balance < 0):
-        comment.reply(message.insuff_org)
-        return False
-
-    active += 1
-
-    # Sending a confirmation
-    response = comment.reply(message.modify_invest(invest_amount, upvotes, new_balance))
-
-    # Filling the database
-    database.investment_insert(postID, upvotes, comment, author, invest_amount, unix, response)
-    database.investor_update_balance(author, new_balance)
-    database.investor_update_active(author, active)
+    is_enough = investor.enough(investm)
     
+    if (is_enough):
+        commentID = send_not(comment, message.modify_invest(investm, upvotes, investor.get_balance() - investm), False)
+        inv = investor.invest(post_ID, upvotes, commentID, investm)
+        
+        awaiting.append(inv)
+        save_data()
+        return True
+    else:
+        send_not(comment, message.insuff_org, False)
+        return True
+        
 def balance(comment, author):
-    balance_amount = database.investor_get_balance(author)
-    comment.reply(message.modify_balance(balance_amount))
+    investor = users[author] 
+    balance = investor.get_balance()
+    send_not(comment, message.modify_balance(balance), False)
+    return True
 
 def activity(comment, author):
-    active = database.investor_get_active(author)
-    comment.reply(message.modify_active(active))
+    investor = users[author] 
+    active = investor.get_active()
+    send_not(comment, message.modify_active(active), False)
+    return True
+
+def all_balance():
+    sum = 0
+    keys_u = list(users.keys())
+    for i in range(len(keys_u)):
+        sum += users[keys_u[i]].get_balance()
+    return sum
+        
+def all_investments():
+    sum = 0
+    for i in range(len(awaiting)):
+        sum += awaiting[i].get_amount()
+    return sum
+
+def market(comment, author):
+    number_of_invs = len(awaiting)
+    users_balance = all_balance()
+    invest_balance = all_investments()
+    send_not(comment, message.modify_market(number_of_invs, users_balance, invest_balance), False)
+    return True
 
 def broke(comment, author):
-    balance_amount = database.investor_get_balance(author)
-    active_number = database.investor_get_active(author)
+    investor = users[author]
+    balance = investor.get_balance()
+    active = investor.get_active()
 
-    if (balance_amount < 100):
-        if (active_number < 1):
-            # Indeed, broke
-            database.investor_update_balance(author, 100)
-            database.investor_update_active(author, 0)
-            comment.reply(message.broke_org)
+    if (balance < 100):
+        if (active < 1):
+            send_not(comment, message.broke_org, True)
+            investor.set_balance(100)
+            save_data()
         else:
-            # Still has investments
-            comment.reply(message.modify_broke_active(active_number))
+            send_not(comment, message.modify_broke_active(active), False)
     else:
-        # Still can invest
-        comment.reply(message.modify_broke_money(balance_amount))
-
-def market(comment):
-    user_cap = database.market_user_coins()
-    invest_cap = database.market_invest_coins()
-    active_number = database.market_count_investments()
-    comment.reply(message.modify_market(active_number, user_cap, invest_cap))
-
+        send_not(comment, message.modify_broke_money(balance), False)
+    return True
+            
 def comment_thread():
+
     for comment in subreddit.stream.comments():
         author = comment.author.name.lower()
-        text = comment.body.lower()
-        checked = database.find_comment(comment)
-        if (checked):
+        comment_ID = comment.id
+
+        if (comment_ID in checked_comments):
             continue
         
-        database.log_comment(comment)
+        checked_comments.append(comment_ID)
+        utils.write_array(data_folder + checked_file, checked_comments)
 
-        print("{}\n{}\n".format(author, text))
-        
-        # We don't serve bots
+        # We don't serve your kind around here
         if ("_bot" in author):
             continue
+        
+        text = comment.body.lower()
+        exist = author in list(users.keys())
+        print("Author - {}\nText - {}\nExist? - {}\n\n".format(author, text, exist))
 
-        if ("!ignore" in text):
-            continue
-        
         if ("!help" in text):
-            comment.reply(message.help_org)
+            help(comment)
             continue
         
-        if ("!market" in text):
-            market(comment)
-            continue
-        
-        exist = database.find_investor(author)
-        
+        # The !create command
         if (("!create" in text) and (not exist)):
             create(comment, author)
             continue
-        
-        command_present = 0
-        for comm in commands:
-            if comm in text:
-                command_present = 1
-                
-        if ((not exist) and (command_present)):
-            comment.reply(message.no_account_org)
+
+        if ((not exist) and (("!invest" in text) or ("!balance" in text) or ("!broke" in text) or ("!active" in text) or ("!market" in text))):
+            send_not(comment, message.no_account_org, False)
             continue
-                
+
+        # The !invest command
         if ("!invest" in text):
-            invest(comment, author)
+            invest(comment, author, text)
             continue
                 
         if ("!balance" in text):
             balance(comment, author)
             continue
 
+        if ("!active" in text):
+            activity(comment, author)
+            continue
+        
+        if ("!market" in text):
+            market(comment, author)
+            continue
+
         if ("!broke" in text):
             broke(comment, author)
             continue
         
-        if ("!active" in text):
-            activity(comment, author)
-            continue
-
-# This method is taken from old investor.py
-def calculate(new, old):
-    new = int(float(new))
-    old = int(float(old))
-    du = new - old
-    
-    """
-    Investment return multiplier was previously determined with a block of if statements.
-    Performed a linear fit to a log-log plot of mutliplier vs upvotes based on the original values for the if block.
-    Used the gradient/intercept to generate a power function that approximates (and extends) the original mutliplier
-    calculation to all upvote values.
-    
-    Functional form: y = (10^c)x^m ;
-        y = multiplier,
-        x = du (change in upvotes),
-        m = gradient of linear fit to log-log plot (= 0.2527),
-        c = intercept of linear fit to log-log plot (= -0.7603).
-    """
-    #Allow custom upper du limit to cap maximum investment profit multiplier (set as desired)
-    success_cap = 750000
-    
-    if (du >= success_cap):
-        capped_mult = 0.17366 * math.pow(success_cap, 0.2527)
-        return capped_mult
-      
-    #Safeguard: if du is negative, function cannot be evaluated and mult remains zero.
-    mult = 0
-    if (du >= 0):
-       mult = 0.17366 * math.pow(du, 0.2527)
-
-    # We are kind
-    if (mult < 0.95):
-        return 0
-    else:
-        return mult
-
 def check_investments():
-    while True:
-        time.sleep(1)
-        done_ids = database.investment_find_done()
-        print(len(done_ids))
-        for id_number in done_ids:
-            # I know that everything can be compacted in a tuple
-            # This way it is more understandable
-            name = database.investment_get_name(id_number)
-            postID = database.investment_get_post(id_number)
-            upvotes_old = database.investment_get_upvotes(id_number)
-            amount = database.investment_get_amount(id_number)
-            responseID = database.investment_get_response(id_number)
-            response = reddit.comment(id=responseID)
+
+    if (debug == 1):
+        return
+    
+    while True:    
+        if (len(awaiting) > 0):
+            investment = awaiting[0]
+            investor_id = investment.get_name()
+            investor = users[investor_id]
+            post = investment.get_ID()
+            upvotes = reddit.submission(post).ups
             
-            # If comment is deleted, skip it
-            try:
-                commentID = database.investment_get_comment(id_number)
-                comment = reddit.comment(id=commentID)
-            except:
-                response.edit(message.deleted_comment_org)
-                continue
+            commentID = investment.get_comment()
+            comment = reddit.comment(id=commentID)
             
-            post = reddit.submission(postID)
-            upvotes_now = post.ups
-            
-            # Updating the investor's balance
-            factor = calculate(upvotes_now, upvotes_old)
-            balance = database.investor_get_balance(name)
-            new_balance = balance + (amount * factor)
-            database.investor_update_balance(name, new_balance)
-            change = new_balance - balance
-            
-            # Updating the investor's variables
-            active = database.investor_get_active(name)
-            active -= 1
-            database.investor_update_active(name, active)
-            
-            completed = database.investor_get_completed(name)
-            completed += 1
-            database.investor_update_completed(name, completed)
-            
-            # Marking the investment as done
-            database.investment_update_done(id_number)
-            
-            # Editing the comment as a confirmation
-            text = response.body
-            if (factor > 0):
-                response.edit(message.modify_invest_return(text, change))
-            else:
-                response.edit(message.modify_invest_lose(text))    
+            donep = investment.check()
+            if (donep):
+                win = investor.calculate(investment, upvotes)
+                if (win > 0):
+                    comment.edit(message.modify_invest_return(comment.body, win))
+                else:
+                    comment.edit(message.modify_invest_lose(comment.body))
+                    
+                done.append(awaiting.pop(0))
+                print("Investment returned!")
+#                save_data()
         
 def threads():
     Thread(name="Comments", target=comment_thread).start()
