@@ -1,3 +1,4 @@
+
 """
  __  __                     ___                     _             
 |  \/  | ___ _ __ ___   ___|_ _|_ ____   _____  ___| |_ ___  _ __ 
@@ -29,7 +30,7 @@ reddit = praw.Reddit(client_id=config.client_id,
                      user_agent=config.user_agent)
 
 # Subreddit initialization
-subreddit_name = "memeinvestor_test"
+subreddit_name = "memeeconomy"
 subreddit = reddit.subreddit(subreddit_name)
 
 # Starter money
