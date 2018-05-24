@@ -227,11 +227,7 @@ def calculate(new, old):
     if (du >= 0):
         mult = 0.17366 * math.pow(du, 0.2527)
 
-    # We are kind
-    if (mult < 0.95):
-        return 0
-    else:
-        return mult
+    return mult
 
 def check_investments():
     while True:
@@ -280,7 +276,7 @@ def check_investments():
             
             # Editing the comment as a confirmation
             text = response.body
-            if (factor > 0):
+            if (factor > 1):
                 response.edit(message.modify_invest_return(text, change))
                 database.investment_update_success(id_number)
             else:
