@@ -95,7 +95,7 @@ Welp, you are broke.
 
 Your balance has been reset to 100 MemeCoins. Be careful next time.
 
-You have gone broke %NUMBER% time(s).
+You have gone bankrupt %NUMBER% time(s).
 
 %DESCRIPTION%
 """.replace("%DESCRIPTION%", help_mess)
