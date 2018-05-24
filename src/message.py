@@ -40,7 +40,7 @@ You bought in at %ENTRY% upvotes
 
 Your new balance is %BALANCE% MemeCoins
 
-In 4 hours your investment will be evaluated and I will update this comment. Stay tuned!
+In four hours your investment will be evaluated and I will update this comment. Stay tuned!
 
 %DESCRIPTION%
 """.replace("%DESCRIPTION%", help_mess)
