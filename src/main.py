@@ -280,7 +280,8 @@ def check_investments():
                 response.edit(message.modify_invest_return(text, change))
                 database.investment_update_success(id_number)
             else:
-                response.edit(message.modify_invest_lose(text))
+                lost_memes = amount - (amount * factor)
+                response.edit(message.modify_invest_lose(text, lost_memes))
 
 def submission_thread():
     for submission in subreddit.stream.submissions():
