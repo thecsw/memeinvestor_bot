@@ -179,6 +179,7 @@ def comment_thread():
             continue
 
 # This method is taken from old investor.py
+# Thanks to jimbobur for adding this feature.
 def calculate(new, old):
     new = int(float(new))
     old = int(float(old))
@@ -199,14 +200,15 @@ def calculate(new, old):
     #Allow custom upper du limit to cap maximum investment profit multiplier (set as desired)
     success_cap = 750000
     
-    #Safeguard: if du is -ve function cannot be evaluated and mult remains zero.
-    mult = 0
 
     if (du >= success_cap):
         capped_mult = 0.17366 * math.pow(success_cap, 0.2527)
         return capped_mult
 
-    mult = 0.17366 * math.pow(du, 0.2527)
+    #Safeguard: if du is -ve function cannot be evaluated and mult remains zero.
+    mult = 0
+    if (du >= 0):
+        mult = 0.17366 * math.pow(du, 0.2527)
 
     # We are kind
     if (mult < 0.95):
