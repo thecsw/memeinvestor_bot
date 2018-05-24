@@ -201,3 +201,10 @@ def modify_market(inves, cap, invs_cap):
     market = market.replace("%MONEY%", str(cap))
     market = market.replace("%HODL%", str(invs_cap))
     return market
+
+deleted_comment_org = """
+Where did he go?
+
+Whatever, investment is lost.
+%DESCRIPTION% 
+""".replace("%DESCRIPTION%", help_mess)
