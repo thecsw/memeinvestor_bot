@@ -79,21 +79,22 @@ def save_data():
     utils.write_array(data_folder + checked_file, checked_comments)
 
 def send_not(comment, string, save):
-    try:
-        if (save):
-            save_data()
-        global debug
-        commentID = 0
-        if (debug):
-            print(string)
-        else:
-            commentID = comment.reply(string)
-            
-            print("Sleeping for 1 sec")
-            time.sleep(1)
-            return commentID
-    except Exception as e:
-        print ("Caught an exception!{}".format(e))
+    if comment.author.name != config.username:
+        try:
+            if (save):
+                save_data()
+            global debug
+            commentID = 0
+            if (debug):
+                print(string)
+            else:
+                commentID = comment.reply(string)
+
+                print("Sleeping for 1 sec")
+                time.sleep(1)
+                return commentID
+        except Exception as e:
+            print ("Caught an exception!{}".format(e))
         
 def help(comment):
     send_not(comment, message.help_org, False)
