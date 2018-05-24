@@ -216,7 +216,7 @@ def calculate(new, old):
 
 def check_investments():
     while True:
-        time.sleep(1)
+        time.sleep(10)
         done_ids = database.investment_find_done()
         print(len(done_ids))
         for id_number in done_ids:
@@ -264,7 +264,7 @@ def check_investments():
             if (factor > 0):
                 response.edit(message.modify_invest_return(text, change))
             else:
-                response.edit(message.modify_invest_lose(text))    
+                response.edit(message.modify_invest_lose(text))
         
 def threads():
     Thread(name="Comments", target=comment_thread).start()
