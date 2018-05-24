@@ -135,7 +135,7 @@ def market(comment):
     comment.reply(message.modify_market(active_number, user_cap, invest_cap))
 
 def comment_thread():
-    print("Started the comment_thread()!")
+    print("Started the comment_thread()...")
     for comment in subreddit.stream.comments():
 
         author = comment.author.name.lower()
@@ -154,8 +154,8 @@ def comment_thread():
         # We don't serve bots
         if ("_bot" in author):
             continue
-
-        print("{}\n{}\n".format(author, text))
+        
+        print(f"Comment ID: {comment.id}\n\tAuthor: {author}\n\tText: {text}\n\tPost Locked?: {submission.locked}\n")
         
         if ("!ignore" in text):
             continue
@@ -234,6 +234,7 @@ def calculate(new, old):
     return mult
 
 def check_investments():
+    print("Starting checking investments...")
     while True:
         time.sleep(60)
         done_ids = database.investment_find_done()
