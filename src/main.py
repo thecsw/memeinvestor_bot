@@ -278,8 +278,11 @@ def submission_thread():
             continue
         database.log_submission(submission)
 
-        submission.reply(message.invest_place_here)
-                
+        commentID = submission.reply(message.invest_place_here)
+
+        # Making the comment sticky
+        commentID.mod.distinguish(how='yes', sticky=True)
+        
 def threads():
     Thread(name="Comments", target=comment_thread).start()
     Thread(name="Investments", target=check_investments).start()
