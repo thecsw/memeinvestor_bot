@@ -154,8 +154,8 @@ def comment_thread():
         # We don't serve bots
         if ("_bot" in author):
             continue
-        
-        print(f"Comment ID: {comment.id}\n\tAuthor: {author}\n\tText: {text}\n\tPost Locked?: {submission.locked}\n")
+        exist = database.find_investor(author)
+        print(f"Comment ID: {comment.id}\n\tAuthor: {author}\n\tText: {text}\n\tExist?: {exist}\n\tPost Locked?: {submission.locked}\n")
         
         if ("!ignore" in text):
             continue
@@ -167,9 +167,7 @@ def comment_thread():
         if ("!market" in text):
             market(comment)
             continue
-        
-        exist = database.find_investor(author)
-        
+                
         if (("!create" in text) and (not exist)):
             create(comment, author)
             continue
