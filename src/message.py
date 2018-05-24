@@ -102,7 +102,7 @@ You have gone bankrupt %NUMBER% time(s).
 
 def modify_broke(times):
     broke = broke_org
-    broke = broke.replace("%NUMBER%", times)
+    broke = broke.replace("%NUMBER%", str(times))
     return broke
 
 # Message if you are broke and have active investments
