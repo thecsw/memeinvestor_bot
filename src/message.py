@@ -81,7 +81,7 @@ You lost %NUMBER% MemeCoins.
 def modify_invest_lose(text, lost):
     invest_lose = invest_lose_org
     invest_lose = invest_lose.replace("%INVESTMENT%", str(text))
-    invest_lose = invest_lost.replace("%NUMBER%", str(lost))
+    invest_lose = invest_lose.replace("%NUMBER%", str(lost))
     return invest_lose
     
 # If funds are insufficient to make an investment

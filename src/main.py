@@ -44,9 +44,13 @@ commands = ["!invest",
 
 # Database initialization
 database.init_investors()
+print("Investors table created!")
 database.init_investments()
+print("Investments table created!")
 database.init_comments()
+print("Comments table created!")
 database.init_submissions()
+print("Submissions table created!")
 
 def create(comment, author):
     database.investor_insert(author, starter)
@@ -131,7 +135,7 @@ def market(comment):
     comment.reply(message.modify_market(active_number, user_cap, invest_cap))
 
 def comment_thread():
-
+    print("Started the comment_thread()!")
     for comment in subreddit.stream.comments():
 
         author = comment.author.name.lower()
@@ -233,7 +237,6 @@ def check_investments():
     while True:
         time.sleep(60)
         done_ids = database.investment_find_done()
-        print(len(done_ids))
         for id_number in done_ids:
             # I know that everything can be compacted in a tuple
             # This way it is more understandable
@@ -258,7 +261,7 @@ def check_investments():
             # Updating the investor's balance
             factor = calculate(upvotes_now, upvotes_old)
             balance = database.investor_get_balance(name)
-            new_balance = balance + (amount * factor)
+            new_balance = int(balance + (amount * factor))
             database.investor_update_balance(name, new_balance)
             change = new_balance - balance
             
@@ -280,7 +283,7 @@ def check_investments():
                 response.edit(message.modify_invest_return(text, change))
                 database.investment_update_success(id_number)
             else:
-                lost_memes = amount - (amount * factor)
+                lost_memes = int(amount - (amount * factor))
                 response.edit(message.modify_invest_lose(text, lost_memes))
 
 def submission_thread():
