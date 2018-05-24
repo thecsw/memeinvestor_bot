@@ -165,15 +165,24 @@ def comment_thread():
             continue
         
         if ("!help" in text):
-            comment.reply(message.help_org)
+            try:
+                comment.reply(message.help_org)
+            except:
+                continue
             continue
         
         if ("!market" in text):
-            market(comment)
+            try:
+                market(comment)
+            except:
+                continue
             continue
                 
         if (("!create" in text) and (not exist)):
-            create(comment, author)
+            try:
+                create(comment, author)
+            except:
+                continue
             continue
         
         command_present = 0
@@ -182,23 +191,38 @@ def comment_thread():
                 command_present = 1
                 
         if ((not exist) and (command_present)):
-            comment.reply(message.no_account_org)
+            try:
+                comment.reply(message.no_account_org)
+            except:
+                continue
             continue
                 
         if ("!invest" in text):
-            invest(comment, author)
+            try:
+                invest(comment, author)
+            except:
+                continue
             continue
                 
         if ("!balance" in text):
-            balance(comment, author)
+            try:
+                balance(comment, author)
+            except:
+                continue
             continue
-
+            
         if ("!broke" in text):
-            broke(comment, author)
+            try:
+                broke(comment, author)
+            except:
+                continue
             continue
         
         if ("!active" in text):
-            activity(comment, author)
+            try:
+                activity(comment, author)
+            except:
+                continue
             continue
 
 # This method is taken from old investor.py
