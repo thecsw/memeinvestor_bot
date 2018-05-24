@@ -40,7 +40,7 @@ You bought in at %ENTRY% upvotes
 
 Your new balance is %BALANCE% MemeCoins
 
-In 6 hours your investment will be evaluated and I will update this comment. Stay tuned!
+In 4 hours your investment will be evaluated and I will update this comment. Stay tuned!
 
 %DESCRIPTION%
 """.replace("%DESCRIPTION%", help_mess)
@@ -78,7 +78,7 @@ UPDATE: Your investment was unsuccessful!
 
 def modify_invest_lose(text):
     invest_lose = invest_lose_org
-    invest_lose = invest_lose.replace("INVESTMENT", str(text))
+    invest_lose = invest_lose.replace("%INVESTMENT%", str(text))
     return invest_lose
     
 # If funds are insufficient to make an investment
@@ -93,11 +93,17 @@ You do not have enough MemeCoins to make the investment.
 broke_org = """
 Welp, you are broke.
 
-Your balance has been reset to 100 MemeCoins. Be careful
-next time.
+Your balance has been reset to 100 MemeCoins. Be careful next time.
+
+You have gone bankrupt %NUMBER% time(s).
 
 %DESCRIPTION%
 """.replace("%DESCRIPTION%", help_mess)
+
+def modify_broke(times):
+    broke = broke_org
+    broke = broke.replace("%NUMBER%", str(times))
+    return broke
 
 # Message if you are broke and have active investments
 broke_active_org = """
@@ -132,9 +138,9 @@ I am a bot that will help you invest in memes and make a fortune out of it!
 
 Here is a list of commands that summon me:
 
-1. !create - creates a bank account for you with a new balance of 1000 MemeCoins
+1. !create - creates a bank account for you with a new balance of 1000 MemeCoins.
 
-2. !invest AMOUNT - invests AMOUNT in the meme (post). Six hours after the investment, the meme growth will be evaluated and your investment can profit you or make you bankrupt. Minimum possible investment is 100 MemeCoins.
+2. !invest AMOUNT - invests AMOUNT in the meme (post). 4 hours after the investment, the meme growth will be evaluated and your investment can profit you or make you bankrupt. Minimum possible investment is 100 MemeCoins.
 
 3. !balance - returns your current balance.
 
@@ -144,7 +150,9 @@ Here is a list of commands that summon me:
 
 6. !market - gives an overview for the whole Meme market.
 
-7. !help - returns this help message
+7. !ignore - ignores the whole message.
+
+8. !help - returns this help message.
 
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", bot_desc)
@@ -201,3 +209,18 @@ def modify_market(inves, cap, invs_cap):
     market = market.replace("%MONEY%", str(cap))
     market = market.replace("%HODL%", str(invs_cap))
     return market
+
+deleted_comment_org = """
+Where did he go?
+
+Whatever, investment is lost.
+%DESCRIPTION% 
+""".replace("%DESCRIPTION%", help_mess)
+
+invest_place_here = """
+**ALL YOUR INVESTMENTS GO HERE**
+
+To prevent thread spam and other natural disasters, please invoke all your commands under this comment.
+
+%DESCRIPTION% 
+""".replace("%DESCRIPTION%", help_mess)
