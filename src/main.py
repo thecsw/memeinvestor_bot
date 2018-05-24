@@ -33,7 +33,7 @@ subreddit_name = "MemeEconomy"
 subreddit = reddit.subreddit(subreddit_name)
 
 # A list of available commands:
-commands = ["!create", "!invest", "!balance", "!help", "!broke"]
+commands = ["!create", "!invest", "!balance", "!help", "!broke", "!ignore"]
 
 # The amount of MemeCoins given by default
 starter = 1000
@@ -198,6 +198,9 @@ def comment_thread():
         text = comment.body.lower()
         exist = author in list(users.keys())
         print("Author - {}\nText - {}\nExist? - {}\n\n".format(author, text, exist))
+
+        if ("!ignore" in text):
+            continue
 
         if ("!help" in text):
             help(comment)
