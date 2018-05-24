@@ -201,10 +201,10 @@ def investment_find_done():
     # Four hour difference
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
+    # 4 hours = 4 * 3600 = 14400 seconds
     c.execute("SELECT ID From Investments WHERE ? - Time > 14400 AND Done = 0", (unix,))
     arr = c.fetchall()
     arr = [x[0] for x in arr]
-    print(arr)
     c.close()
     conn.close()
     return arr
