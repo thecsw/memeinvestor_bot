@@ -152,9 +152,10 @@ def comment_thread():
             continue
 
         # If the comment is deleted
-        if (not comment == None):
+        if (not comment.banned_by == None):
             continue
-        
+
+ 
         # We don't serve bots
         if ("_bot" in author):
             continue
