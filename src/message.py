@@ -209,3 +209,11 @@ Where did he go?
 Whatever, investment is lost.
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", help_mess)
+
+invest_place_here = """
+**ALL YOUR INVESTMENTS GO HERE**
+
+To prevent thread spam and other natural disasters, please invoke all your commands under this comment.
+
+%DESCRIPTION% 
+""".replace("%DESCRIPTION%", help_mess)

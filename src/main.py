@@ -276,6 +276,8 @@ def submission_thread():
         if (checked):
             continue
         database.log_submission(submission)
+
+        submission.reply(message.invest_place_here)
                 
 def threads():
     Thread(name="Comments", target=comment_thread).start()
