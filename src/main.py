@@ -243,7 +243,7 @@ def calculate(new, old):
     m_mult=0.44
 
     #Allow custom upper du limit to cap maximum investment profit multiplier (set as desired)
-    success_cap = 750000
+    success_cap = 283000
     
     if (du >= success_cap):
         capped_mult = A_mult * math.pow(success_cap, m_mult)
