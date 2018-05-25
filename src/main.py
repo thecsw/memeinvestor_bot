@@ -235,15 +235,15 @@ def calculate(new, old):
     Functional form: y = A*x^m ;
         y = multiplier,
         x = du (change in upvotes),
-        A = 0.17366,
-        m = 0.2818 (break even at ~500 upvotes).
+        A = 0.15,
+        m = 0.44 (break-even threshold between 74/75 upvotes).
     """
     #Set constants to define function
-    A_mult=0.17366
-    m_mult=0.2818
+    A_mult=0.15
+    m_mult=0.44
 
     #Allow custom upper du limit to cap maximum investment profit multiplier (set as desired)
-    success_cap = 750000
+    success_cap = 283000
     
     if (du >= success_cap):
         capped_mult = A_mult * math.pow(success_cap, m_mult)
