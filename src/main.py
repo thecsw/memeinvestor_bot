@@ -87,7 +87,7 @@ def invest(comment, author):
     except ValueError:
         return False
     if (invest_amount < 100):
-        send_reply(comment, comment,message.min_invest_org)
+        send_reply(comment, message.min_invest_org)
         return False
     
     # Balance operations
