@@ -105,9 +105,8 @@ def invest(comment, author):
 
     # Sending a confirmation
     response = send_reply(comment, message.modify_invest(invest_amount, upvotes, new_balance))
-    responseID = response.id
     # Filling the database
-    database.investment_insert(postID, upvotes, commentID, author, invest_amount, unix, responseID)
+    database.investment_insert(post, upvotes, comment, author, invest_amount, unix, response)
     database.investor_update_balance(author, new_balance)
     database.investor_update_active(author, active)
     

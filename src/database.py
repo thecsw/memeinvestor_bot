@@ -119,7 +119,7 @@ def investment_insert(post, upvotes, comment, name, amount, unix, response):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
     c.execute("""INSERT INTO Investments (Post, Upvotes, Comment, Name, Amount, Time, Done, Response, Success)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""", (post, upvotes, comment, name, amount, unix, 0, response, 0,))
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""", (post.id, upvotes, comment.id, name, amount, unix, 0, response.id, 0,))
     conn.commit()
     c.close()
     conn.close()
