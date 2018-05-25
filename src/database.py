@@ -5,18 +5,18 @@ def init_investors():
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
     c.execute('''
-    CREATE TABLE IF NOT EXISTS Investors 
-    (ID INTEGER PRIMARY KEY AUTOINCREMENT, 
-    Name CHAR(8), 
-    Balance INTEGER, 
-    Active INTEGER, 
-    Completed INTEGER, 
+    CREATE TABLE IF NOT EXISTS Investors
+    (ID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Name CHAR(8),
+    Balance INTEGER,
+    Active INTEGER,
+    Completed INTEGER,
     Broke INTEGER)''')
     c.close()
     conn.close()
-        
+
 # Investor operations
-    
+
 def investor_insert(name, balance):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
@@ -26,7 +26,7 @@ def investor_insert(name, balance):
     conn.commit()
     c.close()
     conn.close()
-    
+
 def investor_update_balance(name, balance):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
@@ -34,7 +34,7 @@ def investor_update_balance(name, balance):
     conn.commit()
     c.close()
     conn.close()
-    
+
 def investor_update_active(name, active):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
@@ -42,7 +42,7 @@ def investor_update_active(name, active):
     conn.commit()
     c.close()
     conn.close()
-    
+
 def investor_update_completed(name, completed):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
@@ -58,7 +58,7 @@ def investor_update_broke(name, broke):
     conn.commit()
     c.close()
     conn.close()
-    
+
 def investor_get_balance(name):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
@@ -76,7 +76,7 @@ def investor_get_active(name):
     c.close()
     conn.close()
     return active
-    
+
 def investor_get_completed(name):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
@@ -102,15 +102,15 @@ def init_investments():
     c = conn.cursor()
     c.execute('''
     CREATE TABLE IF NOT EXISTS Investments
-    (ID INTEGER PRIMARY KEY AUTOINCREMENT, 
-    Post CHAR(8), 
-    Upvotes INTEGER, 
-    Comment CHAR(8), 
-    Name CHAR(8), 
-    Amount INTEGER, 
-    Time INTEGER, 
-    Done BIT, 
-    Response CHAR(8), 
+    (ID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Post CHAR(8),
+    Upvotes INTEGER,
+    Comment CHAR(8),
+    Name CHAR(8),
+    Amount INTEGER,
+    Time INTEGER,
+    Done BIT,
+    Response CHAR(8),
     Success BIT)''')
     c.close()
     conn.close()
@@ -139,7 +139,7 @@ def investment_update_success(number):
     conn.commit()
     c.close()
     conn.close()
-    
+
 def investment_get_name(number):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
@@ -220,7 +220,7 @@ def market_user_coins():
     c.close()
     conn.close()
     return user_coins
-    
+
 def market_invest_coins():
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
@@ -266,7 +266,7 @@ def log_comment(comment):
     conn.commit()
     c.close()
     conn.close()
-    
+
 def find_comment(comment):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
@@ -294,7 +294,7 @@ def log_submission(submission):
     conn.commit()
     c.close()
     conn.close()
-    
+
 def find_submission(submission):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()

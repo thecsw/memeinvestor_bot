@@ -12,12 +12,33 @@ import message
 
 STARTER = 1000
 
+
+# Decorator to mark a commands that require a user
+def req_user(func):
+    def wrapper(self, comment, *args):
+        if database.find_investor(comment.author.fullname):
+            return func(self, comment, *args)
+        return self.no_such_user(comment)
+    return wrapper
+
+
+# Monkey patch exception handling
+def reply_wrap(self, body):
+    try:
+        return self.reply(body)
+    except praw.exceptions.APIException:
+        return False
+
+
+praw.models.Comment.reply_wrap = reply_wrap
+
+
 class CommentParser(AbstractCommentBot):
     commands = [
         r"!active",
         r"!balance",
         r"!broke",
-        r"!create"
+        r"!create",
         r"!help",
         r"!ignore",
         r"!invest (\d+)",
@@ -26,11 +47,12 @@ class CommentParser(AbstractCommentBot):
 
     def __init__(self, reddit: praw.Reddit, subreddits, name, n_jobs = 4):
         super().__init__(reddit, subreddits, name, n_jobs)
+        print(self.commands)
         self.regexes = [re.compile(x, re.MULTILINE | re.IGNORECASE) for x in self.commands]
         self.reddit = reddit
 
     def _process_comment(self, comment: praw.models.Comment):
-        if comment.author.name.lower().endswith("_bot"):
+        if str(comment.author).lower().endswith("_bot"):
             return
 
         text = comment.body.lower()
@@ -39,8 +61,9 @@ class CommentParser(AbstractCommentBot):
             matches = reg.search(comment.body)
             if matches:
                 try:
-                    print(matches)
+                    print("%s: %s" % (comment.author, matches.group()))
                     text = matches.group().split(" ")[0]
+
                     try:
                         getattr(self, text[1:])(comment, *matches.groups())
                     except IndexError:
@@ -48,27 +71,28 @@ class CommentParser(AbstractCommentBot):
                 except AttributeError:
                     pass
 
-    def ignore(self, comment: praw.models.Comment):
+    def ignore(self, comment):
         pass
 
-    def help(self, comment: praw.models.Comment):
-        comment.reply(message.help_org)
+    def help(self, comment):
+        comment.reply_wrap(message.help_org)
 
-    def market(self, comment: praw.models.Comment):
+    def market(self, comment):
         user_cap = database.market_user_coins()
         invest_cap = database.market_invest_coins()
         active_number = database.market_count_investments()
-        comment.reply(message.modify_market(active_number, user_cap, invest_cap))
+        comment.reply_wrap(message.modify_market(active_number, user_cap, invest_cap))
 
-    def create(self, comment: praw.models.Comment):
-        author = comment.author.name
+    def create(self, comment):
+        author = comment.author.fullname
         if not database.find_investor(author):
             database.investor_insert(author, STARTER)
-            comment.reply(message.modify_create(author, STARTER))
+            comment.reply_wrap(message.modify_create(comment.author, STARTER))
 
-    def invest(self, comment: praw.models.Comment, amount):
+    @req_user
+    def invest(self, comment, amount):
         # Post related vars
-        post = self.reddit.submission(comment.submission, amount)
+        post = self.reddit.submission(comment.submission)
         postID = post.id
         upvotes = post.ups
 
@@ -78,58 +102,64 @@ class CommentParser(AbstractCommentBot):
             return
 
         if amount < 100:
-            comment.reply(message.min_invest_org)
+            comment.reply_wrap(message.min_invest_org)
             return
 
         # Balance operations
-        balance = database.investor_get_balance(comment.author)
-        active = database.investor_get_active(comment.author)
+        balance = database.investor_get_balance(comment.author.fullname)
+        active = database.investor_get_active(comment.author.fullname)
         new_balance = balance - amount
 
         if new_balance < 0:
-            comment.reply(message.insuff_org)
+            comment.reply_wrap(message.insuff_org)
             return
 
         active += 1
 
         # Sending a confirmation
-        response = comment.reply(message.modify_invest(amount, upvotes,
+        response = comment.reply_wrap(message.modify_invest(amount, upvotes,
                                                        new_balance))
 
         # Filling the database
-        database.investment_insert(postID, upvotes, comment, comment.author,
+        database.investment_insert(postID, upvotes, comment, comment.author.fullname,
                                    time.time(), amount, response)
-        database.investor_update_balance(comment.author, new_balance)
-        database.investor_update_active(comment.author, active)
+        database.investor_update_balance(comment.author.fullname, new_balance)
+        database.investor_update_active(comment.author.fullname, active)
 
-    def balance(self, comment: praw.models.Comment):
-        balance_amount = database.investor_get_balance(comment.author)
-        comment.reply(message.modify_balance(balance_amount))
+    @req_user
+    def balance(self, comment):
+        balance_amount = database.investor_get_balance(comment.author.fullname)
+        comment.reply_wrap(message.modify_balance(balance_amount))
 
-    def broke(self, comment: praw.models.Comment):
-        balance_amount = database.investor_get_balance(comment.author)
-        active_number = database.investor_get_active(comment.author)
+    @req_user
+    def broke(self, comment):
+        balance_amount = database.investor_get_balance(comment.author.fullname)
+        active_number = database.investor_get_active(comment.author.fullname)
 
         if balance_amount < 100:
             if active_number < 1:
                 # Indeed, broke
-                database.investor_update_balance(comment.author, 100)
-                database.investor_update_active(comment.author, 0)
-                broke_times = database.investor_get_broke(comment.author)
+                database.investor_update_balance(comment.author.fullname, 100)
+                database.investor_update_active(comment.author.fullname, 0)
+                broke_times = database.investor_get_broke(comment.author.fullname)
                 broke_times += 1
-                database.investor_update_broke(comment.author, broke_times)
+                database.investor_update_broke(comment.author.fullname, broke_times)
 
-                comment.reply(message.modify_broke(broke_times))
+                comment.reply_wrap(message.modify_broke(broke_times))
             else:
                 # Still has investments
-                comment.reply(message.modify_broke_active(active_number))
+                comment.reply_wrap(message.modify_broke_active(active_number))
         else:
             # Still can invest
-            comment.reply(message.modify_broke_money(balance_amount))
+            comment.reply_wrap(message.modify_broke_money(balance_amount))
 
-    def active(self, comment: praw.models.Comment):
-        active = database.investor_get_active(comment.author)
-        comment.reply(message.modify_active(active))
+    @req_user
+    def active(self, comment):
+        active = database.investor_get_active(comment.author.fullname)
+        comment.reply_wrap(message.modify_active(active))
+
+    def no_such_user(self, comment):
+        comment.reply_wrap(message.no_account_org).lock()
 
 
 def calculate(new, old):
@@ -220,12 +250,28 @@ def check_investments(reddit):
                 response.edit(message.modify_invest_lose(text, lost_memes))
 
 if __name__ == "__main__":
+    database.init_investors()
+    print("Investors table created!")
+    database.init_investments()
+    print("Investments table created!")
+    database.init_comments()
+    print("Comments table created!")
+    database.init_submissions()
+    print("Submissions table created!")
+
     reddit = praw.Reddit(client_id=config.client_id,
                          client_secret=config.client_secret,
                          username=config.username,
                          password=config.password,
                          user_agent=config.user_agent)
-    bot = CommentParser(reddit, config.subreddits, config.name)
+    bot = CommentParser(reddit, config.subreddits, config.name, n_jobs=1)
 
-    Thread(name="Investments", target=check_investments, args=[reddit]).start()
+    t = Thread(name="Investments", target=check_investments, args=[reddit]).start()
     bot.start()
+
+    try:
+        while True:
+            pass
+    except KeyboardInterrupt:
+        bot.stop()
+        t.stop()
