@@ -52,10 +52,23 @@ print("Comments table created!")
 database.init_submissions()
 print("Submissions table created!")
 
+def send_reply(comment, string):
+    # We already check if comments exist or not
+    # But one time, one comment got through the
+    # deleted comment validation and then in a
+    # fraction of a second got deleted and raised
+    # an exception. To be safe, I added just a try
+    # operator
+    try:
+        comment.reply(string)
+    except:
+        return False
+    return True
+
 def create(comment, author):
     database.investor_insert(author, starter)
-    comment.reply(message.modify_create(author, starter))
-
+    send_reply(comment, message.modify_create(author, starter))
+    
 def invest(comment, author):
 
     # Post related vars
@@ -74,7 +87,7 @@ def invest(comment, author):
     except ValueError:
         return False
     if (invest_amount < 100):
-        comment.reply(message.min_invest_org)
+        send_reply(comment, comment,message.min_invest_org)
         return False
     
     # Balance operations
@@ -83,13 +96,13 @@ def invest(comment, author):
     new_balance = balance - invest_amount
 
     if (new_balance < 0):
-        comment.reply(message.insuff_org)
+        send_reply(comment, message.insuff_org)
         return False
 
     active += 1
 
     # Sending a confirmation
-    response = comment.reply(message.modify_invest(invest_amount, upvotes, new_balance))
+    response = send_reply(comment, message.modify_invest(invest_amount, upvotes, new_balance))
 
     # Filling the database
     database.investment_insert(postID, upvotes, comment, author, invest_amount, unix, response)
@@ -98,11 +111,11 @@ def invest(comment, author):
     
 def balance(comment, author):
     balance_amount = database.investor_get_balance(author)
-    comment.reply(message.modify_balance(balance_amount))
+    send_reply(comment, message.modify_balance(balance_amount))
 
 def activity(comment, author):
     active = database.investor_get_active(author)
-    comment.reply(message.modify_active(active))
+    send_reply(comment, message.modify_active(active))
 
 def broke(comment, author):
     balance_amount = database.investor_get_balance(author)
@@ -120,19 +133,19 @@ def broke(comment, author):
             # database.investor_get_broke(author, database.investor_get_broke(author) + 1)
             # But it is way to messy, we are for the code understandability
             
-            comment.reply(message.modify_broke(broke_times))
+            send_reply(comment, message.modify_broke(broke_times))
         else:
             # Still has investments
-            comment.reply(message.modify_broke_active(active_number))
+            send_reply(comment, message.modify_broke_active(active_number))
     else:
         # Still can invest
-        comment.reply(message.modify_broke_money(balance_amount))
+        send_reply(comment, message.modify_broke_money(balance_amount))
 
 def market(comment):
     user_cap = database.market_user_coins()
     invest_cap = database.market_invest_coins()
     active_number = database.market_count_investments()
-    comment.reply(message.modify_market(active_number, user_cap, invest_cap))
+    send_reply(comment, message.modify_market(active_number, user_cap, invest_cap))
 
 def comment_thread():
     print("Started the comment_thread()...")
@@ -158,31 +171,24 @@ def comment_thread():
         # We don't serve bots
         if ("_bot" in author):
             continue
+
         exist = database.find_investor(author)
+
         print(f"Comment ID: {comment.id}\n\tAuthor: {author}\n\tText: {text}\n\tExist?: {exist}\n\tPost Locked?: {submission.locked}\n")
         
         if ("!ignore" in text):
             continue
         
         if ("!help" in text):
-            try:
-                comment.reply(message.help_org)
-            except:
-                continue
+            send_reply(comment, message.help_org)
             continue
         
         if ("!market" in text):
-            try:
-                market(comment)
-            except:
-                continue
+            market(comment)
             continue
                 
         if (("!create" in text) and (not exist)):
-            try:
-                create(comment, author)
-            except:
-                continue
+            create(comment, author)
             continue
         
         command_present = 0
@@ -191,38 +197,23 @@ def comment_thread():
                 command_present = 1
                 
         if ((not exist) and (command_present)):
-            try:
-                comment.reply(message.no_account_org)
-            except:
-                continue
+            send_reply(comment, message.no_account_org)
             continue
                 
         if ("!invest" in text):
-            try:
-                invest(comment, author)
-            except:
-                continue
+            invest(comment, author)
             continue
                 
         if ("!balance" in text):
-            try:
-                balance(comment, author)
-            except:
-                continue
+            balance(comment, author)
             continue
             
         if ("!broke" in text):
-            try:
-                broke(comment, author)
-            except:
-                continue
+            broke(comment, author)
             continue
         
         if ("!active" in text):
-            try:
-                activity(comment, author)
-            except:
-                continue
+            activity(comment, author)
             continue
 
 # This method is taken from old investor.py
@@ -244,6 +235,7 @@ def calculate(new, old):
         m = gradient of linear fit to log-log plot (= 0.2527),
         c = intercept of linear fit to log-log plot (= -0.7603).
     """
+
     #Allow custom upper du limit to cap maximum investment profit multiplier (set as desired)
     success_cap = 750000
     
