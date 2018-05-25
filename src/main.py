@@ -167,7 +167,8 @@ def comment_thread():
         # If the comment is deleted
         if (not comment.banned_by == None):
             continue
-        
+
+ 
         # We don't serve bots
         if ("_bot" in author):
             continue
@@ -224,30 +225,30 @@ def calculate(new, old):
     du = new - old
     
     """
-    Investment return multiplier was previously determined with a block of if statements.
-    Performed a linear fit to a log-log plot of mutliplier vs upvotes based on the original values for the if block.
-    Used the gradient/intercept to generate a power function that approximates (and extends) the original mutliplier
-    calculation to all upvote values.
-    
-    Functional form: y = (10^c)x^m ;
+    Investment return multiplier is detemined by a power function of the change in upvotes since the investment was made.
+    The coefficients of this function were originally set to emulate the old if-else block method for determining 
+    investment return, but have now been changed to set the break-even point at +500 upvotes since the investment was made.
+    Functional form: y = A*x^m ;
         y = multiplier,
         x = du (change in upvotes),
-        m = gradient of linear fit to log-log plot (= 0.2527),
-        c = intercept of linear fit to log-log plot (= -0.7603).
+        A = 0.17366,
+        m = 0.2818 (break even at ~500 upvotes).
     """
+    #Set constants to define function
+    A_mult=0.17366
+    m_mult=0.2818
 
     #Allow custom upper du limit to cap maximum investment profit multiplier (set as desired)
     success_cap = 750000
     
-
     if (du >= success_cap):
-        capped_mult = 0.17366 * math.pow(success_cap, 0.2527)
+        capped_mult = A_mult * math.pow(success_cap, m_mult)
         return capped_mult
 
     #Safeguard: if du is -ve function cannot be evaluated and mult remains zero.
     mult = 0
     if (du >= 0):
-        mult = 0.17366 * math.pow(du, 0.2527)
+        mult = A_mult * math.pow(du, m_mult)
 
     return mult
 
