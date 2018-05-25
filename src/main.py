@@ -74,6 +74,7 @@ def invest(comment, author):
     # Post related vars
     post = reddit.submission(comment.submission)
     postID = post.id
+    commentID = comment.id
     upvotes = post.ups
 
     # UNIX timestamp
@@ -86,6 +87,7 @@ def invest(comment, author):
         invest_amount = int(float(invest_string))
     except ValueError:
         return False
+    
     if (invest_amount < 100):
         send_reply(comment, message.min_invest_org)
         return False
@@ -103,9 +105,9 @@ def invest(comment, author):
 
     # Sending a confirmation
     response = send_reply(comment, message.modify_invest(invest_amount, upvotes, new_balance))
-
+    responseID = response.id
     # Filling the database
-    database.investment_insert(post, upvotes, comment, author, invest_amount, unix, response)
+    database.investment_insert(postID, upvotes, commentID, author, invest_amount, unix, responseID)
     database.investor_update_balance(author, new_balance)
     database.investor_update_active(author, active)
     
