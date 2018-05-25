@@ -36,9 +36,9 @@ def modify_create(username, balance):
 invest_org = """
 *%AMOUNT% MemeCoins were successfully invested!*
 
-You bought in at %ENTRY% upvotes
+You bought in at %ENTRY% upvotes.
 
-Your new balance is %BALANCE% MemeCoins
+Your new balance is %BALANCE% MemeCoins.
 
 In 4 hours your investment will be evaluated and I will update this comment. Stay tuned!
 
@@ -58,9 +58,7 @@ invest_return_org = """
 UPDATE: Your investment was successful!
 
 This investment has brought you %WIN% MemeCoins. 
-
-%DESCRIPTION%
-""".replace("%DESCRIPTION%", help_mess)
+"""
 
 def modify_invest_return(text, win):
     invest_return = invest_return_org
@@ -74,9 +72,7 @@ invest_lose_org = """
 UPDATE: Your investment was unsuccessful!
 
 You lost %NUMBER% MemeCoins.
-
-%DESCRIPTION%
-""".replace("%DESCRIPTION%", help_mess)
+"""
 
 def modify_invest_lose(text, lost):
     invest_lose = invest_lose_org
@@ -217,6 +213,7 @@ deleted_comment_org = """
 Where did he go?
 
 Whatever, investment is lost.
+
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", help_mess)
 
