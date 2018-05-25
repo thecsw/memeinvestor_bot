@@ -213,6 +213,24 @@ def modify_market(inves, cap, invs_cap):
     market = market.replace("%HODL%", str(invs_cap))
     return market
 
+# Message used for !leaderboard command
+leaderboard_org = """
+Investors with the largest balances:
+
+%LEADERS_STRING%
+
+%DESCRIPTION% 
+""".replace("%DESCRIPTION%", help_mess)
+
+def modify_leaderboard(leaderboard_rows):
+    leaders_string = ""
+    for row in leaderboard_rows:
+        leaders_string += row[0] + " (" + row[1] + " MemeCoins)\n"
+
+    leaderboard_response = leaderboard_org
+    leaderboard_response = leaderboard_response.replace("%LEADERS_STRING%", leaders_string)
+    return leaderboard_response
+
 deleted_comment_org = """
 Where did he go?
 
