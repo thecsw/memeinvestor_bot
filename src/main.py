@@ -60,7 +60,7 @@ def send_reply(comment, string):
     # an exception. To be safe, I added just a try
     # operator
     try:
-        comment.reply(string)
+        return comment.reply(string)
     except:
         return False
     return True
