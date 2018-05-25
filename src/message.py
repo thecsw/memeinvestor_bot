@@ -153,9 +153,11 @@ Here is a list of commands that summon me:
 
 6. !market - gives an overview for the whole Meme market.
 
-7. !ignore - ignores the whole message.
+7. !leaderboard - gives a list of the users with the largest account balances.
 
-8. !help - returns this help message.
+8. !ignore - ignores the whole message.
+
+9. !help - returns this help message.
 
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", bot_desc)
