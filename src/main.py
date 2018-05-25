@@ -105,6 +105,9 @@ def invest(comment, author):
 
     # Sending a confirmation
     response = send_reply(comment, message.modify_invest(invest_amount, upvotes, new_balance))
+    # If comment is not present, exit
+    if (not response):
+        return False
     # Filling the database
     database.investment_insert(post, upvotes, comment, author, invest_amount, unix, response)
     database.investor_update_balance(author, new_balance)
