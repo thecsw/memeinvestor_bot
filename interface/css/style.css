@@ -1,0 +1,41 @@
+
+body{
+  background-color: #f2f2f2;
+}
+nav{
+  background-color:#222222;
+}
+.brand-logo{
+  margin-left:10px;
+  margin-right:10px;
+  font-family:;
+}
+.custom-dark-search{
+  color:#f2f2f2;
+}
+.custom-dark-search:focus{
+  background-color:#e6e6e6;
+  color:#222222;
+}
+.custom-dark-search:focus::-webkit-input-placeholder { color:#222222; }
+.custom-dark-search:focus:-moz-placeholder { color:#222222; } /* FF 4-18 */
+.custom-dark-search:focus::-moz-placeholder { color:#222222; } /* FF 19+ */
+.custom-dark-search:focus:-ms-input-placeholder { color:#222222; } /* IE 10+ */
+
+.icon-32{
+  vertical-align:middle
+}
+.sidenav{
+
+}
+#search-nav-mobile{
+border: none;
+
+}
+.custom-sidenav-search{
+  padding-left: 50px!important;
+}
+.custom-sidenav-search::-webkit-input-placeholder { color:#999999; }
+.custom-sidenav-search:-moz-placeholder { color:#999999; } /* FF 4-18 */
+.custom-sidenav-search::-moz-placeholder { color:#999999; } /* FF 19+ */
+.custom-sidenav-search:-ms-input-placeholder { color:#999999; } /* IE 10+ */
