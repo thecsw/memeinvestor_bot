@@ -224,3 +224,9 @@ To prevent thread spam and other natural disasters, please invoke all your comma
 
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", help_mess)
+
+inside_trading_org = """
+You can't invest in your own memes, insider trading is not allowed!
+
+%DESCRIPTION% 
+""".replace("%DESCRIPTION%", help_mess)

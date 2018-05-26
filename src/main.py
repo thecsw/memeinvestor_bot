@@ -53,6 +53,7 @@ database.init_submissions()
 print("Submissions table created!")
 
 def send_reply(comment, string):
+
     # We already check if comments exist or not
     # But one time, one comment got through the
     # deleted comment validation and then in a
@@ -66,6 +67,7 @@ def send_reply(comment, string):
     return True
 
 def create(comment, author):
+
     database.investor_insert(author, starter)
     send_reply(comment, message.modify_create(author, starter))
     
@@ -73,6 +75,13 @@ def invest(comment, author):
 
     # Post related vars
     post = reddit.submission(comment.submission)
+    post_author = post.author.name.lower()
+
+    # Insider trading is not allowed!
+    if (author == post.author):
+        send_reply(comment, message.inside_trading_org)
+        return False
+
     postID = post.id
     commentID = comment.id
     upvotes = post.ups
@@ -114,14 +123,17 @@ def invest(comment, author):
     database.investor_update_active(author, active)
     
 def balance(comment, author):
+
     balance_amount = database.investor_get_balance(author)
     send_reply(comment, message.modify_balance(balance_amount))
 
 def activity(comment, author):
+
     active = database.investor_get_active(author)
     send_reply(comment, message.modify_active(active))
 
 def broke(comment, author):
+
     balance_amount = database.investor_get_balance(author)
     active_number = database.investor_get_active(author)
 
@@ -146,12 +158,14 @@ def broke(comment, author):
         send_reply(comment, message.modify_broke_money(balance_amount))
 
 def market(comment):
+
     user_cap = database.market_user_coins()
     invest_cap = database.market_invest_coins()
     active_number = database.market_count_investments()
     send_reply(comment, message.modify_market(active_number, user_cap, invest_cap))
 
 def comment_thread():
+
     print("Started the comment_thread()...")
     for comment in subreddit.stream.comments():
 
@@ -224,6 +238,7 @@ def comment_thread():
 # This method is taken from old investor.py
 # Thanks to jimbobur for adding this feature.
 def calculate(new, old):
+
     new = int(float(new))
     old = int(float(old))
     du = new - old
@@ -257,6 +272,7 @@ def calculate(new, old):
     return mult
 
 def check_investments():
+
     print("Starting checking investments...")
     while True:
         time.sleep(60)
@@ -311,6 +327,7 @@ def check_investments():
                 response.edit(message.modify_invest_lose(text, lost_memes))
 
 def submission_thread():
+
     for submission in subreddit.stream.submissions():
         checked = database.find_submission(submission)
         if (checked):
