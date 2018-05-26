@@ -347,6 +347,7 @@ def submission_thread():
         
 def threads():
     Thread(name="Comments", target=comment_thread).start()
+    Thread(name="Submissions", target=submission_thread).start()
     Thread(name="Investments", target=check_investments).start()
 
 if __name__ == "__main__":
