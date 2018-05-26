@@ -75,8 +75,14 @@ def invest(comment, author):
 
     # Post related vars
     post = reddit.submission(comment.submission)
-    post_author = post.author.name.lower()
 
+    # OK, I seriously don't understand how broken or deleted posts
+    # get throught the exist feature. HOW?!
+    try:
+        post_author = post.author.name.lower()
+    except:
+        return False
+    
     # Insider trading is not allowed!
     if (author == post.author):
         send_reply(comment, message.inside_trading_org)
@@ -334,10 +340,10 @@ def submission_thread():
             continue
         database.log_submission(submission)
 
-        commentID = submission.reply(message.invest_place_here)
-
+        commentID = send_reply(submission, message.invest_place_here)
+        
         # Making the comment sticky
-        commentID.mod.distinguish(how='yes', sticky=True)
+        #commentID.mod.distinguish(how='yes', sticky=True)
         
 def threads():
     Thread(name="Comments", target=comment_thread).start()
