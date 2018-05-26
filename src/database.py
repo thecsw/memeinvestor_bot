@@ -298,7 +298,7 @@ def log_submission(submission):
 def find_submission(submission):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
-    c.execute("SELECT COUNT(ID) FROM Submissions WHERE Submissions = ?", (submission.id,))
+    c.execute("SELECT COUNT(ID) FROM Submissions WHERE Submission = ?", (submission.id,))
     result = c.fetchone()[0]
     c.close()
     conn.close()
