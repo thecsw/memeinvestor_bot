@@ -67,7 +67,7 @@ def send_reply(comment, string):
     return True
 
 def create(comment, author):
-
+    
     database.investor_insert(author, starter)
     send_reply(comment, message.modify_create(author, starter))
     
@@ -260,8 +260,8 @@ def calculate(new, old):
         m = 0.44 (break-even threshold between 74/75 upvotes).
     """
     #Set constants to define function
-    A_mult=0.17366
-    m_mult=0.2818
+    A_mult=0.15
+    m_mult=0.44
 
     #Allow custom upper du limit to cap maximum investment profit multiplier (set as desired)
     success_cap = 283000
@@ -273,7 +273,7 @@ def calculate(new, old):
     #Safeguard: if du is -ve function cannot be evaluated and mult remains zero.
     mult = 0
     if (du >= 0):
-        mult = A_mult * math.pow(du, m_mult)
+        mult = A_mult * math.pow(du, m_mult) * math.pow(old, -0.1)
 
     return mult
 
