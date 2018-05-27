@@ -10,7 +10,7 @@
    g = d.getElementsByTagName('body')[0],
    x = w.innerWidth || e.clientWidth || g.clientWidth,
    y = w.innerHeight|| e.clientHeight|| g.clientHeight;
-   if(x<=640){
+   if(x<=790){
       desktopRatio = false;
       document.getElementById("homepage-graph").className = "ct-chart ct-perfect-fourth";
    }else{
@@ -91,11 +91,11 @@ window.addEventListener('resize', function(event){
     g = d.getElementsByTagName('body')[0],
     x = w.innerWidth || e.clientWidth || g.clientWidth,
     y = w.innerHeight|| e.clientHeight|| g.clientHeight;
-    if(x<=640 && desktopRatio){
+    if(x<=800 && desktopRatio){
       desktopRatio = false;
       document.getElementById("homepage-graph").className = "ct-chart ct-perfect-fourth";
       ch1.update()
-    }else if(x>640 && !desktopRatio){
+    }else if(x>800 && !desktopRatio){
        desktopRatio = true;
        document.getElementById("homepage-graph").className = "ct-chart ct-major-tenth";
        ch1.update()      

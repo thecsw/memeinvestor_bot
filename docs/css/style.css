@@ -1,7 +1,9 @@
+/* custom page styles */
 
 body{
   background-color: #f2f2f2;
 }
+/* --[nav bar]-- */
 nav{
   background-color:#222222;
 }
@@ -27,7 +29,7 @@ nav{
 }
 
 
-
+/* --[sidebar]-- */
 #search-nav-mobile{
 border: none;
 
@@ -41,28 +43,55 @@ border: none;
 .custom-sidenav-search:-ms-input-placeholder { color:#999999; } /* IE 10+ */
 
 
-
+/* --[main page]-- */
 .container {
-    margin: 0 auto;
-    padding: 0 0.5rem;
-    max-width: 100% !important;
-    width: 98%;
+  margin: 0 auto;
+  padding: 0 0.5rem;
+  max-width: 100% !important;
+  width: 98%;
 }
-.table-wrap{
-  
-}
-.homepage-card{
-  border: 1px solid black;
-}
-/* debugging
-.chart-wrap{
- border: 1px solid red;
-}*/
 
-/* Use this selector to override the line style on a given series */
+.row-title{
+  margin-top:0px;
+}
+/* --[table row]-- */
+.table-wrap table td span{
+  border-radius: 2px;
+  font-size: 12px;
+  line-height: 20px;
+  height: 20px;
+  position: relative;
+  right: auto;
+  margin-left: 10px;
+  float:none;
+}
+.bankrupt-badge{
+  padding: 2px 4px;
+  border-radius: 2px;
+}
+
+/* --[graph row]-- */
+
+ .legenda-a{
+  margin-left: 0px;
+  padding: 2px 4px;
+  border-radius: 2px;
+  opacity: .8;
+  color: black;
+  border-bottom:3px solid #ffa726;
+}
+ .legenda-b{
+  margin-left: 0px;
+  padding: 2px 4px;
+  border-radius: 2px;
+  opacity: .8;
+  color: black;
+  border-bottom:3px solid #f06156;
+}
+/* Use this selector to override the line style on a chart given series */
 .ct-series-a .ct-line {
   /* Set the colour of this series line */
-  stroke: red;
+  stroke: #ffa726  ;
   /* Control the thikness of your lines */
   stroke-width: 3px;
 }
@@ -72,3 +101,5 @@ border: none;
   /* Control the thikness of your lines */
   stroke-width: 3px;
 }
+
+
