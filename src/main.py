@@ -279,6 +279,9 @@ def calculate(new, old):
     mult = 0
     if (du >= 0):
 #        mult = A_mult * math.pow(du, m_mult)
+        if (old == 0):
+            new = 0
+            old = 1
         mult = math.pow((new/old), 1/3)
         
     return mult
