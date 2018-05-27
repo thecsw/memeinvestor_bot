@@ -265,8 +265,8 @@ def calculate(new, old):
         m = 0.44 (break-even threshold between 74/75 upvotes).
     """
     #Set constants to define function
-    A_mult=0.15
-    m_mult=0.44
+    A_mult=0.17366
+    m_mult=0.2818
 
     #Allow custom upper du limit to cap maximum investment profit multiplier (set as desired)
     success_cap = 283000
