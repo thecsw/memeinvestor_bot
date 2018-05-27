@@ -25,9 +25,9 @@ nav{
 .icon-32{
   vertical-align:middle
 }
-.sidenav{
 
-}
+
+
 #search-nav-mobile{
 border: none;
 
@@ -39,3 +39,18 @@ border: none;
 .custom-sidenav-search:-moz-placeholder { color:#999999; } /* FF 4-18 */
 .custom-sidenav-search::-moz-placeholder { color:#999999; } /* FF 19+ */
 .custom-sidenav-search:-ms-input-placeholder { color:#999999; } /* IE 10+ */
+
+
+
+.container {
+    margin: 0 auto;
+    padding: 0 0.5rem;
+    max-width: 100% !important;
+    width: 98%;
+}
+.table-wrap{
+  
+}
+.homepage-card{
+  border: 1px solid black;
+}

@@ -9,13 +9,13 @@
       <meta name="theme-color" content="#212121" />
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
       <link type="text/css" rel="stylesheet" href="css/materialize.min.css" />
-      
-    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
-     --><script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
-     
-     <!-- temporarely here 
-     <link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"> 
-   -->
+      <!-- materialize -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+      <!-- fancy charts -->   
+      <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+      <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+      <!-- page -->
       <link type="text/css" rel="stylesheet" href="css/style.css" />
       <script src="js/main.js"></script>
 
@@ -27,7 +27,7 @@
         <div class="nav-wrapper">
           <a href="#" class="brand-logo">Memeinvestor_bot</a>
           
-           <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+           <a href="#" data-target="mobile-sidebar" class="sidenav-trigger"><i class="material-icons">menu</i></a>
           
           <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li>
@@ -38,30 +38,109 @@
               </div>
             </li>
             <li><a href="foo.html">brokers</a></li>
-            <li><a href="bar.html">market</a></li>
-            <li><a href="baz.html">currency</a></li>
+            <li><a href="bar.html">commands</a></li>
+            <li><a href="baz.html">info</a></li>
             <li><a href="baz.html">github</a></li>
             <li><a href="https://github.com/"><img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"></a></li>           
           </ul>         
         </div>
       </nav>
       
-  <ul class="sidenav" id="mobile-demo">
-    <li>
-      <div class="input-field mobile">
-        <input id="search-nav-mobile" class="custom-sidenav-search" type="search" placeholder="redditor name" >
-        <label class="label-icon" for="search-nav"><i class="material-icons">search</i></label>
-        <i class="material-icons">send</i>
-      </div>  
-    </li>
-    <li><a href="foo.html">brokers</a></li>
-    <li><a href="bar.html">market</a></li>
-    <li><a href="baz.html">currency</a></li>
-    <li><a href="baz.html">github</a></li>
-    <li><a href="https://github.com/"><img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"></a></li>
-  </ul>    
+      <ul class="sidenav" id="mobile-sidebar">
+        <li>
+          <div class="input-field mobile">
+            <input id="search-nav-mobile" class="custom-sidenav-search" type="search" placeholder="redditor name" >
+            <label class="label-icon" for="search-nav"><i class="material-icons">search</i></label>
+            <i class="material-icons">send</i>
+          </div>  
+        </li>
+        <li><a href="foo.html">brokers</a></li>
+        <li><a href="bar.html">market</a></li>
+        <li><a href="baz.html">currency</a></li>
+        <li><a href="baz.html">github</a></li>
+        <li><a href="https://github.com/"><img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"></a></li>
+      </ul>    
       
-      <h1>qwe</h1>
+      <div class="container">
+        <div class="section">
+          <!--
+          <div class="section">
+            <div class="row">
+              <div class="col s12 m6 homepage-card">
+                <p>qwed dqs wqd sqd </p>
+              </div>
+              <div class="col s12 m6 homepage-card">
+                <p> qwkd skmd qmsdq lwjd</p>
+              </div>
+            </div>  
+          </div>
+          -->
+          <p>a description about the bot. lorem ipsum dolom ioqwndoin qowkdno qwnqowndons odisnd dwdqoiwkn </p>
+          <div class="divider"></div>
+          <div class="section">
+            <div class="row">
+              <div class="col s12 m3 l3">
+                <h4>general data</h4>
+                <p>lot of data about the bot, crunched in the same graph</p>
+                <p>there are 12312 accounts, 1234 wallets active. put here legenda and info about the graph</p>
+              </div>
+              <div class="col s12 m9 l9">
+                <div class="chart-wrap">
+<div class="ct-chart ct-major-tenth"></div>
+                  <!-- <canvas id="line-chart-sample" height="224" width="561" style="width: 561px; height: 224px; background-color:red;"></canvas> -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="section">
+            <div class="row">
+              <div class="col s12 m8 l8">
+                <div class="table-wrap">
+
+       <table>
+        <thead>
+          <tr>
+              <th>Name</th>
+              <th>balance</th>
+              <th>activity</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>Alvin</td>
+            <td>Eclair</td>
+            <td>$0.87</td>
+          </tr>
+          <tr>
+            <td>Alan</td>
+            <td>Jellybean</td>
+            <td>$3.76</td>
+          </tr>
+          <tr>
+            <td>Jonathan</td>
+            <td>Lollipop</td>
+            <td>$7.00</td>
+          </tr>
+        </tbody>
+      </table>               
+                
+                </div>
+              </div>            
+              <div class="col s12 m4 l4">
+                <h4>top investors settings</h4>
+                <p>filters, settings and text about investors. names can
+                have a flare that indicates the amount of bancruptcy or othe 
+                cool achievementslnwdldnqwldqwdn qkwdnqwkjn wjqk n</p>
+                <p>qwekdwnqown nqsn qo jwndwnjd oqwn owd owd</p>
+              </div>
+
+            </div>
+          </div>         
+        </div>
+      </div>
+
 
 
     </body>
