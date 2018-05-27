@@ -201,10 +201,10 @@ def investment_find_done():
     # Four hour difference
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
+    # 4 hours = 4 * 3600 = 14400 seconds
     c.execute("SELECT ID From Investments WHERE ? - Time > 14400 AND Done = 0", (unix,))
     arr = c.fetchall()
     arr = [x[0] for x in arr]
-    print(arr)
     c.close()
     conn.close()
     return arr
@@ -243,6 +243,15 @@ def find_investor(name):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
     c.execute("SELECT COUNT(ID) FROM Investors WHERE Name = ?", (name, ))
+    result = c.fetchone()[0]
+    c.close()
+    conn.close()
+    return result
+
+def is_already_invested(author, postID):
+    conn = sqlite3.connect("data.db")
+    c = conn.cursor()
+    c.execute("SELECT COUNT(ID) FROM Investments WHERE Name = ? AND Post = ? AND Done = ?", (author, postID, 0,))
     result = c.fetchone()[0]
     c.close()
     conn.close()
@@ -298,7 +307,7 @@ def log_submission(submission):
 def find_submission(submission):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
-    c.execute("SELECT COUNT(ID) FROM Submissions WHERE Submissions = ?", (submission.id,))
+    c.execute("SELECT COUNT(ID) FROM Submissions WHERE Submission = ?", (submission.id,))
     result = c.fetchone()[0]
     c.close()
     conn.close()

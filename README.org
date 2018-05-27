@@ -25,15 +25,25 @@ Investments thrive! /Thanks!/
 
 This bot has been developed exclusively for r/MemeEconomy. It can create
 investment account, help invest and then automatically return calculated
-investment 4 hours after the investment. To calculate the investment return, the bot
-multiplies the invested amount by a power function of the form *y = Ax^m*,
-where *A* and *m* are constants (*A=0.17366* , *m=0.2527*) and *x* is the change in upvotes
-on the post since the invesment was made. This function was written to emulate/replace
-the block of if/else statements that was originally used to calculate the investment return.
-The overall behavior of the function is a steep rise towards the break-even threshold (y=1)
-between 1020 and 1021 upvotes, and levelling off towards higher upvote changes. 
-There is also an upper cap imposed on the function at 750,000 upvotes with a max multiplier of approximately
-5.30063 times the original investment. Any gain in upvotes at or above this cap will recieve this maximum multiplier. 
+investment 4 hours after the investment. To calculate the investment return, the
+bot multiplies the invested amount by a power function of the form *y = Ax^m*,
+where *A* and *m* are constants (*A=0.15* , *m=0.44*) and *x* is the change in
+upvotes on the post since the invesment was made. This function was originally
+written to emulate/replace the block of if/else statements that was originally
+used to calculate the investment return. However it has now been designed such
+that the overall behavior of the function is a steep rise towards the break-even
+threshold (y=1) at ~74/75 upvotes, and levelling off towards higher upvote
+changes. There is also an upper cap imposed on the function at 283,000 upvotes
+(highest voted post of all time on reddit) with a max multiplier of
+approximately 37.57 times the original investment. Any gain in upvotes at or
+above this cap will recieve this maximum multiplier.  
+
+
+#+CAPTION: Investment Return Multiplier Graph
+#+LABEL: irm
+[[./data/investment_return_multiplier.png]]
+
+** Commands
 
 Currently, it has 8 commands:
 
