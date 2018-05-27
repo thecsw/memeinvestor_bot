@@ -54,3 +54,21 @@ border: none;
 .homepage-card{
   border: 1px solid black;
 }
+/* debugging
+.chart-wrap{
+ border: 1px solid red;
+}*/
+
+/* Use this selector to override the line style on a given series */
+.ct-series-a .ct-line {
+  /* Set the colour of this series line */
+  stroke: red;
+  /* Control the thikness of your lines */
+  stroke-width: 3px;
+}
+.ct-series-b .ct-line {
+  /* Set the colour of this series line */
+  stroke: #f05b4f;
+  /* Control the thikness of your lines */
+  stroke-width: 3px;
+}
