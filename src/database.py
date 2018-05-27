@@ -248,6 +248,15 @@ def find_investor(name):
     conn.close()
     return result
 
+def is_already_invested(author, postID):
+    conn = sqlite3.connect("data.db")
+    c = conn.cursor()
+    c.execute("SELECT COUNT(ID) FROM Investments WHERE Name = ? AND Post = ? AND Done = ?", (author, postID, 0,))
+    result = c.fetchone()[0]
+    c.close()
+    conn.close()
+    return result
+
 # Comment logging
 
 def init_comments():

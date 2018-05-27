@@ -92,6 +92,11 @@ def invest(comment, author):
     commentID = comment.id
     upvotes = post.ups
 
+    invested_already = database.is_already_invested(author, postID)
+    if (invested_already):
+        send_reply(comment, message.invest_again_org)
+        return False
+    
     # UNIX timestamp
     unix = time.time() 
 
