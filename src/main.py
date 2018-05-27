@@ -341,6 +341,8 @@ def check_investments():
                 lost_memes = int(amount - (amount * factor))
                 response.edit(message.modify_invest_lose(text, lost_memes))
 
+            print("Investment returned!")
+
 def submission_thread():
 
     for submission in subreddit.stream.submissions():
