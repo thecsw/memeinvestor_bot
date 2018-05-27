@@ -273,7 +273,7 @@ def calculate(new, old):
     #Safeguard: if du is -ve function cannot be evaluated and mult remains zero.
     mult = 0
     if (du >= 0):
-        mult = A_mult * math.pow(du, m_mult) * math.pow(old, -0.1)
+        mult = A_mult * math.pow(du, m_mult)
 
     return mult
 
