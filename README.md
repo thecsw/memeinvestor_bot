@@ -22,16 +22,16 @@
 Welcome to the source code page of u/MemeInvestor_bot! Nice to meet you. First
 of all, let me talk you through what the bot does and details later. Quick note,
 if you want to contribute, do so! Check the TODO list and help the Meme
-Investments thrive! /Thanks!/
+Investments thrive! Thanks!
 
 
 ## The duty
 
-This bot has been developed exclusively for r/MemeEconomy. It can create
+This bot has been developed exclusively for [r/MemeEconomy](https://reddit.com/r/MemeEconomy/). It can create
 investment account, help invest and then automatically return calculated
 investment 4 hours after the investment. To calculate the investment return, the
-bot multiplies the invested amount by a power function of the form *y = Ax^m*,
-where *A* and *m* are constants (*A=0.15* , *m=0.44*) and *x* is the change in
+bot multiplies the invested amount by a power function of the form `y = Ax^m`,
+where `A` and `m` are constants (`A=0.15` , `m=0.44`) and `x` is the change in
 upvotes on the post since the invesment was made. This function was originally
 written to emulate/replace the block of if/else statements that was originally
 used to calculate the investment return. However it has now been designed such
