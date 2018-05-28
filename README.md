@@ -42,7 +42,7 @@ changes. There is also an upper cap imposed on the function at 283,000 upvotes
 approximately 37.57 times the original investment. Any gain in upvotes at or
 above this cap will recieve this maximum multiplier.  
 
-![Investment Return Multiplier Graph][./data/investment_return_multiplier.png]
+![Investment Return Multiplier Graph](./data/investment_return_multiplier.png)
 Investment Return Multiplier Graph
 
 
