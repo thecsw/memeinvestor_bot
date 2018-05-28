@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+    bot:
+        build: .
+        depends_on:
+          - mysql
+        environment:
+          - MYSQL_DATABASE=mysql
+          - MYSQL_USER=mysql
+          - MYSQL_PASSWORD=strongpass!word
+
+    mysql:
+        image: mariadb
+        environment:
+          - MYSQL_DATABASE=mysql
+          - MYSQL_USER=mysql
+          - MYSQL_PASSWORD=strongpass!word
+          - MYSQL_RANDOM_ROOT_PASSWORD=yes

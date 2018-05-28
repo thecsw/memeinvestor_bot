@@ -31,6 +31,10 @@ def req_user(func):
 
 # Monkey patch exception handling
 def reply_wrap(self, body):
+    if config.dry_run:
+        print("[%s] Immitating reply %s" % (time.strftime("%d-%m-%Y %H:%M:%S"), body))
+        return True
+
     try:
         return self.reply(body)
     except praw.exceptions.APIException:

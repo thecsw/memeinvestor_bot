@@ -5,5 +5,15 @@ username = ''
 password = ''
 user_agent = ''
 
-subreddits = []
+subreddits = ['']
 name = ''
+
+dry_run = False
+
+dbconfig = {
+    "host": "",
+    "port": 3306,
+    "user": "",
+    "password": "",
+    "database": "",
+}
