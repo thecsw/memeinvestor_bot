@@ -33,7 +33,8 @@ at the time of investment:
 *x=1+(final_uvotes - initial_upvotes)/initial_upvotes*.  
 The 1/3 power function (cube root) behaviour was chosen so that the overall behavior
 of the investment return function is a steep rise which levels off at higher upvote
-growth. The reasoning behind this is to try to keep the playing field somewhat more
+growth. The reasoning behind this is to futher reduce the advantage of investing in a post
+that's already highly-upvoted for a 'sure-win' and to try and keep the playing field somewhat more
 level for new investors.  
   
 *Note:* This function has already been through several design iterations
