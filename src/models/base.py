@@ -59,7 +59,6 @@ class BaseTable(object):
         query = query[:-1]
 
         if isinstance(value, dict):
-            print(value)
             if self._primkey_auto:
                 self._exec("INSERT INTO {table}({keys}) VALUES({q})",
                         value.values(),
@@ -87,6 +86,13 @@ class BaseTable(object):
     def __del__(self):
         self._db.close()
 
+    def __contains__(self, key):
+        try:
+            self[key]
+        except IndexError:
+            return False
+        return True
+
     def append(self, key=None):
         if self._primkey_auto:
             primkey = None
@@ -97,16 +103,13 @@ class BaseTable(object):
 
         self._dbconn.commit()
 
-        return self[ret]
+        return ret
 
     @property
     def _table(self):
         return self.__class__.__name__
 
     def _exec(self, query, *args, fmt={}, **kwargs):
-        if fmt:
-            print(query.format(table=self._table,
-                                             pkey=self._primkey, **fmt))
         return self._db.execute(query.format(table=self._table,
                                              pkey=self._primkey, **fmt),
                                 *args, **kwargs)

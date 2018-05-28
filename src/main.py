@@ -6,6 +6,7 @@ from threading import Thread, get_ident
 
 # import sqlite3
 import MySQLdb
+import _mysql_exceptions
 import praw
 from bottr.bot import AbstractCommentBot, BotQueueWorker, SubmissionBot
 
@@ -42,6 +43,7 @@ def reply_wrap(self, body):
 
 
 praw.models.Comment.reply_wrap = reply_wrap
+praw.models.Submission.reply_wrap = reply_wrap
 
 
 class CommentWorker(BotQueueWorker):
@@ -80,6 +82,10 @@ class CommentWorker(BotQueueWorker):
     def _process_comment(self, comment: praw.models.Comment):
         if str(comment.author).lower().endswith("_bot"):
             return
+
+        if comment in self.comments:
+            return
+        self.comments.append(comment)
 
         text = comment.body.lower()
 
@@ -120,6 +126,9 @@ class CommentWorker(BotQueueWorker):
     @req_user
     def invest(self, comment, investor, amount):
         # Post related vars
+        if not investor:
+            return
+
         post = self.reddit.submission(comment.submission)
         postID = post.id
         upvotes = post.ups
@@ -145,9 +154,6 @@ class CommentWorker(BotQueueWorker):
         # Sending a confirmation
         response = comment.reply_wrap(message.modify_invest(amount, upvotes,
                                                             new_balance))
-
-        # Filling the database
-        investment = self.investments.append()
         self.investments[None] = {
             "post": postID,
             "upvotes": upvotes,
@@ -303,15 +309,10 @@ def check_investments(reddit):
 
 
 def submission_bot(submission, subsdb):
-    try:
-        checked = subsdb[submission.id]
-    except IndexError:
+    if submission not in subsdb:
         print("New submission: %s" % submission)
-        subsdb.append(submission.id)
-        try:
-            submission.reply_wrap(message.invest_place_here)
-        except Exception:
-            pass
+        subsdb.append(submission)
+        submission.reply_wrap(message.invest_place_here)
 
 
 def main():
