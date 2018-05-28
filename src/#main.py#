@@ -299,7 +299,7 @@ def check_investments(reddit):
                 response.edit(message.modify_invest_return(text, change))
                 investments[row[0]]["success"] = 1
             else:
-                lost_memes = int(row[5] - (row[5] * factor))
+                lost_memes = int(row.amount - (row.amount * factor))
                 response.edit(message.modify_invest_lose(text, lost_memes))
 
 

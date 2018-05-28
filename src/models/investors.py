@@ -8,7 +8,7 @@ class Investors(BaseTable):
         super().__init__(db)
         self._exec("""
             CREATE TABLE IF NOT EXISTS {table} (
-                name TEXT PRIMARY KEY UNIQUE NOT NULL,
+                name VARCHAR(20) PRIMARY KEY,
                 balance INTEGER DEFAULT 1000,
                 active INTEGER DEFAULT 0,
                 completed INTEGER DEFAULT 0,

@@ -14,9 +14,9 @@ class Investments(BaseTable):
                 post CHAR(11),
                 upvotes INTEGER,
                 comment CHAR(11),
-                name TEXT,
+                name VARCHAR(20),
                 amount INTEGER,
-                time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                time INT DEFAULT (unix_timestamp(current_Date())),
                 done BIT DEFAULT 0,
                 response CHAR(11),
                 success BIT DEFAULT 0
