@@ -7,7 +7,7 @@ from threading import Thread, get_ident
 # import sqlite3
 import MySQLdb
 import praw
-from bottr.bot import AbstractCommentBot, BotQueueWorker
+from bottr.bot import AbstractCommentBot, BotQueueWorker, SubmissionBot
 
 import config
 import models
@@ -71,7 +71,6 @@ class CommentWorker(BotQueueWorker):
         self.investments = models.Investments(self.db)
         self.investors = models.Investors(self.db)
         self.comments = models.Comments(self.db)
-        self.submissions = models.Submissions(self.db)
 
     def stop(self):
         self.db.commit()
@@ -148,14 +147,15 @@ class CommentWorker(BotQueueWorker):
                                                             new_balance))
 
         # Filling the database
-        self.investments.append({
+        investment = self.investments.append()
+        self.investments[None] = {
             "post": postID,
             "upvotes": upvotes,
             "comment": comment,
             "name": author,
             "amount": amount,
             "response": response
-        })
+        }
         investor["balance"] = new_balance
         investor["active"] += 1
 
@@ -259,14 +259,13 @@ def check_investments(reddit):
     investments = models.Investments(db)
     investors = models.Investors(db)
     comments = models.Comments(db)
-    submissions = models.Submissions(db)
 
     print("Starting checking investments...")
     while True:
         time.sleep(60)
 
         for row in investments.done():
-            investor = investors[4]
+            investor = investors[row[4]]
             response = reddit.comment(id=row[8])
 
             # If comment is deleted, skip it
@@ -303,6 +302,18 @@ def check_investments(reddit):
                 response.edit(message.modify_invest_lose(text, lost_memes))
 
 
+def submission_bot(submission, subsdb):
+    try:
+        checked = subsdb[submission.id]
+    except IndexError:
+        print("New submission: %s" % submission)
+        subsdb.append(submission.id)
+        try:
+            submission.reply_wrap(message.invest_place_here)
+        except Exception:
+            pass
+
+
 def main():
     global REDDIT
 
@@ -313,15 +324,23 @@ def main():
                          user_agent=config.user_agent)
     bot = CommentBot(REDDIT, config.subreddits, config.name, n_jobs=4)
 
-    t = Thread(name="Investments", target=check_investments, args=[REDDIT]).start()
+    db = MySQLdb.connect(**config.dbconfig)
+    submissions = models.Submissions(db)
+    subbot = SubmissionBot(REDDIT, subreddits=config.subreddits,
+                           func_submission=submission_bot,
+                           func_submission_args=[submissions], n_jobs=1)
+
+    inv = Thread(name="Investments", target=check_investments, args=[REDDIT]).start()
     bot.start()
+    subbot.start()
 
     try:
         while True:
             pass
     except KeyboardInterrupt:
         bot.stop()
-        t.stop()
+        inv.stop()
+        subbot.stop()
 
 
 if __name__ == "__main__":

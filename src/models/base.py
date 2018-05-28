@@ -55,28 +55,26 @@ class BaseTable(object):
         if not isinstance(value, (dict, list, tuple)):
             raise TypeError("Expected dict, list or tuple")
 
-        if self._primkey_auto:
-            primkey = "NULL"
-        else:
-            primkey = key
-
         query = "%s," * len(value)
         query = query[:-1]
 
         if isinstance(value, dict):
-            key_query = ""
-
-            for k in value:
-                key_query += "%s," % k
-
-            key_query = key_query[:-1]
-
-            self._exec("INSERT INTO {table}({pkey},%s) VALUES(%s)" %
-                       (value.keys(), query),
-                       (primkey,) + (x for x in value))
+            print(value)
+            if self._primkey_auto:
+                self._exec("INSERT INTO {table}({keys}) VALUES({q})",
+                        value.values(),
+                        fmt={"keys": ",".join(value.keys()), "q": query})
+            else:
+                self._exec("INSERT INTO {table}({pkey},{keys}) VALUES(%s,{q})",
+                        [key] + value.values(),
+                        fmt={"keys": ",".join(value.keys()), "q": query})
         else:
-            self._exec("INSERT INTO {table} VALUES(%s)" % (query),
-                       (primkey,) + (x for x in value))
+            if self._primkey_auto:
+                self._exec("INSERT INTO {table} VALUES({q})",
+                           [x for x in value], fmt={"q": query})
+            else:
+                self._exec("INSERT INTO {table} VALUES(%s, {q})",
+                           [key] + [x for x in value], fmt={"q": query})
 
         self._dbconn.commit()
 
@@ -84,7 +82,7 @@ class BaseTable(object):
         return self._row_class(self._dbconn, self._db, self._table, self._primkey, key)
 
     def __len__(self):
-        return self._exec("SELECT COUNT(%s) FROM {table}" % self._primkey)
+        return self._exec("SELECT COUNT({key}) FROM {table}", fmt={"key": self._primkey})
 
     def __del__(self):
         self._db.close()
@@ -95,17 +93,20 @@ class BaseTable(object):
         else:
             primkey = key
 
-        ret = self._exec("INSERT INTO {table} ({pkey}) VALUES(%s)", (primkey,))
+        ret = self._exec("INSERT INTO {table} ({pkey}) VALUES(%s)", [primkey])
 
         self._dbconn.commit()
 
-        return ret
+        return self[ret]
 
     @property
     def _table(self):
         return self.__class__.__name__
 
-    def _exec(self, query, *args, **kwargs):
+    def _exec(self, query, *args, fmt={}, **kwargs):
+        if fmt:
+            print(query.format(table=self._table,
+                                             pkey=self._primkey, **fmt))
         return self._db.execute(query.format(table=self._table,
-                                             pkey=self._primkey),
+                                             pkey=self._primkey, **fmt),
                                 *args, **kwargs)
