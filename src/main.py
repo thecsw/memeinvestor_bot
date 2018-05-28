@@ -22,7 +22,7 @@ REDDIT = None
 def req_user(func):
     def wrapper(self, comment, *args):
         try:
-            investor = self.investors[comment.author.fullname]
+            investor = self.investors[comment.author.name]
             return func(self, comment, investor, *args)
         except IndexError:
             return self.no_such_user(comment)
@@ -89,7 +89,7 @@ class CommentWorker(BotQueueWorker):
             if matches:
                 try:
                     text = matches.group().split(" ")[0]
-                    print("%s: %s" % (comment.author.fullname, text))
+                    print("%s: %s" % (comment.author.name, text))
 
                     try:
                         getattr(self, text[1:])(comment, *matches.groups())
@@ -111,7 +111,7 @@ class CommentWorker(BotQueueWorker):
         comment.reply_wrap(message.modify_market(active, user_cap, invest_cap))
 
     def create(self, comment):
-        author = comment.author.fullname
+        author = comment.author.name
         try:
             return self.investors[author]
         except IndexError:
@@ -135,7 +135,7 @@ class CommentWorker(BotQueueWorker):
             return
 
         # Balance operations
-        author = comment.author.fullname
+        author = comment.author.name
         balance = investor["balance"]
         new_balance = balance - amount
 

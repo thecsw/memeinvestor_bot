@@ -14,7 +14,7 @@ class Investments(BaseTable):
                 post CHAR(11),
                 upvotes INTEGER,
                 comment CHAR(11),
-                name CHAR(11),
+                name TEXT,
                 amount INTEGER,
                 time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 done BIT DEFAULT 0,
