@@ -3,6 +3,7 @@ version: '3'
 services:
     bot:
         build: .
+        env_file: .env
         depends_on:
           - mysql
         environment:
@@ -12,6 +13,7 @@ services:
 
     mysql:
         image: mariadb
+        env_file: .env
         environment:
           - MYSQL_DATABASE=mysql
           - MYSQL_USER=mysql
