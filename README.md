@@ -19,10 +19,10 @@
 
 ## Welcome to Meme Investment!
 
-Welcome to the source code page of u/MemeInvestor_bot! Nice to meet you. First
-of all, let me talk you through what the bot does and details later. Quick note,
-if you want to contribute, do so! Check the TODO list and help the Meme
-Investments thrive! Thanks!
+Welcome to the source code page of [u/MemeInvestor_bot](https://www.reddit.com/user/MemeInvestor_bot). 
+If you want to contribute, do so! Check the TODO list and help the Meme Investments thrive! 
+
+Thanks!
 
 
 ## The duty
