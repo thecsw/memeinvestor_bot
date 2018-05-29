@@ -1,4 +1,4 @@
-from models.base import BaseTable
+from models.base import BaseTable, timeframed
 
 
 class Investments(BaseTable):
@@ -24,9 +24,22 @@ class Investments(BaseTable):
         """)
         self._dbconn.commit()
 
-    def done(self):
+    def todo(self):
         self._exec("SELECT * FROM {table} WHERE (unix_timestamp(current_Date()) - time) > 14400 AND done = 0")
         return self._db.fetchall()
 
     def invested_coins(self):
-        return self._exec("SELECT SUM(amount) FROM {table} WHERE done = 0").fetchone()[0]
+        self._exec("SELECT COALESCE(SUM(amount),0) FROM {table} WHERE done = 0")
+        return self._db.fetchone()[self._primkey]
+
+    def active(self):
+        self._exec("SELECT COUNT(id) FROM {table} WHERE done = 0")
+        return self._db.fetchone()[self._primkey]
+
+    @timeframed
+    def total(self, qfrom, qto):
+        self._exec("SELECT COUNT(id) FROM {table} WHERE {from} AND {to}", fmt={
+            "from": qfrom,
+            "to": qto
+        })
+        return self._db.fetchone()[self._primkey]

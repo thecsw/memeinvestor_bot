@@ -5,6 +5,7 @@ from queue import Queue
 from threading import Thread
 
 import MySQLdb
+import MySQLdb.cursors
 import _mysql_exceptions
 import praw
 from bottr.bot import AbstractCommentBot, BotQueueWorker, SubmissionBot
@@ -66,7 +67,7 @@ class CommentWorker(BotQueueWorker):
 
         while not self.db:
             try:
-                self.db = MySQLdb.connect(**config.dbconfig)
+                self.db = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor, **config.dbconfig)
             except _mysql_exceptions.OperationalError:
                 logging.warning("Waiting 10s for MySQL to go up...")
                 time.sleep(10)
@@ -117,7 +118,7 @@ class CommentWorker(BotQueueWorker):
     def market(self, comment):
         user_cap = self.investors.total_coins()
         invest_cap = self.investments.invested_coins()
-        active = len(self.investments)
+        active = self.investments.active()
         comment.reply_wrap(message.modify_market(active, user_cap, invest_cap))
 
     def create(self, comment):

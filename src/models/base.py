@@ -1,3 +1,26 @@
+def timeframed(func):
+    def wrapper(*args, time_from=None, time_to=None, **kwargs):
+        if not kwargs:
+            kwargs = {}
+
+        kwargs["qfrom"] = "1=1" if not time_from else "time > %d" % time_from
+        kwargs["qto"] = "1=1" if not time_to else "time < %d" % time_to
+
+        return func(*args, **kwargs)
+    return wrapper
+
+
+def paginated(func):
+    def wrapper(*args, page=0, per_page=100, **kwargs):
+        if not kwargs:
+            kwargs = {}
+
+        kwargs["qlimit"] = "LIMIT %d,%d" % (page * per_page, per_page)
+
+        return func(*args, **kwargs)
+    return wrapper
+
+
 class BaseRow(object):
     _primkey = None
     _dbconn = None
@@ -18,13 +41,12 @@ class BaseRow(object):
 
     def __getitem__(self, key):
         rows = self._exec("SELECT {key} FROM {table} WHERE {pkey} = %s",
-                   [self.primval], fmt={"key": key})
+                          [self.primval], fmt={"key": key})
 
-        # import ipdb; ipdb.set_trace()
         if not rows:
             raise IndexError("Key %s does not exist" % key)
 
-        return self._db.fetchone()[0]
+        return self._db.fetchone()[key]
 
     def __setitem__(self, key, value):
         self._exec("UPDATE {table} SET {key} = %s WHERE {pkey} = %s",
@@ -81,7 +103,7 @@ class BaseTable(object):
         return self._row_class(self._dbconn, self._db, self._table, self._primkey, key)
 
     def __len__(self):
-        return self._exec("SELECT COUNT({key}) FROM {table}", fmt={"key": self._primkey}).fetchone()[0]
+        return self._exec("SELECT COUNT({key}) FROM {table}", fmt={"key": self._primkey}).fetchone()[self._primkey]
 
     def __del__(self):
         self._db.close()

@@ -3,6 +3,7 @@ import logging
 from functools import lru_cache
 
 import MySQLdb
+import MySQLdb.cursors
 import praw
 from bottr.bot import AbstractCommentBot, BotQueueWorker, SubmissionBot
 from fastnumbers import fast_float
@@ -51,7 +52,7 @@ def calculate(new, old):
 
 
 def check_investments(reddit):
-    db = MySQLdb.connect(**config.dbconfig)
+    db = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor, **config.dbconfig)
 
     investments = models.Investments(db)
     investors = models.Investors(db)
@@ -61,31 +62,33 @@ def check_investments(reddit):
         praw.models.Comment.edit = logging.info
 
     while True:
-        for row in investments.done():
-            investor = investors[row[4]]
+        for row in investments.todo():
+            investor = investors[row["name"]]
 
+            print(investor)
             if not investor:
                 continue
 
-            if row[8] != "0":
-                response = reddit.comment(id=row[8])
+            if row["response"] != "0":
+                response = reddit.comment(id=row["response"])
             else:
                 response = EmptyResponse()
 
             # If comment is deleted, skip it
             try:
-                reddit.comment(id=row[3])
+                reddit.comment(id=row["comment"])
             except:
                 response.edit(message.deleted_comment_org)
                 continue
 
-            post = reddit.submission(row[1])
+            post = reddit.submission(row["post"])
             upvotes_now = post.ups
 
             # Updating the investor's balance
-            factor = calculate(upvotes_now, row[2])
+            factor = calculate(upvotes_now, row["upvotes"])
+            amount = row["amount"]
             balance = investor["balance"]
-            new_balance = balance + (row[5] * factor)
+            new_balance = balance + (amount * factor)
             investor["balance"] = new_balance
             change = new_balance - balance
 
@@ -94,16 +97,17 @@ def check_investments(reddit):
             investor["completed"] += 1
 
             # Marking the investment as done
-            investments[row[0]]["done"] = 1
+            investment = investments[row["id"]]
+            investment["done"] = 1
 
             # Editing the comment as a confirmation
             text = response.body
             if factor > 1:
-                investments[row[0]]["success"] = 1
+                investment["success"] = 1
                 logging.info("%s won %d memecoins!" % (investor, change))
                 response.edit(message.modify_invest_return(text, change))
             else:
-                lost_memes = int(row[5] - (row[5] * factor))
+                lost_memes = int(amount - (amount * factor))
                 logging.info("%s lost %d memecoins..." % (investor, lost_memes))
                 response.edit(message.modify_invest_lose(text, lost_memes))
 

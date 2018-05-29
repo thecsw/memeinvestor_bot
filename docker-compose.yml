@@ -33,6 +33,19 @@ services:
           - MYSQL_USER=mysql
           - MYSQL_PASSWORD=strongpass!word
 
+    api:
+        build: .
+        env_file: .env
+        command: ["python", "api.py"]
+        ports:
+         - 5000:5000
+        depends_on:
+          - mysql
+        environment:
+          - MYSQL_DATABASE=mysql
+          - MYSQL_USER=mysql
+          - MYSQL_PASSWORD=strongpass!word
+
     mysql:
         image: mariadb
         env_file: .env

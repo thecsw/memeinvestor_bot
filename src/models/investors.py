@@ -1,4 +1,4 @@
-from models.base import BaseTable
+from models.base import BaseTable, paginated
 
 
 class Investors(BaseTable):
@@ -18,4 +18,16 @@ class Investors(BaseTable):
         self._dbconn.commit()
 
     def total_coins(self):
-        return self._exec("SELECT SUM(balance) FROM {table}").fetchone()[0]
+        self._exec("SELECT COALESCE(SUM(balance),0) FROM {table}")
+        return self._db.fetchone()[self._primkey]
+
+    @paginated
+    def top(self, order, qlimit):
+        if not order in ["balance", "active", "completed", "broke"]:
+            return []
+
+        self._exec("SELECT * FROM {table} ORDER BY {order} DESC {limit}", fmt={
+            "limit": qlimit,
+            "order": order
+        })
+        return self._db.fetchall()

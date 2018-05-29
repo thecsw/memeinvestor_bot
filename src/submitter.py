@@ -2,6 +2,7 @@ import time
 import logging
 
 import MySQLdb
+import MySQLdb.cursors
 import _mysql_exceptions
 import praw
 from bottr.bot import AbstractCommentBot, BotQueueWorker, SubmissionBot
@@ -32,7 +33,7 @@ def main():
 
     while not db:
         try:
-            db = MySQLdb.connect(**config.dbconfig)
+            db = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor, **config.dbconfig)
         except _mysql_exceptions.OperationalError:
             logging.warning("Waiting 10s for MySQL to go up...")
             time.sleep(10)
