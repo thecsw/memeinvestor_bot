@@ -74,4 +74,4 @@ if __name__ == '__main__':
     investments = models.Investments(db)
     investors = models.Investors(db)
 
-    app.run()
+    app.run(host="0.0.0.0")
