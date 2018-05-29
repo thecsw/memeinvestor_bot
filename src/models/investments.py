@@ -16,7 +16,7 @@ class Investments(BaseTable):
                 comment CHAR(11),
                 name VARCHAR(20),
                 amount INTEGER,
-                time INT DEFAULT (unix_timestamp(current_Date())),
+                time INT DEFAULT (unix_timestamp(curtime())),
                 done BIT DEFAULT 0,
                 response CHAR(11),
                 success BIT DEFAULT 0
@@ -25,7 +25,7 @@ class Investments(BaseTable):
         self._dbconn.commit()
 
     def todo(self):
-        self._exec("SELECT * FROM {table} WHERE (unix_timestamp(current_Date()) - time) > 14400 AND done = 0")
+        self._exec("SELECT * FROM {table} WHERE (unix_timestamp(curtime()) - time) > 14400 AND done = 0")
         return self._db.fetchall()
 
     def invested_coins(self):
