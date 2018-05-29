@@ -25,7 +25,7 @@ class Investments(BaseTable):
         self._dbconn.commit()
 
     def todo(self):
-        self._exec("SELECT * FROM {table} WHERE (unix_timestamp(curtime()) - time) > 14400 AND done = 0")
+        self._exec("SELECT * FROM {table} WHERE (unix_timestamp(curtime()) - time) > 14400 AND (done = 0 OR done IS NULL)")
         return self._db.fetchall()
 
     def invested_coins(self):
