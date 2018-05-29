@@ -11,6 +11,28 @@ services:
           - MYSQL_USER=mysql
           - MYSQL_PASSWORD=strongpass!word
 
+    calculator:
+        build: .
+        env_file: .env
+        command: ["python", "calculator.py"]
+        depends_on:
+          - mysql
+        environment:
+          - MYSQL_DATABASE=mysql
+          - MYSQL_USER=mysql
+          - MYSQL_PASSWORD=strongpass!word
+
+    submitter:
+        build: .
+        env_file: .env
+        command: ["python", "submitter.py"]
+        depends_on:
+          - mysql
+        environment:
+          - MYSQL_DATABASE=mysql
+          - MYSQL_USER=mysql
+          - MYSQL_PASSWORD=strongpass!word
+
     mysql:
         image: mariadb
         env_file: .env

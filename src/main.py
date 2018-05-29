@@ -1,10 +1,9 @@
 import re
-import math
 import time
+import logging
 from queue import Queue
-from threading import Thread, get_ident
+from threading import Thread
 
-# import sqlite3
 import MySQLdb
 import _mysql_exceptions
 import praw
@@ -13,6 +12,8 @@ from bottr.bot import AbstractCommentBot, BotQueueWorker, SubmissionBot
 import config
 import models
 import message
+
+logging.basicConfig(level=logging.INFO)
 
 STARTER = 1000
 REDDIT = None
@@ -33,7 +34,7 @@ def req_user(func):
 # Monkey patch exception handling
 def reply_wrap(self, body):
     if config.dry_run:
-        print("[%s] Immitating reply %s" % (time.strftime("%d-%m-%Y %H:%M:%S"), body))
+        logging.info("[%s] Immitating reply %s" % (time.strftime("%d-%m-%Y %H:%M:%S"), body))
         return True
 
     try:
@@ -43,10 +44,10 @@ def reply_wrap(self, body):
 
 
 praw.models.Comment.reply_wrap = reply_wrap
-praw.models.Submission.reply_wrap = reply_wrap
 
 
 class CommentWorker(BotQueueWorker):
+    db = None
     commands = [
         r"!active",
         r"!balance",
@@ -62,9 +63,13 @@ class CommentWorker(BotQueueWorker):
         global REDDIT
 
         super().__init__(target=self._process_comment, *args, **kwargs)
-        print(self.commands)
 
-        self.db = MySQLdb.connect(**config.dbconfig)
+        while not self.db:
+            try:
+                self.db = MySQLdb.connect(**config.dbconfig)
+            except _mysql_exceptions.OperationalError:
+                logging.warning("Waiting 10s for MySQL to go up...")
+                time.sleep(10)
 
         self.regexes = [re.compile(x, re.MULTILINE | re.IGNORECASE)
                         for x in self.commands]
@@ -94,7 +99,7 @@ class CommentWorker(BotQueueWorker):
             if matches:
                 try:
                     text = matches.group().split(" ")[0]
-                    print("%s: %s" % (comment.author.name, text))
+                    logging.info("%s: %s" % (comment.author.name, text))
 
                     try:
                         getattr(self, text[1:])(comment, *matches.groups())
@@ -232,89 +237,6 @@ class CommentBot(AbstractCommentBot):
             raise e
 
 
-def calculate(new, old):
-    """
-    Investment return multiplier is detemined by a power function of the relative change in upvotes since the investment
-    was made.
-    Functional form: y = x^m ;
-        y = multiplier,
-        x = relative growth: (change in upvotes) / (upvotes at time of investment),
-        m = scale factor: allow curtailing high-growth post returns to make the playing field a bit fairer
-    """
-    new = float(new)
-    old = float(old)
-
-    # Scale factor for multiplier
-    scale_factor = 1 / float(3)
-
-    # Calculate relative change
-    if old != 0:
-        rel_change = (new - old) / abs(old)
-    # If starting upvotes was zero, avoid dividing by zero
-    else:
-        rel_change = new
-
-    mult = pow((rel_change+1), scale_factor)
-
-    return mult
-
-
-def check_investments(reddit):
-    db = MySQLdb.connect(**config.dbconfig)
-
-    investments = models.Investments(db)
-    investors = models.Investors(db)
-    comments = models.Comments(db)
-
-    print("Starting checking investments...")
-    while True:
-        time.sleep(60)
-
-        for row in investments.done():
-            investor = investors[row[4]]
-            response = reddit.comment(id=row[8])
-
-            # If comment is deleted, skip it
-            try:
-                reddit.comment(id=comments[row[3]])
-            except:
-                response.edit(message.deleted_comment_org)
-                continue
-
-            post = reddit.submission(row[1])
-            upvotes_now = post.ups
-
-            # Updating the investor's balance
-            factor = calculate(upvotes_now, row[2])
-            balance = investor["balance"]
-            new_balance = balance + (row[5] * factor)
-            investor["balance"] = new_balance
-            change = new_balance - balance
-
-            # Updating the investor's variables
-            investor["active"] -= 1
-            investor["completed"] += 1
-
-            # Marking the investment as done
-            investments[row[0]]["done"] = 1
-
-            # Editing the comment as a confirmation
-            text = response.body
-            if factor > 1:
-                response.edit(message.modify_invest_return(text, change))
-                investments[row[0]]["success"] = 1
-            else:
-                lost_memes = int(row[5] - (row[5] * factor))
-                response.edit(message.modify_invest_lose(text, lost_memes))
-
-
-def submission_bot(submission, subsdb):
-    if submission not in subsdb:
-        print("New submission: %s" % submission)
-        subsdb.append(submission)
-        submission.reply_wrap(message.invest_place_here)
-
-
 def main():
     global REDDIT
 
@@ -324,24 +246,7 @@ def main():
                          password=config.password,
                          user_agent=config.user_agent)
     bot = CommentBot(REDDIT, config.subreddits, config.name, n_jobs=4)
-
-    db = MySQLdb.connect(**config.dbconfig)
-    submissions = models.Submissions(db)
-    subbot = SubmissionBot(REDDIT, subreddits=config.subreddits,
-                           func_submission=submission_bot,
-                           func_submission_args=[submissions], n_jobs=1)
-
-    inv = Thread(name="Investments", target=check_investments, args=[REDDIT]).start()
     bot.start()
-    subbot.start()
-
-    try:
-        while True:
-            pass
-    except KeyboardInterrupt:
-        bot.stop()
-        inv.stop()
-        subbot.stop()
 
 
 if __name__ == "__main__":

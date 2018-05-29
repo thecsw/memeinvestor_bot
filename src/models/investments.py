@@ -25,12 +25,8 @@ class Investments(BaseTable):
         self._dbconn.commit()
 
     def done(self):
-        self._exec("SELECT * FROM {table} WHERE CURRENT_TIMESTAMP - time > 14400 AND Done = 0")
-        return self._db.fetchall()
-
-    def undone(self):
-        self._exec("SELECT * FROM {table} WHERE done = 0")
+        self._exec("SELECT * FROM {table} WHERE (unix_timestamp(current_Date()) - time) > 14400 AND done = 0")
         return self._db.fetchall()
 
     def invested_coins(self):
-        return self._exec("SELECT SUM(amount) FROM {table} WHERE done = 0")
+        return self._exec("SELECT SUM(amount) FROM {table} WHERE done = 0").fetchone()[0]

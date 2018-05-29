@@ -18,4 +18,4 @@ class Investors(BaseTable):
         self._dbconn.commit()
 
     def total_coins(self):
-        return self._exec("SELECT SUM(balance) FROM {table}")
+        return self._exec("SELECT SUM(balance) FROM {table}").fetchone()[0]

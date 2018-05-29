@@ -1,3 +1,4 @@
 praw==5.3.0
 bottr
 mysqlclient
+fastnumbers
