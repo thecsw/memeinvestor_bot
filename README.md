@@ -30,14 +30,14 @@ Investments thrive! Thanks!
 This bot has been developed exclusively for [r/MemeEconomy](https://reddit.com/r/MemeEconomy/). It can create
 investment account, help invest and then automatically return calculated
 investment 4 hours after the investment. To calculate the investment return, the
-bot multiplies the invested amount by a power function of the form *y = x^m*,
-where *m* is a constant (*m=1/3*) and *x* is the relative change in
-upvotes on the post since the invesment was made as a proportion of the upvotes 
+bot multiplies the invested amount by a power function of the form `y = x^m`,
+where `m` is a constant (`m=1/3`) and `x` is the relative change in
+upvotes on the post since the investment was made as a proportion of the upvotes 
 at the time of investment:  
-*x=1+(final_uvotes - initial_upvotes)/initial_upvotes*.  
+`x=1+(final_upvotes - initial_upvotes)/initial_upvotes`.  
 The 1/3 power function (cube root) behaviour was chosen so that the overall behavior
 of the investment return function is a steep rise which levels off at higher upvote
-growth. The reasoning behind this is to futher reduce the advantage of investing in a post
+growth. The reasoning behind this is to further reduce the advantage of investing in a post
 that's already highly-upvoted for a 'sure-win' and to try and keep the playing field somewhat more
 level for new investors.  
   
