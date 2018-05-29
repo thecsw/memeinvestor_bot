@@ -25,15 +25,21 @@ Investments thrive! /Thanks!/
 
 This bot has been developed exclusively for r/MemeEconomy. It can create
 investment account, help invest and then automatically return calculated
-investment 4 hours after the investment. To calculate the investment return, the bot
-multiplies the invested amount by a power function of the form *y = Ax^m*,
-where *A* and *m* are constants (*A=0.17366* , *m=0.2527*) and *x* is the change in upvotes
-on the post since the invesment was made. This function was written to emulate/replace
-the block of if/else statements that was originally used to calculate the investment return.
-The overall behavior of the function is a steep rise towards the break-even threshold (y=1)
-between 1020 and 1021 upvotes, and levelling off towards higher upvote changes. 
-There is also an upper cap imposed on the function at 750,000 upvotes with a max multiplier of approximately
-5.30063 times the original investment. Any gain in upvotes at or above this cap will recieve this maximum multiplier. 
+investment 4 hours after the investment. To calculate the investment return, the
+bot multiplies the invested amount by a power function of the form *y = x^m*,
+where *m* is a constant (*m=1/3*) and *x* is the relative change in
+upvotes on the post since the invesment was made as a proportion of the upvotes 
+at the time of investment:  
+*x=1+(final_uvotes - initial_upvotes)/initial_upvotes*.  
+The 1/3 power function (cube root) behaviour was chosen so that the overall behavior
+of the investment return function is a steep rise which levels off at higher upvote
+growth. The reasoning behind this is to futher reduce the advantage of investing in a post
+that's already highly-upvoted for a 'sure-win' and to try and keep the playing field somewhat more
+level for new investors.  
+  
+*Note:* This function has already been through several design iterations
+and may well be revised again in the future.
+
 
 #+CAPTION: Investment Return Multiplier Graph
 #+LABEL: irm
