@@ -58,6 +58,7 @@ class CommentWorker(BotQueueWorker):
         r"!ignore",
         r"!invest (\d+)",
         r"!market",
+        r"!top",
     ]
 
     def __init__(self, *args, **kwargs):
@@ -120,6 +121,10 @@ class CommentWorker(BotQueueWorker):
         invest_cap = self.investments.invested_coins()
         active = self.investments.active()
         comment.reply_wrap(message.modify_market(active, user_cap, invest_cap))
+
+    def top(self, comment):
+        top_rows = self.investors.top("balance", 10)
+        comment.reply_wrap(message.modify_top(top_rows))
 
     def create(self, comment):
         author = comment.author.name
