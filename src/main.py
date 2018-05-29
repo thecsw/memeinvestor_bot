@@ -250,36 +250,29 @@ def comment_thread():
 # Thanks to jimbobur for adding this feature.
 def calculate(new, old):
 
-    new = int(float(new))
-    old = int(float(old))
-    du = new - old
+    new = float(new)
+    old = float(old)
     
     """
-    Investment return multiplier is detemined by a power function of the change in upvotes since the investment was made.
-    The coefficients of this function were originally set to emulate the old if-else block method for determining 
-    investment return, but have now been changed to set the break-even point at +500 upvotes since the investment was made.
-    Functional form: y = A*x^m ;
+    Investment return multiplier is detemined by a power function of the relative change in upvotes since the investment
+    was made.
+    Functional form: y = x^m ;
         y = multiplier,
-        x = du (change in upvotes),
-        A = 0.15,
-        m = 0.44 (break-even threshold between 74/75 upvotes).
+        x = relative growth: (change in upvotes) / (upvotes at time of investment),
+        m = scale factor: allow curtailing high-growth post returns to make the playing field a bit fairer
     """
-    #Set constants to define function
-    A_mult=0.17366
-    m_mult=0.2818
-
-    #Allow custom upper du limit to cap maximum investment profit multiplier (set as desired)
-    success_cap = 283000
+    #scale factor for multiplier
+    scale_factor = 1 / float(3)
     
-    if (du >= success_cap):
-        capped_mult = A_mult * math.pow(success_cap, m_mult)
-        return capped_mult
-
-    #Safeguard: if du is -ve function cannot be evaluated and mult remains zero.
-    mult = 0
-    if (du >= 0):
-        mult = A_mult * math.pow(du, m_mult)
-
+    #calculate relative change
+    if (old != 0):
+        rel_change = (new - old) / abs(old)
+    #if starting upvotes was zero, avoid dividing by zero
+    else:
+        rel_change = new
+     
+    mult = pow((rel_change+1),scale_factor)
+    
     return mult
 
 def check_investments():
@@ -336,6 +329,8 @@ def check_investments():
             else:
                 lost_memes = int(amount - (amount * factor))
                 response.edit(message.modify_invest_lose(text, lost_memes))
+
+            print(f"Investment returned! {change}")
 
 def submission_thread():
 
