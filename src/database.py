@@ -239,6 +239,15 @@ def market_count_investments():
     conn.close()
     return active_investments
 
+def get_leaderboard():
+    conn = sqlite3.connect("data.db")
+    c = conn.cursor()
+    c.execute("SELECT Name, Balance FROM Investors ORDER BY Balance DESC LIMIT 10")
+    leaderboard_rows = c.fetchall()
+    c.close()
+    conn.close()
+    return leaderboard_rows
+
 def find_investor(name):
     conn = sqlite3.connect("data.db")
     c = conn.cursor()

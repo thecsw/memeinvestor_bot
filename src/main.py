@@ -175,6 +175,10 @@ def market(comment):
     active_number = database.market_count_investments()
     send_reply(comment, message.modify_market(active_number, user_cap, invest_cap))
 
+def leaderboard(comment):
+    leaderboard_rows = database.get_leaderboard()
+    comment.reply(message.modify_leaderboard(leaderboard_rows))
+
 def comment_thread():
 
     print("Started the comment_thread()...")
@@ -216,7 +220,14 @@ def comment_thread():
         if ("!market" in text):
             market(comment)
             continue
-                
+
+        if ("!leaderboard" in text):
+            try:
+                leaderboard(comment)
+            except:
+                continue
+            continue
+
         if (("!create" in text) and (not exist)):
             create(comment, author)
             continue
