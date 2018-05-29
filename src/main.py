@@ -1,354 +1,254 @@
-
-"""
- __  __                     ___                     _             
-|  \/  | ___ _ __ ___   ___|_ _|_ ____   _____  ___| |_ ___  _ __ 
-| |\/| |/ _ \ '_ ` _ \ / _ \| || '_ \ \ / / _ \/ __| __/ _ \| '__|
-| |  | |  __/ | | | | |  __/| || | | \ V /  __/\__ \ || (_) | |   
-|_|  |_|\___|_| |_| |_|\___|___|_| |_|\_/ \___||___/\__\___/|_|   
-                                                                  
-"""
-
-# Standard scripts
+import re
 import time
+import logging
+from queue import Queue
 from threading import Thread
-import sqlite3
-import math
 
-# Third-party library
+import MySQLdb
+import MySQLdb.cursors
+import _mysql_exceptions
 import praw
+from bottr.bot import AbstractCommentBot, BotQueueWorker, SubmissionBot
 
-# Our own scripts and files
 import config
+import models
 import message
-import database
 
-# Reddit instance initialization
-reddit = praw.Reddit(client_id=config.client_id,
-                     client_secret=config.client_secret,
-                     username=config.username,
-                     password=config.password,
-                     user_agent=config.user_agent)
+logging.basicConfig(level=logging.INFO)
 
-# Subreddit initialization
-subreddit_name = "memeeconomy"
-subreddit = reddit.subreddit(subreddit_name)
+STARTER = 1000
+REDDIT = None
 
-# Starter money
-starter = 1000
 
-# Commands that require an account!
-commands = ["!invest",
-            "!broke",
-            "!balance",
-            "!active"]
+# Decorator to mark a commands that require a user
+# Adds the investor after the comment when it calls the method (see broke)
+def req_user(func):
+    def wrapper(self, comment, *args):
+        try:
+            investor = self.investors[comment.author.name]
+            return func(self, comment, investor, *args)
+        except IndexError:
+            return self.no_such_user(comment)
+    return wrapper
 
-# Database initialization
-database.init_investors()
-print("Investors table created!")
-database.init_investments()
-print("Investments table created!")
-database.init_comments()
-print("Comments table created!")
-database.init_submissions()
-print("Submissions table created!")
 
-def send_reply(comment, string):
+# Monkey patch exception handling
+def reply_wrap(self, body):
+    if config.dry_run:
+        logging.info("[%s] Immitating reply %s" % (time.strftime("%d-%m-%Y %H:%M:%S"), body))
+        return True
 
-    # We already check if comments exist or not
-    # But one time, one comment got through the
-    # deleted comment validation and then in a
-    # fraction of a second got deleted and raised
-    # an exception. To be safe, I added just a try
-    # operator
     try:
-        return comment.reply(string)
-    except:
-        return False
-    return True
-
-def create(comment, author):
-    
-    database.investor_insert(author, starter)
-    send_reply(comment, message.modify_create(author, starter))
-    
-def invest(comment, author):
-
-    # Post related vars
-    post = reddit.submission(comment.submission)
-
-    # OK, I seriously don't understand how broken or deleted posts
-    # get throught the exist feature. HOW?!
-    try:
-        post_author = post.author.name.lower()
-    except:
-        return False
-    
-    # Insider trading is not allowed!
-    if (author == post.author):
-        send_reply(comment, message.inside_trading_org)
+        return self.reply(body)
+    except praw.exceptions.APIException:
         return False
 
-    postID = post.id
-    commentID = comment.id
-    upvotes = post.ups
 
-    invested_already = database.is_already_invested(author, postID)
-    if (invested_already):
-        send_reply(comment, message.invest_again_org)
-        return False
-    
-    # UNIX timestamp
-    unix = time.time() 
+praw.models.Comment.reply_wrap = reply_wrap
 
-    # The invest amount, if fails, return False
-    text = comment.body.lower()
-    invest_string = text.replace("!invest", "").replace(" ", "")
-    try:
-        invest_amount = int(float(invest_string))
-    except ValueError:
-        return False
-    
-    if (invest_amount < 100):
-        send_reply(comment, message.min_invest_org)
-        return False
-    
-    # Balance operations
-    balance = database.investor_get_balance(author)
-    active = database.investor_get_active(author)
-    new_balance = balance - invest_amount
 
-    if (new_balance < 0):
-        send_reply(comment, message.insuff_org)
-        return False
+class CommentWorker(BotQueueWorker):
+    db = None
+    commands = [
+        r"!active",
+        r"!balance",
+        r"!broke",
+        r"!create",
+        r"!help",
+        r"!ignore",
+        r"!invest (\d+)",
+        r"!market",
+    ]
 
-    active += 1
+    def __init__(self, *args, **kwargs):
+        global REDDIT
 
-    # Sending a confirmation
-    response = send_reply(comment, message.modify_invest(invest_amount, upvotes, new_balance))
-    # If comment is not present, exit
-    if (not response):
-        return False
-    # Filling the database
-    database.investment_insert(post, upvotes, comment, author, invest_amount, unix, response)
-    database.investor_update_balance(author, new_balance)
-    database.investor_update_active(author, active)
-    
-def balance(comment, author):
+        super().__init__(target=self._process_comment, *args, **kwargs)
 
-    balance_amount = database.investor_get_balance(author)
-    send_reply(comment, message.modify_balance(balance_amount))
-
-def activity(comment, author):
-
-    active = database.investor_get_active(author)
-    send_reply(comment, message.modify_active(active))
-
-def broke(comment, author):
-
-    balance_amount = database.investor_get_balance(author)
-    active_number = database.investor_get_active(author)
-
-    if (balance_amount < 100):
-        if (active_number < 1):
-            # Indeed, broke
-            database.investor_update_balance(author, 100)
-            database.investor_update_active(author, 0)
-            broke_times = database.investor_get_broke(author)
-            broke_times += 1
-            database.investor_update_broke(author, broke_times)
-            # Sure, you can do it like
-            # database.investor_get_broke(author, database.investor_get_broke(author) + 1)
-            # But it is way to messy, we are for the code understandability
-            
-            send_reply(comment, message.modify_broke(broke_times))
-        else:
-            # Still has investments
-            send_reply(comment, message.modify_broke_active(active_number))
-    else:
-        # Still can invest
-        send_reply(comment, message.modify_broke_money(balance_amount))
-
-def market(comment):
-
-    user_cap = database.market_user_coins()
-    invest_cap = database.market_invest_coins()
-    active_number = database.market_count_investments()
-    send_reply(comment, message.modify_market(active_number, user_cap, invest_cap))
-
-def comment_thread():
-
-    print("Started the comment_thread()...")
-    for comment in subreddit.stream.comments():
-
-        author = comment.author.name.lower()
-        text = comment.body.lower()
-        checked = database.find_comment(comment)
-        if (checked):
-            continue     
-        database.log_comment(comment)
-
-        submission = reddit.submission(comment.submission)
-
-        # The thread is locked
-        if (submission.locked):
-            continue
-
-        # If the comment is deleted
-        if (not comment.banned_by == None):
-            continue
-
- 
-        # We don't serve bots
-        if ("_bot" in author):
-            continue
-
-        exist = database.find_investor(author)
-
-        print(f"Comment ID: {comment.id}\n\tAuthor: {author}\n\tText: {text}\n\tExist?: {exist}\n\tPost Locked?: {submission.locked}\n")
-        
-        if ("!ignore" in text):
-            continue
-        
-        if ("!help" in text):
-            send_reply(comment, message.help_org)
-            continue
-        
-        if ("!market" in text):
-            market(comment)
-            continue
-                
-        if (("!create" in text) and (not exist)):
-            create(comment, author)
-            continue
-        
-        command_present = 0
-        for comm in commands:
-            if comm in text:
-                command_present = 1
-                
-        if ((not exist) and (command_present)):
-            send_reply(comment, message.no_account_org)
-            continue
-                
-        if ("!invest" in text):
-            invest(comment, author)
-            continue
-                
-        if ("!balance" in text):
-            balance(comment, author)
-            continue
-            
-        if ("!broke" in text):
-            broke(comment, author)
-            continue
-        
-        if ("!active" in text):
-            activity(comment, author)
-            continue
-
-# This method is taken from old investor.py
-# Thanks to jimbobur for adding this feature.
-def calculate(new, old):
-
-    new = float(new)
-    old = float(old)
-    
-    """
-    Investment return multiplier is detemined by a power function of the relative change in upvotes since the investment
-    was made.
-    Functional form: y = x^m ;
-        y = multiplier,
-        x = relative growth: (change in upvotes) / (upvotes at time of investment),
-        m = scale factor: allow curtailing high-growth post returns to make the playing field a bit fairer
-    """
-    #scale factor for multiplier
-    scale_factor = 1 / float(3)
-    
-    #calculate relative change
-    if (old != 0):
-        rel_change = (new - old) / abs(old)
-    #if starting upvotes was zero, avoid dividing by zero
-    else:
-        rel_change = new
-     
-    mult = pow((rel_change+1),scale_factor)
-    
-    return mult
-
-def check_investments():
-
-    print("Starting checking investments...")
-    while True:
-        time.sleep(60)
-        done_ids = database.investment_find_done()
-        for id_number in done_ids:
-            # I know that everything can be compacted in a tuple
-            # This way it is more understandable
-            name = database.investment_get_name(id_number)
-            postID = database.investment_get_post(id_number)
-            upvotes_old = database.investment_get_upvotes(id_number)
-            amount = database.investment_get_amount(id_number)
-            responseID = database.investment_get_response(id_number)
-            response = reddit.comment(id=responseID)
-            
-            # If comment is deleted, skip it
+        while not self.db:
             try:
-                commentID = database.investment_get_comment(id_number)
-                comment = reddit.comment(id=commentID)
-            except:
-                response.edit(message.deleted_comment_org)
-                continue
-            
-            post = reddit.submission(postID)
-            upvotes_now = post.ups
-            
-            # Updating the investor's balance
-            factor = calculate(upvotes_now, upvotes_old)
-            balance = database.investor_get_balance(name)
-            new_balance = int(balance + (amount * factor))
-            database.investor_update_balance(name, new_balance)
-            change = new_balance - balance
-            
-            # Updating the investor's variables
-            active = database.investor_get_active(name)
-            active -= 1
-            database.investor_update_active(name, active)
-            
-            completed = database.investor_get_completed(name)
-            completed += 1
-            database.investor_update_completed(name, completed)
-            
-            # Marking the investment as done
-            database.investment_update_done(id_number)
-            
-            # Editing the comment as a confirmation
-            text = response.body
-            if (factor > 1):
-                response.edit(message.modify_invest_return(text, change))
-                database.investment_update_success(id_number)
+                self.db = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor, **config.dbconfig)
+            except _mysql_exceptions.OperationalError:
+                logging.warning("Waiting 10s for MySQL to go up...")
+                time.sleep(10)
+
+        self.regexes = [re.compile(x, re.MULTILINE | re.IGNORECASE)
+                        for x in self.commands]
+        self.reddit = REDDIT
+
+        self.investments = models.Investments(self.db)
+        self.investors = models.Investors(self.db)
+        self.comments = models.Comments(self.db)
+
+    def stop(self):
+        self.db.commit()
+        self.db.close()
+        super().stop()
+
+    def _process_comment(self, comment: praw.models.Comment):
+        if str(comment.author).lower().endswith("_bot"):
+            return
+
+        if comment in self.comments:
+            return
+        self.comments.append(comment)
+
+        text = comment.body.lower()
+
+        for reg in self.regexes:
+            matches = reg.search(comment.body)
+            if matches:
+                try:
+                    text = matches.group().split(" ")[0]
+                    logging.info("%s: %s" % (comment.author.name, text))
+
+                    try:
+                        getattr(self, text[1:])(comment, *matches.groups())
+                    except IndexError:
+                        getattr(self, text[1:])(comment)
+                except AttributeError:
+                    pass
+
+    def ignore(self, comment):
+        pass
+
+    def help(self, comment):
+        comment.reply_wrap(message.help_org)
+
+    def market(self, comment):
+        user_cap = self.investors.total_coins()
+        invest_cap = self.investments.invested_coins()
+        active = self.investments.active()
+        comment.reply_wrap(message.modify_market(active, user_cap, invest_cap))
+
+    def create(self, comment):
+        author = comment.author.name
+        try:
+            return self.investors[author]
+        except IndexError:
+            self.investors.append(author)
+            comment.reply_wrap(message.modify_create(comment.author, STARTER))
+
+    @req_user
+    def invest(self, comment, investor, amount):
+        # Post related vars
+        if not investor:
+            return
+
+        post = self.reddit.submission(comment.submission)
+        postID = post.id
+        upvotes = post.ups
+
+        try:
+            amount = int(amount)
+        except ValueError:
+            return
+
+        if amount < 100:
+            comment.reply_wrap(message.min_invest_org)
+            return
+
+        # Balance operations
+        author = comment.author.name
+        balance = investor["balance"]
+        new_balance = balance - amount
+
+        if new_balance < 0:
+            comment.reply_wrap(message.insuff_org)
+            return
+
+        # Sending a confirmation
+        response = comment.reply_wrap(message.modify_invest(amount, upvotes,
+                                                            new_balance))
+        self.investments[None] = {
+            "post": postID,
+            "upvotes": upvotes,
+            "comment": comment,
+            "name": author,
+            "amount": amount,
+            "response": response
+        }
+        investor["balance"] = new_balance
+        investor["active"] += 1
+
+    @req_user
+    def balance(self, comment, investor):
+        comment.reply_wrap(message.modify_balance(investor["balance"]))
+
+    @req_user
+    def broke(self, comment, investor):
+        active = investor["active"]
+        balance = investor["balance"]
+
+        if balance < 100:
+            if active < 1:
+                # Indeed, broke
+                investor["balance"] = 100
+                investor["active"] = 0
+                broke = investor["broke"] + 1
+                investor["broke"] = broke
+
+                comment.reply_wrap(message.modify_broke(broke))
             else:
-                lost_memes = int(amount - (amount * factor))
-                response.edit(message.modify_invest_lose(text, lost_memes))
+                # Still has investments
+                comment.reply_wrap(message.modify_broke_active(active))
+        else:
+            # Still can invest
+            comment.reply_wrap(message.modify_broke_money(balance))
 
-            print(f"Investment returned! {change}")
+    @req_user
+    def active(self, comment, investor):
+        comment.reply_wrap(message.modify_active(investor["active"]))
 
-def submission_thread():
+    def no_such_user(self, comment):
+        comment.reply_wrap(message.no_account_org)
 
-    for submission in subreddit.stream.submissions():
-        checked = database.find_submission(submission)
-        if (checked):
-            continue
-        database.log_submission(submission)
 
-        commentID = send_reply(submission, message.invest_place_here)
-        
-        # Making the comment sticky
-        #commentID.mod.distinguish(how='yes', sticky=True)
-        
-def threads():
-    Thread(name="Comments", target=comment_thread).start()
-    Thread(name="Submissions", target=submission_thread).start()
-    Thread(name="Investments", target=check_investments).start()
+class CommentBot(AbstractCommentBot):
+    def _process_comment(self, comment):
+        # This code is never reached
+        pass
+
+    # Duplicate the whole code to change the worker... -.-
+    def _listen_comments(self):
+        # Collect comments in a queue
+        comments_queue = Queue(maxsize=self._n_jobs * 4)
+        threads = []  # type: List[BotQueueWorker]
+
+        try:
+            # Create n_jobs CommentsThreads
+            for i in range(self._n_jobs):
+                t = CommentWorker(name='CommentThread-t-{}'.format(i),
+                                   jobs=comments_queue)
+                t.start()
+                threads.append(t)
+
+            # Iterate over all comments in the comment stream
+            for comment in self._reddit.subreddit('+'.join(self._subs)).stream.comments():
+                # Check for stopping
+                if self._stop:
+                    self._do_stop(comments_queue, threads)
+                    break
+
+                comments_queue.put(comment)
+
+            self.log.debug('Listen comments stopped')
+        except Exception as e:
+            # self._do_stop(comments_queue, threads)
+            raise e
+
+
+def main():
+    global REDDIT
+
+    REDDIT = praw.Reddit(client_id=config.client_id,
+                         client_secret=config.client_secret,
+                         username=config.username,
+                         password=config.password,
+                         user_agent=config.user_agent)
+    bot = CommentBot(REDDIT, config.subreddits, config.name, n_jobs=4)
+    bot.start()
+
 
 if __name__ == "__main__":
-    threads()
+    main()
