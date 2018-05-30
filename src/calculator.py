@@ -24,15 +24,14 @@ class EmptyResponse(object):
 
 @lru_cache(maxsize=10240)
 def calculate(new, old):
-    """
-    Investment return multiplier is detemined by a power function of the relative change in upvotes since the investment
-    was made.
-    Functional form: y = x^m ;
-        y = multiplier,
-        x = relative growth: (change in upvotes) / (upvotes at time of investment),
-        m = scale factor: allow curtailing high-growth post returns to make the playing field a bit fairer
-    """
-
+    
+    # Multiplier is detemined by a power function of the relative change in upvotes
+    # since the investment was made.
+    # Functional form: y = x^m ;
+    #    y = multiplier,
+    #    x = relative growth: (change in upvotes) / (upvotes at time of investment),
+    #    m = scale factor: allow curtailing high-growth post returns to make the playing field a bit fairer
+    
     new = fast_float(new)
     old = fast_float(old)
 
@@ -47,8 +46,32 @@ def calculate(new, old):
         rel_change = new
 
     mult = pow((rel_change+1), scale_factor)
+    
+    # Investment must grow by more than a threshold amount to win.Decide if
+    # investment was successful and whether you get anything back at all.
+    win_threshold = 1.3
+    if mult > win_threshold:
+        investment_success = True
+        return_money = True
+    elif mult > 1:
+        investment_success = False
+        return_money = True
+    else:
+        investment_success = False
+        return_money = False
+    
+    # Investor gains money only if investment was successful. If mult
+    # was below win_threshold but above 1 return factor is ratio of 
+    # difference between mult and 1 and difference between win_threshold and 1.
+    # Otherwise, if mult was 1 or lower, get back nothing.
+    if investment_success:
+        factor = amount * mult
+    elif return_money:
+        factor = (mult - 1)/(win_threshold - 1)
+    else:
+        factor = 0
 
-    return mult
+    return factor
 
 
 def check_investments(reddit):
@@ -86,33 +109,10 @@ def check_investments(reddit):
 
             # Updating the investor's balance
             factor = calculate(upvotes_now, row["upvotes"])
-            
-            # Decide if investment was successful and whether you get anything back at all
-            win_threshold = 1.3
-            if factor > win_threshold:
-                investment_success = True
-                return_money = True
-            elif factor > 1:
-                investment_success = False
-                return_money = True
-            else:
-                investment_success = False
-                return_money = False
-            
             amount = row["amount"]
             balance = investor["balance"]
             
-            # Investor gains money only if investment was successful. If multiplier
-            # was below win_threshold but above 1 get back invested mount multiplied by
-            # ratio of difference between factor and 1 and difference between win_threshold and 1.
-            # Otherwise, if factor was 1 or lower, get back nothing.
-            if investment_success:
-                new_balance = int( balance + (amount * factor) )
-            elif return_money:
-                new_balance = int( balance + (amount * ( (factor - 1)/(win_threshold - 1)) )
-            else:
-                new_balance = balance
-            
+            new_balance = balance + (amount * factor)
             investor["balance"] = new_balance
             change = new_balance - balance
 
@@ -131,18 +131,15 @@ def check_investments(reddit):
 
             # Editing the comment as a confirmation
             text = response.body
-            if investment_success:
+            if factor > 1:
                 investment["success"] = 1
                 logging.info("%s won %d memecoins!" % (investor, change))
                 response.edit(message.modify_invest_return(text, change))
-            elif return_money:
-                lost_memes = int( amount - (amount * (amount * ( (factor - 1)/(win_threshold - 1)) ) )
+            else:
+                lost_memes = int( amount - change )
                 logging.info("%s lost %d memecoins..." % (investor, lost_memes))
                 response.edit(message.modify_invest_lose(text, lost_memes))
-            else:
-                logging.info("%s lost %d memecoins..." % (investor, amount))
-                response.edit(message.modify_invest_lose(text, amount))
-
+            
         time.sleep(60)
 
 def main():
