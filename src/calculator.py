@@ -87,24 +87,24 @@ def check_investments(reddit):
             # Updating the investor's balance
             factor = calculate(upvotes_now, row["upvotes"])
 			
-			# Decide if investment was successful based on win threshold
-			win_threshold = 1.3
-			if factor > win_threshold:
-				investment_success = True
-			else:
-				investment_success = False
+	    # Decide if investment was successful based on win threshold
+	    win_threshold = 1.3
+            if factor > win_threshold:
+	    	investment_success = True
+	    else:
+		investment_success = False
 			
             amount = row["amount"]
             balance = investor["balance"]
 			
-			# Investor gains money only if investment was successful, otherwise, lose invested
-			# amount multiplied by difference between win threshold and factor.
-			if investment_success:
-				new_balance = int( balance + (amount * factor) )
+	    # Investor gains money only if investment was successful, otherwise, lose invested
+	    # amount multiplied by difference between win threshold and factor.
+	    if investment_success:
+	    	new_balance = int( balance + (amount * factor) )
             else:
-				new_balance = int( balance + (amount * ( win_threshold - factor)) )
+	    	new_balance = int( balance + (amount * ( win_threshold - factor)) )
 			
-			investor["balance"] = new_balance
+	    investor["balance"] = new_balance
             change = new_balance - balance
 
             # Updating the investor's variables
