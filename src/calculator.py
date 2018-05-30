@@ -86,10 +86,25 @@ def check_investments(reddit):
 
             # Updating the investor's balance
             factor = calculate(upvotes_now, row["upvotes"])
+			
+			# Decide if investment was successful based on win threshold
+			win_threshold = 1.3
+			if factor > win_threshold:
+				investment_success = True
+			else:
+				investment_success = False
+			
             amount = row["amount"]
             balance = investor["balance"]
-            new_balance = int(balance + (amount * factor))
-            investor["balance"] = new_balance
+			
+			# Investor gains money only if investment was successful, otherwise, lose invested
+			# amount multiplied by difference between win threshold and factor.
+			if investment_success:
+				new_balance = int( balance + (amount * factor) )
+            else:
+				new_balance = int( balance + (amount * ( win_threshold - factor)) )
+			
+			investor["balance"] = new_balance
             change = new_balance - balance
 
             # Updating the investor's variables
@@ -107,15 +122,12 @@ def check_investments(reddit):
 
             # Editing the comment as a confirmation
             text = response.body
-            if factor > 1:
+            if investment_success:
                 investment["success"] = 1
                 logging.info("%s won %d memecoins!" % (investor, change))
                 response.edit(message.modify_invest_return(text, change))
-            elif factor == 1: 
-                logging.info("%s broke even and got back %d memecoins." % (investor, change))
-                response.edit(message.modify_invest_return(text, change))
             else:
-                lost_memes = int(amount - (amount * factor))
+                lost_memes = int( amount - (amount * ( win_threshold - factor)) )
                 logging.info("%s lost %d memecoins..." % (investor, lost_memes))
                 response.edit(message.modify_invest_lose(text, lost_memes))
 
