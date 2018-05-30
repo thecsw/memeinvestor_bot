@@ -107,9 +107,12 @@ def check_investments(reddit):
 
             # Editing the comment as a confirmation
             text = response.body
-            if factor > 1.3:
+            if factor > 1:
                 investment["success"] = 1
                 logging.info("%s won %d memecoins!" % (investor, change))
+                response.edit(message.modify_invest_return(text, change))
+            elif factor == 1: 
+                logging.info("%s broke even and got back %d memecoins." % (investor, change))
                 response.edit(message.modify_invest_return(text, change))
             else:
                 lost_memes = int(amount - (amount * factor))
