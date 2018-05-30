@@ -1,3 +1,4 @@
+import json
 import time
 import logging
 
@@ -72,6 +73,26 @@ def investor(name):
         return jsonify(investors[name].get())
     except IndexError:
         return not_found("User not found")
+
+
+@app.route("/")
+def index():
+    data = {
+        "coins": {
+            "invested": json.loads(coins_invested().get_data()),
+            "total": json.loads(coins_total().get_data()),
+        },
+        "investments": {
+            "active": json.loads(investments_active().get_data()),
+            "total": json.loads(investments_total().get_data()),
+        },
+        "investors": {
+            "top": json.loads(investors_top().get_data()),
+        },
+    }
+    print(data)
+
+    return jsonify(data)
 
 
 @app.errorhandler(404)
