@@ -48,6 +48,11 @@ class BaseRow(object):
 
         return self._db.fetchone()[key]
 
+    def get(self):
+        self._exec("SELECT * FROM {table} WHERE {pkey} = %s", [self.primval])
+
+        return self._db.fetchone()
+
     def __setitem__(self, key, value):
         self._exec("UPDATE {table} SET {key} = %s WHERE {pkey} = %s",
                    (value, self.primval), fmt={"key": key})
@@ -103,7 +108,7 @@ class BaseTable(object):
         return self._row_class(self._dbconn, self._db, self._table, self._primkey, key)
 
     def __len__(self):
-        return self._exec("SELECT COUNT({key}) FROM {table}", fmt={"key": self._primkey}).fetchone()[self._primkey]
+        return self._exec("SELECT COUNT({key}) AS {pkey} FROM {table}", fmt={"key": self._primkey}).fetchone()[self._primkey]
 
     def __del__(self):
         self._db.close()

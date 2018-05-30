@@ -18,12 +18,12 @@ class Investors(BaseTable):
         self._dbconn.commit()
 
     def total_coins(self):
-        self._exec("SELECT COALESCE(SUM(balance),0) FROM {table}")
+        self._exec("SELECT COALESCE(SUM(balance),0) AS {pkey} FROM {table}")
         return self._db.fetchone()[self._primkey]
 
     @paginated
     def top(self, order, qlimit):
-        if not order in ["balance", "active", "completed", "broke"]:
+        if not order in ["balance", "active", "completed", "broke", "name"]:
             return []
 
         self._exec("SELECT * FROM {table} ORDER BY {order} DESC {limit}", fmt={
