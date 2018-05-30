@@ -32,8 +32,15 @@ def investments_active():
 
 @app.route("/investments/total")
 def investments_total():
-    time_from = int(request.args.get("from"))
-    time_to = int(request.args.get("to"))
+    try:
+        time_from = int(request.args.get("from"))
+    except TypeError:
+        time_from = 0
+
+    try:
+        time_to = int(request.args.get("to"))
+    except TypeError:
+        time_to = 0
 
     return jsonify({"investments": str(investments.total(time_from=time_from, time_to=time_to))})
 
