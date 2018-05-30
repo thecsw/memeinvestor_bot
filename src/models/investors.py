@@ -23,7 +23,7 @@ class Investors(BaseTable):
 
     @paginated
     def top(self, order, qlimit):
-        if not order in ["balance", "active", "completed", "broke"]:
+        if not order in ["balance", "active", "completed", "broke", "name"]:
             return []
 
         self._exec("SELECT * FROM {table} ORDER BY {order} DESC {limit}", fmt={

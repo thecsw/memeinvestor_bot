@@ -233,8 +233,9 @@ class CommentBot(AbstractCommentBot):
 
             self.log.debug('Listen comments stopped')
         except Exception as e:
-            # self._do_stop(comments_queue, threads)
-            raise e
+            self._do_stop(comments_queue, threads)
+            time.sleep(10)
+            self._listen_comments()
 
 
 def main():

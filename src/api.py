@@ -15,38 +15,39 @@ investments = None
 investors = None
 
 
-@app.route('/market/invested_coins')
-def invested_coins():
-    return jsonify({'coins': str(investments.invested_coins())})
+@app.route("/coins/invested")
+def coins_invested():
+    return jsonify({"coins": str(investments.invested_coins())})
 
 
-@app.route('/market/total_coins')
-def total_coins():
-    return jsonify({'coins': str(investors.total_coins())})
+@app.route("/coins/total")
+def coins_total():
+    return jsonify({"coins": str(investors.total_coins())})
 
 
-@app.route('/market/active_investments')
-def active_investments():
-    return jsonify({'investments': str(investments.active())})
+@app.route("/investments/active")
+def investments_active():
+    return jsonify({"investments": str(investments.active())})
 
 
-@app.route('/market/total_investments')
-def total_investments():
-    time_from = int(request.args.get('from'))
-    time_to = int(request.args.get('to'))
+@app.route("/investments/total")
+def investments_total():
+    time_from = int(request.args.get("from"))
+    time_to = int(request.args.get("to"))
 
-    return jsonify({'investments': str(investments.total(time_from=time_from, time_to=time_to))})
+    return jsonify({"investments": str(investments.total(time_from=time_from, time_to=time_to))})
 
 
-@app.route('/investors/top/<string:field>')
-def top_investors(field):
+@app.route("/investors/top")
+@app.route("/investors/top/<string:field>")
+def investors_top(field="balance"):
     try:
-        page = int(request.args.get('page'))
+        page = int(request.args.get("page"))
     except TypeError:
         page = 0
 
     try:
-        per_page = int(request.args.get('per_page'))
+        per_page = int(request.args.get("per_page"))
     except TypeError:
         per_page = 100
 
@@ -55,7 +56,15 @@ def top_investors(field):
     if page < 0:
         page = 0
 
-    return jsonify({'investors' : investors.top(field, page=page, per_page=per_page)})
+    return jsonify(investors.top(field, page=page, per_page=per_page))
+
+
+@app.route("/investor/<string:name>")
+def investor(name):
+    try:
+        return jsonify(investors[name].get())
+    except IndexError:
+        return not_found("User not found")
 
 
 @app.errorhandler(404)
@@ -63,7 +72,7 @@ def not_found(e):
     return jsonify(error=404, text=str(e)), 404
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     while not db:
         try:
             db = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor, **config.dbconfig)

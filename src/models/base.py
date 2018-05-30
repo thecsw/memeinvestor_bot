@@ -48,6 +48,11 @@ class BaseRow(object):
 
         return self._db.fetchone()[key]
 
+    def get(self):
+        self._exec("SELECT * FROM {table} WHERE {pkey} = %s", [self.primval])
+
+        return self._db.fetchone()
+
     def __setitem__(self, key, value):
         self._exec("UPDATE {table} SET {key} = %s WHERE {pkey} = %s",
                    (value, self.primval), fmt={"key": key})
