@@ -35,7 +35,6 @@ def req_user(func):
 # Monkey patch exception handling
 def reply_wrap(self, body):
     if config.dry_run:
-        logging.info("[%s] Immitating reply %s" % (time.strftime("%d-%m-%Y %H:%M:%S"), body))
         return True
 
     try:
@@ -100,7 +99,7 @@ class CommentWorker(BotQueueWorker):
             if matches:
                 try:
                     text = matches.group().split(" ")[0]
-                    logging.info("%s: %s" % (comment.author.name, text))
+                    logging.info("%s: %s" % (comment.author.name, matches.group()))
 
                     try:
                         getattr(self, text[1:])(comment, *matches.groups())

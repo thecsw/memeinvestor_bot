@@ -103,7 +103,7 @@ class BaseTable(object):
         return self._row_class(self._dbconn, self._db, self._table, self._primkey, key)
 
     def __len__(self):
-        return self._exec("SELECT COUNT({key}) FROM {table}", fmt={"key": self._primkey}).fetchone()[self._primkey]
+        return self._exec("SELECT COUNT({key}) AS {pkey} FROM {table}", fmt={"key": self._primkey}).fetchone()[self._primkey]
 
     def __del__(self):
         self._db.close()

@@ -88,12 +88,17 @@ def check_investments(reddit):
             factor = calculate(upvotes_now, row["upvotes"])
             amount = row["amount"]
             balance = investor["balance"]
-            new_balance = balance + (amount * factor)
+            new_balance = int(balance + (amount * factor))
             investor["balance"] = new_balance
             change = new_balance - balance
 
             # Updating the investor's variables
-            investor["active"] -= 1
+            active = investor["active"]
+            if active <= 0:
+                investor["active"] = 0
+            else:
+                investor["active"] = active - 1
+
             investor["completed"] += 1
 
             # Marking the investment as done
@@ -102,7 +107,7 @@ def check_investments(reddit):
 
             # Editing the comment as a confirmation
             text = response.body
-            if factor > 1:
+            if factor > 1.3:
                 investment["success"] = 1
                 logging.info("%s won %d memecoins!" % (investor, change))
                 response.edit(message.modify_invest_return(text, change))

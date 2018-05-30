@@ -29,16 +29,16 @@ class Investments(BaseTable):
         return self._db.fetchall()
 
     def invested_coins(self):
-        self._exec("SELECT COALESCE(SUM(amount),0) FROM {table} WHERE done = 0")
+        self._exec("SELECT COALESCE(SUM(amount),0) AS {pkey} FROM {table} WHERE (done = 0 OR done IS NULL)")
         return self._db.fetchone()[self._primkey]
 
     def active(self):
-        self._exec("SELECT COUNT(id) FROM {table} WHERE done = 0")
+        self._exec("SELECT COUNT(id) AS {pkey} FROM {table} WHERE (done = 0 OR done IS NULL)")
         return self._db.fetchone()[self._primkey]
 
     @timeframed
     def total(self, qfrom, qto):
-        self._exec("SELECT COUNT(id) FROM {table} WHERE {from} AND {to}", fmt={
+        self._exec("SELECT COUNT(id) AS {pkey} FROM {table} WHERE {from} AND {to}", fmt={
             "from": qfrom,
             "to": qto
         })
