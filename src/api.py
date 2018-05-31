@@ -11,7 +11,6 @@ import config
 import models
 
 app = Flask(__name__)
-db = None
 investments = None
 investors = None
 
@@ -90,7 +89,6 @@ def index():
             "top": json.loads(investors_top().get_data()),
         },
     }
-    print(data)
 
     return jsonify(data)
 
@@ -100,7 +98,11 @@ def not_found(e):
     return jsonify(error=404, text=str(e)), 404
 
 
-if __name__ == "__main__":
+@app.before_first_request
+def db_connection():
+    global investments, investors
+
+    db = None
     while not db:
         try:
             db = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor, **config.dbconfig)
@@ -111,4 +113,6 @@ if __name__ == "__main__":
     investments = models.Investments(db)
     investors = models.Investors(db)
 
+
+if __name__ == "__main__":
     app.run(host="0.0.0.0")
