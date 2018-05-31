@@ -10,10 +10,4 @@ name = '${BOT_NAME}'
 
 dry_run = ${BOT_DRY_RUN}
 
-dbconfig = {
-    "host": "${MYSQL_HOST}",
-    "port": ${MYSQL_PORT},
-    "user": "${MYSQL_USER}",
-    "password": "${MYSQL_PASSWORD}",
-    "database": "${MYSQL_DATABASE}",
-}
+db = "mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}"
