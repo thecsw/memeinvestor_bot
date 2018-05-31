@@ -29,24 +29,45 @@ Thanks!
 
 This bot has been developed exclusively for [r/MemeEconomy](https://reddit.com/r/MemeEconomy/). It can create
 investment account, help invest and then automatically return calculated
-investment 4 hours after the investment. To calculate the investment return, the
-bot multiplies the invested amount by a power function of the form `y = x^m`,
+investment 4 hours after the investment.
+
+## Investment Behaviour
+
+To calculate the investment return, the bot performs a two-step procedure.
+
+### First Step
+
+The bot calculates an initial growth factor, `y`, using a power function of the form `y = x^m`,
 where `m` is a constant (`m=1/3`) and `x` is the relative change in
 upvotes on the post since the investment was made as a proportion of the upvotes 
 at the time of investment:  
 `x=1+(final_upvotes - initial_upvotes)/initial_upvotes`.  
 The 1/3 power function (cube root) behaviour was chosen so that the overall behavior
 of the investment return function is a steep rise which levels off at higher upvote
-growth. The reasoning behind this is to further reduce the advantage of investing in a post
-that's already highly-upvoted for a 'sure-win' and to try and keep the playing field somewhat more
-level for new investors.  
+growth. The reasoning behind this is to prevent a small handful of investors who get lucky
+and invest in one or more posts that 'blow up' from earning so many memecoins that they
+dominate the market from them on. This helps keep the playing field somewhat more
+level for new investors. 
   
-*Note:* This function has already been through several design iterations
+![Investment Return Initial Growth Factor](./data/investment_return_multiplier.png)
+*Investment Return Initial Growth Factor*
+
+### Second Step
+
+Unlike real stocks, reddit post upvotes typically either grow or don't grow; posts
+don't usually get mass-downvoted by an appreciable amount and if they do, they quickly 
+get buried, reducing the potential for downvoting. In light of this, so that investments aren't
+risk-free, a graduated threshold is applied to the the factor calculated by the power function in the
+first step. If the post grows such that this factor `y` is above the success threshold, `thresh = 1.2`,
+the investment return is simply `invested_amount * y`. If the post grows (`y>1`) but the factor is at or
+below 1.2, the investor only gets back `invested_amount * (y-1)/(thresh - 1)`. If the post doesn't grow
+or is downvoted (`y<=1`), the investor gets back nothing.
+
+![Investment Return Final Return Multiplier](./data/investment_return_multiplier_thresholding.png)
+*Investment Return Final Return Multiplier vs Initial Growth Factor*
+
+*Note:* The investment behaviour has already been through several design iterations
 and may well be revised again in the future.
-
-![Investment Return Multiplier Graph](./data/investment_return_multiplier.png)
-Investment Return Multiplier Graph
-
 
 ## Commands
 
