@@ -2,7 +2,7 @@ import datetime
 
 from sqlalchemy import Boolean, Column, DateTime, Integer, String, func
 from sqlalchemy.ext.declarative import declarative_base
- 
+
 Base = declarative_base()
 
 
@@ -16,6 +16,6 @@ class Investment(Base):
     name = Column(String(20), nullable=False)
     amount = Column(Integer, default=100)
     time = Column(DateTime, server_default=func.utcnow())
-    done = Column(Boolean, default=False)
+    done = Column(Boolean, default=False, nullable=False)
     response = Column(String(11))
-    success = Column(Boolean, default=False)
+    success = Column(Boolean, default=False, nullable=False)

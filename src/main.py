@@ -167,6 +167,7 @@ class CommentWorker(BotQueueWorker):
             name=author,
             amount=amount,
             response=response,
+            done=False,
         ))
 
         sess.query(Investor).\
