@@ -220,9 +220,9 @@ Whatever, investment is lost.
 invest_place_here = """
 **ALL YOUR INVESTMENTS GO HERE**
 
-To prevent thread spam and other natural disasters, please invoke all your commands under this comment.
+To prevent thread spam and other natural disasters, please invoke all your commands by replying to this comment.
 
-If you won't invoke your command here, you can receive a penalty or your account can be suspended. We are respected investors, so let's keep our community clean!
+If you won't invoke your command here, you can receive a penalty or your account can be suspended. We are respected investors, so let's keep our community clean! Reply directly to this comment and not to other investors' comments/commands.
 
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", help_mess)
