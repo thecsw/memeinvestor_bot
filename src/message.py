@@ -222,6 +222,8 @@ invest_place_here = """
 
 To prevent thread spam and other natural disasters, please invoke all your commands under this comment.
 
+If you won't invoke your command here, you can receive a penalty or your account can be suspended. We are respected investors, so let's keep our community clean!
+
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", help_mess)
 
