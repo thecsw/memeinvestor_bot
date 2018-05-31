@@ -1,48 +1,65 @@
 import json
 import time
 import logging
+import datetime
 
-import MySQLdb
-import MySQLdb.cursors
-import _mysql_exceptions
 from flask import Flask, jsonify, request
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import desc, func
 
 import config
-import models
+from models import Investor, Investment
 
 app = Flask(__name__)
-investments = None
-investors = None
+app.config['SQLALCHEMY_DATABASE_URI'] = config.db
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 
 @app.route("/coins/invested")
 def coins_invested():
-    return jsonify({"coins": str(investments.invested_coins())})
+    then = datetime.datetime.utcnow() - datetime.timedelta(hours=4)
+    res = db.session.query(func.coalesce(func.sum(Investment.amount), 0)).\
+          filter(Investment.done == 0 and Investment.time < then).\
+          scalar()
+    return jsonify({"coins": str(res)})
 
 
 @app.route("/coins/total")
 def coins_total():
-    return jsonify({"coins": str(investors.total_coins())})
+    res = db.session.query(func.coalesce(func.sum(Investor.balance), 0)).\
+          scalar()
+    return jsonify({"coins": str(res)})
 
 
 @app.route("/investments/active")
 def investments_active():
-    return jsonify({"investments": str(investments.active())})
+    then = datetime.datetime.utcnow() - datetime.timedelta(hours=4)
+    res = db.session.query(func.count(Investment.id)).\
+          filter(Investment.done == 0 and Investment.time < then).\
+          scalar()
+    return jsonify({"investments": str(res)})
 
 
 @app.route("/investments/total")
 def investments_total():
+    res = db.session.query(func.count(Investment.id))
+
     try:
         time_from = int(request.args.get("from"))
     except TypeError:
-        time_from = 0
+        pass
+    else:
+        res.filter(Investment.time > time_from)
 
     try:
         time_to = int(request.args.get("to"))
     except TypeError:
-        time_to = 0
+        pass
+    else:
+        res.filter(Investment.time < time_to)
 
-    return jsonify({"investments": str(investments.total(time_from=time_from, time_to=time_to))})
+    return jsonify({"investments": str(res.scalar())})
 
 
 @app.route("/investors/top")
@@ -63,15 +80,36 @@ def investors_top(field="balance"):
     if page < 0:
         page = 0
 
-    return jsonify(investors.top(field, page=page, per_page=per_page))
+    sql = db.session.query(Investor).order_by(desc(field)).\
+          limit(per_page).offset(page*per_page).all()
+
+    res = [{
+        "name": x.name,
+        "balance": x.balance,
+        "completed": x.completed,
+        "broke": x.broke,
+    } for x in sql]
+
+    return jsonify(res)
 
 
 @app.route("/investor/<string:name>")
 def investor(name):
-    try:
-        return jsonify(investors[name].get())
-    except IndexError:
+    sql = db.session.query(Investor).\
+        filter(Investor.name == name).\
+        first()
+
+    if not res:
         return not_found("User not found")
+
+    res = {
+        "name": sql.name,
+        "balance": sql.balance,
+        "completed": sql.completed,
+        "broke": sql.broke,
+    }
+
+    return jsonify(res.__dict__)
 
 
 @app.route("/")
@@ -96,22 +134,6 @@ def index():
 @app.errorhandler(404)
 def not_found(e):
     return jsonify(error=404, text=str(e)), 404
-
-
-@app.before_first_request
-def db_connection():
-    global investments, investors
-
-    db = None
-    while not db:
-        try:
-            db = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor, **config.dbconfig)
-        except _mysql_exceptions.OperationalError:
-            logging.warning("Waiting 10s for MySQL to go up...")
-            time.sleep(10)
-
-    investments = models.Investments(db)
-    investors = models.Investors(db)
 
 
 if __name__ == "__main__":

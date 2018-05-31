@@ -4,15 +4,14 @@ import logging
 from queue import Queue
 from threading import Thread
 
-import MySQLdb
-import MySQLdb.cursors
-import _mysql_exceptions
+from sqlalchemy import create_engine, func
+from sqlalchemy.orm import scoped_session, sessionmaker
 import praw
-from bottr.bot import AbstractCommentBot, BotQueueWorker, SubmissionBot
+from bottr.bot import BotQueueWorker
 
 import config
-import models
 import message
+from models import Investment, Investor, Comment
 
 logging.basicConfig(level=logging.INFO)
 
@@ -22,26 +21,29 @@ REDDIT = None
 
 # Decorator to mark a commands that require a user
 # Adds the investor after the comment when it calls the method (see broke)
-def req_user(func):
-    def wrapper(self, comment, *args):
-        try:
-            investor = self.investors[comment.author.name]
-            return func(self, comment, investor, *args)
-        except IndexError:
+def req_user(fn):
+    def wrapper(self, sess, comment, *args):
+        investor = sess.query(Investor).\
+            filter(Investor.name == comment.author.name).\
+            first()
+
+        if not investor:
             return self.no_such_user(comment)
+
+        return fn(self, sess, comment, investor, *args)
     return wrapper
 
 
 # Monkey patch exception handling
 def reply_wrap(self, body):
     if config.dry_run:
-        return True
+        return "dryrun_True"
 
     try:
         return self.reply(body)
-    except praw.exceptions.APIException:
+    except praw.exceptions.APIException as e:
+        logging.error(e)
         return False
-
 
 praw.models.Comment.reply_wrap = reply_wrap
 
@@ -60,88 +62,80 @@ class CommentWorker(BotQueueWorker):
         r"!top",
     ]
 
-    def __init__(self, *args, **kwargs):
-        global REDDIT
-
+    def __init__(self, reddit, sm, *args, **kwargs):
         super().__init__(target=self._process_comment, *args, **kwargs)
-
-        while not self.db:
-            try:
-                self.db = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor, **config.dbconfig)
-            except _mysql_exceptions.OperationalError:
-                logging.warning("Waiting 10s for MySQL to go up...")
-                time.sleep(10)
 
         self.regexes = [re.compile(x, re.MULTILINE | re.IGNORECASE)
                         for x in self.commands]
-        self.reddit = REDDIT
-
-        self.investments = models.Investments(self.db)
-        self.investors = models.Investors(self.db)
-        self.comments = models.Comments(self.db)
-
-    def stop(self):
-        self.db.commit()
-        self.db.close()
-        super().stop()
+        self.reddit = reddit
+        self.Session = sm
 
     def _process_comment(self, comment: praw.models.Comment):
-        if str(comment.author).lower().endswith("_bot"):
+        if comment.is_root or \
+           comment.author.name.lower().endswith("_bot") or \
+           comment.parent().author.name != config.username:
             return
-
-        if comment in self.comments:
-            return
-        self.comments.append(comment)
-
-        text = comment.body.lower()
 
         for reg in self.regexes:
-            matches = reg.search(comment.body)
-            if matches:
-                try:
-                    text = matches.group().split(" ")[0]
-                    logging.info("%s: %s" % (comment.author.name, matches.group()))
+            matches = reg.search(comment.body.lower())
+            if not matches:
+                continue
 
-                    try:
-                        getattr(self, text[1:])(comment, *matches.groups())
-                    except IndexError:
-                        getattr(self, text[1:])(comment)
-                except AttributeError:
-                    pass
+            cmd = matches.group()
+            attrname = cmd.split(" ")[0][1:]
 
-    def ignore(self, comment):
+            if not hasattr(self, attrname):
+                continue
+
+            logging.info("%s: %s" % (comment.author.name, cmd))
+
+            try:
+                sess = self.Session()
+                getattr(self, attrname)(sess, comment, *matches.groups())
+            except Exception as e:
+                logging.error(e)
+                sess.rollback()
+            else:
+                sess.commit()
+            finally:
+                sess.close()
+
+    def ignore(self, sess, comment):
         pass
 
-    def help(self, comment):
+    def help(self, sess, comment):
         comment.reply_wrap(message.help_org)
 
-    def market(self, comment):
-        user_cap = self.investors.total_coins()
-        invest_cap = self.investments.invested_coins()
-        active = self.investments.active()
-        comment.reply_wrap(message.modify_market(active, user_cap, invest_cap))
+    def market(self, sess, comment):
+        total = sess.query(
+            func.coalesce(func.sum(Investor.balance), 0)
+        ).scalar()
 
-    def top(self, comment):
-        top_rows = self.investors.top("balance", 10)
-        comment.reply_wrap(message.modify_top(top_rows))
+        invested, active = sess.query(
+            func.coalesce(func.sum(Investment.amount), 0),
+            func.count(Investment.id)
+        ).filter(Investment.done == 0).first()
+        print(invested)
 
-    def create(self, comment):
+        comment.reply_wrap(message.modify_market(active, total, invested))
+
+    def top(self, sess, comment):
+        leaders = sess.query(Investor).order_by(Investor.balance.desc()).limit(5).all()
+        comment.reply_wrap(message.modify_top(leaders))
+
+    def create(self, sess, comment):
         author = comment.author.name
-        try:
-            return self.investors[author]
-        except IndexError:
-            self.investors.append(author)
-            comment.reply_wrap(message.modify_create(comment.author, STARTER))
+        q = sess.query(Investor).filter(Investor.name == author).exists()
+
+        if not sess.query(q).scalar():
+            sess.add(Investor(name=author))
+            comment.reply_wrap(message.modify_create(comment.author, 1000))
 
     @req_user
-    def invest(self, comment, investor, amount):
+    def invest(self, sess, comment, investor, amount):
         # Post related vars
         if not investor:
             return
-
-        post = self.reddit.submission(comment.submission)
-        postID = post.id
-        upvotes = post.ups
 
         try:
             amount = int(amount)
@@ -152,107 +146,122 @@ class CommentWorker(BotQueueWorker):
             comment.reply_wrap(message.min_invest_org)
             return
 
-        # Balance operations
         author = comment.author.name
-        balance = investor["balance"]
-        new_balance = balance - amount
+        new_balance = investor.balance - amount
 
         if new_balance < 0:
             comment.reply_wrap(message.insuff_org)
             return
 
         # Sending a confirmation
-        response = comment.reply_wrap(message.modify_invest(amount, upvotes,
-                                                            new_balance))
-        self.investments[None] = {
-            "post": postID,
-            "upvotes": upvotes,
-            "comment": comment,
-            "name": author,
-            "amount": amount,
-            "response": response
-        }
-        investor["balance"] = new_balance
-        investor["active"] += 1
+        response = comment.reply_wrap(message.modify_invest(
+            amount,
+            comment.submission.ups,
+            new_balance
+        ))
+
+        sess.add(Investment(
+            post=comment.submission,
+            upvotes=comment.submission.ups,
+            comment=comment,
+            name=author,
+            amount=amount,
+            response=response,
+        ))
+
+        sess.query(Investor).\
+            filter(Investor.name == author).\
+            update({
+                Investor.balance: new_balance,
+            }, synchronize_session=False)
 
     @req_user
-    def balance(self, comment, investor):
-        comment.reply_wrap(message.modify_balance(investor["balance"]))
+    def balance(self, sess, comment, investor):
+        comment.reply_wrap(message.modify_balance(investor.balance))
 
     @req_user
-    def broke(self, comment, investor):
-        active = investor["active"]
-        balance = investor["balance"]
+    def broke(self, sess, comment, investor):
+        if investor.balance >= 100:
+            return comment.reply_wrap(message.modify_broke_money(investor.balance))
 
-        if balance < 100:
-            if active < 1:
-                # Indeed, broke
-                investor["balance"] = 100
-                investor["active"] = 0
-                broke = investor["broke"] + 1
-                investor["broke"] = broke
+        active = sess.query(
+            func.count(Investment.id)
+        ).filter(Investment.done and Investment.name == investor.name).scalar()
+        if active:
+            comment.reply_wrap(message.modify_broke_active(active))
 
-                comment.reply_wrap(message.modify_broke(broke))
-            else:
-                # Still has investments
-                comment.reply_wrap(message.modify_broke_active(active))
-        else:
-            # Still can invest
-            comment.reply_wrap(message.modify_broke_money(balance))
+        # Indeed, broke
+        sess.query(Investor).filter(Investor.name == investor.name).update({
+            Investor.balance: 100,
+            Investor.broke: investor.broke + 1,
+        }, synchronize_session=False)
+
+        comment.reply_wrap(message.modify_broke(investor.broke + 1))
 
     @req_user
-    def active(self, comment, investor):
-        comment.reply_wrap(message.modify_active(investor["active"]))
+    def active(self, sess, comment, investor):
+        total = sess.query(
+            func.count(Investment.id)
+        ).filter(Investment.done and Investment.name == investor.name).scalar()
+        comment.reply_wrap(message.modify_active(total))
 
     def no_such_user(self, comment):
         comment.reply_wrap(message.no_account_org)
 
 
-class CommentBot(AbstractCommentBot):
-    def _process_comment(self, comment):
-        # This code is never reached
-        pass
+def main(n_jobs=4):
+    comments_queue = Queue(maxsize=n_jobs * 4)
+    threads = []
+    engine = create_engine(config.db)
+    sm = scoped_session(sessionmaker(bind=engine))
+    reddit = praw.Reddit(
+        client_id=config.client_id,
+        client_secret=config.client_secret,
+        username=config.username,
+        password=config.password,
+        user_agent=config.user_agent
+    )
 
-    # Duplicate the whole code to change the worker... -.-
-    def _listen_comments(self):
-        # Collect comments in a queue
-        comments_queue = Queue(maxsize=self._n_jobs * 4)
-        threads = []  # type: List[BotQueueWorker]
+    # Get the last 100 investment comments
+    tmp = sm()
+    old = set(x[0] for x in
+              tmp.query(Investment.comment).\
+              order_by(Investment.time).\
+              limit(100).all())
+    tmp.close()
 
+    while True:
         try:
             # Create n_jobs CommentsThreads
-            for i in range(self._n_jobs):
-                t = CommentWorker(name='CommentThread-t-{}'.format(i),
-                                   jobs=comments_queue)
+            for i in range(n_jobs):
+                t = CommentWorker(
+                    reddit,
+                    sm,
+                    name='CommentThread-t-{}'.format(i),
+                    jobs=comments_queue
+                )
+
                 t.start()
                 threads.append(t)
 
             # Iterate over all comments in the comment stream
-            for comment in self._reddit.subreddit('+'.join(self._subs)).stream.comments():
-                # Check for stopping
-                if self._stop:
-                    self._do_stop(comments_queue, threads)
-                    break
+            # The first 100 elements are OLD, so check if we've already processed them
+            i = 100
+            for comment in reddit.subreddit('+'.join(config.subreddits)).stream.comments():
+                if i:
+                    i = i - 1 if i > 0 else 0
+                    if comment in old:
+                        continue
 
                 comments_queue.put(comment)
-
-            self.log.debug('Listen comments stopped')
         except Exception as e:
-            self._do_stop(comments_queue, threads)
+            logging.error(e)
+
+            for t in threads:
+                t.stop()
+
+            comments_queue.queue.clear()
             time.sleep(10)
-            self._listen_comments()
-
-
-def main():
-    global REDDIT
-
-    REDDIT = praw.Reddit(client_id=config.client_id,
-                         client_secret=config.client_secret,
-                         username=config.username,
-                         password=config.password,
-                         user_agent=config.user_agent)
-    bot = CommentBot(REDDIT, config.subreddits, config.name, n_jobs=4)
-    bot.start()
 
 
 if __name__ == "__main__":
