@@ -61,7 +61,7 @@ risk-free, a graduated threshold is applied to the the factor calculated by the 
 first step. If the post grows such that this factor `y` is above the success threshold, `thresh = 1.2`,
 the investment return is simply `invested_amount * y`. If the post grows (`y>1`) but the factor is at or
 below 1.2, the investor only gets back `invested_amount * (y-1)/(thresh - 1)`. If the post doesn't grow
-or is downvoted (`y<1`), the investor gets back nothing.
+or is downvoted (`y<=1`), the investor gets back nothing.
 
 PENDING: Thresholding graph.
 
