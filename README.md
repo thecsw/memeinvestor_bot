@@ -84,6 +84,7 @@ Currently, it has 8 commands:
   any active investments, declares bankruptcy on your account and sets your
   balance to 100 MemeCoins (minimum possible investment). 
 - `!market` - gives an overview for the whole Meme market.
+- `!top` - gives a list of the users with the largest account balances.
 - `!ignore` - ignores the whole message.
 - `!help` - returns this help message.
 
