@@ -63,7 +63,8 @@ the investment return is simply `invested_amount * y`. If the post grows (`y>1`)
 below 1.2, the investor only gets back `invested_amount * (y-1)/(thresh - 1)`. If the post doesn't grow
 or is downvoted (`y<=1`), the investor gets back nothing.
 
-PENDING: Thresholding graph.
+![Investment Return Final Return Multiplier](./data/investment_return_multiplier_thresholding.png)
+*Investment Return Final Return Multiplier vs Initial Growth Factor*
 
 *Note:* This function has already been through several design iterations
 and may well be revised again in the future.
