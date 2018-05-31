@@ -47,9 +47,9 @@ def calculate(new, old):
 
     mult = pow((rel_change+1), scale_factor)
     
-    # Investment must grow by more than a threshold amount to win.Decide if
+    # Investment must grow by more than a threshold amount to win. Decide if
     # investment was successful and whether you get anything back at all.
-    win_threshold = 1.3
+    win_threshold = 1.2
     if mult > win_threshold:
         investment_success = True
         return_money = True
@@ -65,7 +65,7 @@ def calculate(new, old):
     # difference between mult and 1 and difference between win_threshold and 1.
     # Otherwise, if mult was 1 or lower, get back nothing.
     if investment_success:
-        factor = amount * mult
+        factor = mult
     elif return_money:
         factor = (mult - 1)/(win_threshold - 1)
     else:
