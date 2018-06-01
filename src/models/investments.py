@@ -18,4 +18,4 @@ class Investment(Base):
     time = Column(DateTime, server_default=func.utcnow())
     done = Column(Boolean, default=False, nullable=False)
     response = Column(String(11))
-    success = Column(Boolean, default=False, nullable=False)
+    success = Column(Boolean, default=False)

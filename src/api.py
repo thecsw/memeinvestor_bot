@@ -127,12 +127,50 @@ def investor(name):
 
     return jsonify(res)
 
+
 @app.route("/investor/<string:name>/investments")
 def investor_investments(name):
     page, per_page = get_pagination()
     time_from, time_to = get_timeframes()
     sql = db.session.query(Investment).\
         filter(Investment.name == name)
+
+    if time_from > 0:
+        sql = sql.filter(Investment.time > time_from)
+    if time_to > 0:
+        sql = sql.filter(Investment.time < time_to)
+
+    sql_res = sql.order_by(desc(Investment.id)).limit(per_page).\
+        offset(page*per_page).all()
+
+    if not sql_res:
+        return not_found("No investments found")
+
+    res = [{
+        "id": x.id,
+        "post": x.post,
+        "upvotes": x.upvotes,
+        "name": x.name,
+        "amount": x.amount,
+        "time": x.time,
+        "done": x.done,
+        "response": x.response,
+        "success": x.success,
+    } for x in sql_res]
+
+    return jsonify(res)
+
+
+
+@app.route("/investor/<string:name>/active")
+def investor_active(name):
+    then = datetime.datetime.utcnow() - datetime.timedelta(hours=4)
+    page, per_page = get_pagination()
+    time_from, time_to = get_timeframes()
+    sql = db.session.query(Investment).\
+        filter(Investment.name == name and
+               Investment.done == 0 and
+               Investment.time < then)
 
     if time_from > 0:
         sql = sql.filter(Investment.time > time_from)
