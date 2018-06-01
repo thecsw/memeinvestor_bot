@@ -10,7 +10,7 @@ function renderPage() {
     if (!hash)
         hash = 'home';
 
-    $.getJSON('http://localhost:5000/?per_page=5', function (api) {
+    $.getJSON('/api/?per_page=5', function (api) {
         api.units = function() {
             return function(val, render) {
                 return formatToUnits(render(val));

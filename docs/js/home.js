@@ -109,8 +109,8 @@ function updateChart(index, graph, field) {
 
 iterateDays(7, function(day, from, to) {
     var fromto = '?from=' + from.getTime()/1000 + '&to=' + to.getTime()/1000;
-    $.getJSON('http://localhost:5000/investments/amount' + fromto,
+    $.getJSON('/api/investments/amount' + fromto,
               updateChart(day, 0, "coins"));
-    $.getJSON('http://localhost:5000/investments/total' + fromto,
+    $.getJSON('/api/investments/total' + fromto,
               updateChart(day, 1, "investments"));
 });
