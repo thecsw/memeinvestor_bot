@@ -65,7 +65,21 @@ def modify_invest_return(text, win):
     invest_return = invest_return.replace("%INVESTMENT%", str(text))
     invest_return = invest_return.replace("%WIN%", str(win))
     return invest_return
-    
+
+invest_break_even_org = """
+%INVESTMENT%
+
+UPDATE: Your investment broke even!
+
+This investment has brought you %NUMBER% MemeCoins. 
+"""
+
+def modify_invest_break_even(text, coins):
+    invest_return = invest_return_org
+    invest_return = invest_return.replace("%INVESTMENT%", str(text))
+    invest_return = invest_return.replace("%NUMBER%", str(coins))
+    return invest_return
+
 invest_lose_org = """
 %INVESTMENT%
 
