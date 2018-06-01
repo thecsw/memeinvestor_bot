@@ -10,10 +10,4 @@ name = ''
 
 dry_run = False
 
-dbconfig = {
-    "host": "",
-    "port": 3306,
-    "user": "",
-    "password": "",
-    "database": "",
-}
+db = "mysql://root:toor@127.0.0.1:3306/bot"

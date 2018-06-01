@@ -220,12 +220,10 @@ Investors with the largest balances:
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", help_mess)
 
-def modify_top(top_rows):
+def modify_top(leaders):
     top_string = ""
-    for row in top_rows:
-        name = row[0]
-        balance = row[1]
-        top_string = f"{top_string}\n{name}: {balance} MemeCoins"
+    for l in leaders:
+        top_string = f"{top_string}\n{l.name}: {l.balance} MemeCoins"
 
     top_response = top_org
     top_response = top_response.replace("%TOP_STRING%", top_string)
@@ -245,6 +243,8 @@ invest_place_here = """
 To prevent thread spam and other natural disasters, please invoke all your commands by replying to this comment.
 
 If you won't invoke your command here, you can receive a penalty or your account can be suspended. We are respected investors, so let's keep our community clean! Reply directly to this comment and not to other investors' comments/commands.
+
+**ONLY DIRECT REPLIES TO THE BOT WILL BE PROCESSED**
 
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", help_mess)

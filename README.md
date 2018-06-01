@@ -4,6 +4,7 @@
 
 - [Welcome to meme investment!](#welcome-to-meme-investment)
 - [Contributing](#contributing)
+- [Investment behaviour](#investment-behaviour)
 - [Commands](#commands)
 - [Getting started](#getting-started)
 - [Prerequisites](#prerequisites)
@@ -81,7 +82,8 @@ The bot has the following commands:
 - `!ignore` - ignores the whole message.
 - `!help` - returns this help message.
 
-To invoke a command, type it in the comment section of any r/MemeEconomy post.
+To invoke a command, reply to either the top-level u/MemeInvestor_bot comment in the comment section of any
+r/MemeEconomy post or to one of it's subsequent replies to your command comment.
 
 ## Getting started 
 
