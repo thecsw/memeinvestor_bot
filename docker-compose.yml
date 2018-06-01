@@ -30,7 +30,7 @@ services:
     api:
         build: .
         env_file: .env
-        command: [".local/bin/gunicorn", "--bind 0.0.0.0:5000", "--access-logfile -", "--error-logfile -", "api:app"]
+        command: [".local/bin/gunicorn", "--bind", "0.0.0.0:5000", "--access-logfile", "-", "--error-logfile", "-", "api:app"]
         depends_on:
           - mysql
         environment:

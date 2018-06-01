@@ -54,9 +54,9 @@ def get_timeframes():
 
 @app.route("/coins/invested")
 def coins_invested():
-    then = datetime.datetime.utcnow() - datetime.timedelta(hours=4)
+    then = int(time.time()) - 14400
     res = db.session.query(func.coalesce(func.sum(Investment.amount), 0)).\
-          filter(Investment.done == 0 and Investment.time < then).\
+          filter(Investment.done == 0).filter(Investment.time < then).\
           scalar()
     return jsonify({"coins": str(res)})
 
@@ -104,7 +104,7 @@ def investments():
 def investments_active():
     then = datetime.datetime.utcnow() - datetime.timedelta(hours=4)
     res = db.session.query(func.count(Investment.id)).\
-          filter(Investment.done == 0 and Investment.time < then).\
+          filter(Investment.done == 0).filter(Investment.time < then).\
           scalar()
     return jsonify({"investments": str(res)})
 
@@ -212,9 +212,9 @@ def investor_active(name):
     page, per_page = get_pagination()
     time_from, time_to = get_timeframes()
     sql = db.session.query(Investment).\
-        filter(Investment.name == name and
-               Investment.done == 0 and
-               Investment.time < then)
+        filter(Investment.name == name).\
+        filter(Investment.done == 0).\
+        filter(Investment.time < then)
 
     if time_from > 0:
         sql = sql.filter(Investment.time > time_from)

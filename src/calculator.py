@@ -99,8 +99,8 @@ def main():
 
     while True:
         sess = sm()
-        then = datetime.datetime.utcnow() - datetime.timedelta(hours=4)
-        q = sess.query(Investment).filter(Investment.done == 0 and Investment.time < then)
+        then = int(time.time()) - 14400
+        q = sess.query(Investment).filter(Investment.done == 0).filter(Investment.time < then)
         for investment in q.limit(10).all():
             investor_q = sess.query(Investor).filter(Investor.name == investment.name)
             investor = investor_q.first()
