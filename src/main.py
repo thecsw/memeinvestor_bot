@@ -115,7 +115,6 @@ class CommentWorker(BotQueueWorker):
             func.coalesce(func.sum(Investment.amount), 0),
             func.count(Investment.id)
         ).filter(Investment.done == 0).first()
-        print(invested)
 
         comment.reply_wrap(message.modify_market(active, total, invested))
 

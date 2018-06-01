@@ -49,7 +49,6 @@ def get_timeframes():
     except TypeError:
         time_to = -1
 
-    print((time_from, time_to))
     return (time_from, time_to)
 
 
@@ -69,6 +68,38 @@ def coins_total():
     return jsonify({"coins": str(res)})
 
 
+@app.route("/investments")
+def investments():
+    time_from, time_to = get_timeframes()
+    page, per_page = get_pagination()
+    sql = db.session.query(Investment)
+
+    if time_from > 0:
+        sql = sql.filter(Investment.time > time_from)
+    if time_to > 0:
+        sql = sql.filter(Investment.time < time_to)
+
+    sql_res = sql.order_by(Investment.id.desc()).\
+              limit(per_page).offset(page*per_page).all()
+
+    if not sql_res:
+        return not_found("No investments found")
+
+    res = [{
+        "id": x.id,
+        "post": x.post,
+        "upvotes": x.upvotes,
+        "name": x.name,
+        "amount": x.amount,
+        "time": x.time,
+        "done": x.done,
+        "response": x.response,
+        "success": x.success,
+    } for x in sql_res]
+
+    return jsonify(res)
+
+
 @app.route("/investments/active")
 def investments_active():
     then = datetime.datetime.utcnow() - datetime.timedelta(hours=4)
@@ -76,6 +107,19 @@ def investments_active():
           filter(Investment.done == 0 and Investment.time < then).\
           scalar()
     return jsonify({"investments": str(res)})
+
+
+@app.route("/investments/amount")
+def investments_amount():
+    res = db.session.query(func.coalesce(func.sum(Investment.amount), 0))
+    time_from, time_to = get_timeframes()
+
+    if time_from > 0:
+        res = res.filter(Investment.time > time_from)
+    if time_to > 0:
+        res = res.filter(Investment.time < time_to)
+
+    return jsonify({"coins": str(res.scalar())})
 
 
 @app.route("/investments/total")
@@ -140,8 +184,8 @@ def investor_investments(name):
     if time_to > 0:
         sql = sql.filter(Investment.time < time_to)
 
-    sql_res = sql.order_by(desc(Investment.id)).limit(per_page).\
-        offset(page*per_page).all()
+    sql_res = sql.order_by(Investment.id.desc()).\
+              limit(per_page).offset(page*per_page).all()
 
     if not sql_res:
         return not_found("No investments found")
@@ -177,8 +221,8 @@ def investor_active(name):
     if time_to > 0:
         sql = sql.filter(Investment.time < time_to)
 
-    sql_res = sql.order_by(desc(Investment.id)).limit(per_page).\
-        offset(page*per_page).all()
+    sql_res = sql.order_by(Investment.id.desc()).\
+              limit(per_page).offset(page*per_page).all()
 
     if not sql_res:
         return not_found("No investments found")
