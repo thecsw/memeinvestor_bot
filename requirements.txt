@@ -3,3 +3,4 @@ bottr
 fastnumbers
 flask
 flask-sqlalchemy
+mysqlclient

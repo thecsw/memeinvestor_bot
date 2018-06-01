@@ -244,6 +244,8 @@ To prevent thread spam and other natural disasters, please invoke all your comma
 
 If you won't invoke your command here, you can receive a penalty or your account can be suspended. We are respected investors, so let's keep our community clean! Reply directly to this comment and not to other investors' comments/commands.
 
+**ONLY DIRECT REPLIES TO THE BOT WILL BE PROCESSED**
+
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", help_mess)
 
