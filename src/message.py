@@ -149,9 +149,11 @@ Here is a list of commands that summon me:
 
 6. !market - gives an overview for the whole Meme market.
 
-7. !ignore - ignores the whole message.
+7. !top - gives a list of the users with the largest account balances.
 
-8. !help - returns this help message.
+8. !ignore - ignores the whole message.
+
+9. !help - returns this help message.
 
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", bot_desc)
@@ -209,6 +211,24 @@ def modify_market(inves, cap, invs_cap):
     market = market.replace("%HODL%", str(invs_cap))
     return market
 
+# Message used for !top command
+top_org = """
+Investors with the largest balances:
+
+%TOP_STRING%
+
+%DESCRIPTION% 
+""".replace("%DESCRIPTION%", help_mess)
+
+def modify_top(leaders):
+    top_string = ""
+    for l in leaders:
+        top_string = f"{top_string}\n{l.name}: {l.balance} MemeCoins"
+
+    top_response = top_org
+    top_response = top_response.replace("%TOP_STRING%", top_string)
+    return top_response
+
 deleted_comment_org = """
 Where did he go?
 
@@ -220,13 +240,25 @@ Whatever, investment is lost.
 invest_place_here = """
 **ALL YOUR INVESTMENTS GO HERE**
 
-To prevent thread spam and other natural disasters, please invoke all your commands under this comment.
+To prevent thread spam and other natural disasters, please invoke all your commands by replying to this comment.
+
+If you won't invoke your command here, you can receive a penalty or your account can be suspended. We are respected investors, so let's keep our community clean! Reply directly to this comment and not to other investors' comments/commands.
+
+**ONLY DIRECT REPLIES TO THE BOT WILL BE PROCESSED**
 
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", help_mess)
 
 inside_trading_org = """
 You can't invest in your own memes, insider trading is not allowed!
+
+%DESCRIPTION% 
+""".replace("%DESCRIPTION%", help_mess)
+
+invest_again_org = """
+You can't invest in the same meme twice, while the other one is not evaluated.
+
+Please wait until your previous investment is fully evaluated!
 
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", help_mess)

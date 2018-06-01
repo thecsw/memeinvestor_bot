@@ -1,1 +1,9 @@
-praw
+git+https://github.com/praw-dev/praw.git
+bottr
+fastnumbers
+mysqlclient
+sqlalchemy
+flask
+flask-cors
+flask-sqlalchemy
+gunicorn

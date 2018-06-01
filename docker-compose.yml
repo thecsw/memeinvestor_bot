@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+    bot:
+        build: .
+        env_file: .env
+        depends_on:
+          - mysql
+        environment:
+          - MYSQL_DATABASE=mysql
+          - MYSQL_USER=mysql
+          - MYSQL_PASSWORD=strongpass!word
+
+    calculator:
+        build: .
+        env_file: .env
+        command: ["python", "calculator.py"]
+        depends_on:
+          - mysql
+        environment:
+          - MYSQL_DATABASE=mysql
+          - MYSQL_USER=mysql
+          - MYSQL_PASSWORD=strongpass!word
+
+    submitter:
+        build: .
+        env_file: .env
+        command: ["python", "submitter.py"]
+
+    api:
+        build: .
+        env_file: .env
+        command: [".local/bin/gunicorn", "--bind 0.0.0.0:5000", "--access-logfile -", "--error-logfile -", "api:app"]
+        depends_on:
+          - mysql
+        environment:
+          - MYSQL_DATABASE=mysql
+          - MYSQL_USER=mysql
+          - MYSQL_PASSWORD=strongpass!word
+
+    http:
+        build:
+            context: .
+            dockerfile: docker/Dockerfile-caddy
+        ports:
+          - 80:80
+          - 443:443
+        depends_on:
+          - api
+        volumes:
+          - ./docs:/static
+
+    mysql:
+        image: mariadb
+        env_file: .env
+        environment:
+          - MYSQL_DATABASE=mysql
+          - MYSQL_USER=mysql
+          - MYSQL_PASSWORD=strongpass!word
+          - MYSQL_RANDOM_ROOT_PASSWORD=yes

@@ -245,3 +245,35 @@ function createWalletToast(){
    var toastHTML = '<p><a href="#" class="">connect your reddit account first</a> or <a href="#"> create your wallet directly from reddit</a></p>';
   M.toast({html: toastHTML,displayLength:6000});
 }
+
+
+function formatToUnits(val) {
+    var number = parseInt(val);
+    var abbrev = ['', 'K', 'M', 'B', 'T'];
+    var unrangifiedOrder = Math.floor(Math.log10(Math.abs(number)) / 3);
+    var order = Math.max(0, Math.min(unrangifiedOrder, abbrev.length -1 ));
+    var suffix = abbrev[order];
+    var precision = suffix ? 1 : 0;
+    var res = (number / Math.pow(10, order * 3)).toFixed(precision) + suffix;
+
+    return res;
+}
+
+function iterateDays(days, callback) {
+    to = new Date();
+    to.setHours(23);
+    to.setMinutes(59);
+    to.setSeconds(59);
+    to.setMilliseconds(999);
+    from = new Date();
+    from.setTime(to.getTime());
+    from.setDate(from.getDate() - 1);
+
+    for (var i = 0; i < days; i++) {
+        callback(i, from, to);
+
+        from.setDate(from.getDate() - 1);
+        to.setDate(to.getDate() - 1);
+    }
+}
+
