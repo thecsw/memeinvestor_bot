@@ -222,14 +222,6 @@ def main(n_jobs=4):
         user_agent=config.user_agent
     )
 
-    # Get the last 100 investment comments
-    tmp = sm()
-    old = set(x[0] for x in
-              tmp.query(Investment.comment).\
-              order_by(Investment.time).\
-              limit(100).all())
-    tmp.close()
-
     while True:
         try:
             # Create n_jobs CommentsThreads
@@ -245,14 +237,7 @@ def main(n_jobs=4):
                 threads.append(t)
 
             # Iterate over all comments in the comment stream
-            # The first 100 elements are OLD, so check if we've already processed them
-            i = 100
-            for comment in reddit.subreddit('+'.join(config.subreddits)).stream.comments():
-                if i:
-                    i = i - 1 if i > 0 else 0
-                    if comment in old:
-                        continue
-
+            for comment in reddit.subreddit('+'.join(config.subreddits)).stream.comments(skip_existing=True):
                 comments_queue.put(comment)
         except Exception as e:
             logging.error(e)
