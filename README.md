@@ -38,8 +38,8 @@ at the time of investment:
 The 1/3 power function (cube root) behaviour was chosen so that the overall behavior
 of the investment return function is a steep rise which levels off at higher upvote
 growth. The reasoning behind this is to prevent a small handful of investors who get lucky
-and invest in one or more posts that 'blow up' from earning so many memecoins that they
-dominate the market from them on. This helps keep the playing field somewhat more
+and invest in one or more posts that 'blow up' from earning so many MemeCoins that they
+dominate the market from then on. This helps keep the playing field somewhat more
 level for new investors. 
   
 ![Investment Return Initial Growth Factor](./data/investment_return_multiplier.png)
