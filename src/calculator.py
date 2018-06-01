@@ -143,6 +143,9 @@ def main():
             if factor > 1:
                 logging.info("%s won %d" % (investor.name, change))
                 response.edit_wrap(message.modify_invest_return(text, change))
+            elif factor == 1:
+                logging.info("%s broke even and got back %d" % (investor.name, change))
+                response.edit_wrap(message.modify_invest_break_even(text, change))
             else:
                 lost_memes = int( amount - change )
                 logging.info("%s lost %d" % (investor.name, lost_memes))
