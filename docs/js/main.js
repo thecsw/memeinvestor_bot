@@ -1,29 +1,251 @@
-//a simple script testing all the plugins -
-// probably the materialize.js dependency won't be necessary (used only for the sidebar at the moment)
 
-document.addEventListener('DOMContentLoaded', function() {
-    renderPage();
-});
+let jsonApi = (function(){
+   let options = {
+      method: "GET",
+      //url: "http://memes.market:5000/",
+      url: "http://localhost/memeinvestor_bot/docs/testApiData.json",
+      param: "per_page=10"
+   }
+   function makeRequest (options) {
+      
+     return new Promise(function (resolve, reject) {
+       var xhr = new XMLHttpRequest();
+       let url = options.url+"?"+options.param;
+       xhr.open(options.method, url);
+       xhr.onload = function () {
+         if (this.status >= 200 && this.status < 300) {
+           resolve(JSON.parse(xhr.response));
+         } else {
+           reject({
+             status: this.status,
+             statusText: xhr.statusText
+           });
+         }
+       };
+       xhr.onerror = function () {
+         reject({
+           status: this.status,
+           statusText: xhr.statusText
+         });
+       };
+       xhr.send();
+     });
+   }
+   
+   function getAll(){
+      return makeRequest(options);
+   }
+   
+   return {
+      getAll: getAll
+   }
+})();
 
-function renderPage() {
-    var hash = window.location.hash.substr(1);
-    if (!hash)
-        hash = 'home';
 
-    $.getJSON('/api/?per_page=5', function (api) {
-        api.units = function() {
-            return function(val, render) {
-                return formatToUnits(render(val));
-            }
-        };
 
-        $.get(hash + '.mst', function(template) {
-            console.log(api);
-            var rendered = Mustache.render(template, api);
-            $('#target').html(rendered);
-        });
-    });
+let overview = (function(){
+   
+   let counters = {
+      coinsInvested: undefined,
+      coinsTotal: undefined,
+      investmentsActive: undefined
+      //investmentsTotal: undefined  
+   }
+   function init(...e){
+      counters = {
+         coinsInvested: new CountUp("detained-memecoins", 0, 222),
+         coinsTotal: new CountUp("existing-memecoins", 100000000, 222, 1.5),
+         investmentsActive: new CountUp("active-investments", 0, 222)
+         //investmentsTotal: new CountUp("total-investments", 24.02, 99.99)      
+      }
+      update(...e)
+   }
+   function update(coins,investments){
+      counters.coinsInvested.update(coins.invested.coins)
+      counters.coinsTotal.update(coins.total.coins)
+      counters.investmentsActive.update(investments.active.investments)
+      //counters.investmentsTotal.update(investments.total.investments)
+   }
+   
+   return {
+      init:init,
+      update: update
+   }
+   
+})();
+
+
+let overviewChart = (function(){
+   let desktopRatio = true;
+   let ch1;
+   function getScreenSize(){
+      let w = window,
+      d = document,
+      e = d.documentElement,
+      g = d.getElementsByTagName('body')[0],
+      x = w.innerWidth || e.clientWidth || g.clientWidth,
+      y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+      return {x,y};
+   }
+   function update(a){
+   }
+   function resize(){
+      let x = getScreenSize().x;
+      if(x<=800 && desktopRatio){
+         desktopRatio = false;
+         document.getElementById("homepage-graph").className = "ct-chart ct-perfect-fourth";
+         ch1.update()
+      }else if(x>800 && !desktopRatio){
+         desktopRatio = true;
+         document.getElementById("homepage-graph").className = "ct-chart ct-major-tenth";
+         ch1.update()
+      }      
+   }
+   function init(){
+      let x = getScreenSize().x;
+      if(x<=790){
+         desktopRatio = false;
+         //set the chart ratio to a less horizontal ratio, to make it fit on mobile
+         document.getElementById("homepage-graph").className = "ct-chart ct-perfect-fourth";
+      }else{
+         desktopRatio = true;
+      }
+      
+      let graphData = {
+        // A labels array that can contain any sort of values
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri','sat','sun'],
+        // Our series array that contains series objects or in this case series data arrays
+        series: [
+          [0.4, 0.6, 1, 0.9, 0.8,1,1.3],
+          [0, 0.4, 0.3, 0.6, 1,1.1,2]
+          
+        ]
+      };
+      // We are setting a few options for our chart and override the defaults
+      let options = {
+        // Don't draw the line chart points
+        showPoint: false,
+        // Disable line smoothing
+        lineSmooth: false,
+        
+        fullWidth: true,
+        chartPadding: 0,
+        // X-Axis specific configuration
+        /*axisX: {
+          // We can disable the grid for this axis
+          showGrid: false,
+          // and also don't show the label
+          showLabel: false
+        },*/
+        // Y-Axis specific configuration
+        axisY: {
+          // Lets offset the chart a bit from the labels
+          offset: 60,
+          // The label interpolation function enables you to modify the values
+          // used for the labels on each axis. Here we are converting the
+          // values into million pound.
+          labelInterpolationFnc: function(value) {
+            return value + 'm';
+          }
+        }
+      };
+
+
+      let responsiveOptions = [
+
+        ['screen and (min-width: 641px) and (max-width: 1024px)', {
+          seriesBarDistance: 10
+        }],
+        ['screen and (max-width: 640px)', {
+          seriesBarDistance: 5,
+          chartPadding: { left: -59 },
+          axisY: {
+            showLabel: false
+          }
+        }]
+      ];
+      // Create a new line chart object where as first parameter we pass in a selector
+      // that is resolving to our chart container element. The Second parameter
+      // is the actual data object.
+      ch1 = new Chartist.Line('.ct-chart', graphData, options, responsiveOptions);      
+      
+   }
+   return{
+      init: init,
+      resize: resize,
+      update: update
+   }
+})();
+
+
+let leaderboard = (function(){
+   function update(top){
+      let tb = document.getElementById("leaderboards-table");
+      let html = ""
+          for(let i=0; i<top.length;i++){
+             html += "<tr><td>"+top[i].name+"</td>"+
+                         "<td>"+top[i].balance+"</td>"+
+                         "<td>"+top[i].completed+"</td></tr>"
+          }
+      tb.innerHTML = html
+   }
+   return{
+      update: update
+   }
+})();
+
+
+(function(){
+   "use strict";
+   
+
+   //get session cookie
+   
+   //dom ready listener
+   document.addEventListener('DOMContentLoaded', function(){
+      //create sidenav 
+      let elems = document.querySelectorAll('.sidenav');
+      let instances = M.Sidenav.init(elems);
+      overviewChart.init()
+       //get api data
+      let initialData = jsonApi.getAll()
+      .then(function (data) {
+         overview.init(data.coins, data.investments);
+         leaderboard.update(data.investors.top);
+      })
+      .catch(function (err) {
+         console.error('error while retrieving apis data', err.statusText);
+         connectionErrorToast(err)
+      });
+      
+      
+   });
+   //dom resize listener
+   window.addEventListener('resize', function(event){
+      overviewChart.resize()
+   });   
+   
+   
+}());
+
+//debug part
+//TODO: redirect to prefilled github issue/tweet/reddit post
+var globalError;
+function reportError(){
+   alert("debug"+globalError)
 }
+function connectionErrorToast(error){
+   globalError = JSON.stringify(error);
+   var toastHTML = '<p>an error occurred while trying to get the bot data. </p><button class="btn-flat toast-action" onclick="reportError()">report</button>';
+  M.toast({html: toastHTML,displayLength:6000});
+   
+}
+
+function createWalletToast(){
+   var toastHTML = '<p><a href="#" class="">connect your reddit account first</a> or <a href="#"> create your wallet directly from reddit</a></p>';
+  M.toast({html: toastHTML,displayLength:6000});
+}
+
 
 function formatToUnits(val) {
     var number = parseInt(val);
@@ -54,3 +276,4 @@ function iterateDays(days, callback) {
         to.setDate(to.getDate() - 1);
     }
 }
+
