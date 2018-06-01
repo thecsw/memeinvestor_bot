@@ -4,7 +4,7 @@
 
 - [Welcome to Meme Investment!](#welcome-to-meme-investment)
 - [The duty](#the-duty)
-- [Investment Behaviour](#investment-behaviour)
+- [Investment behaviour](#investment-behaviour)
 - [Commands](#commands)
 - [Getting started](#getting-started)
 - [Prerequisites](#prerequisites)
