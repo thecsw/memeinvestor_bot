@@ -40,8 +40,8 @@ def calculate(new, old):
     # since the investment was made.
     # Functional form: y = x^m ;
     #    y = multiplier,
-    #    x = relative ginvestment.th: (change in upvotes) / (upvotes at time of investment),
-    #    m = scale factor: allow curtailing high-ginvestment.th post returns to make the playing field a bit fairer
+    #    x = relative growth: (change in upvotes) / (upvotes at time of investment),
+    #    m = scale factor: allow curtailing high-growth post returns to make the playing field a bit fairer
 
     new = fast_float(new)
     old = fast_float(old)
@@ -58,7 +58,7 @@ def calculate(new, old):
 
     mult = pow((rel_change+1), scale_factor)
 
-    # Investment must ginvestment. by more than a threshold amount to win. Decide if
+    # Investment must grow by more than a threshold amount to win. Decide if
     # investment was successful and whether you get anything back at all.
     win_threshold = 1.2
     if mult > win_threshold:
