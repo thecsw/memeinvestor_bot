@@ -40,13 +40,13 @@ def get_pagination():
 
 def get_timeframes():
     try:
-        time_from = int(request.args.get("from"))
-    except TypeError:
+        time_from = int(float(request.args.get("from")))
+    except (TypeError, ValueError):
         time_from = -1
 
     try:
-        time_to = int(request.args.get("to"))
-    except TypeError:
+        time_to = int(float(request.args.get("to")))
+    except (TypeError, ValueError):
         time_to = -1
 
     return (time_from, time_to)
