@@ -1,7 +1,9 @@
-praw==5.3.0
+git+https://github.com/praw-dev/praw.git
 bottr
 fastnumbers
-flask
-flask-sqlalchemy
 mysqlclient
+sqlalchemy
+flask
 flask-cors
+flask-sqlalchemy
+gunicorn

@@ -1,0 +1,11 @@
+FROM alpine
+
+RUN apk add --update --no-cache curl bash && mkdir /caddy
+RUN curl https://getcaddy.com | bash -s personal http.cors
+
+WORKDIR /caddy
+
+EXPOSE 80 443 2015
+VOLUME [ "/caddy" ]
+
+CMD [ "caddy" ]

@@ -26,6 +26,11 @@ services:
         build: .
         env_file: .env
         command: ["python", "submitter.py"]
+
+    api:
+        build: .
+        env_file: .env
+        command: ["gunicorn", "--bind 0.0.0.0:5000", "--access-logfile -", "--error-logfile -", "api:app"]
         depends_on:
           - mysql
         environment:
@@ -33,18 +38,17 @@ services:
           - MYSQL_USER=mysql
           - MYSQL_PASSWORD=strongpass!word
 
-    api:
-        build: .
-        env_file: .env
-        command: ["python", "api.py"]
+    http:
+        build:
+            context: .
+            dockerfile: docker/Dockerfile-caddy
         ports:
-         - 5000:5000
+          - 80:80
+          - 443:443
         depends_on:
-          - mysql
-        environment:
-          - MYSQL_DATABASE=mysql
-          - MYSQL_USER=mysql
-          - MYSQL_PASSWORD=strongpass!word
+          - api
+        volumes:
+          - ./docs:/static
 
     mysql:
         image: mariadb
