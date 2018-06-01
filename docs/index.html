@@ -15,6 +15,7 @@
       <!-- fancy charts -->   
       <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
       <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+      <script src="js/libs/countup.min.js"></script>
       <!-- page -->
       <link type="text/css" rel="stylesheet" href="css/style.css" />
       <script src="js/main.js"></script>
@@ -25,7 +26,7 @@
     <body>
       <nav>
         <div class="nav-wrapper">
-          <a href="#" class="brand-logo">Memeinvestor_bot</a>
+          <a href="#" class="brand-logo" ><img src="resources/logo240.png" class="logo-img" ></img><span class="hide-on-small-only">emeInvestor bot</span></a>
           
            <a href="#" data-target="mobile-sidebar" class="sidenav-trigger"><i class="material-icons">menu</i></a>
           
@@ -37,9 +38,9 @@
                 <i class="material-icons">send</i>
               </div>
             </li>
-            <li><a href="foo.html">brokers</a></li>
-            <li><a href="bar.html">commands</a></li>
-            <li><a href="baz.html">info</a></li>
+            <li><a href="foo.html">overview</a></li>
+            <li><a href="bar.html">market</a></li>
+            <li><a href="baz.html">account</a></li>
             <li><a href="https://github.com/thecsw/memeinvestor_bot/issues">bugs</a></li>
             <li><a href="https://github.com/thecsw/memeinvestor_bot"><img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"></a></li>           
           </ul>         
@@ -75,15 +76,17 @@
             </div>  
           </div>
           -->
-          <p>TODO: write here a description of the bot (this length) qpods pwmd pqwm sdk wqoiknd. </p>
-          <p>Qqw welfmwpeof wzlemf wemzef qpods pwmd pqwm sdk wknqmpknqpwdn dqwkn wqoiknd </p>
+          <p>MemeInvestor is a r/MemeEconomy reddit bot that can help you invest in memes and make a fortune out of it! </p>
+          <p><a class="waves-effect waves-light btn orange darken-4" onclick="createWalletToast()"><i class="material-icons left">add</i>create your wallet</a>
+             <a href="#info1" class="waves-effect waves-light btn amber darken-1"><i class="material-icons left">show_chart</i>learn more</a>
+          </p>
           <div class="divider"></div>
           <div class="section">
             <div class="row">
               <div class="col s12 m4 l3">
-                <h4 class="row-title" >market</h4>
+                <h4 class="row-title" >overview</h4>
                 <p>market active sine 23.5.2018<!-- <br>season#1 ending on 1.7.2018 --> </p>
-                <p>active investments: 921, detainig 5k MemeCoins.<br> All investors currently possess 43M MemeCoins</p>
+                <p class="overview-text">active investments: <span id="active-investments">0</span>, detainig <span id="detained-memecoins">0</span> MemeCoins.<br> All investors currently possess <span id="existing-memecoins">300000000</span> MemeCoins</p>
                 <p><br class="hide-on-small-only" >
                 <a class="legenda-b">daily investments</a>
                 <a class="legenda-a">memeCoins invested</a>
@@ -114,7 +117,7 @@
           </tr>
         </thead>
 
-        <tbody>
+        <tbody id="leaderboards-table">
           <tr>
             <td>Alvin<span class="red bankrupt-badge white-text">4</span></td>
             <td>23k</td>
@@ -160,7 +163,19 @@
               </div>
 
             </div>
-          </div>         
+          </div>
+          <div class="section">
+            <div class="row">
+              <div id="info1" class="col s12 m6 l6">
+              <h4>info</h4>
+              <p> qwienqowidn iowqndowk dnqowino qwndo qwno bwqo bqwb qowb qowb qowbqo w</p>
+              </div>
+              <div class="col s12 m6 l6">
+              <h4>c</h4>
+              </div>
+            </div>
+          </div>
+          
         </div>
       </div>
 
