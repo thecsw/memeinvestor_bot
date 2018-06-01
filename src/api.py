@@ -4,6 +4,7 @@ import logging
 import datetime
 
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import desc, func
 
@@ -11,9 +12,45 @@ import config
 from models import Investor, Investment
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = config.db
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["SQLALCHEMY_DATABASE_URI"] = config.db
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
 db = SQLAlchemy(app)
+CORS(app)
+
+
+def get_pagination():
+    try:
+        page = int(request.args.get("page"))
+    except TypeError:
+        page = 0
+
+    try:
+        per_page = int(request.args.get("per_page"))
+    except TypeError:
+        per_page = 100
+
+    if per_page > 100 or per_page < 0:
+        per_page = 100
+    if page < 0:
+        page = 0
+
+    return (page, per_page)
+
+
+def get_timeframes():
+    try:
+        time_from = int(request.args.get("from"))
+    except TypeError:
+        time_from = -1
+
+    try:
+        time_to = int(request.args.get("to"))
+    except TypeError:
+        time_to = -1
+
+    print((time_from, time_to))
+    return (time_from, time_to)
 
 
 @app.route("/coins/invested")
@@ -44,20 +81,12 @@ def investments_active():
 @app.route("/investments/total")
 def investments_total():
     res = db.session.query(func.count(Investment.id))
+    time_from, time_to = get_timeframes()
 
-    try:
-        time_from = int(request.args.get("from"))
-    except TypeError:
-        pass
-    else:
-        res.filter(Investment.time > time_from)
-
-    try:
-        time_to = int(request.args.get("to"))
-    except TypeError:
-        pass
-    else:
-        res.filter(Investment.time < time_to)
+    if time_from > 0:
+        res = res.filter(Investment.time > time_from)
+    if time_to > 0:
+        res = res.filter(Investment.time < time_to)
 
     return jsonify({"investments": str(res.scalar())})
 
@@ -65,20 +94,7 @@ def investments_total():
 @app.route("/investors/top")
 @app.route("/investors/top/<string:field>")
 def investors_top(field="balance"):
-    try:
-        page = int(request.args.get("page"))
-    except TypeError:
-        page = 0
-
-    try:
-        per_page = int(request.args.get("per_page"))
-    except TypeError:
-        per_page = 100
-
-    if per_page > 100 or per_page < 0:
-        per_page = 100
-    if page < 0:
-        page = 0
+    page, per_page = get_pagination()
 
     sql = db.session.query(Investor).order_by(desc(field)).\
           limit(per_page).offset(page*per_page).all()
@@ -99,7 +115,7 @@ def investor(name):
         filter(Investor.name == name).\
         first()
 
-    if not res:
+    if not sql:
         return not_found("User not found")
 
     res = {
@@ -109,7 +125,39 @@ def investor(name):
         "broke": sql.broke,
     }
 
-    return jsonify(res.__dict__)
+    return jsonify(res)
+
+@app.route("/investor/<string:name>/investments")
+def investor_investments(name):
+    page, per_page = get_pagination()
+    time_from, time_to = get_timeframes()
+    sql = db.session.query(Investment).\
+        filter(Investment.name == name)
+
+    if time_from > 0:
+        sql = sql.filter(Investment.time > time_from)
+    if time_to > 0:
+        sql = sql.filter(Investment.time < time_to)
+
+    sql_res = sql.order_by(desc(Investment.id)).limit(per_page).\
+        offset(page*per_page).all()
+
+    if not sql_res:
+        return not_found("No investments found")
+
+    res = [{
+        "id": x.id,
+        "post": x.post,
+        "upvotes": x.upvotes,
+        "name": x.name,
+        "amount": x.amount,
+        "time": x.time,
+        "done": x.done,
+        "response": x.response,
+        "success": x.success,
+    } for x in sql_res]
+
+    return jsonify(res)
 
 
 @app.route("/")
