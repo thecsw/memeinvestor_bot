@@ -83,7 +83,7 @@ The bot has the following commands:
 - `!help` - returns this help message.
 
 To invoke a command, reply to either the top-level u/MemeInvestor_bot comment in the comment section of any
-r/MemeEconomy post or to one of it's subsequent replies to your command comment.
+r/MemeEconomy post or to one of its subsequent replies to your command comment.
 
 ## Getting started 
 
