@@ -9,7 +9,7 @@ let jsonApi = (function(){
       
      return new Promise(function (resolve, reject) {
        var xhr = new XMLHttpRequest();
-       let url = options.url+"?"+param;
+       let url = options.url+param;
        xhr.open(options.method, url);
        xhr.onload = function () {
          if (this.status >= 200 && this.status < 300) {
@@ -32,8 +32,9 @@ let jsonApi = (function(){
    }
    
    function getAll(){
-      return makeRequest("per_page=5", options);
+      return makeRequest("?per_page=5", options);
    }
+
    function get(param){
       return makeRequest(param, options);
    }
@@ -54,14 +55,13 @@ let overview = (function(){
       investmentsActive: undefined
       //investmentsTotal: undefined  
    }
-   function init(...e){
+   function init(){
       counters = {
          coinsInvested: new CountUp("detained-memecoins", 0, 1.5),
          coinsTotal: new CountUp("existing-memecoins", 100000000, 0, 1.5),
          investmentsActive: new CountUp("active-investments", 0, 1.5)
          //investmentsTotal: new CountUp("total-investments", 24.02, 99.99)      
       }
-      update(...e)
    }
    function update(coins,investments){
       counters.coinsInvested.update(coins.invested.coins)
@@ -81,6 +81,15 @@ let overview = (function(){
 let overviewChart = (function(){
    let desktopRatio = true;
    let ch1;
+   let graphData = {
+     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri','sat','sun'],
+     series: [
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0]
+       
+     ]
+   };
+
    function getScreenSize(){
       let w = window,
       d = document,
@@ -90,8 +99,9 @@ let overviewChart = (function(){
       y = w.innerHeight|| e.clientHeight|| g.clientHeight;
       return {x,y};
    }
-   function update(a){
-       
+   function update(graph, index, value){
+       graphData.series[graph][index] = value;
+       ch1.update();
    }
    function resize(){
       let x = getScreenSize().x;
@@ -114,15 +124,11 @@ let overviewChart = (function(){
       }else{
          desktopRatio = true;
       }
+
+       iterateDays(7, function(index, from, to) {
+           graphData.labels[6 - index] = to.getDate() + '/' + to.getMonth();
+       })
       
-      let graphData = {
-        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri','sat','sun'],
-        series: [
-           [0, 0, 0, 0, 0, 0, 0],
-           [0, 0, 0, 0, 0, 0, 0]
-          
-        ]
-      };
       let options = {
         showPoint: false,
         lineSmooth: false,
@@ -159,8 +165,6 @@ let overviewChart = (function(){
       // that is resolving to our chart container element. The Second parameter
       // is the actual data object.
       ch1 = new Chartist.Line('.ct-chart', graphData, options, responsiveOptions);
-      //update with apis data
-      update();
    }
    return{
       init: init,
@@ -204,29 +208,18 @@ let leaderboard = (function(){
       //instantiate collapsible
       elems = document.querySelectorAll('.collapsible');
       M.Collapsible.init(elems);
-      
-      
+
+      overview.init()
       overviewChart.init()
-       //get api data
-      let initialData = jsonApi.getAll()
-      .then(function (data) {
-         overview.init(data.coins, data.investments);
-         leaderboard.update(data.investors.top);
-      })
-      .catch(function (err) {
-         console.error('error while retrieving apis data', err.statusText);
-         connectionErrorToast(err)
-      });
-      
+
       //start infinite short polling updater with 5s frequency
-      setTimeout(updater,8000);
+      setInterval(updater,8000);
       function updater(){
          console.log('updating data..')
          let tempData = jsonApi.getAll()
          .then(function (data) {
             overview.update(data.coins, data.investments);
             leaderboard.update(data.investors.top);
-            setTimeout(updater,8000);
          })
          .catch(function (err) {
             // Get toast DOM Element, get instance, then call dismiss function
@@ -235,9 +228,24 @@ let leaderboard = (function(){
             toastInstance.dismiss();
             console.error('error while retrieving apis data', err.statusText);
             connectionErrorToast(err)
-            setTimeout(updater,8000);
          });      
+
+         // Errors are handled above, dont handle them again
+         iterateDays(7, function(index, from, to) {
+             var ufrom = from.valueOf() / 1000;
+             var uto = to.valueOf() / 1000;
+
+             jsonApi.get('/investments/total?from='+ufrom+'&to='+uto)
+                 .then(function (data) {
+                     overviewChart.update(0, index, data.investments * 10000);
+                 })
+             jsonApi.get('/investments/amount?from='+ufrom+'&to='+uto)
+                 .then(function (data) {
+                     overviewChart.update(1, index, data.coins);
+                 })
+         })
       } 
+      updater();
    });
    //dom resize listener
    window.addEventListener('resize', function(event){
