@@ -109,4 +109,14 @@ border: none;
   stroke-width: 3px;
 }
 
+/* --[description row]-- */
+
+.code-block{
+  padding-left: 4px;
+  padding-right: 4px;
+  border-radius: 2px;
+}
+
+
+
 

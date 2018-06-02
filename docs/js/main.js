@@ -2,15 +2,14 @@
 let jsonApi = (function(){
    let options = {
       method: "GET",
-      //url: "http://memes.market:5000/",
-      url: "http://localhost/memeinvestor_bot/docs/testApiData.json",
-      param: "per_page=10"
+      url: "https://memes.market/api",
+      //url: "http://localhost/memeinvestor_bot/docs/testApiData.json",
    }
-   function makeRequest (options) {
+   function makeRequest (param, options) {
       
      return new Promise(function (resolve, reject) {
        var xhr = new XMLHttpRequest();
-       let url = options.url+"?"+options.param;
+       let url = options.url+"?"+param;
        xhr.open(options.method, url);
        xhr.onload = function () {
          if (this.status >= 200 && this.status < 300) {
@@ -33,11 +32,15 @@ let jsonApi = (function(){
    }
    
    function getAll(){
-      return makeRequest(options);
+      return makeRequest("per_page=5", options);
+   }
+   function get(param){
+      return makeRequest(param, options);
    }
    
    return {
-      getAll: getAll
+      getAll: getAll,
+      get: get
    }
 })();
 
@@ -88,6 +91,7 @@ let overviewChart = (function(){
       return {x,y};
    }
    function update(a){
+      
    }
    function resize(){
       let x = getScreenSize().x;
@@ -103,7 +107,7 @@ let overviewChart = (function(){
    }
    function init(){
       let x = getScreenSize().x;
-      if(x<=790){
+      if(x<=800){
          desktopRatio = false;
          //set the chart ratio to a less horizontal ratio, to make it fit on mobile
          document.getElementById("homepage-graph").className = "ct-chart ct-perfect-fourth";
@@ -112,45 +116,32 @@ let overviewChart = (function(){
       }
       
       let graphData = {
-        // A labels array that can contain any sort of values
         labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri','sat','sun'],
-        // Our series array that contains series objects or in this case series data arrays
         series: [
-          [0.4, 0.6, 1, 0.9, 0.8,1,1.3],
-          [0, 0.4, 0.3, 0.6, 1,1.1,2]
+           [0, 0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0, 0]
           
         ]
       };
-      // We are setting a few options for our chart and override the defaults
       let options = {
-        // Don't draw the line chart points
         showPoint: false,
-        // Disable line smoothing
         lineSmooth: false,
-        
         fullWidth: true,
         chartPadding: 0,
-        // X-Axis specific configuration
         /*axisX: {
-          // We can disable the grid for this axis
           showGrid: false,
-          // and also don't show the label
           showLabel: false
         },*/
-        // Y-Axis specific configuration
         axisY: {
-          // Lets offset the chart a bit from the labels
           offset: 60,
           // The label interpolation function enables you to modify the values
           // used for the labels on each axis. Here we are converting the
           // values into million pound.
           labelInterpolationFnc: function(value) {
-            return value + 'm';
+            return formatToUnits(value);
           }
         }
       };
-
-
       let responsiveOptions = [
 
         ['screen and (min-width: 641px) and (max-width: 1024px)', {
@@ -167,8 +158,9 @@ let overviewChart = (function(){
       // Create a new line chart object where as first parameter we pass in a selector
       // that is resolving to our chart container element. The Second parameter
       // is the actual data object.
-      ch1 = new Chartist.Line('.ct-chart', graphData, options, responsiveOptions);      
-      
+      ch1 = new Chartist.Line('.ct-chart', graphData, options, responsiveOptions);
+      //update with apis data
+      update();
    }
    return{
       init: init,
@@ -183,7 +175,10 @@ let leaderboard = (function(){
       let tb = document.getElementById("leaderboards-table");
       let html = ""
           for(let i=0; i<top.length;i++){
-             html += "<tr><td>"+top[i].name+"</td>"+
+             //broke badge
+             let badge = top[i].broke>0? '<span class="red bankrupt-badge white-text">'+top[i].broke+'</span>':"";
+             // all in badge <span class="amber badge white-text">all in 3</span>
+             html += "<tr><td>"+top[i].name + badge+"</td>"+
                          "<td>"+top[i].balance+"</td>"+
                          "<td>"+top[i].completed+"</td></tr>"
           }
@@ -206,6 +201,11 @@ let leaderboard = (function(){
       //create sidenav 
       let elems = document.querySelectorAll('.sidenav');
       let instances = M.Sidenav.init(elems);
+      //instantiate collapsible
+      elems = document.querySelectorAll('.collapsible');
+      M.Collapsible.init(elems);
+      
+      
       overviewChart.init()
        //get api data
       let initialData = jsonApi.getAll()
