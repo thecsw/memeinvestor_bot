@@ -140,10 +140,10 @@ def main():
 
             # Editing the comment as a confirmation
             text = response.body
-            if factor > 1:
+            if change > 0:
                 logging.info("%s won %d" % (investor.name, change))
                 response.edit_wrap(message.modify_invest_return(text, change))
-            elif factor == 1:
+            elif change == 0:
                 logging.info("%s broke even and got back %d" % (investor.name, change))
                 response.edit_wrap(message.modify_invest_break_even(text, change))
             else:
