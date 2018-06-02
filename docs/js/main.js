@@ -1,4 +1,4 @@
-
+"use strict";
 let jsonApi = (function(){
    let options = {
       method: "GET",
@@ -195,9 +195,6 @@ let leaderboard = (function(){
 
 
 (function(){
-   "use strict";
-   
-
    //get session cookie
    
    //dom ready listener
@@ -223,17 +220,17 @@ let leaderboard = (function(){
          })
          .catch(function (err) {
             // Get toast DOM Element, get instance, then call dismiss function
-            var toastElement = document.querySelector('.toast');
-            var toastInstance = M.Toast.getInstance(toastElement);
+            let toastElement = document.querySelector('.toast');
+            let toastInstance = M.Toast.getInstance(toastElement);
             toastInstance.dismiss();
             console.error('error while retrieving apis data', err.statusText);
             connectionErrorToast(err)
          });      
 
          // Errors are handled above, dont handle them again
-         iterateDays(7, function(index, from, to) {
-             var ufrom = from.valueOf() / 1000;
-             var uto = to.valueOf() / 1000;
+         iterateDays(7, function(index, dateFrom, to) {
+             let ufrom = dateFrom.valueOf() / 1000;
+             let uto = to.valueOf() / 1000;
 
              jsonApi.get('/investments/total?from='+ufrom+'&to='+uto)
                  .then(function (data) {
@@ -287,19 +284,18 @@ function formatToUnits(val) {
 }
 
 function iterateDays(days, callback) {
-    to = new Date();
+    let to = new Date();
     to.setHours(23);
     to.setMinutes(59);
     to.setSeconds(59);
     to.setMilliseconds(999);
-    from = new Date();
-    from.setTime(to.getTime());
-    from.setDate(from.getDate() - 1);
+    let dateFrom = new Date();
+    dateFrom.setTime(to.getTime());
+    dateFrom.setDate(dateFrom.getDate() - 1);
 
-    for (var i = 0; i < days; i++) {
-        callback(i, from, to);
-
-        from.setDate(from.getDate() - 1);
+    for (let i = 0; i < days; i++) {
+        callback(i, dateFrom, to);
+        dateFrom.setDate(dateFrom.getDate() - 1);
         to.setDate(to.getDate() - 1);
     }
 }
