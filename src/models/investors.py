@@ -7,7 +7,8 @@ Base = declarative_base()
 class Investor(Base):
     __tablename__ = "Investors"
 
-    name = Column(String(20), nullable=False, primary_key=True, autoincrement=False)
+    id = Column(Integer, primary_key=True)
+    name = Column(String(20), nullable=False, unique=True)
     balance = Column(Integer, default=1000)
     completed = Column(Integer, default=0)
     broke = Column(Integer, default=0)

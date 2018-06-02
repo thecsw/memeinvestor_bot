@@ -2,7 +2,6 @@ import re
 import time
 import logging
 from queue import Queue
-from threading import Thread
 
 from sqlalchemy import create_engine, func
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -11,7 +10,7 @@ from bottr.bot import BotQueueWorker
 
 import config
 import message
-from models import Investment, Investor, Comment
+from models import Investment, Investor
 
 logging.basicConfig(level=logging.INFO)
 
@@ -186,7 +185,7 @@ class CommentWorker(BotQueueWorker):
 
         active = sess.query(
             func.count(Investment.id)
-        ).filter(Investment.done and Investment.name == investor.name).scalar()
+        ).filter(Investment.done).filter(Investment.name == investor.name).scalar()
         if active:
             comment.reply_wrap(message.modify_broke_active(active))
 
@@ -202,7 +201,7 @@ class CommentWorker(BotQueueWorker):
     def active(self, sess, comment, investor):
         total = sess.query(
             func.count(Investment.id)
-        ).filter(Investment.done and Investment.name == investor.name).scalar()
+        ).filter(Investment.done).filter(Investment.name == investor.name).scalar()
         comment.reply_wrap(message.modify_active(total))
 
     def no_such_user(self, comment):
