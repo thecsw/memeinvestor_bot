@@ -160,10 +160,11 @@
           <div class="divider"></div>
           <div class="section">
             <div class="row">
-              <div id="info1" class="col s12 m6 l6 center-align">
+              <div id="info1" class="col s12 m6 l6">
               <h4 >Commands and info</h4>
               <p>To invoke a command, reply to either the top-level u/MemeInvestor_bot comment in the comment 
-              section of any r/MemeEconomy post or to one of its subsequent replies to your command comment. <span class="red white-text"> commands that are not direct replies to the bot will be ignored</span></p>
+              section of any r/MemeEconomy post or to one of its subsequent replies to your command comment.<br> 
+              <span class="red lighten-1 white-text code-block"> commands that are not direct replies to the bot will be ignored</span></p>
               <p>The bot has the following commands:</p>
               <ul class="collapsible">
                 <li>
@@ -194,7 +195,7 @@
 
 
               </div>
-              <div class="col s12 m6 l6 center-align">
+              <div class="col s12 m6 l6">
                 <h4>Investment behaviour</h4>
                 <p>To calculate the investment return, the bot performs a two-step procedure.<br>
                 You can click on the table below to view an exhaustive description of it. </p>
@@ -204,8 +205,7 @@
                 <ul class="collapsible">
                   <li>
                     <div class="collapsible-header"><i class="material-icons">expand_more</i>First step</div>
-                    <div class="collapsible-body">
-                    
+                    <div class="collapsible-body">  
                       <p>First step The bot calculates an initial growth factor, 
                       <span class="grey lighten-2 code-block">y</span>, using a power function of the form 
                       <span class="grey lighten-2 code-block">y = x<sup>m</sup></span>, where m is a constant 
@@ -217,6 +217,8 @@
                        growth. The reasoning behind this is to prevent a  small handful of investors who get lucky and invest in
                        one or more posts that 'blow up' from earning so many  MemeCoins that they 
                       dominate the market from then on. This helps keep the playing field somewhat more level for new investors.</p>
+                      <img class="responsive-img" src="resources/investment_return_multiplier.png">
+                      <i>Investment Return Initial Growth Factor</i>
                     </div>
                   </li>
                   <li>
@@ -232,6 +234,8 @@
                     <span class="grey lighten-2 code-block">invested_amount * (y-1)/(thresh - 1)</span>. If the post doesn't 
                     grow or is downvoted (y<=1), the investor gets back nothing.
                     </p>
+                    <img class="responsive-img" src="resources/investment_return_multiplier_thresholding.png">
+                    <i>Investment Return Final Return Multiplier vs Initial Growth Factor</i>
                     
                     </div>
                   </li>
