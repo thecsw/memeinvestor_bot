@@ -237,7 +237,7 @@ Investors with the largest balances:
 def modify_top(leaders):
     top_string = ""
     for l in leaders:
-        top_string = f"{top_string}\n{l.name}: {l.balance} MemeCoins"
+        top_string = f"{top_string}\n\n{l.name}: {l.balance} MemeCoins"
 
     top_response = top_org
     top_response = top_response.replace("%TOP_STRING%", top_string)
