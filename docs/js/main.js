@@ -56,9 +56,9 @@ let overview = (function(){
    }
    function init(...e){
       counters = {
-         coinsInvested: new CountUp("detained-memecoins", 0, 222),
-         coinsTotal: new CountUp("existing-memecoins", 100000000, 222, 1.5),
-         investmentsActive: new CountUp("active-investments", 0, 222)
+         coinsInvested: new CountUp("detained-memecoins", 0, 1.5),
+         coinsTotal: new CountUp("existing-memecoins", 100000000, 0, 1.5),
+         investmentsActive: new CountUp("active-investments", 0, 1.5)
          //investmentsTotal: new CountUp("total-investments", 24.02, 99.99)      
       }
       update(...e)
@@ -91,7 +91,7 @@ let overviewChart = (function(){
       return {x,y};
    }
    function update(a){
-      
+       
    }
    function resize(){
       let x = getScreenSize().x;
@@ -179,7 +179,7 @@ let leaderboard = (function(){
              let badge = top[i].broke>0? '<span class="red bankrupt-badge white-text">'+top[i].broke+'</span>':"";
              // all in badge <span class="amber badge white-text">all in 3</span>
              html += "<tr><td>"+top[i].name + badge+"</td>"+
-                         "<td>"+top[i].balance+"</td>"+
+                         "<td>"+formatToUnits(top[i].balance)+"</td>"+
                          "<td>"+top[i].completed+"</td></tr>"
           }
       tb.innerHTML = html
