@@ -75,6 +75,10 @@ class CommentWorker(BotQueueWorker):
            comment.parent().author.name != config.username:
             return
 
+        if comment.submission.author.name == comment.author.name:
+            comment.reply(message.inside_trading_org)
+            return
+
         for reg in self.regexes:
             matches = reg.search(comment.body.lower())
             if not matches:

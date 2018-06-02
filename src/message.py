@@ -9,7 +9,7 @@ _______________________
 """
 
 help_mess = """
-^(For more information type !help)
+^(For more information see [memes.market](https://memes.market/#info1))
 """
 
 # This message will be sent if an account has been
