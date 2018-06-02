@@ -208,9 +208,24 @@ let leaderboard = (function(){
 
       overview.init()
       overviewChart.init()
+      
+      //load chart
+      iterateDays(7, function(index, dateFrom, to){
+          let ufrom = dateFrom.valueOf() / 1000;
+          let uto = to.valueOf() / 1000;
 
+          jsonApi.get('/investments/total?from='+ufrom+'&to='+uto)
+              .then(function (data) {
+                  overviewChart.update(0, index, parseInt(data.investments) * 10000);
+              })
+          jsonApi.get('/investments/amount?from='+ufrom+'&to='+uto)
+              .then(function (data) {
+                  overviewChart.update(1, index, parseInt(data.coins));
+              })
+      })
+      
       //start infinite short polling updater with 5s frequency
-      setInterval(updater,8000);
+      setInterval(updater,10000);
       function updater(){
          console.log('updating data..')
          let tempData = jsonApi.getAll()
@@ -226,21 +241,6 @@ let leaderboard = (function(){
             console.error('error while retrieving apis data', err.statusText);
             connectionErrorToast(err)
          });      
-
-         // Errors are handled above, dont handle them again
-         iterateDays(7, function(index, dateFrom, to) {
-             let ufrom = dateFrom.valueOf() / 1000;
-             let uto = to.valueOf() / 1000;
-
-             jsonApi.get('/investments/total?from='+ufrom+'&to='+uto)
-                 .then(function (data) {
-                     overviewChart.update(0, index, parseInt(data.investments) * 10000);
-                 })
-             jsonApi.get('/investments/amount?from='+ufrom+'&to='+uto)
-                 .then(function (data) {
-                     overviewChart.update(1, index, parseInt(data.coins));
-                 })
-         })
       } 
       updater();
    });
