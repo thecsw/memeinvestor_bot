@@ -2,15 +2,14 @@
 let jsonApi = (function(){
    let options = {
       method: "GET",
-      //url: "http://memes.market:5000/",
-      url: "http://localhost/memeinvestor_bot/docs/testApiData.json",
-      param: "per_page=10"
+      url: "https://memes.market/api",
+      //url: "http://localhost/memeinvestor_bot/docs/testApiData.json",
    }
-   function makeRequest (options) {
+   function makeRequest (param, options) {
       
      return new Promise(function (resolve, reject) {
        var xhr = new XMLHttpRequest();
-       let url = options.url+"?"+options.param;
+       let url = options.url+param;
        xhr.open(options.method, url);
        xhr.onload = function () {
          if (this.status >= 200 && this.status < 300) {
@@ -33,11 +32,16 @@ let jsonApi = (function(){
    }
    
    function getAll(){
-      return makeRequest(options);
+      return makeRequest("?per_page=5", options);
+   }
+
+   function get(param){
+      return makeRequest(param, options);
    }
    
    return {
-      getAll: getAll
+      getAll: getAll,
+      get: get
    }
 })();
 
@@ -51,14 +55,13 @@ let overview = (function(){
       investmentsActive: undefined
       //investmentsTotal: undefined  
    }
-   function init(...e){
+   function init(){
       counters = {
-         coinsInvested: new CountUp("detained-memecoins", 0, 222),
-         coinsTotal: new CountUp("existing-memecoins", 100000000, 222, 1.5),
-         investmentsActive: new CountUp("active-investments", 0, 222)
+         coinsInvested: new CountUp("detained-memecoins", 0, 1.5),
+         coinsTotal: new CountUp("existing-memecoins", 100000000, 0, 1.5),
+         investmentsActive: new CountUp("active-investments", 0, 1.5)
          //investmentsTotal: new CountUp("total-investments", 24.02, 99.99)      
       }
-      update(...e)
    }
    function update(coins,investments){
       counters.coinsInvested.update(coins.invested.coins)
@@ -78,6 +81,15 @@ let overview = (function(){
 let overviewChart = (function(){
    let desktopRatio = true;
    let ch1;
+   let graphData = {
+     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri','sat','sun'],
+     series: [
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0]
+       
+     ]
+   };
+
    function getScreenSize(){
       let w = window,
       d = document,
@@ -87,7 +99,9 @@ let overviewChart = (function(){
       y = w.innerHeight|| e.clientHeight|| g.clientHeight;
       return {x,y};
    }
-   function update(a){
+   function update(graph, index, value){
+       graphData.series[graph][index] = value;
+       ch1.update();
    }
    function resize(){
       let x = getScreenSize().x;
@@ -103,54 +117,37 @@ let overviewChart = (function(){
    }
    function init(){
       let x = getScreenSize().x;
-      if(x<=790){
+      if(x<=800){
          desktopRatio = false;
          //set the chart ratio to a less horizontal ratio, to make it fit on mobile
          document.getElementById("homepage-graph").className = "ct-chart ct-perfect-fourth";
       }else{
          desktopRatio = true;
       }
+
+       iterateDays(7, function(index, from, to) {
+           graphData.labels[6 - index] = to.getDate() + '/' + to.getMonth();
+       })
       
-      let graphData = {
-        // A labels array that can contain any sort of values
-        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri','sat','sun'],
-        // Our series array that contains series objects or in this case series data arrays
-        series: [
-          [0.4, 0.6, 1, 0.9, 0.8,1,1.3],
-          [0, 0.4, 0.3, 0.6, 1,1.1,2]
-          
-        ]
-      };
-      // We are setting a few options for our chart and override the defaults
       let options = {
-        // Don't draw the line chart points
         showPoint: false,
-        // Disable line smoothing
         lineSmooth: false,
-        
         fullWidth: true,
         chartPadding: 0,
-        // X-Axis specific configuration
         /*axisX: {
-          // We can disable the grid for this axis
           showGrid: false,
-          // and also don't show the label
           showLabel: false
         },*/
-        // Y-Axis specific configuration
         axisY: {
-          // Lets offset the chart a bit from the labels
           offset: 60,
           // The label interpolation function enables you to modify the values
           // used for the labels on each axis. Here we are converting the
           // values into million pound.
           labelInterpolationFnc: function(value) {
-            return value + 'm';
+            return formatToUnits(value);
           }
         }
       };
-
-
       let responsiveOptions = [
 
         ['screen and (min-width: 641px) and (max-width: 1024px)', {
@@ -167,8 +164,7 @@ let overviewChart = (function(){
       // Create a new line chart object where as first parameter we pass in a selector
       // that is resolving to our chart container element. The Second parameter
       // is the actual data object.
-      ch1 = new Chartist.Line('.ct-chart', graphData, options, responsiveOptions);      
-      
+      ch1 = new Chartist.Line('.ct-chart', graphData, options, responsiveOptions);
    }
    return{
       init: init,
@@ -183,8 +179,11 @@ let leaderboard = (function(){
       let tb = document.getElementById("leaderboards-table");
       let html = ""
           for(let i=0; i<top.length;i++){
-             html += "<tr><td>"+top[i].name+"</td>"+
-                         "<td>"+top[i].balance+"</td>"+
+             //broke badge
+             let badge = top[i].broke>0? '<span class="red bankrupt-badge white-text">'+top[i].broke+'</span>':"";
+             // all in badge <span class="amber badge white-text">all in 3</span>
+             html += "<tr><td>"+top[i].name + badge+"</td>"+
+                         "<td>"+formatToUnits(top[i].balance)+"</td>"+
                          "<td>"+top[i].completed+"</td></tr>"
           }
       tb.innerHTML = html
@@ -206,19 +205,47 @@ let leaderboard = (function(){
       //create sidenav 
       let elems = document.querySelectorAll('.sidenav');
       let instances = M.Sidenav.init(elems);
+      //instantiate collapsible
+      elems = document.querySelectorAll('.collapsible');
+      M.Collapsible.init(elems);
+
+      overview.init()
       overviewChart.init()
-       //get api data
-      let initialData = jsonApi.getAll()
-      .then(function (data) {
-         overview.init(data.coins, data.investments);
-         leaderboard.update(data.investors.top);
-      })
-      .catch(function (err) {
-         console.error('error while retrieving apis data', err.statusText);
-         connectionErrorToast(err)
-      });
-      
-      
+
+      //start infinite short polling updater with 5s frequency
+      setInterval(updater,8000);
+      function updater(){
+         console.log('updating data..')
+         let tempData = jsonApi.getAll()
+         .then(function (data) {
+            overview.update(data.coins, data.investments);
+            leaderboard.update(data.investors.top);
+         })
+         .catch(function (err) {
+            // Get toast DOM Element, get instance, then call dismiss function
+            var toastElement = document.querySelector('.toast');
+            var toastInstance = M.Toast.getInstance(toastElement);
+            toastInstance.dismiss();
+            console.error('error while retrieving apis data', err.statusText);
+            connectionErrorToast(err)
+         });      
+
+         // Errors are handled above, dont handle them again
+         iterateDays(7, function(index, from, to) {
+             var ufrom = from.valueOf() / 1000;
+             var uto = to.valueOf() / 1000;
+
+             jsonApi.get('/investments/total?from='+ufrom+'&to='+uto)
+                 .then(function (data) {
+                     overviewChart.update(0, index, data.investments * 10000);
+                 })
+             jsonApi.get('/investments/amount?from='+ufrom+'&to='+uto)
+                 .then(function (data) {
+                     overviewChart.update(1, index, data.coins);
+                 })
+         })
+      } 
+      updater();
    });
    //dom resize listener
    window.addEventListener('resize', function(event){
