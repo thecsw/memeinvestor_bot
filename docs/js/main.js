@@ -238,7 +238,7 @@ let leaderboard = (function(){
                  })
              jsonApi.get('/investments/amount?from='+ufrom+'&to='+uto)
                  .then(function (data) {
-                     overviewChart.update(1, index, parseInt(data.coins);)
+                     overviewChart.update(1, index, parseInt(data.coins));
                  })
          })
       } 
