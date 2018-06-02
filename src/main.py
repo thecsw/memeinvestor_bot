@@ -75,10 +75,6 @@ class CommentWorker(BotQueueWorker):
            comment.parent().author.name != config.username:
             return
 
-        if comment.submission.author.name == comment.author.name:
-            comment.reply(message.inside_trading_org)
-            return
-
         for reg in self.regexes:
             matches = reg.search(comment.body.lower())
             if not matches:
@@ -137,6 +133,10 @@ class CommentWorker(BotQueueWorker):
     def invest(self, sess, comment, investor, amount):
         # Post related vars
         if not investor:
+            return
+
+        if comment.submission.author.name == comment.author.name:
+            comment.reply(message.inside_trading_org)
             return
 
         try:
@@ -205,7 +205,8 @@ class CommentWorker(BotQueueWorker):
     def active(self, sess, comment, investor):
         total = sess.query(
             func.count(Investment.id)
-        ).filter(Investment.done).filter(Investment.name == investor.name).scalar()
+        ).filter(Investment.done == 0).\
+        filter(Investment.name == investor.name).scalar()
         comment.reply_wrap(message.modify_active(total))
 
     def no_such_user(self, comment):
