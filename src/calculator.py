@@ -40,8 +40,8 @@ def calculate(new, old):
     # since the investment was made.
     # Functional form: y = x^m ;
     #    y = multiplier,
-    #    x = relative ginvestment.th: (change in upvotes) / (upvotes at time of investment),
-    #    m = scale factor: allow curtailing high-ginvestment.th post returns to make the playing field a bit fairer
+    #    x = relative growth: (change in upvotes) / (upvotes at time of investment),
+    #    m = scale factor: allow curtailing high-growth post returns to make the playing field a bit fairer
 
     new = fast_float(new)
     old = fast_float(old)
@@ -58,7 +58,7 @@ def calculate(new, old):
 
     mult = pow((rel_change+1), scale_factor)
 
-    # Investment must ginvestment. by more than a threshold amount to win. Decide if
+    # Investment must grow by more than a threshold amount to win. Decide if
     # investment was successful and whether you get anything back at all.
     win_threshold = 1.2
     if mult > win_threshold:
@@ -140,9 +140,12 @@ def main():
 
             # Editing the comment as a confirmation
             text = response.body
-            if factor > 1:
+            if change > 0:
                 logging.info("%s won %d" % (investor.name, change))
                 response.edit_wrap(message.modify_invest_return(text, change))
+            elif change == 0:
+                logging.info("%s broke even and got back %d" % (investor.name, change))
+                response.edit_wrap(message.modify_invest_break_even(text, change))
             else:
                 lost_memes = int( amount - change )
                 logging.info("%s lost %d" % (investor.name, lost_memes))

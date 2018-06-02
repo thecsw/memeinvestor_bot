@@ -126,7 +126,7 @@ let overviewChart = (function(){
       }
 
        iterateDays(7, function(index, from, to) {
-           graphData.labels[6 - index] = to.getDate() + '/' + to.getMonth();
+           graphData.labels[index] = to.getDate() + '/' + to.getMonth();
        })
       
       let options = {
@@ -234,11 +234,11 @@ let leaderboard = (function(){
 
              jsonApi.get('/investments/total?from='+ufrom+'&to='+uto)
                  .then(function (data) {
-                     overviewChart.update(0, index, data.investments * 10000);
+                     overviewChart.update(0, index, parseInt(data.investments) * 10000);
                  })
              jsonApi.get('/investments/amount?from='+ufrom+'&to='+uto)
                  .then(function (data) {
-                     overviewChart.update(1, index, data.coins);
+                     overviewChart.update(1, index, parseInt(data.coins));
                  })
          })
       } 
@@ -293,7 +293,7 @@ function iterateDays(days, callback) {
     dateFrom.setTime(to.getTime());
     dateFrom.setDate(dateFrom.getDate() - 1);
 
-    for (let i = 0; i < days; i++) {
+    for (let i = days - 1; i >= 0; i--) {
         callback(i, dateFrom, to);
         dateFrom.setDate(dateFrom.getDate() - 1);
         to.setDate(to.getDate() - 1);

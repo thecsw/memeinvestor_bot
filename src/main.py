@@ -135,6 +135,10 @@ class CommentWorker(BotQueueWorker):
         if not investor:
             return
 
+        if comment.submission.author.name == comment.author.name:
+            comment.reply(message.inside_trading_org)
+            return
+
         try:
             amount = int(amount)
         except ValueError:
@@ -201,7 +205,8 @@ class CommentWorker(BotQueueWorker):
     def active(self, sess, comment, investor):
         total = sess.query(
             func.count(Investment.id)
-        ).filter(Investment.done).filter(Investment.name == investor.name).scalar()
+        ).filter(Investment.done == 0).\
+        filter(Investment.name == investor.name).scalar()
         comment.reply_wrap(message.modify_active(total))
 
     def no_such_user(self, comment):
