@@ -1,7 +1,5 @@
 import json
 import time
-import logging
-import datetime
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -102,10 +100,8 @@ def investments():
 
 @app.route("/investments/active")
 def investments_active():
-    then = datetime.datetime.utcnow() - datetime.timedelta(hours=4)
     res = db.session.query(func.count(Investment.id)).\
-          filter(Investment.done == 0).filter(Investment.time < then).\
-          scalar()
+          filter(Investment.done == 0).scalar()
     return jsonify({"investments": str(res)})
 
 
@@ -208,13 +204,11 @@ def investor_investments(name):
 
 @app.route("/investor/<string:name>/active")
 def investor_active(name):
-    then = datetime.datetime.utcnow() - datetime.timedelta(hours=4)
     page, per_page = get_pagination()
     time_from, time_to = get_timeframes()
     sql = db.session.query(Investment).\
         filter(Investment.name == name).\
-        filter(Investment.done == 0).\
-        filter(Investment.time < then)
+        filter(Investment.done == 0)
 
     if time_from > 0:
         sql = sql.filter(Investment.time > time_from)
