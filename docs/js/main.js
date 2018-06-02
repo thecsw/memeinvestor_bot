@@ -218,7 +218,26 @@ let leaderboard = (function(){
          connectionErrorToast(err)
       });
       
-      
+      //start infinite short polling updater with 5s frequency
+      setTimeout(updater,8000);
+      function updater(){
+         console.log('updating data..')
+         let tempData = jsonApi.getAll()
+         .then(function (data) {
+            overview.update(data.coins, data.investments);
+            leaderboard.update(data.investors.top);
+            setTimeout(updater,8000);
+         })
+         .catch(function (err) {
+            // Get toast DOM Element, get instance, then call dismiss function
+            var toastElement = document.querySelector('.toast');
+            var toastInstance = M.Toast.getInstance(toastElement);
+            toastInstance.dismiss();
+            console.error('error while retrieving apis data', err.statusText);
+            connectionErrorToast(err)
+            setTimeout(updater,8000);
+         });      
+      } 
    });
    //dom resize listener
    window.addEventListener('resize', function(event){
