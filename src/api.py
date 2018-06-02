@@ -52,10 +52,8 @@ def get_timeframes():
 
 @app.route("/coins/invested")
 def coins_invested():
-    then = int(time.time()) - 14400
     res = db.session.query(func.coalesce(func.sum(Investment.amount), 0)).\
-          filter(Investment.done == 0).filter(Investment.time < then).\
-          scalar()
+          filter(Investment.done == 0).scalar()
     return jsonify({"coins": str(res)})
 
 
