@@ -82,14 +82,6 @@ let overviewChart = (function(){
    let desktopRatio = false;
    let canvas1;
    let ch1;
-   let graphData = {
-     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri','sat','sun'],
-     series: [
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0]
-       
-     ]
-   };
 
    function getScreenSize(){
       let w = window,
@@ -100,17 +92,20 @@ let overviewChart = (function(){
       y = w.innerHeight|| e.clientHeight|| g.clientHeight;
       return {x,y};
    }
-   function update(graph, index, value){
-       //graphData.series[graph][index] = value;
-       //ch1.update();
+   function update(dataSet, index, val){
+       let chartDataSet = ch1.data.datasets[dataSet];
+       chartDataSet.data[index] = val;
+       ch1.update();
    }
    function resize(){
       let x = getScreenSize().x;
       if(x<=800 && desktopRatio){
          desktopRatio = false;
          canvas1.parentNode.style.height = "300px";
+         //TODO: manage to remove axys labels on small devices
       }else if(x>800 && !desktopRatio){
          desktopRatio = true;
+         //TODO: manage to add axys labels on big devices
          canvas1.parentNode.style.height = "400px";
       }      
    }
@@ -122,14 +117,20 @@ let overviewChart = (function(){
          //set the chart ratio to a more horizontal ratio, to make it fit on desktop
          canvas1.parentNode.style.height = "400px";
       }
-      
+      //display axys labels based on device width
+      let displayAxysLabel = desktopRatio;
       let ctx = canvas1.getContext('2d');
+      //generate labels for x axys
+      let graphLabels = [];
+      iterateDays(7, function(index, from, to) {
+         //note: months are zero-based
+         graphLabels[index] = to.getDate() + '/' + (to.getMonth()+1);
+      })
       ch1 = new Chart(ctx, {
-         // The type of chart we want to create
          type: 'line',
           // The data for our dataset
          data: {
-            labels: ["January", "February", "March", "April", "May", "June", "July"],
+            labels: graphLabels,
             datasets: [{
                label: "Mc invested",
                backgroundColor: 'rgb(240, 91, 79, 0)',
@@ -157,17 +158,24 @@ let overviewChart = (function(){
             },
             scales: {
                yAxes: [{
+                  ticks: {
+                     display: displayAxysLabel
+                  },
                   id: 'A',
                   type: 'linear',
-                  position: 'left',
+                  position: 'left'
                }, {
+                  ticks: {
+                     display: displayAxysLabel
+                  },
                   id: 'B',
                   type: 'linear',
-                  position: 'right',
-                  /*ticks: {
-                      max: 1,
-                      min: 0
-                  }*/
+                  position: 'right'
+               }],
+               xAxes: [{
+                  ticks: {
+                     display: displayAxysLabel
+                  }                  
                }]
             }
          }
