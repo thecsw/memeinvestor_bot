@@ -15,8 +15,7 @@
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
       <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
       <!-- fancy charts -->
-      <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
-      <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
       <script src="js/libs/countup.min.js"></script>
       <!-- page -->
       <link type="text/css" rel="stylesheet" href="css/style.css" />
@@ -87,16 +86,16 @@
               <div class="col s12 m4 l3">
                 <h4 class="row-title">Overview</h4>
                 <p>Market active since 23.5.2018<!-- <br>season#1 ending on 1.7.2018 --> </p>
-                <p class="overview-text">Active investments: <span id="active-investments">--</span>, detainig <span id="detained-memecoins">--</span> MemeCoins.<br> All investors currently possess <span id="existing-memecoins">---</span> MemeCoins</p>
+                <p class="overview-text">Active investments: <span id="active-investments">--</span>, detainig <span id="detained-memecoins">--</span> MemeCoins.<br> All investors currently possess <span id="existing-memecoins">---</span> M¢</p>
                 <p><br class="hide-on-small-only" >
-                <a class="legenda-b">daily investments</a>
-                <a class="legenda-a">memeCoins invested</a>
+                <a class="legenda-b">memeCoins invested</a>
+                <a class="legenda-a">daily investments</a>
                 </p>
                
               </div>
               <div class="col s12 m8 l9">
                 <div class="chart-wrap">
-                  <div class="ct-chart ct-major-tenth" id="homepage-graph" ></div>
+                  <canvas  id="homepage-graph" ></canvas>
                   <!-- THIS RATIO ON MOBILE (max-width:640px) -->
                   <!--<div class="ct-chart ct-perfect-fourth"></div> -->
                 </div>
