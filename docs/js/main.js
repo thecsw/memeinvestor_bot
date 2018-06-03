@@ -132,6 +132,7 @@ let overviewChart = (function(){
          data: {
             labels: graphLabels,
             datasets: [{
+               //red dataset
                label: "Mc invested",
                backgroundColor: 'rgb(240, 91, 79, 0)',
                borderColor: 'rgb(240, 91, 79)',
@@ -139,6 +140,7 @@ let overviewChart = (function(){
                yAxisID: "A",
                lineTension: 0
             },{
+               //ORANG dataset
                label: "investments",
                backgroundColor: 'rgba(255, 167, 38, 0)',
                borderColor: 'rgb(255, 167, 38)',
@@ -159,14 +161,16 @@ let overviewChart = (function(){
             scales: {
                yAxes: [{
                   ticks: {
-                     display: displayAxysLabel
+                     display: displayAxysLabel,
+                     callback: val => formatToUnits(val)
                   },
                   id: 'A',
                   type: 'linear',
                   position: 'left'
                }, {
                   ticks: {
-                     display: displayAxysLabel
+                     display: displayAxysLabel,
+                     callback: val => formatToUnits(val)
                   },
                   id: 'B',
                   type: 'linear',
@@ -174,7 +178,7 @@ let overviewChart = (function(){
                }],
                xAxes: [{
                   ticks: {
-                     display: displayAxysLabel
+                     display: true
                   }                  
                }]
             }
