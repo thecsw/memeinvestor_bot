@@ -78,6 +78,10 @@ border: none;
 }
 
 /* --[graph row]-- */
+.chart-wrap{
+  height:300px;
+}
+
 
  .legenda-a{
   margin-left: 0px;

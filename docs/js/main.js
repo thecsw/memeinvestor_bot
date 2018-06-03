@@ -79,7 +79,8 @@ let overview = (function(){
 
 
 let overviewChart = (function(){
-   let desktopRatio = true;
+   let desktopRatio = false;
+   let canvas1;
    let ch1;
    let graphData = {
      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri','sat','sun'],
@@ -100,71 +101,79 @@ let overviewChart = (function(){
       return {x,y};
    }
    function update(graph, index, value){
-       graphData.series[graph][index] = value;
-       ch1.update();
+       //graphData.series[graph][index] = value;
+       //ch1.update();
    }
    function resize(){
       let x = getScreenSize().x;
       if(x<=800 && desktopRatio){
          desktopRatio = false;
-         document.getElementById("homepage-graph").className = "ct-chart ct-perfect-fourth";
-         ch1.update()
+         canvas1.parentNode.style.height = "300px";
       }else if(x>800 && !desktopRatio){
          desktopRatio = true;
-         document.getElementById("homepage-graph").className = "ct-chart ct-major-tenth";
-         ch1.update()
+         canvas1.parentNode.style.height = "400px";
       }      
    }
    function init(){
+      canvas1 = document.getElementById('homepage-graph');
       let x = getScreenSize().x;
-      if(x<=800){
-         desktopRatio = false;
-         //set the chart ratio to a less horizontal ratio, to make it fit on mobile
-         document.getElementById("homepage-graph").className = "ct-chart ct-perfect-fourth";
-      }else{
+      if(x>=800){
          desktopRatio = true;
+         //set the chart ratio to a more horizontal ratio, to make it fit on desktop
+         canvas1.parentNode.style.height = "400px";
       }
-
-       iterateDays(7, function(index, from, to) {
-           graphData.labels[index] = to.getDate() + '/' + to.getMonth();
-       })
       
-      let options = {
-        showPoint: false,
-        lineSmooth: false,
-        fullWidth: true,
-        chartPadding: 0,
-        /*axisX: {
-          showGrid: false,
-          showLabel: false
-        },*/
-        axisY: {
-          offset: 60,
-          // The label interpolation function enables you to modify the values
-          // used for the labels on each axis. Here we are converting the
-          // values into million pound.
-          labelInterpolationFnc: function(value) {
-            return formatToUnits(value);
-          }
-        }
-      };
-      let responsiveOptions = [
+      let ctx = canvas1.getContext('2d');
+      ch1 = new Chart(ctx, {
+         // The type of chart we want to create
+         type: 'line',
+          // The data for our dataset
+         data: {
+            labels: ["January", "February", "March", "April", "May", "June", "July"],
+            datasets: [{
+               label: "Mc invested",
+               backgroundColor: 'rgb(240, 91, 79, 0)',
+               borderColor: 'rgb(240, 91, 79)',
+               data: [10, 20, 22, 40, 89, 100, 150],
+               yAxisID: "A",
+               lineTension: 0
+            },{
+               label: "investments",
+               backgroundColor: 'rgba(255, 167, 38, 0)',
+               borderColor: 'rgb(255, 167, 38)',
+               data: [10, 20, 3, 5, 14, 20, 35],
+               yAxisID: "B",
+               lineTension: 0
+            }]
+         },
+         // Configuration options go here
+         options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            
+            legend: {
+               //we use our own
+               display: false
+            },
+            scales: {
+               yAxes: [{
+                  id: 'A',
+                  type: 'linear',
+                  position: 'left',
+               }, {
+                  id: 'B',
+                  type: 'linear',
+                  position: 'right',
+                  /*ticks: {
+                      max: 1,
+                      min: 0
+                  }*/
+               }]
+            }
+         }
+      });
 
-        ['screen and (min-width: 641px) and (max-width: 1024px)', {
-          seriesBarDistance: 10
-        }],
-        ['screen and (max-width: 640px)', {
-          seriesBarDistance: 5,
-          chartPadding: { left: -59 },
-          axisY: {
-            showLabel: false
-          }
-        }]
-      ];
-      // Create a new line chart object where as first parameter we pass in a selector
-      // that is resolving to our chart container element. The Second parameter
-      // is the actual data object.
-      ch1 = new Chartist.Line('.ct-chart', graphData, options, responsiveOptions);
+      
    }
    return{
       init: init,
