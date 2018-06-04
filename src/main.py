@@ -40,7 +40,7 @@ def reply_wrap(self, body):
 
     try:
         return self.reply(body)
-    except praw.exceptions.APIException as e:
+    except Exception as e:
         logging.error(e)
         return False
 

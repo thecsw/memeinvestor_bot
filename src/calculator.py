@@ -28,7 +28,7 @@ def edit_wrap(self, body):
 
     try:
         return self.edit(body)
-    except praw.exceptions.APIException as e:
+    except Exception as e:
         logging.error(e)
         return False
 
