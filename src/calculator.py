@@ -154,7 +154,7 @@ def main():
             sess.query(Investment).\
                 filter(Investment.id == investment.id).\
                 update({
-                    Investment.success: factor > 1,
+                    Investment.success: change > 0,
                     Investment.done: True
                 }, synchronize_session=False)
             sess.commit()
