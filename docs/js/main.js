@@ -79,16 +79,9 @@ let overview = (function(){
 
 
 let overviewChart = (function(){
-   let desktopRatio = true;
+   let desktopRatio = false;
+   let canvas1;
    let ch1;
-   let graphData = {
-     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri','sat','sun'],
-     series: [
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0]
-       
-     ]
-   };
 
    function getScreenSize(){
       let w = window,
@@ -99,72 +92,100 @@ let overviewChart = (function(){
       y = w.innerHeight|| e.clientHeight|| g.clientHeight;
       return {x,y};
    }
-   function update(graph, index, value){
-       graphData.series[graph][index] = value;
+   function update(dataSet, index, val){
+       let chartDataSet = ch1.data.datasets[dataSet];
+       chartDataSet.data[index] = val;
        ch1.update();
    }
    function resize(){
       let x = getScreenSize().x;
       if(x<=800 && desktopRatio){
          desktopRatio = false;
-         document.getElementById("homepage-graph").className = "ct-chart ct-perfect-fourth";
-         ch1.update()
+         canvas1.parentNode.style.height = "300px";
+         //TODO: manage to remove axys labels on small devices
       }else if(x>800 && !desktopRatio){
          desktopRatio = true;
-         document.getElementById("homepage-graph").className = "ct-chart ct-major-tenth";
-         ch1.update()
+         //TODO: manage to add axys labels on big devices
+         canvas1.parentNode.style.height = "400px";
       }      
    }
    function init(){
+      canvas1 = document.getElementById('homepage-graph');
       let x = getScreenSize().x;
-      if(x<=800){
-         desktopRatio = false;
-         //set the chart ratio to a less horizontal ratio, to make it fit on mobile
-         document.getElementById("homepage-graph").className = "ct-chart ct-perfect-fourth";
-      }else{
+      if(x>=800){
          desktopRatio = true;
+         //set the chart ratio to a more horizontal ratio, to make it fit on desktop
+         canvas1.parentNode.style.height = "400px";
       }
+      //display axys labels based on device width
+      let displayAxysLabel = desktopRatio;
+      let ctx = canvas1.getContext('2d');
+      //generate labels for x axys
+      let graphLabels = [];
+      iterateDays(7, function(index, from, to) {
+         //note: months are zero-based
+         graphLabels[index] = to.getDate() + '/' + (to.getMonth()+1);
+      })
+      ch1 = new Chart(ctx, {
+         type: 'line',
+          // The data for our dataset
+         data: {
+            labels: graphLabels,
+            datasets: [{
+               //red dataset
+               label: "M¢ invested",
+               backgroundColor: 'rgb(240, 91, 79, 0)',
+               borderColor: 'rgb(240, 91, 79)',
+               data: [10, 20, 22, 40, 89, 100, 150],
+               yAxisID: "A",
+               lineTension: 0
+            },{
+               //ORANG dataset
+               label: "investments",
+               backgroundColor: 'rgba(255, 167, 38, 0)',
+               borderColor: 'rgb(255, 167, 38)',
+               data: [10, 20, 3, 5, 14, 20, 35],
+               yAxisID: "B",
+               lineTension: 0
+            }]
+         },
+         // Configuration options go here
+         options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            
+            legend: {
+               //we use our own
+               display: false
+            },
+            scales: {
+               yAxes: [{
+                  ticks: {
+                     display: displayAxysLabel,
+                     callback: val => formatToUnits(val)
+                  },
+                  id: 'A',
+                  type: 'linear',
+                  position: 'left'
+               }, {
+                  ticks: {
+                     display: displayAxysLabel,
+                     callback: val => formatToUnits(val)
+                  },
+                  id: 'B',
+                  type: 'linear',
+                  position: 'right'
+               }],
+               xAxes: [{
+                  ticks: {
+                     display: true
+                  }                  
+               }]
+            }
+         }
+      });
 
-       iterateDays(7, function(index, from, to) {
-           graphData.labels[index] = to.getDate() + '/' + to.getMonth();
-       })
       
-      let options = {
-        showPoint: false,
-        lineSmooth: false,
-        fullWidth: true,
-        chartPadding: 0,
-        /*axisX: {
-          showGrid: false,
-          showLabel: false
-        },*/
-        axisY: {
-          offset: 60,
-          // The label interpolation function enables you to modify the values
-          // used for the labels on each axis. Here we are converting the
-          // values into million pound.
-          labelInterpolationFnc: function(value) {
-            return formatToUnits(value);
-          }
-        }
-      };
-      let responsiveOptions = [
-
-        ['screen and (min-width: 641px) and (max-width: 1024px)', {
-          seriesBarDistance: 10
-        }],
-        ['screen and (max-width: 640px)', {
-          seriesBarDistance: 5,
-          chartPadding: { left: -59 },
-          axisY: {
-            showLabel: false
-          }
-        }]
-      ];
-      // Create a new line chart object where as first parameter we pass in a selector
-      // that is resolving to our chart container element. The Second parameter
-      // is the actual data object.
-      ch1 = new Chartist.Line('.ct-chart', graphData, options, responsiveOptions);
    }
    return{
       init: init,
@@ -216,11 +237,11 @@ let leaderboard = (function(){
 
           jsonApi.get('/investments/total?from='+ufrom+'&to='+uto)
               .then(function (data) {
-                  overviewChart.update(0, index, parseInt(data.investments) * 10000);
+                  overviewChart.update(1, index, parseInt(data.investments) * 10000);
               })
           jsonApi.get('/investments/amount?from='+ufrom+'&to='+uto)
               .then(function (data) {
-                  overviewChart.update(1, index, parseInt(data.coins));
+                  overviewChart.update(0, index, parseInt(data.coins));
               })
       })
       
@@ -273,7 +294,7 @@ function createWalletToast(){
 
 function formatToUnits(val) {
     var number = parseInt(val);
-    var abbrev = ['', 'K', 'M', 'B', 'T'];
+    var abbrev = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'S'];
     var unrangifiedOrder = Math.floor(Math.log10(Math.abs(number)) / 3);
     var order = Math.max(0, Math.min(unrangifiedOrder, abbrev.length -1 ));
     var suffix = abbrev[order];
@@ -325,5 +346,8 @@ function calculateInvestmentResult() {
     } else if (returnMoney) {
         factor = (multiple - 1)/(WIN_THRESHOLD - 1);
     }
-    document.getElementById('investment-result').innerHTML = (amount * factor).toFixed();
+    let output = (amount * factor).toFixed();
+    output = isNaN(output)?"invalid data":output;
+    output = (output+[]).length>20?formatToUnits(output):output;
+    document.getElementById('investment-result').innerText = output;
 }
