@@ -6,16 +6,12 @@ from queue import Queue
 from sqlalchemy import create_engine, func
 from sqlalchemy.orm import scoped_session, sessionmaker
 import praw
-from bottr.bot import BotQueueWorker
 
 import config
 import message
 from models import Investment, Investor
 
 logging.basicConfig(level=logging.INFO)
-
-STARTER = 1000
-REDDIT = None
 
 
 # Decorator to mark a commands that require a user
@@ -47,7 +43,7 @@ def reply_wrap(self, body):
 praw.models.Comment.reply_wrap = reply_wrap
 
 
-class CommentWorker(BotQueueWorker):
+class CommentProcessor:
     db = None
     commands = [
         r"!active",
@@ -61,18 +57,20 @@ class CommentWorker(BotQueueWorker):
         r"!top",
     ]
 
-    def __init__(self, reddit, sm, *args, **kwargs):
-        super().__init__(target=self._process_comment, *args, **kwargs)
-
+    def __init__(self, reddit, sm):
         self.regexes = [re.compile(x, re.MULTILINE | re.IGNORECASE)
                         for x in self.commands]
         self.reddit = reddit
         self.Session = sm
 
-    def _process_comment(self, comment: praw.models.Comment):
-        if comment.is_root or \
-           comment.author.name.lower().endswith("_bot") or \
-           comment.parent().author.name != config.username:
+    def process_comment(self, comment: praw.models.Comment):
+        if comment.is_root:
+            return
+
+        if comment.author.name.lower().endswith("_bot"):
+            return
+
+        if comment.parent().author.name != config.username:
             return
 
         for reg in self.regexes:
@@ -81,6 +79,7 @@ class CommentWorker(BotQueueWorker):
                 continue
 
             cmd = matches.group()
+
             attrname = cmd.split(" ")[0][1:]
 
             if not hasattr(self, attrname):
@@ -136,7 +135,7 @@ class CommentWorker(BotQueueWorker):
             return
 
         if comment.submission.author.name == comment.author.name:
-            comment.reply(message.inside_trading_org)
+            comment.reply_wrap(message.inside_trading_org)
             return
 
         try:
@@ -212,12 +211,10 @@ class CommentWorker(BotQueueWorker):
     def no_such_user(self, comment):
         comment.reply_wrap(message.no_account_org)
 
-
-def main(n_jobs=4):
-    comments_queue = Queue(maxsize=n_jobs * 4)
-    threads = []
+def main():
     engine = create_engine(config.db)
     sm = scoped_session(sessionmaker(bind=engine))
+
     reddit = praw.Reddit(
         client_id=config.client_id,
         client_secret=config.client_secret,
@@ -226,32 +223,17 @@ def main(n_jobs=4):
         user_agent=config.user_agent
     )
 
+    comment_processor = CommentProcessor(reddit, sm)
+
     while True:
         try:
-            # Create n_jobs CommentsThreads
-            for i in range(n_jobs):
-                t = CommentWorker(
-                    reddit,
-                    sm,
-                    name='CommentThread-t-{}'.format(i),
-                    jobs=comments_queue
-                )
-
-                t.start()
-                threads.append(t)
-
             # Iterate over all comments in the comment stream
             for comment in reddit.subreddit('+'.join(config.subreddits)).stream.comments(skip_existing=True):
-                comments_queue.put(comment)
+                comment_processor.process_comment(comment)
+
         except Exception as e:
             logging.error(e)
-
-            for t in threads:
-                t.stop()
-
-            comments_queue.queue.clear()
             time.sleep(10)
-
 
 if __name__ == "__main__":
     main()
