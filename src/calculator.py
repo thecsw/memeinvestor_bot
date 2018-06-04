@@ -1,16 +1,16 @@
 import time
+import datetime
 import logging
 from functools import lru_cache
 
-import MySQLdb
-import MySQLdb.cursors
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 import praw
-from bottr.bot import AbstractCommentBot, BotQueueWorker, SubmissionBot
 from fastnumbers import fast_float
 
 import config
 import message
-import models
+from models import Investment, Investor
 
 logging.basicConfig(level=logging.INFO)
 
@@ -18,20 +18,31 @@ logging.basicConfig(level=logging.INFO)
 class EmptyResponse(object):
     body = ""
 
-    def edit(*args, **kwargs):
+    def edit_wrap(*args, **kwargs):
         pass
 
 
-@lru_cache(maxsize=10240)
+def edit_wrap(self, body):
+    if config.dry_run:
+        return False
+
+    try:
+        return self.edit(body)
+    except praw.exceptions.APIException as e:
+        logging.error(e)
+        return False
+
+
+# @lru_cache(maxsize=10240)
 def calculate(new, old):
-    
+
     # Multiplier is detemined by a power function of the relative change in upvotes
     # since the investment was made.
     # Functional form: y = x^m ;
     #    y = multiplier,
     #    x = relative growth: (change in upvotes) / (upvotes at time of investment),
     #    m = scale factor: allow curtailing high-growth post returns to make the playing field a bit fairer
-    
+
     new = fast_float(new)
     old = fast_float(old)
 
@@ -46,7 +57,7 @@ def calculate(new, old):
         rel_change = new
 
     mult = pow((rel_change+1), scale_factor)
-    
+
     # Investment must grow by more than a threshold amount to win. Decide if
     # investment was successful and whether you get anything back at all.
     win_threshold = 1.2
@@ -59,9 +70,9 @@ def calculate(new, old):
     else:
         investment_success = False
         return_money = False
-    
+
     # Investor gains money only if investment was successful. If mult
-    # was below win_threshold but above 1 return factor is ratio of 
+    # was below win_threshold but above 1 return factor is ratio of
     # difference between mult and 1 and difference between win_threshold and 1.
     # Otherwise, if mult was 1 or lower, get back nothing.
     if investment_success:
@@ -74,82 +85,81 @@ def calculate(new, old):
     return factor
 
 
-def check_investments(reddit):
-    db = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor, **config.dbconfig)
-
-    investments = models.Investments(db)
-    investors = models.Investors(db)
-
-    logging.info("Starting checking investments...")
-    if config.dry_run:
-        praw.models.Comment.edit = logging.info
-
-    while True:
-        for row in investments.todo():
-            investor = investors[row["name"]]
-
-            print(investor)
-            if not investor:
-                continue
-
-            if row["response"] != "0":
-                response = reddit.comment(id=row["response"])
-            else:
-                response = EmptyResponse()
-
-            # If comment is deleted, skip it
-            try:
-                reddit.comment(id=row["comment"])
-            except:
-                response.edit(message.deleted_comment_org)
-                continue
-
-            post = reddit.submission(row["post"])
-            upvotes_now = post.ups
-
-            # Updating the investor's balance
-            factor = calculate(upvotes_now, row["upvotes"])
-            amount = row["amount"]
-            balance = investor["balance"]
-            
-            new_balance = balance + (amount * factor)
-            investor["balance"] = new_balance
-            change = new_balance - balance
-
-            # Updating the investor's variables
-            active = investor["active"]
-            if active <= 0:
-                investor["active"] = 0
-            else:
-                investor["active"] = active - 1
-
-            investor["completed"] += 1
-
-            # Marking the investment as done
-            investment = investments[row["id"]]
-            investment["done"] = 1
-
-            # Editing the comment as a confirmation
-            text = response.body
-            if factor > 1:
-                investment["success"] = 1
-                logging.info("%s won %d memecoins!" % (investor, change))
-                response.edit(message.modify_invest_return(text, change))
-            else:
-                lost_memes = int( amount - change )
-                logging.info("%s lost %d memecoins..." % (investor, lost_memes))
-                response.edit(message.modify_invest_lose(text, lost_memes))
-            
-        time.sleep(60)
-
 def main():
+    engine = create_engine(config.db)
+    sm = sessionmaker(bind=engine)
     reddit = praw.Reddit(client_id=config.client_id,
                          client_secret=config.client_secret,
                          username=config.username,
                          password=config.password,
                          user_agent=config.user_agent)
 
-    check_investments(reddit)
+    logging.info("Starting checking investments...")
+    praw.models.Comment.edit_wrap = edit_wrap
+
+    while True:
+        sess = sm()
+        then = int(time.time()) - 14400
+        q = sess.query(Investment).filter(Investment.done == 0).filter(Investment.time < then)
+        for investment in q.limit(10).all():
+            investor_q = sess.query(Investor).filter(Investor.name == investment.name)
+            investor = investor_q.first()
+
+            if not investor:
+                continue
+
+            if investment.response != "0":
+                response = reddit.comment(id=investment.response)
+            else:
+                response = EmptyResponse()
+
+            # If comment is deleted, skip it
+            try:
+                reddit.comment(id=investment.comment)
+            except:
+                response.edit(message.deleted_comment_org)
+                continue
+
+            post = reddit.submission(investment.post)
+            upvotes_now = post.ups
+
+            # Updating the investor's balance
+            factor = calculate(upvotes_now, investment.upvotes)
+            amount = investment.amount
+            balance = investor.balance
+
+            new_balance = int(balance + (amount * factor))
+            change = new_balance - balance
+
+            # Updating the investor's variables
+            update = {
+                Investor.completed: investor.completed + 1,
+                Investor.balance: new_balance,
+            }
+            investor_q.update(update, synchronize_session=False)
+
+            # Editing the comment as a confirmation
+            text = response.body
+            if change > 0:
+                logging.info("%s won %d" % (investor.name, change))
+                response.edit_wrap(message.modify_invest_return(text, change))
+            elif change == 0:
+                logging.info("%s broke even and got back %d" % (investor.name, change))
+                response.edit_wrap(message.modify_invest_break_even(text, change))
+            else:
+                lost_memes = int( amount - change )
+                logging.info("%s lost %d" % (investor.name, lost_memes))
+                response.edit_wrap(message.modify_invest_lose(text, lost_memes))
+
+            sess.query(Investment).\
+                filter(Investment.id == investment.id).\
+                update({
+                    Investment.success: change > 0,
+                    Investment.done: True
+                }, synchronize_session=False)
+            sess.commit()
+
+        sess.close()
 
 
 if __name__ == "__main__":
