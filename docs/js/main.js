@@ -165,7 +165,7 @@ let overviewChart = (function(){
                      callback: val => formatToUnits(val)
                   },
                   id: 'A',
-                  type: 'logarithmic',
+                  type: 'linear',
                   position: 'left'
                }, {
                   ticks: {
