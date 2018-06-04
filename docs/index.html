@@ -244,7 +244,30 @@
               </div>
             </div>
           </div>
-          
+
+          <div class="section">
+            <h4>Investment Calculator</h4>
+            <div class="row">
+              <div class="col s4">
+                <div class="input-field">
+                  <input type="text" id="investment-amount" placeholder="Memecoins invested" />
+                  <label for="investment-amount">Memecoins invested</label>
+                </div>
+                <div class="input-field">
+                  <input type="text" id="investment-start-score" placeholder="Score on initial investment" class="row" />
+                  <label for="investment-start-score">Score on initial investment</label>
+                </div>
+                <div class="input-field">
+                  <input type="text" id="investment-end-score" placeholder="Estimated score after 4 hours" class="" />
+                  <label for="investment-end-score">Estimated score after 4 hours</label>
+                </div>
+                <div class="input-field row">
+                  <input type="button" onclick="calculateInvestmentResult()" value="Estimate" class="btn col s6" />
+                  <div id="investment-result" class="col s6 center-align" title="The value your initial investment has become"></div>
+                </div>
+              </div>
+            </div>
+          </div>
 
         </div>
       </div>
