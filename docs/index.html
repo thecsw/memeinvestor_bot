@@ -235,11 +235,29 @@
                     grow or is downvoted (y<=1), the investor gets back nothing.
                     </p>
                     <img class="responsive-img" src="resources/investment_return_multiplier_thresholding.png">
-                    <i>Investment Return Final Return Multiplier vs Initial Growth Factor</i>
-                    
+                    <i>Investment Return Final Return Multiplier vs Initial Growth Factor</i>                    
                     </div>
                   </li>
                 </ul>
+                
+                <h4>Investment Calculator</h4>
+                <div class="input-field col s12 m12 l6">
+                  <input type="text" id="investment-start-score" class="row" />
+                  <label for="investment-start-score">Upvotes on initial investment</label>
+                </div>
+                <div class="input-field col s12 m12 l6">
+                  <input type="text" id="investment-end-score" class="" />
+                  <label for="investment-end-score">Estimated upvotes after 4 hours</label>
+                </div>
+                <div class="input-field col s12 m12 l6">
+                  <input type="text" id="investment-amount" />
+                  <label for="investment-amount">Memecoins invested</label>
+                </div>
+               <div class="input-field row col s12 m12 l6">
+                  <input type="button" onclick="calculateInvestmentResult()" value="Estimate" class="btn col s6" />
+                  <div class="col s6 investment-result valign-wrapper"><p id="investment-result">000</p></div>
+                </div>                   
+                
               </div>
             </div>
           </div>

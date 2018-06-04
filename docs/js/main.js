@@ -294,7 +294,7 @@ function createWalletToast(){
 
 function formatToUnits(val) {
     var number = parseInt(val);
-    var abbrev = ['', 'K', 'M', 'B', 'T'];
+    var abbrev = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'S'];
     var unrangifiedOrder = Math.floor(Math.log10(Math.abs(number)) / 3);
     var order = Math.max(0, Math.min(unrangifiedOrder, abbrev.length -1 ));
     var suffix = abbrev[order];
@@ -321,3 +321,33 @@ function iterateDays(days, callback) {
     }
 }
 
+function calculateInvestmentResult() {
+    let start = parseInt(document.getElementById('investment-start-score').value);
+    let end = parseInt(document.getElementById('investment-end-score').value);
+    let amount = parseInt(document.getElementById('investment-amount').value);
+    const SCALE_FACTOR = 1 / 3.0;
+    let relativeChange = 0;
+    if (start !== 0) {
+        relativeChange = (end - start) / Math.abs(start);
+    } else {
+        relativeChange = end;
+    }
+    let multiple = Math.pow(relativeChange + 1, SCALE_FACTOR);
+    let investmentSuccess = false, returnMoney = false;
+    const WIN_THRESHOLD = 1.2;
+    if (multiple > WIN_THRESHOLD) {
+        investmentSuccess = returnMoney = true;
+    } else if (multiple > 1) {
+        returnMoney = true;
+    }
+    let factor = 0;
+    if (investmentSuccess) {
+        factor = multiple;
+    } else if (returnMoney) {
+        factor = (multiple - 1)/(WIN_THRESHOLD - 1);
+    }
+    let output = (amount * factor).toFixed();
+    output = isNaN(output)?"invalid data":output;
+    output = (output+[]).length>20?formatToUnits(output):output;
+    document.getElementById('investment-result').innerText = output;
+}

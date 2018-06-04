@@ -121,6 +121,11 @@ border: none;
   border-radius: 2px;
 }
 
-
+.investment-result{
+  height:36px;
+  border-top: 2px solid rgba(0,0,0,0.2);
+  border-bottom: 2px solid white;
+  text-align:center;
+}
 
 
