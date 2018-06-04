@@ -173,7 +173,7 @@ let overviewChart = (function(){
                      callback: val => formatToUnits(val)
                   },
                   id: 'B',
-                  type: 'logarithmic',
+                  type: 'linear',
                   position: 'right'
                }],
                xAxes: [{
