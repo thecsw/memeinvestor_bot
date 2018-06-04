@@ -88,49 +88,31 @@ r/MemeEconomy post or to one of its subsequent replies to your command comment.
 ## Getting started 
 
 These instructions will get you a copy of the project up and running on your
-local machine for development and testing purposes. See deployment for notes on
-how to deploy the project on a live system. 
+local machine for development and testing purposes.
 
 ### Prerequisites
 
-In order to run this application, you need to install [praw](https://github.com/praw-dev/praw), Python Reddit API Wrapper. This will be the main and only package to connect to Reddit's API and extract desired data.
+In order to run this application, you need to install [Docker](https://www.docker.com/community-edition).
 
-```
-sudo pip3 install praw
-```
+### Configuration
 
-Alternatively, you can execute the following command:
-
-```
-sudo pip3 install --upgrade -r requirements.txt
-```
-
-### Installation and configuration
-
-The only thing that needs to be done before execution is the config. The only
-thing that needs to be done before execution is the config profile. In the
-config profile you should fill your Reddit API details.
-
-For that please follow the steps below:
+The only thing that needs to be done before execution is the config profile. For that please follow the
+steps below:
 
 ```
 git clone https://github.com/thecsw/memeinvestor_bot
 cd memeinvestor_bot
-mv example.config.py config.py
-nano config.py
+cp .env.example .env
+nano .env
 ```
 
-After filling out the details, save and exit. You're done with installation.
+After filling out the details, save and exit. You're done with configuration.
 
 ### Deployment
 
-Remove the word **'example'** from the title of all files with it.
-
-Just run this
-
-```
-python3 main.py
-```
+From the root of the project directory, use `docker-compose run <service>` to start up the various
+independent components of the bot. At this time, additional configuration is required to prep an
+empty MySQL database. In the future we hope to enable one-touch deployment.
 
 It is time to make a fortune!
 

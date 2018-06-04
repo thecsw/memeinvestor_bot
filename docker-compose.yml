@@ -7,10 +7,6 @@ services:
         restart: unless-stopped
         depends_on:
           - mysql
-        environment:
-          - MYSQL_DATABASE=mysql
-          - MYSQL_USER=mysql
-          - MYSQL_PASSWORD=strongpass!word
 
     calculator:
         build: .
@@ -19,10 +15,6 @@ services:
         command: ["python", "calculator.py"]
         depends_on:
           - mysql
-        environment:
-          - MYSQL_DATABASE=mysql
-          - MYSQL_USER=mysql
-          - MYSQL_PASSWORD=strongpass!word
 
     submitter:
         build: .
@@ -37,10 +29,6 @@ services:
         command: [".local/bin/gunicorn", "--bind", "0.0.0.0:5000", "--access-logfile", "-", "--error-logfile", "-", "api:app"]
         depends_on:
           - mysql
-        environment:
-          - MYSQL_DATABASE=mysql
-          - MYSQL_USER=mysql
-          - MYSQL_PASSWORD=strongpass!word
 
     http:
         build:
