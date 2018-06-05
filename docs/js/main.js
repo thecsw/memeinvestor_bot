@@ -216,15 +216,12 @@ let leaderboard = (function(){
 
 
 let userAccount = (function(){
-   let domPopup = document.getElementById('investor-info');
-   let popup = undefined;
-   
    function show(searchBarId) {
       let username = document.getElementById(searchBarId).value;
       if(username.length > 0){
          let domPopup = document.getElementById('investor-info'); 
-        M.Modal.init(domPopup);
-        M.Modal.getInstance(domPopup).open()
+         M.Modal.init(domPopup);
+         M.Modal.getInstance(domPopup).open()
          jsonApi.get('/investor/'+username).then(function(data) {
          document.getElementById('investor-account-data').innerHTML = `
               <h5>${username}'s profile</h5>
