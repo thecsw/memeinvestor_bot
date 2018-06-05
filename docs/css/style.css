@@ -12,12 +12,13 @@ nav{
   width:auto;
   vertical-align:middle;
   margin-right:5px;
-  padding-top:0px;
+  padding-top: 0;
+  position: relative;
+  top: -5px;
 }
 .brand-logo{
   margin-left:10px;
   margin-right:10px;
-  font-family:;
 }
 .custom-dark-search{
   color:#f2f2f2;
@@ -33,6 +34,10 @@ nav{
 
 .icon-32{
   vertical-align:middle
+}
+
+nav, nav .nav-wrapper i, nav a.sidenav-trigger, nav a.sidenav-trigger i {
+    --line-height: 56px !important;
 }
 
 
