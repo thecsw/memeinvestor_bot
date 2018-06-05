@@ -1,12 +1,10 @@
 import re
 import time
 import logging
-from queue import Queue
 
 from sqlalchemy import create_engine, func
 from sqlalchemy.orm import scoped_session, sessionmaker
 import praw
-from bottr.bot import BotQueueWorker
 
 import config
 import message
@@ -47,7 +45,7 @@ def reply_wrap(self, body):
 praw.models.Comment.reply_wrap = reply_wrap
 
 
-class CommentWorker(BotQueueWorker):
+class CommentWorker():
     db = None
     commands = [
         r"!active",
@@ -61,18 +59,19 @@ class CommentWorker(BotQueueWorker):
         r"!top",
     ]
 
-    def __init__(self, reddit, sm, *args, **kwargs):
-        super().__init__(target=self._process_comment, *args, **kwargs)
-
+    def __init__(self, sm):
         self.regexes = [re.compile(x, re.MULTILINE | re.IGNORECASE)
                         for x in self.commands]
-        self.reddit = reddit
         self.Session = sm
 
-    def _process_comment(self, comment: praw.models.Comment):
-        if comment.is_root or \
-           comment.author.name.lower().endswith("_bot") or \
-           comment.parent().author.name != config.username:
+    def __call__(self, comment):
+        if comment.author.name.lower().endswith("_bot") or not comment.author:
+            return
+
+        if isinstance(comment, praw.models.Comment) and \
+           (comment.is_root or \
+            not comment.parent() or \
+            comment.parent().author.name != config.username):
             return
 
         for reg in self.regexes:
@@ -96,8 +95,9 @@ class CommentWorker(BotQueueWorker):
                 sess.rollback()
             else:
                 sess.commit()
-            finally:
-                sess.close()
+
+            sess.close()
+            break
 
     def ignore(self, sess, comment):
         pass
@@ -131,10 +131,10 @@ class CommentWorker(BotQueueWorker):
 
     @req_user
     def invest(self, sess, comment, investor, amount):
-        # Post related vars
-        if not investor:
+        if not isinstance(comment, praw.models.Comment):
             return
 
+        # Post related vars
         if comment.submission.author.name == comment.author.name:
             comment.reply(message.inside_trading_org)
             return
@@ -213,11 +213,10 @@ class CommentWorker(BotQueueWorker):
         comment.reply_wrap(message.no_account_org)
 
 
-def main(n_jobs=4):
-    comments_queue = Queue(maxsize=n_jobs * 4)
-    threads = []
+def main():
     engine = create_engine(config.db)
     sm = scoped_session(sessionmaker(bind=engine))
+    worker = CommentWorker(sm)
     reddit = praw.Reddit(
         client_id=config.client_id,
         client_secret=config.client_secret,
@@ -225,33 +224,21 @@ def main(n_jobs=4):
         password=config.password,
         user_agent=config.user_agent
     )
+    logging.info("Started listening for inbox")
 
     while True:
         try:
-            # Create n_jobs CommentsThreads
-            for i in range(n_jobs):
-                t = CommentWorker(
-                    reddit,
-                    sm,
-                    name='CommentThread-t-{}'.format(i),
-                    jobs=comments_queue
-                )
-
-                t.start()
-                threads.append(t)
-
-            # Iterate over all comments in the comment stream
-            for comment in reddit.subreddit('+'.join(config.subreddits)).stream.comments(skip_existing=True):
-                comments_queue.put(comment)
+            # Iterate over the latest comment replies in inbox
+            for comment in reddit.inbox.unread(limit=None):
+                worker(comment)
+                comment.mark_read()
         except Exception as e:
             logging.error(e)
-
-            for t in threads:
-                t.stop()
-
-            comments_queue.queue.clear()
             time.sleep(10)
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        pass

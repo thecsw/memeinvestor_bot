@@ -1,9 +1,10 @@
 version: '3'
+env_file: .env
 
 services:
     bot:
         build: .
-        env_file: .env
+        restart: unless-stopped
         depends_on:
           - mysql
         environment:
@@ -13,7 +14,7 @@ services:
 
     calculator:
         build: .
-        env_file: .env
+        restart: unless-stopped
         command: ["python", "calculator.py"]
         depends_on:
           - mysql
@@ -24,12 +25,12 @@ services:
 
     submitter:
         build: .
-        env_file: .env
+        restart: unless-stopped
         command: ["python", "submitter.py"]
 
     api:
         build: .
-        env_file: .env
+        restart: unless-stopped
         command: [".local/bin/gunicorn", "--bind", "0.0.0.0:5000", "--access-logfile", "-", "--error-logfile", "-", "api:app"]
         depends_on:
           - mysql
@@ -42,6 +43,7 @@ services:
         build:
             context: .
             dockerfile: docker/Dockerfile-caddy
+        restart: unless-stopped
         ports:
           - 80:80
           - 443:443
@@ -49,12 +51,17 @@ services:
           - api
         volumes:
           - ./docs:/static
+          - ${VOLUME_ROOT}/caddy/config:/caddy
+          - ${VOLUME_ROOT}/caddy/data:/root/.caddy
 
     mysql:
         image: mariadb
-        env_file: .env
+        restart: unless-stopped
         environment:
           - MYSQL_DATABASE=mysql
           - MYSQL_USER=mysql
           - MYSQL_PASSWORD=strongpass!word
           - MYSQL_RANDOM_ROOT_PASSWORD=yes
+        volumes:
+          - ${VOLUME_ROOT}/mysql:/var/lib/mysql
+          - ${VOLUME_ROOT}/my.cnf:/etc/mysql/my.cnf

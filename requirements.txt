@@ -1,5 +1,4 @@
 git+https://github.com/praw-dev/praw.git
-bottr
 fastnumbers
 mysqlclient
 sqlalchemy
