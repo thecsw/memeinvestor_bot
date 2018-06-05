@@ -351,3 +351,7 @@ function calculateInvestmentResult() {
     output = (output+[]).length>20?formatToUnits(output):output;
     document.getElementById('investment-result').innerText = output;
 }
+
+function showAccount() {
+
+}
