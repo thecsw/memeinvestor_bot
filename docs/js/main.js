@@ -280,6 +280,14 @@ let leaderboard = (function(){
          });      
       } 
       updater();
+      // check if url contains ?account=
+      let url = new URL(window.location.href);
+      let username = url.searchParams.get("account");
+      if (username) {
+        document.getElementById('investor-username').value = username;
+        showAccount('investor-username');
+        history.pushState(null, '', window.location.href.split('?')[0]);
+      }
    });
    //dom resize listener
    window.addEventListener('resize', function(event){
@@ -394,3 +402,7 @@ function showAccount(searchBarId) {
       });
    }
 }
+
+(function () {
+
+})();
