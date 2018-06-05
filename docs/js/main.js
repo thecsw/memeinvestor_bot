@@ -402,7 +402,3 @@ function showAccount(searchBarId) {
       });
    }
 }
-
-(function () {
-
-})();
