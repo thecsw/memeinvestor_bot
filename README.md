@@ -140,7 +140,7 @@ It is time to make a fortune!
  - *jimbobur* - Heavy additions to investment logic - [jimbobur](https://github.com/jimbobur)
  - *ggppjj* - Minor fixes - [ggppjj](https://github.com/ggppjj)
  - *rickles42* - Minor fixes and features - [rickles42](https://github.com/rickles42)
- - *TwinProduction* - Improved README - [TwinProduction](https://github.com/TwinProduction)
+ - *TwinProduction* - Minor fixes and improvements - [TwinProduction](https://github.com/TwinProduction)
 
 ## License
 
