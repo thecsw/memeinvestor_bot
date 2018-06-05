@@ -12,12 +12,13 @@ nav{
   width:auto;
   vertical-align:middle;
   margin-right:5px;
-  padding-top:0px;
+  padding-top: 0;
+  position: relative;
+  top: -5px;
 }
 .brand-logo{
   margin-left:10px;
   margin-right:10px;
-  font-family:;
 }
 .custom-dark-search{
   color:#f2f2f2;
@@ -35,6 +36,9 @@ nav{
   vertical-align:middle
 }
 
+#mobile-sidebar li > span, #nav-mobile li > span {
+    cursor: pointer;
+}
 
 /* --[sidebar]-- */
 #search-nav-mobile{

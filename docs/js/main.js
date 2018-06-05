@@ -215,6 +215,49 @@ let leaderboard = (function(){
 })();
 
 
+let userAccount = (function(){
+   function show(searchBarId) {
+      let username = document.getElementById(searchBarId).value;
+      if(username.length > 0){
+         let domPopup = document.getElementById('investor-info'); 
+         M.Modal.init(domPopup);
+         M.Modal.getInstance(domPopup).open()
+         jsonApi.get('/investor/'+username).then(function(data) {
+         document.getElementById('investor-account-data').innerHTML = `
+              <h5>${username}'s profile</h5>
+              <p><a target="_blank" href="https://reddit.com/u/${username}">visit reddit profile</a></p>
+              <table>
+                 <tr><th>Balance</th><td>${data.balance}</td></tr>
+                 <tr><th>Gone broke</th><td>${data.broke} times</td></tr>
+                 <tr><th>Investments</th><td>${data.completed}</td></tr>
+              </table>`;
+         })
+         .catch(function(er){
+            if(er.status === 404){
+               document.getElementById('investor-account-data').innerHTML = 
+               `<h5>${username} is not an investor!</h5>`
+            }
+         });
+      }
+   }
+   function init(){           
+      // check if url contains ?account=
+      let url = new URL(window.location.href);
+      let username = url.searchParams.get("account");
+      if (username) {
+         document.getElementById('investor-username').value = username;
+         show('investor-username');
+         history.pushState(null, '', window.location.href.split('?')[0]);
+      }
+
+   }
+   return {
+      init: init,
+      show: show
+   }
+})();
+
+
 (function(){
    //get session cookie
    
@@ -245,6 +288,7 @@ let leaderboard = (function(){
       //init modules
       overview.init()
       overviewChart.init()
+      userAccount.init()
       
       //load chart
       iterateDays(7, function(index, dateFrom, to){
@@ -367,3 +411,4 @@ function calculateInvestmentResult() {
     output = (output+[]).length>20?formatToUnits(output):output;
     document.getElementById('investment-result').innerText = output;
 }
+
