@@ -140,10 +140,10 @@ def main():
 
             # Editing the comment as a confirmation
             text = response.body
-            if change > 0:
+            if change > amount:
                 logging.info("%s won %d" % (investor.name, change))
                 response.edit_wrap(message.modify_invest_return(text, change))
-            elif change == 0:
+            elif change == amount:
                 logging.info("%s broke even and got back %d" % (investor.name, change))
                 response.edit_wrap(message.modify_invest_break_even(text, change))
             else:
@@ -154,7 +154,7 @@ def main():
             sess.query(Investment).\
                 filter(Investment.id == investment.id).\
                 update({
-                    Investment.success: change > 0,
+                    Investment.success: change > amount,
                     Investment.done: True
                 }, synchronize_session=False)
             sess.commit()
