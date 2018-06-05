@@ -233,9 +233,8 @@ let userAccount = (function(){
               </table>`;
          })
          .catch(function(er){
-            if(er.status === 404){
-               document.getElementById('investor-account-data').innerHTML = 
-               `<h5>${username} is not an investor!</h5>`
+            if (er.status === 404){
+               document.getElementById('investor-account-data').innerHTML = `<h5>There is no investor with that username!</h5>`
             }
          });
       }
