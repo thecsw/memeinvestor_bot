@@ -1,9 +1,9 @@
 version: '3'
-env_file: .env
 
 services:
     bot:
         build: .
+        env_file: .env
         restart: unless-stopped
         depends_on:
           - mysql
@@ -14,6 +14,7 @@ services:
 
     calculator:
         build: .
+        env_file: .env
         restart: unless-stopped
         command: ["python", "calculator.py"]
         depends_on:
@@ -25,11 +26,13 @@ services:
 
     submitter:
         build: .
+        env_file: .env
         restart: unless-stopped
         command: ["python", "submitter.py"]
 
     api:
         build: .
+        env_file: .env
         restart: unless-stopped
         command: [".local/bin/gunicorn", "--bind", "0.0.0.0:5000", "--access-logfile", "-", "--error-logfile", "-", "api:app"]
         depends_on:
@@ -56,6 +59,7 @@ services:
 
     mysql:
         image: mariadb
+        env_file: .env
         restart: unless-stopped
         environment:
           - MYSQL_DATABASE=mysql
