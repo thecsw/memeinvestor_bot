@@ -237,7 +237,7 @@ let leaderboard = (function(){
 
           jsonApi.get('/investments/total?from='+ufrom+'&to='+uto)
               .then(function (data) {
-                  overviewChart.update(1, index, parseInt(data.investments) * 10000);
+                  overviewChart.update(1, index, parseInt(data.investments));
               })
           jsonApi.get('/investments/amount?from='+ufrom+'&to='+uto)
               .then(function (data) {
