@@ -5,7 +5,7 @@
       <meta charset="utf-8">
       <meta name="application-name" content=""/>
       <meta name="keywords" content="" />
-      <meta name="description" content="" />
+      <meta name="description" content="Start investing in memes with the best broker in r/MemeEconomy today!" />
       <meta name="theme-color" content="#212121" />
       <link rel="icon" type="image/png" href="resources/favicon/favicon-32x32.png" sizes="32x32" />
       <link rel="icon" type="image/png" href="resources/favicon/favicon-32x32.png" sizes="16x16" />
@@ -27,7 +27,7 @@
     <body>
       <nav>
         <div class="nav-wrapper">
-          <a href="#" class="brand-logo" ><img src="resources/logo240.png" class="logo-img" ></img><span class="hide-on-small-only">emeInvestor bot</span></a>
+          <a href="#" class="brand-logo" ><img src="resources/logo240.png" class="logo-img" /><span class="hide-on-small-only">emeInvestor bot</span></a>
            <a href="#" data-target="mobile-sidebar" class="sidenav-trigger"><i class="material-icons">menu</i></a>
 
           <ul id="nav-mobile" class="right hide-on-med-and-down">
@@ -40,7 +40,7 @@
             <!-- </li> -->
             <!-- <li><a href="foo.html">overview</a></li> -->
             <!-- <li><a href="bar.html">market</a></li> -->
-            <!-- <li><a href="baz.html">account</a></li> -->
+            <li><span onclick="showAccount()">account</span></li>
             <li><a href="https://github.com/thecsw/memeinvestor_bot/issues">bugs</a></li>
             <li><a href="https://github.com/thecsw/memeinvestor_bot"><img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"></a></li>
           </ul>
@@ -57,7 +57,7 @@
         <!-- </li> -->
         <!-- <li><a href="foo.html">brokers</a></li> -->
         <!-- <li><a href="bar.html">commands</a></li> -->
-        <!-- <li><a href="baz.html">info</a></li> -->
+        <li><span onclick="showAccount()">account</span></li>
         <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/issues">bugs</a></li>
         <li><a href="https://github.com/"><img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"></a></li>
       </ul>    
@@ -86,7 +86,7 @@
               <div class="col s12 m4 l3">
                 <h4 class="row-title">Overview</h4>
                 <p>Market active since 2018-05-23<!-- <br>season#1 ending on 2018-07-01 --> </p>
-                <p class="overview-text">Active investments: <span id="active-investments">--</span>, detainig <span id="detained-memecoins">--</span> MemeCoins.<br>
+                <p class="overview-text">Active investments: <span id="active-investments">--</span>, detaining <span id="detained-memecoins">--</span> MemeCoins.<br>
                 All investors currently possess <span id="existing-memecoins">---</span> M¢</p>
                 <p><br class="hide-on-small-only" >
                 <a class="legenda-b">memeCoins invested</a>
@@ -268,26 +268,26 @@
       </div>
 
 
-  <!-- Modal Structure -->
-  <div id="modal1" class="modal">
-    <div class="modal-content">
-    <!-- 
-      some icons that can be placed inside the popup title
-      <i class="material-icons medium left orange-text">info</i>
-      <i class="material-icons medium left orange-text">warning</i> 
-      <i class="material-icons medium left amber-text">new_releases</i>     
-    -->
-      <h4><i class="material-icons medium left orange-text">warning</i>  ATTENTION PLEASE</h4>
-      <p>Thank you for participating in the beta-testing of MemeInvestor. Soon, the previous records will be 
-      deleted and all accounts reseted. </p>
-      <p>After the reset, the bot will have a new, balanced algorithm and a faster and more optimized codebase.<br>
-      All the users that got more than 1 billion M¢ will receive a cosmetic reward.</p>
-    </div>
-    <div class="modal-footer">
-      <a href="#!" class="modal-close waves-effect waves-green btn-flat">close</a>
-      <a href="#!" class="waves-effect waves-green btn-flat">i hate this</a>
-    </div>
-  </div>
+      <!-- Modal Structure -->
+      <div id="modal1" class="modal">
+        <div class="modal-content">
+        <!--
+          some icons that can be placed inside the popup title
+          <i class="material-icons medium left orange-text">info</i>
+          <i class="material-icons medium left orange-text">warning</i>
+          <i class="material-icons medium left amber-text">new_releases</i>
+        -->
+          <h4><i class="material-icons medium left orange-text">warning</i>  ATTENTION PLEASE</h4>
+          <p>Thank you for participating in the beta-testing of MemeInvestor. Soon, the previous records will be
+          deleted and all accounts reseted. </p>
+          <p>After the reset, the bot will have a new, balanced algorithm and a faster and more optimized codebase.<br>
+          All the users that got more than 1 billion M¢ will receive a cosmetic reward.</p>
+        </div>
+        <div class="modal-footer">
+          <a href="#!" class="modal-close waves-effect waves-green btn-flat">close</a>
+          <a href="#!" class="waves-effect waves-green btn-flat">i hate this</a>
+        </div>
+      </div>
 
     </body>
   </html>

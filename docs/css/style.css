@@ -36,10 +36,9 @@ nav{
   vertical-align:middle
 }
 
-nav, nav .nav-wrapper i, nav a.sidenav-trigger, nav a.sidenav-trigger i {
-    --line-height: 56px !important;
+#mobile-sidebar li > span, #nav-mobile li > span {
+    cursor: pointer;
 }
-
 
 /* --[sidebar]-- */
 #search-nav-mobile{
