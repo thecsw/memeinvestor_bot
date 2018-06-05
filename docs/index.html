@@ -86,7 +86,8 @@
               <div class="col s12 m4 l3">
                 <h4 class="row-title">Overview</h4>
                 <p>Market active since 2018-05-23<!-- <br>season#1 ending on 2018-07-01 --> </p>
-                <p class="overview-text">Active investments: <span id="active-investments">--</span>, detainig <span id="detained-memecoins">--</span> MemeCoins.<br> All investors currently possess <span id="existing-memecoins">---</span> M¢</p>
+                <p class="overview-text">Active investments: <span id="active-investments">--</span>, detainig <span id="detained-memecoins">--</span> MemeCoins.<br>
+                All investors currently possess <span id="existing-memecoins">---</span> M¢</p>
                 <p><br class="hide-on-small-only" >
                 <a class="legenda-b">memeCoins invested</a>
                 <a class="legenda-a">daily investments</a>
@@ -196,7 +197,7 @@
 
               </div>
               <div class="col s12 m6 l6">
-                <h4>Investment behaviour</h4>
+                <h4 id="info2">Investment behaviour</h4>
                 <p>To calculate the investment return, the bot performs a two-step procedure.<br>
                 You can click on the table below to view an exhaustive description of it. </p>
                 <p><i>Note:</i> The investment behaviour has already been through several design 
@@ -217,7 +218,7 @@
                        growth. The reasoning behind this is to prevent a  small handful of investors who get lucky and invest in
                        one or more posts that 'blow up' from earning so many  MemeCoins that they 
                       dominate the market from then on. This helps keep the playing field somewhat more level for new investors.</p>
-                      <img class="responsive-img" src="resources/investment_return_multiplier.png">
+                      <img class="responsive-img materialboxed" src="resources/investment_return_multiplier.png">
                       <i>Investment Return Initial Growth Factor</i>
                     </div>
                   </li>
@@ -234,13 +235,13 @@
                     <span class="grey lighten-2 code-block">invested_amount * (y-1)/(thresh - 1)</span>. If the post doesn't 
                     grow or is downvoted (y<=1), the investor gets back nothing.
                     </p>
-                    <img class="responsive-img" src="resources/investment_return_multiplier_thresholding.png">
+                    <img class="responsive-img materialboxed" src="resources/investment_return_multiplier_thresholding.png">
                     <i>Investment Return Final Return Multiplier vs Initial Growth Factor</i>                    
                     </div>
                   </li>
                 </ul>
                 
-                <h4>Investment Calculator</h4>
+                <h4 id="calculator">Investment Calculator</h4>
                 <div class="input-field col s12 m12 l6">
                   <input type="text" id="investment-start-score" class="row" />
                   <label for="investment-start-score">Upvotes on initial investment</label>
@@ -266,6 +267,27 @@
         </div>
       </div>
 
+
+  <!-- Modal Structure -->
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+    <!-- 
+      some icons that can be placed inside the popup title
+      <i class="material-icons medium left orange-text">info</i>
+      <i class="material-icons medium left orange-text">warning</i> 
+      <i class="material-icons medium left amber-text">new_releases</i>     
+    -->
+      <h4><i class="material-icons medium left orange-text">warning</i>  ATTENTION PLEASE</h4>
+      <p>Thank you for participating in the beta-testing of MemeInvestor. Soon, the previous records will be 
+      deleted and all accounts reseted. </p>
+      <p>After the reset, the bot will have a new, balanced algorithm and a faster and more optimized codebase.<br>
+      All the users that got more than 1 billion M¢ will receive a cosmetic reward.</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">close</a>
+      <a href="#!" class="waves-effect waves-green btn-flat">i hate this</a>
+    </div>
+  </div>
 
     </body>
   </html>
