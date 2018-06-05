@@ -33,17 +33,15 @@
                     class="material-icons">menu</i></a>
 
             <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <!-- <li> -->
-                <!--   <div class="input-field"> -->
-                <!--     <input id="search-nav" class="custom-dark-search" type="search" placeholder="redditor name" > -->
-                <!--     <label class="label-icon" for="search-nav"><i class="material-icons">search</i></label> -->
-                <!--     <i class="material-icons">send</i> -->
-                <!--   </div> -->
-                <!-- </li> -->
+                <li>
+                  <div class="input-field">
+                    <input id="investor-username" class="custom-dark-search" type="search" placeholder="redditor name" >
+                    <label class="label-icon" for="search-nav"><i class="material-icons">search</i></label>
+                    <i class="material-icons" onclick="showAccount('investor-username')" >send</i>
+                  </div>
+                </li>
                 <!-- <li><a href="foo.html">overview</a></li> -->
                 <!-- <li><a href="bar.html">market</a></li> -->
-                <li><a href="#" onclick="showOverview()">home</a></li>
-                <li><a href="#" onclick="showAccount()">account</a></li>
                 <li><a href="https://github.com/thecsw/memeinvestor_bot/issues" target="_blank">bugs</a></li>
                 <li><a href="https://github.com/thecsw/memeinvestor_bot" target="_blank"><img class="icon-32"
                                                                                               src="resources/GitHub-Mark-Light-32px.png"/></a>
@@ -53,17 +51,15 @@
     </nav>
 
     <ul class="sidenav" id="mobile-sidebar">
-        <!-- <li> -->
-        <!--   <div class="input-field mobile"> -->
-        <!--     <input id="search-nav-mobile" class="custom-sidenav-search" type="search" placeholder="redditor name" > -->
-        <!--     <label class="label-icon" for="search-nav"><i class="material-icons">search</i></label> -->
-        <!--     <i class="material-icons">send</i> -->
-        <!--   </div> -->
-        <!-- </li> -->
+        <li>
+          <div class="input-field mobile">
+            <input id="investor-username-mobile" class="custom-sidenav-search" type="search" placeholder="redditor name" >
+            <label class="label-icon" for="search-nav"><i class="material-icons">search</i></label>
+            <i class="material-icons" onclick="showAccount('investor-username-mobile')" >send</i>
+          </div>
+        </li>
         <!-- <li><a href="foo.html">brokers</a></li> -->
         <!-- <li><a href="bar.html">commands</a></li> -->
-        <li><a href="#" onclick="showOverview()">home</a></li>
-        <li><a href="#" onclick="showAccount()">account</a></li>
         <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/issues" target="_blank">bugs</a></li>
         <li><a href="https://github.com/"><img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"
                                                target="_blank"></a></li>
@@ -320,29 +316,19 @@
         </div>
     </div>
 
-    <div class="container" id="account" style="display:none;">
-        <div class="section">
+  <!-- user info modal -->
+  <div id="investor-info" class="modal">
+    <div class="modal-content">
             <div class="row">
                 <div class="col s12">
-                    <div class="col s6 push-s3">
-                        <div class="input-field col s10">
-                            <input type="text" id="investor-username"/>
-                            <label for="investor-username">Username</label>
-                        </div>
-                        <div class="input-field col s2">
-                            <input type="button" onclick="fetchInvestorData()" value="Search" class="btn"/>
-                        </div>
-                    </div>
-
+                    <div id="investor-account-data" class="table-wrap"></div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col s12">
-                    <div id="investor-account-data" class="col s6 push-s3"></div>
-                </div>
-            </div>
-        </div>
     </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">close</a>
+    </div>
+  </div>
 
 </body>
 </html>

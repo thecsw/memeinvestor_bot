@@ -368,25 +368,29 @@ function calculateInvestmentResult() {
     document.getElementById('investment-result').innerText = output;
 }
 
-function showAccount() {
-    document.getElementById("account").style.display = "block";
-    document.getElementById("overview").style.display = "none";
-}
+function showAccount(searchBarId) {
+   let username = document.getElementById(searchBarId).value;
 
-function showOverview() {
-    document.getElementById("account").style.display = "none";
-    document.getElementById("overview").style.display = "block";
-}
+   if(username.length > 0){
+      let domPopup = document.getElementById('investor-info');
+      M.Modal.init(domPopup);
+      M.Modal.getInstance(domPopup).open()
 
-function fetchInvestorData() {
-    let username = document.getElementById('investor-username').value;
-
-    jsonApi.get('/investor/'+username).then(function(data) {
-        document.getElementById('investor-account-data').innerHTML = ""
-            + "<table>"
-            + "  <tr><th>Balance</th><td>"+data.balance+"</td></tr>"
-            + "  <tr><th>Gone broke</th><td>"+data.broke+" times</td></tr>"
-            + "  <tr><th>Investments</th><td>"+data.completed+"</td></tr>"
-            + "</table>";
-    });
+      jsonApi.get('/investor/'+username).then(function(data) {
+      document.getElementById('investor-account-data').innerHTML = `
+           <h5>${username}'s profile</h5>
+           <p><a target="_blank" href="https://reddit.com/u/${username}">visit reddit profile</a></p>
+           <table>
+              <tr><th>Balance</th><td>${data.balance}</td></tr>
+              <tr><th>Gone broke</th><td>${data.broke} times</td></tr>
+              <tr><th>Investments</th><td>${data.completed}</td></tr>
+           </table>`;
+      })
+      .catch(function(er){
+         if(er.status === 404){
+            document.getElementById('investor-account-data').innerHTML = 
+            `<h5>${username} is not an investor!</h5>`
+         }
+      });
+   }
 }
