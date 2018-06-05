@@ -1,53 +1,58 @@
 <!DOCTYPE html>
-  <html>
-    <head>
-      <title>meme investor bot</title>
-      <meta charset="utf-8">
-      <meta name="application-name" content=""/>
-      <meta name="keywords" content="" />
-      <meta name="description" content="Start investing in memes with the best broker in r/MemeEconomy today!" />
-      <meta name="theme-color" content="#212121" />
-      <link rel="icon" type="image/png" href="resources/favicon/favicon-32x32.png" sizes="32x32" />
-      <link rel="icon" type="image/png" href="resources/favicon/favicon-32x32.png" sizes="16x16" />
+<html>
+<head>
+    <title>meme investor bot</title>
+    <meta charset="utf-8">
+    <meta name="application-name" content=""/>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="Start investing in memes with the best broker in r/MemeEconomy today!"/>
+    <meta name="theme-color" content="#212121"/>
+    <link rel="icon" type="image/png" href="resources/favicon/favicon-32x32.png" sizes="32x32"/>
+    <link rel="icon" type="image/png" href="resources/favicon/favicon-32x32.png" sizes="16x16"/>
 
-      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> 
-      <!-- materialize -->
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
-      <!-- fancy charts -->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
-      <script src="js/libs/countup.min.js"></script>
-      <!-- page -->
-      <link type="text/css" rel="stylesheet" href="css/style.css" />
-      <script src="js/main.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- materialize -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+    <!-- fancy charts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script src="js/libs/countup.min.js"></script>
+    <!-- page -->
+    <link type="text/css" rel="stylesheet" href="css/style.css"/>
+    <script src="js/main.js"></script>
 
-      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    </head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
 
-    <body>
-      <nav>
+<body>
+    <nav>
         <div class="nav-wrapper">
-          <a href="#" class="brand-logo" ><img src="resources/logo240.png" class="logo-img" /><span class="hide-on-small-only">emeInvestor bot</span></a>
-           <a href="#" data-target="mobile-sidebar" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <a href="#" onclick="showOverview()" class="brand-logo"><img src="resources/logo240.png" class="logo-img"/><span
+                    class="hide-on-small-only">emeInvestor bot</span></a>
+            <a href="#" onclick="showOverview()" data-target="mobile-sidebar" class="sidenav-trigger"><i
+                    class="material-icons">menu</i></a>
 
-          <ul id="nav-mobile" class="right hide-on-med-and-down">
-            <!-- <li> -->
-            <!--   <div class="input-field"> -->
-            <!--     <input id="search-nav" class="custom-dark-search" type="search" placeholder="redditor name" > -->
-            <!--     <label class="label-icon" for="search-nav"><i class="material-icons">search</i></label> -->
-            <!--     <i class="material-icons">send</i> -->
-            <!--   </div> -->
-            <!-- </li> -->
-            <!-- <li><a href="foo.html">overview</a></li> -->
-            <!-- <li><a href="bar.html">market</a></li> -->
-            <li><span onclick="showAccount()">account</span></li>
-            <li><a href="https://github.com/thecsw/memeinvestor_bot/issues" target="_blank">bugs</a></li>
-            <li><a href="https://github.com/thecsw/memeinvestor_bot" target="_blank"><img class="icon-32" src="resources/GitHub-Mark-Light-32px.png" /></a></li>
-          </ul>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <!-- <li> -->
+                <!--   <div class="input-field"> -->
+                <!--     <input id="search-nav" class="custom-dark-search" type="search" placeholder="redditor name" > -->
+                <!--     <label class="label-icon" for="search-nav"><i class="material-icons">search</i></label> -->
+                <!--     <i class="material-icons">send</i> -->
+                <!--   </div> -->
+                <!-- </li> -->
+                <!-- <li><a href="foo.html">overview</a></li> -->
+                <!-- <li><a href="bar.html">market</a></li> -->
+                <li><a href="#" onclick="showOverview()">home</a></li>
+                <li><a href="#" onclick="showAccount()">account</a></li>
+                <li><a href="https://github.com/thecsw/memeinvestor_bot/issues" target="_blank">bugs</a></li>
+                <li><a href="https://github.com/thecsw/memeinvestor_bot" target="_blank"><img class="icon-32"
+                                                                                              src="resources/GitHub-Mark-Light-32px.png"/></a>
+                </li>
+            </ul>
         </div>
-      </nav>
+    </nav>
 
-      <ul class="sidenav" id="mobile-sidebar">
+    <ul class="sidenav" id="mobile-sidebar">
         <!-- <li> -->
         <!--   <div class="input-field mobile"> -->
         <!--     <input id="search-nav-mobile" class="custom-sidenav-search" type="search" placeholder="redditor name" > -->
@@ -57,12 +62,14 @@
         <!-- </li> -->
         <!-- <li><a href="foo.html">brokers</a></li> -->
         <!-- <li><a href="bar.html">commands</a></li> -->
-        <li><span onclick="showAccount()">account</span></li>
+        <li><a href="#" onclick="showOverview()">home</a></li>
+        <li><a href="#" onclick="showAccount()">account</a></li>
         <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/issues" target="_blank">bugs</a></li>
-        <li><a href="https://github.com/"><img class="icon-32" src="resources/GitHub-Mark-Light-32px.png" target="_blank"></a></li>
-      </ul>    
-      
-      <div class="container">
+        <li><a href="https://github.com/"><img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"
+                                               target="_blank"></a></li>
+    </ul>
+
+    <div class="container" id="overview">
         <div class="section">
           <!--
           <div class="section">
@@ -109,90 +116,96 @@
               <div class="col s12 m8 l8">
                 <div class="table-wrap">
 
-       <table >
-        <thead>
-          <tr>
-              <th>Name</th>
-              <th>balance</th>
-              <th>investments</th>
-          </tr>
-        </thead>
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>balance</th>
+                                    <th>investments</th>
+                                </tr>
+                                </thead>
 
-        <tbody id="leaderboards-table">
-          <tr>
-            <td>----</td>
-            <td>--</td>
-            <td>--</td>
-          </tr>
-          <tr>
-            <td>----</td>
-            <td>--</td>
-            <td>--</td>
-          </tr>
-          <tr>
-            <td>----</td>
-            <td>--</td>
-            <td>--</td>
-          </tr>
-          <tr>
-            <td>----</td>
-            <td>--</td>
-            <td>--</td>
-          </tr>
-          <tr>
-            <td>----</td>
-            <td>--</td>
-            <td>--</td>
-          </tr>
-        </tbody>
-      </table>               
-                
+                                <tbody id="leaderboards-table">
+                                <tr>
+                                    <td>----</td>
+                                    <td>--</td>
+                                    <td>--</td>
+                                </tr>
+                                <tr>
+                                    <td>----</td>
+                                    <td>--</td>
+                                    <td>--</td>
+                                </tr>
+                                <tr>
+                                    <td>----</td>
+                                    <td>--</td>
+                                    <td>--</td>
+                                </tr>
+                                <tr>
+                                    <td>----</td>
+                                    <td>--</td>
+                                    <td>--</td>
+                                </tr>
+                                <tr>
+                                    <td>----</td>
+                                    <td>--</td>
+                                    <td>--</td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div class="col s12 m4 l4">
+                        <h4>top investors</h4>
+                        <p>This is a list of the top 5 investors since 2018-05-23 <br>
+                            A red badge next to the username indicates the number of times the user went bankruptcy. </p>
+                        <!-- <p>A yellow badge next to the username indicates the amounts of full-in investments done.</p> -->
+                    </div>
+
                 </div>
-              </div>            
-              <div class="col s12 m4 l4">
-                <h4>top investors</h4>
-                <p>This is a list of the top 5 investors since 2018-05-23 <br>
-                 A red badge next to the username indicates the number of times the user went bankruptcy. </p>
-                <!-- <p>A yellow badge next to the username indicates the amounts of full-in investments done.</p> -->
-              </div>
-
             </div>
-          </div>
-          <div class="divider"></div>
-          <div class="section">
-            <div class="row">
-              <div id="info1" class="col s12 m6 l6">
-              <h4 >Commands and info</h4>
-              <p>To invoke a command, reply to either the top-level u/MemeInvestor_bot comment in the comment 
-              section of any r/MemeEconomy post or to one of its subsequent replies to your command comment.<br> 
-              <span class="red lighten-1 white-text code-block"> commands that are not direct replies to the bot will be ignored</span></p>
-              <p>The bot has the following commands:</p>
-              <ul class="collapsible">
-                <li>
-                  <div class="collapsible-header"><i class="material-icons">expand_more</i>!create</div>
-                  <div class="collapsible-body"><span>Creates a bank account for you with a new balance of 1000 MemeCoins.</span></div>
-                </li>
-                <li>
-                  <div class="collapsible-header"><i class="material-icons">expand_more</i>!invest AMOUNT</div>
-                  <div class="collapsible-body"><span>Invests AMOUNT in the meme (post). 4 hours after the investment, the meme growth will be evaluated and your investment can profit you or make you bankrupt. Minimum possible investment is 100 MemeCoins.</span></div>
-                </li>
-                <li>
-                  <div class="collapsible-header"><i class="material-icons">expand_more</i>!balance</div>
-                  <div class="collapsible-body"><span>Returns your current balance.</span></div>
-                </li>
-                <li>
-                  <div class="collapsible-header"><i class="material-icons">expand_more</i>!broke</div>
-                  <div class="collapsible-body"><span>Invoke this command when broke (no active investements and balance below 100 Memecoins) and your balance will become 100 Memecoins.</span></div>
-                </li>
-                <li>
-                  <div class="collapsible-header"><i class="material-icons">expand_more</i>!active</div>
-                  <div class="collapsible-body"><span>Returns a number of active investments.</span></div>
-                </li>
-                <li>
-                  <div class="collapsible-header"><i class="material-icons">expand_more</i>!top</div>
-                  <div class="collapsible-body"><span>Returns the top 5 meme investors.</span></div>
-                </li>
-              </ul>       
+            <div class="divider"></div>
+            <div class="section">
+                <div class="row">
+                    <div id="info1" class="col s12 m6 l6">
+                        <h4>Commands and info</h4>
+                        <p>To invoke a command, reply to either the top-level u/MemeInvestor_bot comment in the comment
+                            section of any r/MemeEconomy post or to one of its subsequent replies to your command
+                            comment.<br>
+                            <span class="red lighten-1 white-text code-block"> commands that are not direct replies to the bot will be ignored</span>
+                        </p>
+                        <p>The bot has the following commands:</p>
+                        <ul class="collapsible">
+                            <li>
+                                <div class="collapsible-header"><i class="material-icons">expand_more</i>!create</div>
+                                <div class="collapsible-body"><span>Creates a bank account for you with a new balance of 1000 MemeCoins.</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="collapsible-header"><i class="material-icons">expand_more</i>!invest AMOUNT
+                                </div>
+                                <div class="collapsible-body"><span>Invests AMOUNT in the meme (post). 4 hours after the investment, the meme growth will be evaluated and your investment can profit you or make you bankrupt. Minimum possible investment is 100 MemeCoins.</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="collapsible-header"><i class="material-icons">expand_more</i>!balance</div>
+                                <div class="collapsible-body"><span>Returns your current balance.</span></div>
+                            </li>
+                            <li>
+                                <div class="collapsible-header"><i class="material-icons">expand_more</i>!broke</div>
+                                <div class="collapsible-body"><span>Invoke this command when broke (no active investements and balance below 100 Memecoins) and your balance will become 100 Memecoins.</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="collapsible-header"><i class="material-icons">expand_more</i>!active</div>
+                                <div class="collapsible-body"><span>Returns a number of active investments.</span></div>
+                            </li>
+                            <li>
+                                <div class="collapsible-header"><i class="material-icons">expand_more</i>!top</div>
+                                <div class="collapsible-body"><span>Returns the top 5 meme investors.</span></div>
+                            </li>
+                        </ul>
 
 
               </div>
@@ -200,23 +213,23 @@
                 <h4 id="info2">Investment behaviour</h4>
                 <p>To calculate the investment return, the bot performs a two-step procedure.<br>
                 You can click on the table below to view an exhaustive description of it. </p>
-                <p><i>Note:</i> The investment behaviour has already been through several design 
+                <p><i>Note:</i> The investment behaviour has already been through several design
                 iterations and may well be revised again in the future.
                 </p>
                 <ul class="collapsible">
                   <li>
                     <div class="collapsible-header"><i class="material-icons">expand_more</i>First step</div>
-                    <div class="collapsible-body">  
-                      <p>First step The bot calculates an initial growth factor, 
-                      <span class="grey lighten-2 code-block">y</span>, using a power function of the form 
-                      <span class="grey lighten-2 code-block">y = x<sup>m</sup></span>, where m is a constant 
-                      <span class="grey lighten-2 code-block">(m=1/3)</span> and <span class="grey lighten-2 code-block">x</span> 
-                      is the relative change in upvotes on the post since the investment was made as a proportion 
+                    <div class="collapsible-body">
+                      <p>First step The bot calculates an initial growth factor,
+                      <span class="grey lighten-2 code-block">y</span>, using a power function of the form
+                      <span class="grey lighten-2 code-block">y = x<sup>m</sup></span>, where m is a constant
+                      <span class="grey lighten-2 code-block">(m=1/3)</span> and <span class="grey lighten-2 code-block">x</span>
+                      is the relative change in upvotes on the post since the investment was made as a proportion
                       of the upvotes at the time of investment: <span class="grey lighten-2 code-block">x=1+(final_upvotes - initial_upvotes)/initial_upvotes</span>.
                       The 1/3 power function (cube root) behaviour was chosen
                        so that the overall behavior of the investment return function is a steep rise which levels off at higher upvote
                        growth. The reasoning behind this is to prevent a  small handful of investors who get lucky and invest in
-                       one or more posts that 'blow up' from earning so many  MemeCoins that they 
+                       one or more posts that 'blow up' from earning so many  MemeCoins that they
                       dominate the market from then on. This helps keep the playing field somewhat more level for new investors.</p>
                       <img class="responsive-img materialboxed" src="resources/investment_return_multiplier.png">
                       <i>Investment Return Initial Growth Factor</i>
@@ -225,22 +238,22 @@
                   <li>
                     <div class="collapsible-header"><i class="material-icons">expand_more</i>Second step</div>
                     <div class="collapsible-body">
-                    <p>Unlike real stocks, reddit post upvotes typically either grow or don't grow; posts 
+                    <p>Unlike real stocks, reddit post upvotes typically either grow or don't grow; posts
                     don't usually get mass-downvoted by an appreciable amount and if they do, they quickly get buried
                     , reducing the potential for downvoting. In light of this, so that investments aren't risk-free, a
-                    graduated threshold is applied to the the factor calculated by the power function in the first 
-                    step. If the post grows such that this factor <span class="grey lighten-2 code-block">y</span> 
+                    graduated threshold is applied to the the factor calculated by the power function in the first
+                    step. If the post grows such that this factor <span class="grey lighten-2 code-block">y</span>
                     is above the success threshold, thresh = 1.2, the investment return is simply invested_amount * y.
-                    If the post grows (y>1) but the factor is at or below 1.2, the investor only gets back 
-                    <span class="grey lighten-2 code-block">invested_amount * (y-1)/(thresh - 1)</span>. If the post doesn't 
+                    If the post grows (y>1) but the factor is at or below 1.2, the investor only gets back
+                    <span class="grey lighten-2 code-block">invested_amount * (y-1)/(thresh - 1)</span>. If the post doesn't
                     grow or is downvoted (y<=1), the investor gets back nothing.
                     </p>
                     <img class="responsive-img materialboxed" src="resources/investment_return_multiplier_thresholding.png">
-                    <i>Investment Return Final Return Multiplier vs Initial Growth Factor</i>                    
+                    <i>Investment Return Final Return Multiplier vs Initial Growth Factor</i>
                     </div>
                   </li>
                 </ul>
-                
+
                 <h4 id="calculator">Investment Calculator</h4>
                 <div class="input-field col s12 m12 l6">
                   <input type="text" id="investment-start-score" class="row" />
@@ -257,12 +270,12 @@
                <div class="input-field row col s12 m12 l6">
                   <input type="button" onclick="calculateInvestmentResult()" value="Estimate" class="btn col s6" />
                   <div class="col s6 investment-result valign-wrapper"><p id="investment-result">000</p></div>
-                </div>                   
-                
+                </div>
+
               </div>
             </div>
           </div>
-          
+
 
         </div>
       </div>
@@ -287,7 +300,31 @@
           <a href="#!" class="modal-close waves-effect waves-green btn-flat">close</a>
           <a href="#!" class="waves-effect waves-green btn-flat">i hate this</a>
         </div>
-      </div>
+    </div>
+
+    <div class="container" id="account" style="display:none;">
+        <div class="section">
+            <div class="row">
+                <div class="col s12">
+                    <div class="col s6 push-s3">
+                        <div class="input-field col s10">
+                            <input type="text" id="investor-username"/>
+                            <label for="investor-username">Username</label>
+                        </div>
+                        <div class="input-field col s2">
+                            <input type="button" onclick="fetchInvestorData()" value="Search" class="btn"/>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <div id="investor-account-data" class="col s6 push-s3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     </body>
   </html>

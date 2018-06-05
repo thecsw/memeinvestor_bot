@@ -369,5 +369,24 @@ function calculateInvestmentResult() {
 }
 
 function showAccount() {
+    document.getElementById("account").style.display = "block";
+    document.getElementById("overview").style.display = "none";
+}
 
+function showOverview() {
+    document.getElementById("account").style.display = "none";
+    document.getElementById("overview").style.display = "block";
+}
+
+function fetchInvestorData() {
+    let username = document.getElementById('investor-username').value;
+
+    jsonApi.get('/investor/'+username).then(function(data) {
+        document.getElementById('investor-account-data').innerHTML = ""
+            + "<table>"
+            + "  <tr><th>Balance</th><td>"+data.balance+"</td></tr>"
+            + "  <tr><th>Gone broke</th><td>"+data.broke+" times</td></tr>"
+            + "  <tr><th>Investments</th><td>"+data.completed+"</td></tr>"
+            + "</table>";
+    });
 }
