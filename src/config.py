@@ -1,6 +1,6 @@
 import os
 
-dry_run 		= os.environ['BOT_DRY_RUN']
+dry_run 		= int(os.environ['BOT_DRY_RUN'])
 
 client_id 		= os.environ['BOT_CLIENT_ID']
 client_secret 	= os.environ['BOT_CLIENT_SECRET']
