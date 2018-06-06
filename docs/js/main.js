@@ -233,9 +233,8 @@ let userAccount = (function(){
               </table>`;
          })
          .catch(function(er){
-            if(er.status === 404){
-               document.getElementById('investor-account-data').innerHTML = 
-               `<h5>${username} is not an investor!</h5>`
+            if (er.status === 404){
+               document.getElementById('investor-account-data').innerHTML = `<h5>There is no investor with that username!</h5>`
             }
          });
       }
@@ -244,7 +243,8 @@ let userAccount = (function(){
       // check if url contains ?account=
       let url = new URL(window.location.href);
       let username = url.searchParams.get("account");
-      if (username) {
+      const reg = /^[a-zA-Z\-\_]+$/;
+      if (reg.test(username)) {
          document.getElementById('investor-username').value = username;
          show('investor-username');
          history.pushState(null, '', window.location.href.split('?')[0]);
