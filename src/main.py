@@ -4,11 +4,12 @@ import logging
 
 from sqlalchemy import create_engine, func
 from sqlalchemy.orm import scoped_session, sessionmaker
+
 import praw
 
 import config
 import message
-from models import Investment, Investor
+from models import Base, Investment, Investor
 
 logging.basicConfig(level=logging.INFO)
 
@@ -29,6 +30,9 @@ def req_user(fn):
 
 # Monkey patch exception handling
 def reply_wrap(self, body):
+    logging.info("Bot reply:")
+    logging.info(body)
+
     if config.dry_run:
         return "dryrun_True"
 
@@ -232,11 +236,25 @@ class CommentWorker():
 
 
 def main():
-    logging.info("Starting main")
+    logging.info("Starting main loop")
+
+    if not config.dry_run:
+        logging.info("Warning: this is NOT a dry run - bot will post to Reddit!")
+
+    logging.info("Pausing for db to initialize...")
+    time.sleep(30)
+
+    logging.info("Setting up db connection")
 
     engine = create_engine(config.db)
     sm = scoped_session(sessionmaker(bind=engine))
     worker = CommentWorker(sm)
+
+    logging.info("Creating db tables if needed")
+
+    Base.metadata.create_all(engine)
+
+    logging.info("Setting up Reddit connection")
 
     reddit = praw.Reddit(
         client_id=config.client_id,
@@ -246,7 +264,7 @@ def main():
         user_agent=config.user_agent
     )
 
-    logging.info("Listening for inbox...")
+    logging.info("Listening for inbox replies...")
 
     while True:
         try:
