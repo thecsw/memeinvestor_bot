@@ -21,6 +21,8 @@ This bot has been developed exclusively for [r/MemeEconomy](https://reddit.com/r
 to create investment accounts with fictional MemeCoins, invest those MemeCoins in specific memes, and automatically
 evaluate meme performance resulting in positive or negative returns.
 
+The README below is a bit outdated. New version will be soon.
+
 ## Contributing
 
 If you want to contribute, please do so! Check the [Issues](https://github.com/MemeInvestor/memeinvestor_bot/issues) list and help meme investments thrive!
@@ -93,54 +95,19 @@ how to deploy the project on a live system.
 
 ### Prerequisites
 
-In order to run this application, you need to install [praw](https://github.com/praw-dev/praw), Python Reddit API Wrapper. This will be the main and only package to connect to Reddit's API and extract desired data.
-
-```
-sudo pip3 install praw
-```
-
-Alternatively, you can execute the following command:
-
-```
-sudo pip3 install --upgrade -r requirements.txt
-```
-
 ### Installation and configuration
-
-The only thing that needs to be done before execution is the config. The only
-thing that needs to be done before execution is the config profile. In the
-config profile you should fill your Reddit API details.
-
-For that please follow the steps below:
-
-```
-git clone https://github.com/thecsw/memeinvestor_bot
-cd memeinvestor_bot
-mv example.config.py config.py
-nano config.py
-```
-
-After filling out the details, save and exit. You're done with installation.
 
 ### Deployment
 
-Remove the word **'example'** from the title of all files with it.
-
-Just run this
-
-```
-python3 main.py
-```
-
-It is time to make a fortune!
-
 ## Authors
 
- - *Sagindyk Urazayev* - Initial work and SQL Rewrite - [thecsw](https://github.com/thecsw)
- - *jimbobur* - Heavy additions to investment logic - [jimbobur](https://github.com/jimbobur)
+ - *Sagindyk Urazayev* - Core back-end developer. Initial work & SQLite. - [thecsw](https://github.com/thecsw)
+ - *Dimitris Zervas* - Main back-end developer. MySQL, Docker, API and overall support. - [dzervas](https://github.com/dzervas)
+ - *jimbobur* - Our math guy. Can make really pretty graphs. - [jimbobur](https://github.com/jimbobur)
+ - *Alberto Ventafridda* - Main front-end and web developer. - [robalb](https://github.com/robalb)
+ - *rickles42* - Heavy outside contributor. - [rickles42](https://github.com/rickles42)
+ - *TwinProduction* - Heavy outside contributor. - [TwinProduction](https://github.com/TwinProduction)
  - *ggppjj* - Minor fixes - [ggppjj](https://github.com/ggppjj)
- - *rickles42* - Minor fixes and features - [rickles42](https://github.com/rickles42)
- - *TwinProduction* - Minor fixes and improvements - [TwinProduction](https://github.com/TwinProduction)
 
 ## License
 
