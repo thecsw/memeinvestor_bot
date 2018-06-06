@@ -101,12 +101,12 @@ how to deploy the project on a live system.
 
 ## Authors
 
- - *Sagindyk Urazayev* - Core back-end developer. Initial work & SQLite. - [thecsw](https://github.com/thecsw)
- - *Dimitris Zervas* - Main back-end developer. MySQL, Docker, API and overall support. - [dzervas](https://github.com/dzervas)
- - *jimbobur* - Our math guy. Can make really pretty graphs. - [jimbobur](https://github.com/jimbobur)
- - *Alberto Ventafridda* - Main front-end and web developer. - [robalb](https://github.com/robalb)
- - *rickles42* - Heavy outside contributor. - [rickles42](https://github.com/rickles42)
- - *TwinProduction* - Heavy outside contributor. - [TwinProduction](https://github.com/TwinProduction)
+ - *Sagindyk Urazayev* - Core developer. Initial work & SQLite - [thecsw](https://github.com/thecsw)
+ - *Dimitris Zervas* - Main back-end developer. MySQL, Docker, API and overall support - [dzervas](https://github.com/dzervas)
+ - *jimbobur* - Our math guy. Can make really pretty graphs - [jimbobur](https://github.com/jimbobur)
+ - *Alberto Ventafridda* - Main front-end and web developer - [robalb](https://github.com/robalb)
+ - *rickles42* - Heavy outside contributor - [rickles42](https://github.com/rickles42)
+ - *TwinProduction* - Heavy outside contributor - [TwinProduction](https://github.com/TwinProduction)
  - *ggppjj* - Minor fixes - [ggppjj](https://github.com/ggppjj)
 
 ## License
