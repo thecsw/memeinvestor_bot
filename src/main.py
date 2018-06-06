@@ -12,10 +12,6 @@ from models import Investment, Investor
 
 logging.basicConfig(level=logging.INFO)
 
-STARTER = 1000
-REDDIT = None
-
-
 # Decorator to mark a commands that require a user
 # Adds the investor after the comment when it calls the method (see broke)
 def req_user(fn):
@@ -136,7 +132,7 @@ class CommentWorker():
 
         # Post related vars
         if comment.submission.author.name == comment.author.name:
-            comment.reply(message.inside_trading_org)
+            comment.reply_wrap(message.inside_trading_org)
             return
 
         try:

@@ -9,7 +9,7 @@ _______________________
 """
 
 help_mess = """
-^(For more information see [memes.market](https://memes.market/#info1))
+^For ^more ^information ^see ^[memes.market](https://memes.market/#info1)
 """
 
 # This message will be sent if an account has been
@@ -256,7 +256,7 @@ invest_place_here = """
 
 To prevent thread spam and other natural disasters, please invoke all your commands by replying to this comment.
 
-If you won't invoke your command here, you can receive a penalty or your account can be suspended. We are respected investors, so let's keep our community clean! Reply directly to this comment and not to other investors' comments/commands.
+If you don't invoke your command here, you may receive a penalty or your account may be suspended. We are respected investors, so let's keep our community clean! Reply directly to this comment and not to other investors' comments/commands.
 
 **ONLY DIRECT REPLIES TO THE BOT WILL BE PROCESSED**
 
