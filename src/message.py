@@ -10,6 +10,9 @@ _______________________
 
 help_mess = """
 ^For ^more ^information ^see ^[memes.market](https://memes.market/#info1)
+_______________________
+
+WARNING! The system will be rebooted now. The whole market is bloated and biased. The formula will be changed. All accounts will be kept but their balances will be reset to 1000 MemeCoins. New formula can guarantee natural and fair investments, without billions and trillions in a couple of days. Investors with more than 1 billion will receive some cosmetic rewards to compensate the loss. (| || || |_) The reboot will happen soon. For more information please see the website.
 """
 
 # This message will be sent if an account has been
