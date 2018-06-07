@@ -360,7 +360,7 @@ function createWalletToast(){
 
 function formatToUnits(val) {
     var number = parseInt(val);
-    var abbrev = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'S'];
+    var abbrev = ['', 'K', 'M', 'B', 'T', 'q', 'Q', 's', 'S', 'Zillion'];
     var unrangifiedOrder = Math.floor(Math.log10(Math.abs(number)) / 3);
     var order = Math.max(0, Math.min(unrangifiedOrder, abbrev.length -1 ));
     var suffix = abbrev[order];
