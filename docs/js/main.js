@@ -284,10 +284,11 @@ let userAccount = (function(){
       //popup code. after the first view, the current popup viewed is stored in localStorage,
       //to avoid showing it on every page reload. increment const popup and refresh cache to show
       //the popup message again
-      const POPUP = 1
+      const POPUP = 2
       //debug
       //localStorage.removeItem('viewed_info')   
       if(localStorage.getItem('viewed_info') != POPUP){
+         iht();//TEPORARY IHT
          let domPopup = document.getElementById('modal1');
          M.Modal.init(domPopup);
          setTimeout(
