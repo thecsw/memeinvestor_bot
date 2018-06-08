@@ -61,13 +61,34 @@ class CommentWorker():
         self.Session = sm
 
     def __call__(self, comment):
-        if comment.author.name.lower().endswith("_bot") or not comment.author:
+        # Ignore items that aren't Comments (i.e. Submissions)
+        if not isinstance(comment, praw.models.Comment):
+            return
+        
+        # Ignore comments at the root of a Submission
+        if comment.is_root:
             return
 
-        if isinstance(comment, praw.models.Comment) and \
-           (comment.is_root or \
-            not comment.parent() or \
-            comment.parent().author.name != config.username):
+        # Ignore comments without a parent (deleted)
+        if not comment.parent():
+            return
+
+        # Ignore comments not replying to this bot
+        if comment.parent().author.name != config.username:
+            return
+
+        # Ignore comments without an author (deleted)
+        if not comment.author:
+            return
+
+        # Ignore comments by other bots
+        if comment.author.name.lower().endswith("_bot"):
+            return
+
+        # Ignore comments older than a threshold
+        max_age = 60*15 # fifteen minutes
+        comment_age = time.time() - int(comment.created_utc)
+        if comment_age > max_age:
             return
 
         for reg in self.regexes:
