@@ -21,6 +21,8 @@ This bot has been developed exclusively for [r/MemeEconomy](https://reddit.com/r
 to create investment accounts with fictional MemeCoins, invest those MemeCoins in specific memes, and automatically
 evaluate meme performance resulting in positive or negative returns.
 
+The README below is a bit outdated. New version will be soon.
+
 ## Contributing
 
 If you want to contribute, please do so! Check the [Issues](https://github.com/MemeInvestor/memeinvestor_bot/issues) list and help meme investments thrive!
@@ -118,11 +120,13 @@ It is time to make a fortune!
 
 ## Authors
 
- - *Sagindyk Urazayev* - Initial work and SQL Rewrite - [thecsw](https://github.com/thecsw)
- - *jimbobur* - Heavy additions to investment logic - [jimbobur](https://github.com/jimbobur)
+ - *Sagindyk Urazayev* - Core developer. Initial work & SQLite - [thecsw](https://github.com/thecsw)
+ - *Dimitris Zervas* - Main back-end developer. MySQL, Docker, API and overall support - [dzervas](https://github.com/dzervas)
+ - *jimbobur* - Our maths guy. Can make really pretty graphs - [jimbobur](https://github.com/jimbobur)
+ - *Alberto Ventafridda* - Main front-end and web developer - [robalb](https://github.com/robalb)
+ - *rickles42* - Heavy outside contributor - [rickles42](https://github.com/rickles42)
+ - *TwinProduction* - Heavy outside contributor - [TwinProduction](https://github.com/TwinProduction)
  - *ggppjj* - Minor fixes - [ggppjj](https://github.com/ggppjj)
- - *rickles42* - Minor fixes and features - [rickles42](https://github.com/rickles42)
- - *TwinProduction* - Minor fixes and improvements - [TwinProduction](https://github.com/TwinProduction)
 
 ## License
 
