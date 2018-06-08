@@ -90,14 +90,33 @@ r/MemeEconomy post or to one of its subsequent replies to your command comment.
 ## Getting started 
 
 These instructions will get you a copy of the project up and running on your
-local machine for development and testing purposes. See deployment for notes on
-how to deploy the project on a live system. 
+local machine for development and testing purposes.
 
 ### Prerequisites
 
-### Installation and configuration
+In order to run this application, you need to install [Docker](https://www.docker.com/community-edition).
+
+### Configuration
+
+The only thing that needs to be done before execution is the config profile. For that please follow the
+steps below:
+
+```
+git clone https://github.com/thecsw/memeinvestor_bot
+cd memeinvestor_bot
+cp .env.example .env
+nano .env
+```
+
+After filling out the details, save and exit. You're done with configuration.
 
 ### Deployment
+
+From the root of the project directory, use `docker-compose run <service>` to start up the various
+independent components of the bot. At this time, additional configuration is required to prep an
+empty MySQL database. In the future we hope to enable one-touch deployment.
+
+It is time to make a fortune!
 
 ## Authors
 

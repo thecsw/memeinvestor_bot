@@ -110,6 +110,8 @@ let overviewChart = (function(){
       }      
    }
    function init(){
+      //dom resize listener
+      window.addEventListener('resize', e=> resize() );
       canvas1 = document.getElementById('homepage-graph');
       let x = getScreenSize().x;
       if(x>=800){
@@ -216,8 +218,12 @@ let leaderboard = (function(){
 
 
 let userAccount = (function(){
-   function show(searchBarId) {
-      let username = document.getElementById(searchBarId).value;
+   let searchBarIds = {
+      desktop: 'investor-username',
+      mobile:'investor-username-mobile'      
+   }
+   function show(device) {
+      let username = document.getElementById(searchBarIds[device]).value;
       if(username.length > 0){
          let domPopup = document.getElementById('investor-info'); 
          M.Modal.init(domPopup);
@@ -239,14 +245,19 @@ let userAccount = (function(){
          });
       }
    }
-   function init(){           
+   function init(){
+      //add ENTER key listener
+      let searchEl = document.getElementById(searchBarIds['desktop']);
+      searchEl.addEventListener('keypress', e=> {if((e.which || e.keyCode) === 13)show('desktop')} );     
+      searchEl = document.getElementById(searchBarIds['mobile']);
+      searchEl.addEventListener('keypress', e=> {if((e.which || e.keyCode) === 13)show('mobile')} );
       // check if url contains ?account=
       let url = new URL(window.location.href);
       let username = url.searchParams.get("account");
       const reg = /^[a-zA-Z\-\_]+$/;
       if (reg.test(username)) {
          document.getElementById('investor-username').value = username;
-         show('investor-username');
+         show('desktop');
          history.pushState(null, '', window.location.href.split('?')[0]);
       }
 
@@ -325,11 +336,6 @@ let userAccount = (function(){
       } 
       updater();
    });
-   //dom resize listener
-   window.addEventListener('resize', function(event){
-      overviewChart.resize()
-   });   
-   
    
 }());
 
@@ -354,7 +360,7 @@ function createWalletToast(){
 
 function formatToUnits(val) {
     var number = parseInt(val);
-    var abbrev = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'S'];
+    var abbrev = ['', 'K', 'M', 'B', 'T', 'q', 'Q', 's', 'S', 'Zillion'];
     var unrangifiedOrder = Math.floor(Math.log10(Math.abs(number)) / 3);
     var order = Math.max(0, Math.min(unrangifiedOrder, abbrev.length -1 ));
     var suffix = abbrev[order];

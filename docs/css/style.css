@@ -22,6 +22,7 @@ nav{
 }
 .custom-dark-search{
   color:#f2f2f2;
+  height:100% !important;
 }
 .custom-dark-search:focus{
   background-color:#e6e6e6;
