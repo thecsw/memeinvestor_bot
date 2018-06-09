@@ -207,8 +207,9 @@ class CommentWorker():
         active = sess.query(
             func.count(Investment.id)
         ).filter(Investment.done).filter(Investment.name == investor.name).scalar()
+
         if active:
-            comment.reply_wrap(message.modify_broke_active(active))
+            return comment.reply_wrap(message.modify_broke_active(active))
 
         # Indeed, broke
         sess.query(Investor).filter(Investor.name == investor.name).update({
