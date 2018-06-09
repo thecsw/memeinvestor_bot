@@ -1,6 +1,5 @@
-git+https://github.com/praw-dev/praw.git
+https://github.com/praw-dev/praw/archive/master.zip
 fastnumbers
-mysqlclient
 sqlalchemy
 flask
 flask-cors
