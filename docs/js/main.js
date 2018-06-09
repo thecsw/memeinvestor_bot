@@ -254,7 +254,7 @@ let userAccount = (function(){
       // check if url contains ?account=
       let url = new URL(window.location.href);
       let username = url.searchParams.get("account");
-      const reg = /^[a-zA-Z\-\_]+$/;
+      const reg = /^[a-zA-Z0-9\-\_]+$/;
       if (reg.test(username)) {
          document.getElementById('investor-username').value = username;
          show('desktop');
@@ -354,20 +354,21 @@ function connectionErrorToast(error){
 }
 
 function createWalletToast(){
-   var toastHTML = '<p><a href="#" class="">connect your reddit account first</a> or <a href="#"> create your wallet directly from reddit</a></p>';
-  M.toast({html: toastHTML,displayLength:6000});
+   let toastHTML = '<p><a href="#" class="">connect your reddit account first</a> or <a href="#"> create your wallet directly from reddit</a></p>';
+   M.toast({html: toastHTML,displayLength:6000});
 }
 
 
 function formatToUnits(val) {
-    var number = parseInt(val);
-    var abbrev = ['', 'K', 'M', 'B', 'T', 'q', 'Q', 's', 'S', 'Zillion'];
-    var unrangifiedOrder = Math.floor(Math.log10(Math.abs(number)) / 3);
-    var order = Math.max(0, Math.min(unrangifiedOrder, abbrev.length -1 ));
-    var suffix = abbrev[order];
-    var precision = suffix ? 1 : 0;
-    var res = (number / Math.pow(10, order * 3)).toFixed(precision) + suffix;
-
+    let number = parseInt(val);
+    let abbrev = ['', 'K', 'M', 'B', 'T', 'q', 'Q', 's', 'S'];
+    //, 'Sx', 'Sp', 'Oc', 'No', 'Dc', 'Ud', 'Dd', 'Td', 'Qad', 'Qid', 'Sxd', 'Spd', 'Ocd', 'Nod', 'Vg', 'Uvg','Dvg'];
+    //after the Dvg (duovigintillion) use scientific notation
+    let unrangifiedOrder = Math.floor(Math.log10(Math.abs(number)) / 3);
+    let order = Math.max(0, Math.min(unrangifiedOrder, abbrev.length -1 ));
+    let suffix = abbrev[order];
+    let precision = suffix ? 1 : 0;
+    let res = (number / Math.pow(10, order * 3)).toFixed(precision) + suffix;
     return res;
 }
 
