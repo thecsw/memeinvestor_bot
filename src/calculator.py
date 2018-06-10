@@ -108,6 +108,9 @@ def main():
             if not investor:
                 continue
 
+            if investor.name == "genericusername123":
+                continue
+
             if investment.response != "0":
                 response = reddit.comment(id=investment.response)
             else:
@@ -117,7 +120,7 @@ def main():
             try:
                 reddit.comment(id=investment.comment)
             except:
-                response.edit(message.deleted_comment_org)
+                response.edit_wrap(message.deleted_comment_org)
                 continue
 
             post = reddit.submission(investment.post)
