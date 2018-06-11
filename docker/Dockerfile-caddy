@@ -1,6 +1,11 @@
 FROM alpine
 
-RUN apk add --update --no-cache curl bash && mkdir /caddy
+RUN apk add --update --no-cache \
+    bash \
+    curl
+
+RUN mkdir /caddy
+
 RUN curl https://getcaddy.com | bash -s personal http.cors
 
 WORKDIR /caddy

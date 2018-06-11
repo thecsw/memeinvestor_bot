@@ -1,6 +1,7 @@
 FROM python:alpine
 
-RUN apk add --update --no-cache mariadb-dev g++ gettext git
+RUN apk add --update --no-cache g++
+
 RUN adduser -D user
 USER user
 WORKDIR /home/user
