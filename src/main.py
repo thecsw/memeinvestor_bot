@@ -232,9 +232,12 @@ class CommentWorker():
 
 
 def main():
+    logging.info("Starting main")
+
     engine = create_engine(config.db)
     sm = scoped_session(sessionmaker(bind=engine))
     worker = CommentWorker(sm)
+
     reddit = praw.Reddit(
         client_id=config.client_id,
         client_secret=config.client_secret,
@@ -242,7 +245,8 @@ def main():
         password=config.password,
         user_agent=config.user_agent
     )
-    logging.info("Started listening for inbox")
+
+    logging.info("Listening for inbox...")
 
     while True:
         try:
