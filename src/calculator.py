@@ -86,6 +86,8 @@ def calculate(new, old):
 
 
 def main():
+    logging.info("Starting calculator")
+
     engine = create_engine(config.db)
     sm = sessionmaker(bind=engine)
     reddit = praw.Reddit(client_id=config.client_id,
@@ -94,13 +96,16 @@ def main():
                          password=config.password,
                          user_agent=config.user_agent)
 
-    logging.info("Starting checking investments...")
     praw.models.Comment.edit_wrap = edit_wrap
+
+    logging.info("Monitoring active investments...")
 
     while True:
         sess = sm()
+
         then = int(time.time()) - 14400
         q = sess.query(Investment).filter(Investment.done == 0).filter(Investment.time < then)
+        
         for investment in q.limit(10).all():
             investor_q = sess.query(Investor).filter(Investor.name == investment.name)
             investor = investor_q.first()
@@ -108,8 +113,7 @@ def main():
             if not investor:
                 continue
 
-            if investor.name == "genericusername123":
-                continue
+            logging.info(f"Processing mature investment by {investor.name}")
 
             if investment.response != "0":
                 response = reddit.comment(id=investment.response)
@@ -160,8 +164,9 @@ def main():
                     Investment.success: change > amount,
                     Investment.done: True
                 }, synchronize_session=False)
+            
             sess.commit()
-
+            
         sess.close()
 
 
