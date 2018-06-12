@@ -22,6 +22,8 @@ def main():
     while True:
         try:
             for submission in reddit.subreddit('+'.join(config.subreddits)).stream.submissions(skip_existing=True):
+                if submission.stickied:
+                    continue
                 logging.info("New submission: %s" % submission)
                 submission.reply_wrap(message.invest_place_here).\
                     mod.distinguish(how='yes', sticky=True)
