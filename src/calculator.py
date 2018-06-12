@@ -149,14 +149,14 @@ def main():
             text = response.body
             if change > amount:
                 logging.info("%s won %d" % (investor.name, change))
-                response.edit_wrap(message.modify_invest_return(text, change))
+                response.edit_wrap(message.modify_invest_return(text, change, new_balance))
             elif change == amount:
                 logging.info("%s broke even and got back %d" % (investor.name, change))
-                response.edit_wrap(message.modify_invest_break_even(text, change))
+                response.edit_wrap(message.modify_invest_break_even(text, change, new_balance))
             else:
                 lost_memes = int( amount - change )
                 logging.info("%s lost %d" % (investor.name, lost_memes))
-                response.edit_wrap(message.modify_invest_lose(text, lost_memes))
+                response.edit_wrap(message.modify_invest_lose(text, lost_memes, new_balance))
 
             sess.query(Investment).\
                 filter(Investment.id == investment.id).\
