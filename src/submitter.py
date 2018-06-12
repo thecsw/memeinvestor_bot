@@ -1,4 +1,4 @@
-[B]import time
+import time
 import logging
 
 import praw
