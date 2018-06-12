@@ -1,4 +1,4 @@
-import time
+[B]import time
 import logging
 
 import praw
@@ -22,6 +22,12 @@ def main():
     while True:
         try:
             for submission in reddit.subreddit('+'.join(config.subreddits)).stream.submissions(skip_existing=True):
+
+                # This one solves #90
+                # We don't need to post a sticky on stickied posts
+                if submission.stickied:
+                    continue
+
                 logging.info("New submission: %s" % submission)
                 submission.reply_wrap(message.invest_place_here).\
                     mod.distinguish(how='yes', sticky=True)
