@@ -58,12 +58,15 @@ invest_return_org = """
 UPDATE: Your investment was successful!
 
 This investment has brought you %WIN% MemeCoins. 
+
+Your current balance is %BALANCE% MemeCoins.
 """
 
-def modify_invest_return(text, win):
+def modify_invest_return(text, win, balance):
     invest_return = invest_return_org
     invest_return = invest_return.replace("%INVESTMENT%", str(text))
     invest_return = invest_return.replace("%WIN%", str(win))
+    invest_return = invest_return.replace("%BALANCE%", str(balance))
     return invest_return
 
 invest_break_even_org = """
@@ -72,12 +75,15 @@ invest_break_even_org = """
 UPDATE: Your investment broke even!
 
 This investment has brought you %NUMBER% MemeCoins. 
+
+Your current balance is %BALANCE% MemeCoins.
 """
 
-def modify_invest_break_even(text, coins):
+def modify_invest_break_even(text, coins, balance):
     invest_return = invest_return_org
     invest_return = invest_return.replace("%INVESTMENT%", str(text))
     invest_return = invest_return.replace("%NUMBER%", str(coins))
+    invest_return = invest_return.replace("%BALANCE%", str(balance))
     return invest_return
 
 invest_lose_org = """
@@ -86,12 +92,15 @@ invest_lose_org = """
 UPDATE: Your investment was unsuccessful!
 
 You lost %NUMBER% MemeCoins.
+
+Your current balance is %BALANCE% MemeCoins.
 """
 
-def modify_invest_lose(text, lost):
+def modify_invest_lose(text, lost, balance):
     invest_lose = invest_lose_org
     invest_lose = invest_lose.replace("%INVESTMENT%", str(text))
     invest_lose = invest_lose.replace("%NUMBER%", str(lost))
+    invest_lose = invest_lose.replace("%BALANCE%", str(balance))
     return invest_lose
     
 # If funds are insufficient to make an investment
