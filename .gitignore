@@ -1,5 +1,8 @@
 data.db
 
+# Mac metadata
+.DS_Store
+
 # My personal garbage in the folders
 *.saves
 *~
