@@ -31,8 +31,7 @@ def req_user(fn):
 
 # Monkey patch exception handling
 def reply_wrap(self, body):
-    logging.info("Bot reply:")
-    logging.info(body)
+    logging.info(f"Replying to request {self} from {self.author.name}")
 
     if config.dry_run:
         return "dryrun_True"
