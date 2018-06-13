@@ -11,6 +11,16 @@ praw.models.Submission.reply_wrap = reply_wrap
 logging.basicConfig(level=logging.INFO)
 
 
+# Handles SIGTERM (15)
+class KillHandler():
+    killed=False
+    
+    def __init__(self):
+        signal.signal(signal.SIGTERM, self.kill)
+    def kill(self):
+        killed=True
+
+
 def main():
     reddit = praw.Reddit(client_id=config.client_id,
                          client_secret=config.client_secret,
@@ -34,7 +44,10 @@ def main():
         except Exception as e:
             logging.error(e)
             time.sleep(10)
-
+        if killhandler.killed==True:
+            print ("Exited \"submitter\" gracefully")
+            break
 
 if __name__ == "__main__":
+    killhandler=KillHandler()
     main()

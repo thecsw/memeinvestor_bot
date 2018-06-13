@@ -15,6 +15,15 @@ from models import Investment, Investor
 logging.basicConfig(level=logging.INFO)
 
 
+# Handles SIGTERM (15)
+class KillHandler():
+    killed=False
+    
+    def __init__(self):
+        signal.signal(signal.SIGTERM, self.kill)
+    def kill(self):
+        killed=True
+
 class EmptyResponse(object):
     body = ""
 
@@ -168,9 +177,13 @@ def main():
             sess.commit()
             
         sess.close()
+        if killhandler.killed==True:
+            print ("Exited \"calculator\" gracefully")
+            break
 
 
 if __name__ == "__main__":
+    killhandler=KillHandler()
     while True:
         try:
             main()
