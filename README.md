@@ -112,9 +112,9 @@ After filling out the details, save and exit. You're done with configuration.
 
 ### Deployment
 
-From the root of the project directory, use `docker-compose run <service>` to start up the various
-independent components of the bot. At this time, additional configuration is required to prep an
-empty MySQL database. In the future we hope to enable one-touch deployment.
+From the root of the project directory, use `docker-compose up` to build and launch the various components
+of the bot, including an empty database of investor accounts, the agents that monitor Reddit for new
+submissions and commands, and the informational website.
 
 It is time to make a fortune!
 
