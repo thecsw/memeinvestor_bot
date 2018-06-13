@@ -2,6 +2,7 @@ import re
 import time
 import logging
 
+import sqlalchemy
 from sqlalchemy import create_engine, func
 from sqlalchemy.orm import scoped_session, sessionmaker
 
@@ -236,23 +237,24 @@ class CommentWorker():
 
 
 def main():
-    logging.info("Starting main loop")
+    logging.info("Starting main")
 
     if not config.dry_run:
         logging.info("Warning: this is NOT a dry run - bot will post to Reddit!")
 
-    logging.info("Pausing for db to initialize...")
-    time.sleep(30)
-
-    logging.info("Setting up db connection")
+    logging.info("Setting up database")
 
     engine = create_engine(config.db)
     sm = scoped_session(sessionmaker(bind=engine))
     worker = CommentWorker(sm)
 
-    logging.info("Creating db tables if needed")
-
-    Base.metadata.create_all(engine)
+    while True:
+        try:
+            Base.metadata.create_all(engine)
+            break
+        except sqlalchemy.exc.OperationalError:
+            logging.info("Database not available yet; retrying in 5s")
+            time.sleep(5)
 
     logging.info("Setting up Reddit connection")
 

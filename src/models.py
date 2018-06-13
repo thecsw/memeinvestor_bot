@@ -1,7 +1,15 @@
-import datetime
-
-from sqlalchemy import Boolean, Column, DateTime, Integer, String, func
+from sqlalchemy import BigInteger, Boolean, Column, DateTime, Integer, String, func
 from sqlalchemy.ext.declarative import declarative_base
+
+from sqlalchemy.sql import expression
+from sqlalchemy.ext.compiler import compiles
+
+class unix_timestamp(expression.FunctionElement):
+    type = Integer()
+
+@compiles(unix_timestamp)
+def compile(element, compiler, **kw):
+    return "unix_timestamp()"
 
 Base = declarative_base()
 
@@ -13,8 +21,8 @@ class Investment(Base):
     upvotes = Column(Integer, default=0)
     comment = Column(String(11), nullable=False, unique=True)
     name = Column(String(20), nullable=False)
-    amount = Column(Integer, default=100)
-    time = Column(DateTime, server_default=func.current_timestamp())
+    amount = Column(BigInteger, default=100)
+    time = Column(Integer, server_default=unix_timestamp())
     done = Column(Boolean, default=False, nullable=False)
     response = Column(String(11))
     success = Column(Boolean, default=False)
@@ -24,6 +32,6 @@ class Investor(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(20), nullable=False, unique=True)
-    balance = Column(Integer, default=1000)
+    balance = Column(BigInteger, default=1000)
     completed = Column(Integer, default=0)
     broke = Column(Integer, default=0)
