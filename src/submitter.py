@@ -37,7 +37,7 @@ def main():
             logging.error(e)
             time.sleep(10)
             
-        if killhandler.killed==True:
+        if killhandler.killed:
             logging.info("Termination signal received - exiting")
             break
 
