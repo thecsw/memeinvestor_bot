@@ -10,7 +10,7 @@ import praw
 
 import config
 import message
-import kill-handler
+from kill_handler import KillHandler
 from models import Base, Investment, Investor
 
 logging.basicConfig(level=logging.INFO)
@@ -270,20 +270,19 @@ def main():
 
     logging.info("Listening for inbox replies...")
 
-    while True:
+    while not killhandler.killed:
         try:
             # Iterate over the latest comment replies in inbox
             for comment in reddit.inbox.unread(limit=None):
                 worker(comment)
                 comment.mark_read()
+                
+                if killhandler.killed:
+                    logging.info("Termination signal received - exiting")
+                    break
         except Exception as e:
             logging.error(e)
             time.sleep(10)
-            
-        if killhandler.killed:
-            logging.info("Termination signal received - exiting")
-            break
-
 
 if __name__ == "__main__":
     main()

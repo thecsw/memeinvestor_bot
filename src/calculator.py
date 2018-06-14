@@ -10,7 +10,7 @@ from fastnumbers import fast_float
 
 import config
 import message
-import kill-handler
+from kill_handler import KillHandler
 from models import Investment, Investor
 
 logging.basicConfig(level=logging.INFO)
@@ -90,8 +90,10 @@ def main():
     logging.info("Starting calculator")
 
     killhandler = KillHandler()
+
     engine = create_engine(config.db)
     sm = sessionmaker(bind=engine)
+    
     reddit = praw.Reddit(client_id=config.client_id,
                          client_secret=config.client_secret,
                          username=config.username,
@@ -102,79 +104,82 @@ def main():
 
     logging.info("Monitoring active investments...")
 
-    while True:
-        sess = sm()
+    while not killhandler.killed:
+        try:
+            sess = sm()
 
-        then = int(time.time()) - 14400
-        q = sess.query(Investment).filter(Investment.done == 0).filter(Investment.time < then)
-        
-        for investment in q.limit(10).all():
-            investor_q = sess.query(Investor).filter(Investor.name == investment.name)
-            investor = investor_q.first()
-
-            if not investor:
-                continue
-
-            logging.info(f"Processing mature investment by {investor.name}")
-
-            if investment.response != "0":
-                response = reddit.comment(id=investment.response)
-            else:
-                response = EmptyResponse()
-
-            # If comment is deleted, skip it
-            try:
-                reddit.comment(id=investment.comment)
-            except:
-                response.edit_wrap(message.deleted_comment_org)
-                continue
-
-            post = reddit.submission(investment.post)
-            upvotes_now = post.ups
-
-            # Updating the investor's balance
-            factor = calculate(upvotes_now, investment.upvotes)
-            amount = investment.amount
-            balance = investor.balance
-
-            new_balance = int(balance + (amount * factor))
-            change = new_balance - balance
-
-            # Updating the investor's variables
-            update = {
-                Investor.completed: investor.completed + 1,
-                Investor.balance: new_balance,
-            }
-            investor_q.update(update, synchronize_session=False)
-
-            # Editing the comment as a confirmation
-            text = response.body
-            if change > amount:
-                logging.info("%s won %d" % (investor.name, change))
-                response.edit_wrap(message.modify_invest_return(text, change, new_balance))
-            elif change == amount:
-                logging.info("%s broke even and got back %d" % (investor.name, change))
-                response.edit_wrap(message.modify_invest_break_even(text, change, new_balance))
-            else:
-                lost_memes = int( amount - change )
-                logging.info("%s lost %d" % (investor.name, lost_memes))
-                response.edit_wrap(message.modify_invest_lose(text, lost_memes, new_balance))
-
-            sess.query(Investment).\
-                filter(Investment.id == investment.id).\
-                update({
-                    Investment.success: change > amount,
-                    Investment.done: True
-                }, synchronize_session=False)
+            then = int(time.time()) - 14400
+            q = sess.query(Investment).filter(Investment.done == 0).filter(Investment.time < then)
             
-            sess.commit()
-            
-        sess.close()
-        
-        if killhandler.killed:
-            logging.info("Termination signal received - exiting")
-            break
+            for investment in q.limit(10).all():
+                investor_q = sess.query(Investor).filter(Investor.name == investment.name)
+                investor = investor_q.first()
 
+                if not investor:
+                    continue
+
+                logging.info(f"Processing mature investment by {investor.name}")
+
+                if investment.response != "0":
+                    response = reddit.comment(id=investment.response)
+                else:
+                    response = EmptyResponse()
+
+                # If comment is deleted, skip it
+                try:
+                    reddit.comment(id=investment.comment)
+                except:
+                    response.edit_wrap(message.deleted_comment_org)
+                    continue
+
+                post = reddit.submission(investment.post)
+                upvotes_now = post.ups
+
+                # Updating the investor's balance
+                factor = calculate(upvotes_now, investment.upvotes)
+                amount = investment.amount
+                balance = investor.balance
+
+                new_balance = int(balance + (amount * factor))
+                change = new_balance - balance
+
+                # Updating the investor's variables
+                update = {
+                    Investor.completed: investor.completed + 1,
+                    Investor.balance: new_balance,
+                }
+                investor_q.update(update, synchronize_session=False)
+
+                # Editing the comment as a confirmation
+                text = response.body
+                if change > amount:
+                    logging.info("%s won %d" % (investor.name, change))
+                    response.edit_wrap(message.modify_invest_return(text, change, new_balance))
+                elif change == amount:
+                    logging.info("%s broke even and got back %d" % (investor.name, change))
+                    response.edit_wrap(message.modify_invest_break_even(text, change, new_balance))
+                else:
+                    lost_memes = int( amount - change )
+                    logging.info("%s lost %d" % (investor.name, lost_memes))
+                    response.edit_wrap(message.modify_invest_lose(text, lost_memes, new_balance))
+
+                sess.query(Investment).\
+                    filter(Investment.id == investment.id).\
+                    update({
+                        Investment.success: change > amount,
+                        Investment.done: True
+                    }, synchronize_session=False)
+                
+                sess.commit()
+                
+            sess.close()
+            
+            if killhandler.killed:
+                logging.info("Termination signal received - exiting")
+                break
+        except Exception as e:
+            logging.error(e)
+            time.sleep(10)
 
 if __name__ == "__main__":
     main()
