@@ -1,7 +1,6 @@
 import re
 import time
 import logging
-import signal
 
 import sqlalchemy
 from sqlalchemy import create_engine, func
@@ -11,20 +10,11 @@ import praw
 
 import config
 import message
+import kill-handler
 from models import Base, Investment, Investor
 
 logging.basicConfig(level=logging.INFO)
 
-
-# Handles SIGTERM (15)
-class KillHandler():
-    killed=False
-    
-    def __init__(self):
-        signal.signal(signal.SIGTERM, self.kill)
-    def kill(self):
-        killed=True
-        
 
 # Decorator to mark a commands that require a user
 # Adds the investor after the comment when it calls the method (see broke)
@@ -288,13 +278,14 @@ def main():
         except Exception as e:
             logging.error(e)
             time.sleep(10)
-        if killhandler.killed==True:
-            print ("Exited \"bot\" gracefully")
+            
+        if killhandler.killed:
+            logging.info("Termination signal received - exiting")
             break
 
 
 if __name__ == "__main__":
-    killhandler=KillHandler()
+    killhandler = KillHandler()
     try:
         main()
     except KeyboardInterrupt:

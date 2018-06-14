@@ -5,20 +5,11 @@ import praw
 
 import config
 import message
+import kill-handler
 from main import reply_wrap
 
 praw.models.Submission.reply_wrap = reply_wrap
 logging.basicConfig(level=logging.INFO)
-
-
-# Handles SIGTERM (15)
-class KillHandler():
-    killed=False
-    
-    def __init__(self):
-        signal.signal(signal.SIGTERM, self.kill)
-    def kill(self):
-        killed=True
 
 
 def main():
@@ -44,10 +35,11 @@ def main():
         except Exception as e:
             logging.error(e)
             time.sleep(10)
+            
         if killhandler.killed==True:
-            print ("Exited \"submitter\" gracefully")
+            logging.info("Termination signal received - exiting")
             break
 
 if __name__ == "__main__":
-    killhandler=KillHandler()
+    killhandler = KillHandler()
     main()

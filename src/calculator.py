@@ -10,19 +10,11 @@ from fastnumbers import fast_float
 
 import config
 import message
+import kill-handler
 from models import Investment, Investor
 
 logging.basicConfig(level=logging.INFO)
 
-
-# Handles SIGTERM (15)
-class KillHandler():
-    killed=False
-    
-    def __init__(self):
-        signal.signal(signal.SIGTERM, self.kill)
-    def kill(self):
-        killed=True
 
 class EmptyResponse(object):
     body = ""
@@ -177,13 +169,14 @@ def main():
             sess.commit()
             
         sess.close()
-        if killhandler.killed==True:
-            print ("Exited \"calculator\" gracefully")
+        
+        if killhandler.killed:
+            logging.info("Termination signal received - exiting")
             break
 
 
 if __name__ == "__main__":
-    killhandler=KillHandler()
+    killhandler = KillHandler()
     while True:
         try:
             main()
