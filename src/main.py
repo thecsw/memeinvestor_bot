@@ -10,9 +10,11 @@ import praw
 
 import config
 import message
+from kill_handler import KillHandler
 from models import Base, Investment, Investor
 
 logging.basicConfig(level=logging.INFO)
+
 
 # Decorator to mark a commands that require a user
 # Adds the investor after the comment when it calls the method (see broke)
@@ -243,6 +245,7 @@ def main():
 
     logging.info("Setting up database")
 
+    killhandler = KillHandler()
     engine = create_engine(config.db)
     sm = scoped_session(sessionmaker(bind=engine))
     worker = CommentWorker(sm)
@@ -267,19 +270,19 @@ def main():
 
     logging.info("Listening for inbox replies...")
 
-    while True:
+    while not killhandler.killed:
         try:
             # Iterate over the latest comment replies in inbox
             for comment in reddit.inbox.unread(limit=None):
                 worker(comment)
                 comment.mark_read()
+                
+                if killhandler.killed:
+                    logging.info("Termination signal received - exiting")
+                    break
         except Exception as e:
             logging.error(e)
             time.sleep(10)
 
-
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        pass
+    main()
