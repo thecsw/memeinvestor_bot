@@ -245,6 +245,7 @@ def main():
 
     logging.info("Setting up database")
 
+    killhandler = KillHandler()
     engine = create_engine(config.db)
     sm = scoped_session(sessionmaker(bind=engine))
     worker = CommentWorker(sm)
@@ -285,8 +286,4 @@ def main():
 
 
 if __name__ == "__main__":
-    killhandler = KillHandler()
-    try:
-        main()
-    except KeyboardInterrupt:
-        pass
+    main()

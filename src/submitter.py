@@ -13,6 +13,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 def main():
+    killhandler = KillHandler()
     reddit = praw.Reddit(client_id=config.client_id,
                          client_secret=config.client_secret,
                          username=config.username,
@@ -41,5 +42,4 @@ def main():
             break
 
 if __name__ == "__main__":
-    killhandler = KillHandler()
     main()

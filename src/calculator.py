@@ -89,6 +89,7 @@ def calculate(new, old):
 def main():
     logging.info("Starting calculator")
 
+    killhandler = KillHandler()
     engine = create_engine(config.db)
     sm = sessionmaker(bind=engine)
     reddit = praw.Reddit(client_id=config.client_id,
@@ -176,10 +177,4 @@ def main():
 
 
 if __name__ == "__main__":
-    killhandler = KillHandler()
-    while True:
-        try:
-            main()
-        except Exception as e:
-            logging.error(e)
-            time.sleep(10)
+    main()
