@@ -75,14 +75,6 @@ class CommentWorker():
         if comment.is_root:
             return
 
-        # Ignore comments without a parent (deleted)
-        if not comment.parent():
-            return
-
-        # Ignore comments not replying to this bot
-        if comment.parent().author.name != config.username:
-            return
-
         # Ignore comments without an author (deleted)
         if not comment.author:
             return
