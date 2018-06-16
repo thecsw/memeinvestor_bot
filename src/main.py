@@ -12,9 +12,9 @@ import config
 import message
 from kill_handler import KillHandler
 from models import Base, Investment, Investor
+from stopwatch import Stopwatch
 
 logging.basicConfig(level=logging.INFO)
-
 
 # Decorator to mark a commands that require a user
 # Adds the investor after the comment when it calls the method (see broke)
@@ -33,7 +33,7 @@ def req_user(fn):
 
 # Monkey patch exception handling
 def reply_wrap(self, body):
-    logging.info(f"Replying to request {self} from {self.author.name}")
+    logging.info(" -- replying")
 
     if config.dry_run:
         return "dryrun_True"
@@ -48,7 +48,6 @@ praw.models.Comment.reply_wrap = reply_wrap
 
 
 class CommentWorker():
-    db = None
     commands = [
         r"!active",
         r"!balance",
@@ -89,6 +88,7 @@ class CommentWorker():
         if comment_age > max_age:
             return
 
+        # Parse the comment body for a command
         for reg in self.regexes:
             matches = reg.search(comment.body.lower())
             if not matches:
@@ -100,7 +100,7 @@ class CommentWorker():
             if not hasattr(self, attrname):
                 continue
 
-            logging.info("%s: %s" % (comment.author.name, cmd))
+            logging.info(f" -- {comment.author.name}: {cmd}")
 
             try:
                 sess = self.Session()
@@ -149,7 +149,6 @@ class CommentWorker():
         if not isinstance(comment, praw.models.Comment):
             return
 
-        # Post related vars
         if comment.submission.author.name == comment.author.name:
             comment.reply_wrap(message.inside_trading_org)
             return
@@ -259,6 +258,9 @@ def main():
         password=config.password,
         user_agent=config.user_agent
     )
+    auth = reddit.auth
+
+    stopwatch = Stopwatch()
 
     logging.info("Listening for inbox replies...")
 
@@ -266,12 +268,32 @@ def main():
         try:
             # Iterate over the latest comment replies in inbox
             for comment in reddit.inbox.unread(limit=None):
+                # Measure how long since we finished the last loop iteration
+                duration = stopwatch.measure()
+                logging.info(f"Comment {comment}:")
+                logging.info(f" -- retrieved in {duration:5.2f}s")
+
+                # Process the comment
                 worker(comment)
+
+                # Mark the comment as read in our inbox
                 comment.mark_read()
-                
+
+                # Measure how long processing took
+                duration = stopwatch.measure()
+                logging.info(f" -- processed in {duration:5.2f}s")
+
+                # Report the Reddit API call stats
+                rem = int(auth.limits['remaining'])
+                res = int(auth.limits['reset_timestamp'] - time.time())
+                logging.info(f" -- API calls remaining: {rem:3d}, resetting in {res:3d}s")
+
+                # Check for termination requests
                 if killhandler.killed:
                     logging.info("Termination signal received - exiting")
                     break
+
+                stopwatch.reset()
         except Exception as e:
             logging.error(e)
             time.sleep(10)
