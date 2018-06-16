@@ -402,8 +402,7 @@ function calculateInvestmentResult() {
         output = (output+[]).length>20?formatToUnits(output):output;
         document.getElementById('investment-result').innerText = output;
     }).catch(function(er){
-        if (er.status === 404){
-            document.getElementById('investor-account-data').innerHTML = `<h5>There is no investor with that username!</h5>`
-        }
+        let errorString = '<p>'+er.status+' connection error</p>';
+        M.toast({html: errorString,displayLength:2000});
     });
 }
