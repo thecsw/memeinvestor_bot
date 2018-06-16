@@ -5,6 +5,7 @@ services:
         build: .
         env_file: .env
         restart: unless-stopped
+        command: ["python", "main.py"]
         depends_on:
           - mysql
 
