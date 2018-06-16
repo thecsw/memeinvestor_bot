@@ -4,13 +4,13 @@ RUN apk add --update --no-cache \
     bash \
     curl
 
-RUN mkdir /caddy
-
 RUN curl https://getcaddy.com | bash -s personal http.cors
 
 WORKDIR /caddy
 
+COPY ./docker/Caddyfile /caddy
+COPY ./docs /static
+
 EXPOSE 80 443 2015
-VOLUME [ "/caddy" ]
 
 CMD [ "caddy" ]

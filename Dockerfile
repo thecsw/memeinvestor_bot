@@ -1,6 +1,8 @@
 FROM python:alpine
 
-RUN apk add --update --no-cache mariadb-dev g++
+RUN apk add --update --no-cache \
+    g++ \
+    mariadb-dev
 
 RUN adduser -D user
 USER user

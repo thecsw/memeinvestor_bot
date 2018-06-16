@@ -2,9 +2,9 @@
 let jsonApi = (function(){
    let options = {
       method: "GET",
-      url: "https://memes.market/api",
+      url: "/api",
+      //url: "https://memes.market/api",
       //url: "http://localhost/memeinvestor_bot/docs/testApiData.json",
-      //url: "/api",
    }
    function makeRequest (param, options) {
       

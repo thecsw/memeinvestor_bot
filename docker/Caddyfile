@@ -1,0 +1,10 @@
+{$CADDY_WEB_ADDRESS} {
+	root /static
+	proxy /api api:5000 {
+		without /api
+		transparent
+	}
+
+	log / stdout
+	errors stdout
+}
