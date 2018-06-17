@@ -7,6 +7,7 @@ from sqlalchemy import desc, func
 
 import config
 from models import Investor, Investment
+from calculator import calculate
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = config.db
@@ -251,6 +252,18 @@ def index():
 
     return jsonify(data)
 
+@app.route("/calculate")
+def calculate_investment():
+    new = int(request.args.get('new'))
+    old = int(request.args.get('old'))
+
+    factor = calculate(new, old)
+
+    res = {
+        "factor": factor
+    }
+
+    return jsonify(res)
 
 @app.errorhandler(404)
 def not_found(e):

@@ -4,6 +4,7 @@ let jsonApi = (function(){
       method: "GET",
       url: "https://memes.market/api",
       //url: "http://localhost/memeinvestor_bot/docs/testApiData.json",
+      //url: "/api",
    }
    function makeRequest (param, options) {
       
@@ -393,30 +394,15 @@ function calculateInvestmentResult() {
     let start = parseInt(document.getElementById('investment-start-score').value);
     let end = parseInt(document.getElementById('investment-end-score').value);
     let amount = parseInt(document.getElementById('investment-amount').value);
-    const SCALE_FACTOR = 1 / 3.0;
-    let relativeChange = 0;
-    if (start !== 0) {
-        relativeChange = (end - start) / Math.abs(start);
-    } else {
-        relativeChange = end;
-    }
-    let multiple = Math.pow(relativeChange + 1, SCALE_FACTOR);
-    let investmentSuccess = false, returnMoney = false;
-    const WIN_THRESHOLD = 1.2;
-    if (multiple > WIN_THRESHOLD) {
-        investmentSuccess = returnMoney = true;
-    } else if (multiple > 1) {
-        returnMoney = true;
-    }
-    let factor = 0;
-    if (investmentSuccess) {
-        factor = multiple;
-    } else if (returnMoney) {
-        factor = (multiple - 1)/(WIN_THRESHOLD - 1);
-    }
-    let output = (amount * factor).toFixed();
-    output = isNaN(output)?"invalid data":output;
-    output = (output+[]).length>20?formatToUnits(output):output;
-    document.getElementById('investment-result').innerText = output;
-}
 
+    jsonApi.get('/calculate?old='+start+'&new='+end).then(function(data) {
+        let factor = data.factor.valueOf()
+        let output = (amount * factor).toFixed();
+        output = isNaN(output)?"invalid data":output;
+        output = (output+[]).length>20?formatToUnits(output):output;
+        document.getElementById('investment-result').innerText = output;
+    }).catch(function(er){
+        let errorString = '<p>'+er.status+' connection error</p>';
+        M.toast({html: errorString,displayLength:2000});
+    });
+}
