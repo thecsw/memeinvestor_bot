@@ -286,10 +286,10 @@ let userAccount = (function(){
       //to avoid showing it on every page reload. increment const popup and refresh cache to show
       //the popup message again
       const POPUP = 2
+      const SHOWPOPUP = false
       //debug
       //localStorage.removeItem('viewed_info')   
-      if(localStorage.getItem('viewed_info') != POPUP){
-         iht();//TEPORARY IHT
+      if(SHOWPOPUP && localStorage.getItem('viewed_info') != POPUP){
          let domPopup = document.getElementById('modal1');
          M.Modal.init(domPopup);
          setTimeout(
@@ -396,15 +396,30 @@ function calculateInvestmentResult() {
     let start = parseInt(document.getElementById('investment-start-score').value);
     let end = parseInt(document.getElementById('investment-end-score').value);
     let amount = parseInt(document.getElementById('investment-amount').value);
-
+    //creates a spinning loader
+    document.getElementById('investment-result').innerHTML =
+     `<div class="preloader-wrapper small active custom-preloader-wrapper">
+       <div class="spinner-layer spinner-green-only">
+         <div class="circle-clipper left">
+           <div class="circle"></div>
+         </div><div class="gap-patch">
+           <div class="circle"></div>
+         </div><div class="circle-clipper right">
+           <div class="circle"></div>
+         </div>
+       </div>
+     </div>`
     jsonApi.get('/calculate?old='+start+'&new='+end).then(function(data) {
         let factor = data.factor.valueOf()
         let output = (amount * factor).toFixed();
         output = isNaN(output)?"invalid data":output;
         output = (output+[]).length>20?formatToUnits(output):output;
+        //replaces the spinning loader with the calculated result
         document.getElementById('investment-result').innerText = output;
     }).catch(function(er){
         let errorString = '<p>'+er.status+' connection error</p>';
+        //removes the spinnign loader
+        document.getElementById('investment-result').innerText = '000';
         M.toast({html: errorString,displayLength:2000});
     });
 }

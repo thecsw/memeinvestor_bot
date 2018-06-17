@@ -132,5 +132,11 @@ border: none;
   border-bottom: 2px solid white;
   text-align:center;
 }
+.custom-preloader-wrapper{
+  position: relative;
+  top: 2px;
+  width:32px !important;
+  height:32px !important;
+}
 
 
