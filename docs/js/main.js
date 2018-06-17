@@ -327,10 +327,6 @@ let userAccount = (function(){
             leaderboard.update(data.investors.top);
          })
          .catch(function (err) {
-            // Get toast DOM Element, get instance, then call dismiss function
-            let toastElement = document.querySelector('.toast');
-            let toastInstance = M.Toast.getInstance(toastElement);
-            toastInstance.dismiss();
             console.error('error while retrieving apis data', err.statusText);
             connectionErrorToast(err)
          });      
@@ -340,22 +336,28 @@ let userAccount = (function(){
    
 }());
 
-//debug part
-//TODO: redirect to prefilled github issue/tweet/reddit post
-var globalError;
-function reportError(){
-   alert("debug"+globalError)
-}
+
 function connectionErrorToast(error){
-   globalError = JSON.stringify(error);
-   var toastHTML = '<p>an error occurred while trying to get the bot data. </p><button class="btn-flat toast-action" onclick="reportError()">report</button>';
-  M.toast({html: toastHTML,displayLength:6000});
-   
+   let toastHTML = '';
+   //simple connection error
+   if(error.status === 0 || error.statusText === ""){
+      toastHTML = '<p>We couldn\'t get the latest data. Please check your connection</p>';
+   }//more serious problem, that is worth reporting
+   else{
+      globalError = error;
+      toastHTML = '<p>an error occurred while trying to get the latest data. </p><button class="btn-flat toast-action" onclick="reportError()">report</button>';   
+   }
+   M.toast({html: toastHTML,displayLength:2000}); 
 }
 
-function createWalletToast(){
-   let toastHTML = '<p><a href="#" class="">connect your reddit account first</a> or <a href="#"> create your wallet directly from reddit</a></p>';
-   M.toast({html: toastHTML,displayLength:6000});
+var globalError;
+function reportError(){
+   let responsable = "robalborb";
+   let subject = "BRUH%20YOU%20MESSED%20UP!!1!";
+   let message = "error: "+JSON.stringify(globalError);
+   let url = "https://www.reddit.com/message/compose/?to="+responsable+"&subject="+subject+"&message="+message;
+   let win = window.open(url, '_blank');
+   win.focus();
 }
 
 
