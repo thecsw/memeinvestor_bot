@@ -35,14 +35,15 @@ def req_user(fn):
 def reply_wrap(self, body):
     logging.info(" -- replying")
 
-    if config.dry_run:
-        return "dryrun_True"
-
-    try:
-        return self.reply(body)
-    except Exception as e:
-        logging.error(e)
-        return False
+    if config.post_to_reddit:
+        try:
+            return self.reply(body)
+        except Exception as e:
+            logging.error(e)
+            return False
+    else:
+        logging.info(body)
+        return "post_to_reddit 0"
 
 praw.models.Comment.reply_wrap = reply_wrap
 
@@ -149,9 +150,10 @@ class CommentWorker():
         if not isinstance(comment, praw.models.Comment):
             return
 
-        if comment.submission.author.name == comment.author.name:
-            comment.reply_wrap(message.inside_trading_org)
-            return
+        if config.prevent_insiders:
+            if comment.submission.author.name == comment.author.name:
+                comment.reply_wrap(message.inside_trading_org)
+                return
 
         try:
             amount = int(amount)
@@ -231,8 +233,8 @@ class CommentWorker():
 def main():
     logging.info("Starting main")
 
-    if not config.dry_run:
-        logging.info("Warning: this is NOT a dry run - bot will post to Reddit!")
+    if config.post_to_reddit:
+        logging.info("Warning: Bot will actually post to Reddit!")
 
     logging.info("Setting up database")
 

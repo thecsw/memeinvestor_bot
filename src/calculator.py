@@ -15,24 +15,24 @@ from models import Investment, Investor
 
 logging.basicConfig(level=logging.INFO)
 
-
 class EmptyResponse(object):
     body = ""
 
     def edit_wrap(*args, **kwargs):
         pass
 
-
 def edit_wrap(self, body):
-    if config.dry_run:
-        return False
+    logging.info(" -- editing")
 
-    try:
-        return self.edit(body)
-    except Exception as e:
-        logging.error(e)
+    if config.post_to_reddit:
+        try:
+            return self.edit(body)
+        except Exception as e:
+            logging.error(e)
+            return False
+    else:
+        logging.info(body)
         return False
-
 
 # @lru_cache(maxsize=10240)
 def calculate(new, old):
@@ -108,7 +108,7 @@ def main():
         try:
             sess = sm()
 
-            then = int(time.time()) - 14400
+            then = int(time.time()) - config.investment_duration
             q = sess.query(Investment).filter(Investment.done == 0).filter(Investment.time < then)
             
             for investment in q.limit(10).all():
