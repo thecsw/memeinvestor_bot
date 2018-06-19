@@ -267,7 +267,8 @@ def main():
     while not killhandler.killed:
         try:
             # Iterate over the latest comment replies in inbox
-            for comment in reddit.inbox.unread(limit=None):
+            reply_function = reddit.inbox.comment_replies
+            for comment in praw.models.util.stream_generator(reply_function, skip_existing=True):
                 # Measure how long since we finished the last loop iteration
                 duration = stopwatch.measure()
                 logging.info(f"Comment {comment}:")
