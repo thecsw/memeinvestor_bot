@@ -35,21 +35,14 @@ services:
         build:
             context: .
             dockerfile: docker/Dockerfile-caddy
+        env_file: .env
         restart: unless-stopped
         ports:
-          - 80:80
-          - 443:443
+          - 2015:2015
         depends_on:
           - api
-        volumes:
-          - ./docs:/static
-          - ${VOLUME_ROOT}/caddy/config:/caddy
-          - ${VOLUME_ROOT}/caddy/data:/root/.caddy
 
     mysql:
         image: mariadb:10.2.15
         env_file: .env
         restart: unless-stopped
-        volumes:
-          - ${VOLUME_ROOT}/mysql:/var/lib/mysql
-          - ${VOLUME_ROOT}/my.cnf:/etc/mysql/my.cnf

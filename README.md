@@ -108,15 +108,20 @@ cp .env.example .env
 nano .env
 ```
 
-After filling out the details, save and exit. You're done with configuration.
+Follow the instructions in .env to configure your test deployment, save the file, and exit. You're
+done with configuration.
 
 ### Deployment
 
-From the root of the project directory, use `docker-compose up` to build and launch the various components
-of the bot, including an empty database of investor accounts, the agents that monitor Reddit for new
-submissions and commands, and the informational website.
+From the root of the project directory, use `docker-compose build` followed by `docker-compose up -d`
+to build and launch the various components of the bot, including an empty database of investor
+accounts, the agents that monitor Reddit for new submissions and commands, and the informational
+website.
 
-It is time to make a fortune!
+You should be able to view the website at http://localhost:2015. By default the stats will be
+boring (no investors and no investments) but you can interact with your test bot on Reddit to
+populate the database, or you can manually set up investor accounts by interacting with the
+database directly via Python code or a database manager like `adminer`.
 
 ## Authors
 
@@ -124,7 +129,7 @@ It is time to make a fortune!
  - *Dimitris Zervas* - Main back-end developer. MySQL, Docker, API and overall support - [dzervas](https://github.com/dzervas)
  - *jimbobur* - Our maths guy. Can make really pretty graphs - [jimbobur](https://github.com/jimbobur)
  - *Alberto Ventafridda* - Main front-end and web developer - [robalb](https://github.com/robalb)
- - *rickles42* - Heavy outside contributor - [rickles42](https://github.com/rickles42)
+ - *rickles42* - Back-end and infrastructure developer - [rickles42](https://github.com/rickles42)
  - *TwinProduction* - Heavy outside contributor - [TwinProduction](https://github.com/TwinProduction)
  - *ggppjj* - Minor fixes - [ggppjj](https://github.com/ggppjj)
 
