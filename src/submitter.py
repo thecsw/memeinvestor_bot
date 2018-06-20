@@ -30,7 +30,7 @@ def main():
                 if submission.stickied:
                     continue
 
-                logging.info("New submission: %s" % submission)
+                logging.info(f"New submission: {submission}")
 
                 bot_reply = submission.reply_wrap(message.invest_place_here)
 

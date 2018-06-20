@@ -12,6 +12,7 @@ import config
 import message
 from kill_handler import KillHandler
 from models import Investment, Investor
+from stopwatch import Stopwatch
 
 logging.basicConfig(level=logging.INFO)
 
@@ -22,7 +23,7 @@ class EmptyResponse(object):
         pass
 
 def edit_wrap(self, body):
-    logging.info(" -- editing")
+    logging.info(" -- editing response")
 
     if config.post_to_reddit:
         try:
@@ -100,7 +101,11 @@ def main():
                          password=config.password,
                          user_agent=config.user_agent)
 
+    auth = reddit.auth
+
     praw.models.Comment.edit_wrap = edit_wrap
+
+    stopwatch = Stopwatch()
 
     logging.info("Monitoring active investments...")
 
@@ -112,13 +117,16 @@ def main():
             q = sess.query(Investment).filter(Investment.done == 0).filter(Investment.time < then)
             
             for investment in q.limit(10).all():
+                duration = stopwatch.measure()
+
                 investor_q = sess.query(Investor).filter(Investor.name == investment.name)
                 investor = investor_q.first()
 
                 if not investor:
                     continue
 
-                logging.info(f"Processing mature investment by {investor.name}")
+                logging.info(f"New mature investment: {investment.comment}")
+                logging.info(f" -- by {investor.name}")
 
                 if investment.response != "0":
                     response = reddit.comment(id=investment.response)
@@ -129,11 +137,12 @@ def main():
                 try:
                     reddit.comment(id=investment.comment)
                 except:
+                    logging.info(f" -- skipped (deleted comment)")
                     response.edit_wrap(message.deleted_comment_org)
                     continue
 
                 post = reddit.submission(investment.post)
-                upvotes_now = post.ups
+                upvotes_now = post.ups # <--- triggers a Reddit API call
 
                 # Updating the investor's balance
                 factor = calculate(upvotes_now, investment.upvotes)
@@ -151,16 +160,16 @@ def main():
                 investor_q.update(update, synchronize_session=False)
 
                 # Editing the comment as a confirmation
-                text = response.body
+                text = response.body # <--- triggers a Reddit API call
                 if change > amount:
-                    logging.info(f"{investor.name} won {change}")
+                    logging.info(f" -- gained {change}")
                     response.edit_wrap(message.modify_invest_return(text, change, new_balance))
                 elif change == amount:
-                    logging.info(f"{investor.name} broke even and got back {change}")
+                    logging.info(f" -- broke even ({change})")
                     response.edit_wrap(message.modify_invest_break_even(text, change, new_balance))
                 else:
                     lost_memes = int( amount - change )
-                    logging.info(f"{investor.name} lost {lost_memes}")
+                    logging.info(f" -- lost {lost_memes}")
                     response.edit_wrap(message.modify_invest_lose(text, lost_memes, new_balance))
 
                 sess.query(Investment).\
@@ -169,11 +178,21 @@ def main():
                         Investment.success: change > amount,
                         Investment.done: True
                     }, synchronize_session=False)
-                
+
                 sess.commit()
-                
+
+                # Measure how long processing took
+                duration = stopwatch.measure()
+                logging.info(f" -- processed in {duration:5.2f}s")
+
+                # Report the Reddit API call stats
+                rem = int(auth.limits['remaining'])
+                res = int(auth.limits['reset_timestamp'] - time.time())
+                logging.info(f" -- API calls remaining: {rem:3d}, resetting in {res:3d}s")
+
             sess.close()
             
+            # Check for termination requests
             if killhandler.killed:
                 logging.info("Termination signal received - exiting")
                 break
