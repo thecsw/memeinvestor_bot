@@ -31,9 +31,12 @@ def main():
                     continue
 
                 logging.info("New submission: %s" % submission)
-                submission.reply_wrap(message.invest_place_here).\
-                    mod.distinguish(how='yes', sticky=True)
-                
+
+                bot_reply = submission.reply_wrap(message.invest_place_here)
+
+                if config.is_moderator:
+                    bot_reply.mod.distinguish(how='yes', sticky=True)
+
                 if killhandler.killed:
                     logging.info("Termination signal received - exiting")
                     break

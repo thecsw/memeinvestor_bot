@@ -1,20 +1,22 @@
 import os
 
-dry_run 		= int(os.environ['BOT_DRY_RUN'])
+post_to_reddit      = int(os.environ['BOT_POST_TO_REDDIT'])
+is_moderator        = int(os.environ['BOT_IS_MODERATOR'])
+prevent_insiders    = int(os.environ['BOT_PREVENT_INSIDERS'])
+investment_duration = int(os.environ['BOT_INVESTMENT_DURATION'])
 
-client_id 		= os.environ['BOT_CLIENT_ID']
-client_secret 	= os.environ['BOT_CLIENT_SECRET']
-user_agent 		= os.environ['BOT_USER_AGENT']
+client_id     = os.environ['BOT_CLIENT_ID']
+client_secret = os.environ['BOT_CLIENT_SECRET']
+user_agent    = os.environ['BOT_USER_AGENT']
+username      = os.environ['BOT_USERNAME']
+password      = os.environ['BOT_PASSWORD']
 
-username 		= os.environ['BOT_USERNAME']
-password 		= os.environ['BOT_PASSWORD']
+subreddits = [os.environ['BOT_SUBREDDIT']]
 
-subreddits 		= [os.environ['BOT_SUBREDDIT']]
+mysql_user     = os.environ['MYSQL_USER']
+mysql_password = os.environ['MYSQL_PASSWORD']
+mysql_host     = os.environ['MYSQL_HOST']
+mysql_port     = os.environ['MYSQL_PORT']
+mysql_database = os.environ['MYSQL_DATABASE']
 
-MYSQL_USER 		= os.environ['MYSQL_USER']
-MYSQL_PASSWORD 	= os.environ['MYSQL_PASSWORD']
-MYSQL_HOST 		= os.environ['MYSQL_HOST']
-MYSQL_PORT 		= os.environ['MYSQL_PORT']
-MYSQL_DATABASE 	= os.environ['MYSQL_DATABASE']
-
-db = f"mysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
+db = f"mysql://{mysql_user}:{mysql_password}@{mysql_host}:{mysql_port}/{mysql_database}"
