@@ -17,10 +17,12 @@ from stopwatch import Stopwatch
 logging.basicConfig(level=logging.INFO)
 
 class EmptyResponse(object):
-    body = ""
+    def __init__(self):
+        self.body = "[fake response body]"
 
-    def edit_wrap(*args, **kwargs):
-        pass
+    def edit_wrap(self, body):
+        logging.info(" -- editing fake response")
+        logging.info(body)
 
 def edit_wrap(self, body):
     logging.info(" -- editing response")

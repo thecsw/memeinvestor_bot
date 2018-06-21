@@ -43,7 +43,7 @@ def reply_wrap(self, body):
             return False
     else:
         logging.info(body)
-        return "post_to_reddit 0"
+        return "0"
 
 praw.models.Comment.reply_wrap = reply_wrap
 
