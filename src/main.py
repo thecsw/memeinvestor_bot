@@ -270,17 +270,20 @@ def main():
         try:
             # Iterate over the latest comment replies in inbox
             reply_function = reddit.inbox.comment_replies
-            for comment in praw.models.util.stream_generator(reply_function, skip_existing=True):
+            for comment in praw.models.util.stream_generator(reply_function):
                 # Measure how long since we finished the last loop iteration
                 duration = stopwatch.measure()
                 logging.info(f"New comment {comment}:")
                 logging.info(f" -- retrieved in {duration:5.2f}s")
 
-                # Process the comment
-                worker(comment)
+                if comment.new:
+                    # Process the comment
+                    worker(comment)
 
-                # Mark the comment as read in our inbox
-                comment.mark_read()
+                    # Mark the comment as processed
+                    comment.mark_read()
+                else:
+                    logging.info(" -- skipping (already processed)")
 
                 # Measure how long processing took
                 duration = stopwatch.measure()
