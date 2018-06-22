@@ -188,11 +188,7 @@ class CommentWorker():
             done=False,
         ))
 
-        sess.query(Investor).\
-            filter(Investor.name == author).\
-            update({
-                Investor.balance: new_balance,
-            }, synchronize_session=False)
+        investor.balance = new_balance
 
     @req_user
     def balance(self, sess, comment, investor):
@@ -203,20 +199,19 @@ class CommentWorker():
         if investor.balance >= 100:
             return comment.reply_wrap(message.modify_broke_money(investor.balance))
 
-        active = sess.query(
-            func.count(Investment.id)
-        ).filter(Investment.done).filter(Investment.name == investor.name).scalar()
+        active = sess.query(func.count(Investment.id)).\
+            filter(Investment.done == 0).\
+            filter(Investment.name == investor.name).\
+            scalar()
 
-        if active:
+        if active > 0:
             return comment.reply_wrap(message.modify_broke_active(active))
 
         # Indeed, broke
-        sess.query(Investor).filter(Investor.name == investor.name).update({
-            Investor.balance: 100,
-            Investor.broke: investor.broke + 1,
-        }, synchronize_session=False)
+        investor.balance = 100
+        investor.broke += 1
 
-        comment.reply_wrap(message.modify_broke(investor.broke + 1))
+        comment.reply_wrap(message.modify_broke(investor.broke))
 
     @req_user
     def active(self, sess, comment, investor):
