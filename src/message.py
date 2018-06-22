@@ -277,11 +277,3 @@ You can't invest in your own memes, insider trading is not allowed!
 
 %DESCRIPTION% 
 """.replace("%DESCRIPTION%", help_mess)
-
-invest_again_org = """
-You can't invest in the same meme twice, while the other one is not evaluated.
-
-Please wait until your previous investment is fully evaluated!
-
-%DESCRIPTION% 
-""".replace("%DESCRIPTION%", help_mess)
