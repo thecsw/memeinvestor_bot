@@ -103,8 +103,6 @@ def main():
                          password=config.password,
                          user_agent=config.user_agent)
 
-    auth = reddit.auth
-
     praw.models.Comment.edit_wrap = edit_wrap
 
     stopwatch = Stopwatch()
@@ -116,91 +114,91 @@ def main():
             sess = sm()
 
             then = int(time.time()) - config.investment_duration
-            q = sess.query(Investment).filter(Investment.done == 0).filter(Investment.time < then)
+            investment = sess.query(Investment).\
+                filter(Investment.done == 0).\
+                filter(Investment.time < then).\
+                order_by(Investment.time.asc()).\
+                first()
             
-            for investment in q.limit(10).all():
-                duration = stopwatch.measure()
+            if not investment:
+                # Nothing matured yet; wait a bit before trying again
+                time.sleep(5)
+                continue
 
-                investor_q = sess.query(Investor).filter(Investor.name == investment.name)
-                investor = investor_q.first()
+            duration = stopwatch.measure()
 
-                if not investor:
-                    continue
+            investor_q = sess.query(Investor).filter(Investor.name == investment.name)
+            investor = investor_q.one()
 
-                logging.info(f"New mature investment: {investment.comment}")
-                logging.info(f" -- by {investor.name}")
+            logging.info(f"New mature investment: {investment.comment}")
+            logging.info(f" -- by {investor.name}")
 
-                if investment.response != "0":
-                    response = reddit.comment(id=investment.response)
-                else:
-                    response = EmptyResponse()
+            if investment.response != "0":
+                response = reddit.comment(id=investment.response)
+            else:
+                response = EmptyResponse()
 
-                # If comment is deleted, skip it
-                try:
-                    reddit.comment(id=investment.comment)
-                except:
-                    logging.info(f" -- skipped (deleted comment)")
-                    response.edit_wrap(message.deleted_comment_org)
-                    continue
+            # If comment is deleted, skip it
+            try:
+                reddit.comment(id=investment.comment)
+            except:
+                logging.info(f" -- skipped (deleted comment)")
+                response.edit_wrap(message.deleted_comment_org)
+                continue
 
-                post = reddit.submission(investment.post)
-                upvotes_now = post.ups # <--- triggers a Reddit API call
+            post = reddit.submission(investment.post)
+            upvotes_now = post.ups # <--- triggers a Reddit API call
 
-                # Updating the investor's balance
-                factor = calculate(upvotes_now, investment.upvotes)
-                amount = investment.amount
-                balance = investor.balance
+            # Updating the investor's balance
+            factor = calculate(upvotes_now, investment.upvotes)
+            amount = investment.amount
+            balance = investor.balance
 
-                new_balance = int(balance + (amount * factor))
-                change = new_balance - balance
+            new_balance = int(balance + (amount * factor))
+            change = new_balance - balance
 
-                # Updating the investor's variables
-                update = {
-                    Investor.completed: investor.completed + 1,
-                    Investor.balance: new_balance,
-                }
-                investor_q.update(update, synchronize_session=False)
+            # Updating the investor's variables
+            update = {
+                Investor.completed: investor.completed + 1,
+                Investor.balance: new_balance,
+            }
+            investor_q.update(update, synchronize_session=False)
 
-                # Editing the comment as a confirmation
-                text = response.body # <--- triggers a Reddit API call
-                if change > amount:
-                    logging.info(f" -- gained {change}")
-                    response.edit_wrap(message.modify_invest_return(text, change, new_balance))
-                elif change == amount:
-                    logging.info(f" -- broke even ({change})")
-                    response.edit_wrap(message.modify_invest_break_even(text, change, new_balance))
-                else:
-                    lost_memes = int( amount - change )
-                    logging.info(f" -- lost {lost_memes}")
-                    response.edit_wrap(message.modify_invest_lose(text, lost_memes, new_balance))
+            # Editing the comment as a confirmation
+            text = response.body # <--- triggers a Reddit API call
+            if change > amount:
+                logging.info(f" -- gained {change}")
+                response.edit_wrap(message.modify_invest_return(text, change, new_balance))
+            elif change == amount:
+                logging.info(f" -- broke even ({change})")
+                response.edit_wrap(message.modify_invest_break_even(text, change, new_balance))
+            else:
+                lost_memes = int( amount - change )
+                logging.info(f" -- lost {lost_memes}")
+                response.edit_wrap(message.modify_invest_lose(text, lost_memes, new_balance))
 
-                sess.query(Investment).\
-                    filter(Investment.id == investment.id).\
-                    update({
-                        Investment.success: change > amount,
-                        Investment.done: True
-                    }, synchronize_session=False)
+            sess.query(Investment).\
+                filter(Investment.id == investment.id).\
+                update({
+                    Investment.success: change > amount,
+                    Investment.done: True
+                }, synchronize_session=False)
 
-                sess.commit()
+            sess.commit()
 
-                # Measure how long processing took
-                duration = stopwatch.measure()
-                logging.info(f" -- processed in {duration:5.2f}s")
+            # Measure how long processing took
+            duration = stopwatch.measure()
+            logging.info(f" -- processed in {duration:5.2f}s")
 
-                # Report the Reddit API call stats
-                rem = int(auth.limits['remaining'])
-                res = int(auth.limits['reset_timestamp'] - time.time())
-                logging.info(f" -- API calls remaining: {rem:3d}, resetting in {res:3d}s")
-
-            sess.close()
-            
-            # Check for termination requests
-            if killhandler.killed:
-                logging.info("Termination signal received - exiting")
-                break
+            # Report the Reddit API call stats
+            rem = int(reddit.auth.limits['remaining'])
+            res = int(reddit.auth.limits['reset_timestamp'] - time.time())
+            logging.info(f" -- API calls remaining: {rem:3d}, resetting in {res:3d}s")
         except Exception as e:
             logging.error(e)
             time.sleep(10)
+        finally:
+            sess.close()
 
 if __name__ == "__main__":
     main()

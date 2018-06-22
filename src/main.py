@@ -253,14 +253,11 @@ def main():
 
     logging.info("Setting up Reddit connection")
 
-    reddit = praw.Reddit(
-        client_id=config.client_id,
-        client_secret=config.client_secret,
-        username=config.username,
-        password=config.password,
-        user_agent=config.user_agent
-    )
-    auth = reddit.auth
+    reddit = praw.Reddit(client_id=config.client_id,
+                         client_secret=config.client_secret,
+                         username=config.username,
+                         password=config.password,
+                         user_agent=config.user_agent)
 
     stopwatch = Stopwatch()
 
@@ -290,8 +287,8 @@ def main():
                 logging.info(f" -- processed in {duration:5.2f}s")
 
                 # Report the Reddit API call stats
-                rem = int(auth.limits['remaining'])
-                res = int(auth.limits['reset_timestamp'] - time.time())
+                rem = int(reddit.auth.limits['remaining'])
+                res = int(reddit.auth.limits['reset_timestamp'] - time.time())
                 logging.info(f" -- API calls remaining: {rem:3d}, resetting in {res:3d}s")
 
                 # Check for termination requests
