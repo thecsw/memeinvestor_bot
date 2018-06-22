@@ -127,8 +127,7 @@ def main():
 
             duration = stopwatch.measure()
 
-            investor_q = sess.query(Investor).filter(Investor.name == investment.name)
-            investor = investor_q.one()
+            investor = sess.query(Investor).filter(Investor.name == investment.name).one()
 
             logging.info(f"New mature investment: {investment.comment}")
             logging.info(f" -- by {investor.name}")
@@ -158,11 +157,8 @@ def main():
             change = new_balance - balance
 
             # Updating the investor's variables
-            update = {
-                Investor.completed: investor.completed + 1,
-                Investor.balance: new_balance,
-            }
-            investor_q.update(update, synchronize_session=False)
+            investor.completed += 1
+            investor.balance = new_balance
 
             # Editing the comment as a confirmation
             text = response.body # <--- triggers a Reddit API call
@@ -177,12 +173,8 @@ def main():
                 logging.info(f" -- lost {lost_memes}")
                 response.edit_wrap(message.modify_invest_lose(text, lost_memes, new_balance))
 
-            sess.query(Investment).\
-                filter(Investment.id == investment.id).\
-                update({
-                    Investment.success: change > amount,
-                    Investment.done: True
-                }, synchronize_session=False)
+            investment.success = (change > amount)
+            investment.done = True
 
             sess.commit()
 
