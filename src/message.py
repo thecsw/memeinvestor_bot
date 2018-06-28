@@ -1,17 +1,3 @@
-
-# This is the general bot description, used in
-# every message
-bot_desc = """
-_______________________
-^(I am a MemeInvestor. I help you invest in memes. Improve me by contributing to source code!)
-
-[Source code](https://github.com/thecsw/memeinvestor_bot)
-"""
-
-help_mess = """
-^For ^more ^information ^see ^[memes.market](https://memes.market/#info1)
-"""
-
 # This message will be sent if an account has been
 # successfully created
 create_org = """
@@ -20,9 +6,7 @@ create_org = """
 Thank you %USERNAME% for creating a bank account in r/MemeEconomy!
 
 Your current balance is %BALANCE% MemeCoins.
-
-%DESCRIPTION%
-""".replace("%DESCRIPTION%", help_mess)
+"""
 
 def modify_create(username, balance):
     create = create_org
@@ -41,9 +25,7 @@ You bought in at %ENTRY% upvotes.
 Your new balance is %BALANCE% MemeCoins.
 
 In 4 hours your investment will be evaluated and I will update this comment. Stay tuned!
-
-%DESCRIPTION%
-""".replace("%DESCRIPTION%", help_mess)
+"""
 
 def modify_invest(amount, entry, balance):
     invest = invest_org
@@ -107,9 +89,7 @@ def modify_invest_lose(text, lost, balance):
 # say that
 insuff_org = """
 You do not have enough MemeCoins to make the investment.
-
-%DESCRIPTION%
-""".replace("%DESCRIPTION%", help_mess)
+"""
 
 # Message if you are broke
 broke_org = """
@@ -118,9 +98,7 @@ Welp, you are broke.
 Your balance has been reset to 100 MemeCoins. Be careful next time.
 
 You have gone bankrupt %NUMBER% time(s).
-
-%DESCRIPTION%
-""".replace("%DESCRIPTION%", help_mess)
+"""
 
 def modify_broke(times):
     broke = broke_org
@@ -132,9 +110,7 @@ broke_active_org = """
 You still have %ACTIVE% investment(s).
 
 You need to wait until they are fully evaluated.
-
-%DESCRIPTION%
-""".replace("%DESCRIPTION%", help_mess)
+"""
 
 def modify_broke_active(active):
     broke_active = broke_active_org
@@ -144,9 +120,7 @@ def modify_broke_active(active):
 # Message if you are broke and have more than 100 MemeCoins
 broke_money_org = """
 You are not broke. You still have %AMOUNT% MemeCoins.
-
-%DESCRIPTION%
-""".replace("%DESCRIPTION%", help_mess)
+"""
 
 def modify_broke_money(amount):
     broke_money = broke_money_org
@@ -178,22 +152,20 @@ Here is a list of commands that summon me:
 
 9. !help - returns this help message.
 
-%DESCRIPTION% 
-""".replace("%DESCRIPTION%", bot_desc)
+For market stats and more information, visit [memes.market](https://memes.market).
+
+You can help improve me by contributing to my source code on [GitHub](https://github.com/thecsw/memeinvestor_bot).
+"""
 
 no_account_org = """
-You do not have permission to make this operation.
+You do not have permission to perform this operation.
 
-Please create an account with !create command.
-
-%DESCRIPTION% 
-""".replace("%DESCRIPTION%", help_mess)
+Please create an account with the !create command.
+"""
 
 balance_org = """
 Currently, your account balance is %BALANCE% MemeCoins.
-
-%DESCRIPTION% 
-""".replace("%DESCRIPTION%", help_mess)
+"""
 
 def modify_balance(balance):
     balance_t = balance_org
@@ -202,9 +174,7 @@ def modify_balance(balance):
 
 active_org = """
 Currently, you have %NUMBER% active investments.
-
-%DESCRIPTION% 
-""".replace("%DESCRIPTION%", help_mess)
+"""
 
 def modify_active(active):
     active_t = active_org
@@ -213,9 +183,7 @@ def modify_active(active):
 
 min_invest_org = """
 The minimum possible investment is 100 MemeCoins.
-
-%DESCRIPTION% 
-""".replace("%DESCRIPTION%", help_mess)
+"""
 
 market_org = """
 The market has %NUMBER% active investments.
@@ -223,9 +191,7 @@ The market has %NUMBER% active investments.
 All investors currently possess %MONEY% MemeCoins.
 
 There are %HODL% MemeCoins detained in investments.
-
-%DESCRIPTION% 
-""".replace("%DESCRIPTION%", help_mess)
+"""
 
 def modify_market(inves, cap, invs_cap):
     market = market_org
@@ -239,9 +205,7 @@ top_org = """
 Investors with the largest balances:
 
 %TOP_STRING%
-
-%DESCRIPTION% 
-""".replace("%DESCRIPTION%", help_mess)
+"""
 
 def modify_top(leaders):
     top_string = ""
@@ -256,9 +220,7 @@ deleted_comment_org = """
 Where did he go?
 
 Whatever, investment is lost.
-
-%DESCRIPTION% 
-""".replace("%DESCRIPTION%", help_mess)
+"""
 
 invest_place_here = """
 **ALL YOUR INVESTMENTS GO HERE**
@@ -269,11 +231,9 @@ If you don't invoke your command here, you may receive a penalty or your account
 
 **ONLY DIRECT REPLIES TO THE BOT WILL BE PROCESSED**
 
-%DESCRIPTION% 
-""".replace("%DESCRIPTION%", help_mess)
+For market stats and more information, visit [memes.market](https://memes.market).
+"""
 
 inside_trading_org = """
 You can't invest in your own memes, insider trading is not allowed!
-
-%DESCRIPTION% 
-""".replace("%DESCRIPTION%", help_mess)
+"""
