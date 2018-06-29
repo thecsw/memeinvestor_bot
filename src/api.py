@@ -7,7 +7,7 @@ from sqlalchemy import desc, func
 
 import config
 from models import Investor, Investment
-from calculator import calculate
+from formula import calculate
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = config.db
