@@ -90,7 +90,7 @@
                 <div class="row">
                     <div class="col s12 m4 l3">
                         <h4 class="row-title">Overview</h4>
-                        <p>Market active since 2018-05-23<!-- <br>season#1 ending on 2018-07-01 --> </p>
+                        <p>Market active since 2018-06-29</p>
                         <p class="overview-text">Active investments: <span id="active-investments">--</span>, detaining
                             <span id="detained-memecoins">--</span> MemeCoins.<br>
                             All investors currently possess <span id="existing-memecoins">---</span> M¢</p>
@@ -156,8 +156,8 @@
                         </div>
                     </div>
                     <div class="col s12 m4 l4">
-                        <h4>top investors</h4>
-                        <p>This is a list of the top 5 investors since 2018-05-23 <br>
+                        <h4>Top Investors</h4>
+                        <p>This is a list of the top 5 investors since 2018-06-29<br>
                             A red badge next to the username indicates the number of times the user went bankrupt. </p>
                         <!-- <p>A yellow badge next to the username indicates the amounts of full-in investments done.</p> -->
                     </div>
@@ -168,7 +168,7 @@
             <div class="section">
                 <div class="row">
                     <div id="info1" class="col s12 m6 l6">
-                        <h4>Commands and info</h4>
+                        <h4>Commands</h4>
                         <p>To invoke a command, reply to either the top-level u/MemeInvestor_bot comment in the comment
                             section of any r/MemeEconomy post or to one of its subsequent replies to your command
                             comment.<br>
@@ -209,55 +209,16 @@
 
                     </div>
                     <div class="col s12 m6 l6">
-                        <h4 id="info2">Investment behaviour</h4>
+                        <h4 id="info2">Investment Behaviour</h4>
                         <p>The return on your meme investment is determined by two values:  the
                         meme’s upvote count when you invested, and the meme’s upvote count four
-                        hours later.<br>
-                        You can click on the table below to view an exhaustive description of the formula used.</p>
-                        <p><i>Note:</i> The investment behaviour has already been through several design
-                            iterations and may well be revised again in the future.
-                        </p>
-                        <ul class="collapsible">
-                            <li>
-                                <div class="collapsible-header"><i class="material-icons">expand_more</i>Details</div>
-                                <div class="collapsible-body">
-                                    <h5>Summary</h5>
-                                    <p>The idea is simple: the more upvotes your meme earns, the higher the
-                                    payoff! Furthermore, investing in cheap "penny stocks" (memes with very
-                                    few initial upvotes) can earn you high returns, but it’s also very risky. On
-                                    the other hand, investing in stable "blue chips" (memes with many initial
-                                    upvotes) is safer but generally less profitable.</p>
-                                    <h5>Details</h5>
-                                    <p>The return for a given investment follows the 
-                                    <a href="https://en.wikipedia.org/wiki/Sigmoid_function">sigmoid</a> function, a gradually
-                                    increasing curve with an upper bound.
-                                    The upper bound of the sigmoid curve represents your investment’s max-
-                                    imum possible return. It’s determined by the initial upvote count: the more
-                                    initial upvotes the meme has, the lower your maximum possible return.</p>
-                                    <a href="#info1" class="waves-effect waves-light btn aorange darken-1"><i
-                                    class="material-icons left">attach_file</i> pdf</a>                                    
-                                    <img class="responsive-img materialboxed"
-                                         src="resources/graph1.jpg">
-                                    <i>Investment Return Initial Growth Factor</i>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="collapsible-header"><i class="material-icons">expand_more</i>Examples</div>
-                                <div class="collapsible-body">
-                                    <h5>First example</h5>
-                                    <p>If you buy a meme that has 5 initial upvotes, it needs to earn about 100
-                                    additional upvotes for you to break even. If it earns 150, you’ll double your
-                                    money. If it earns about 2000, your return will be 800%!<br>
-                                    Here’s the return curve for a meme with 5 initial upvotes:</p>
-                                    <img class="responsive-img materialboxed"
-                                         src="resources/example1.png">
-                                    <p>Here’s the return curve for a blue-chip meme with 1000 initial upvotes:</p>
-                                    <img class="responsive-img materialboxed"
-                                         src="resources/example2.png">                                    
-                                </div>
-                            </li>
-                        </ul>
-
+                        hours later.</p>
+                        <p>For an exhaustive description of the meme market's inner workings, please see our
+                        <i>extremely professional</i> academic paper, which was published in all the
+                        <i>most prestigious</i> peer-reviewed meme journals:</p>
+                        <p><i><a href="resources/paper.pdf">Step 3: PROFIT! A Numerical Analysis of ROI in /r/MemeEconomy</a></i></p>
+                        <p><i>Note:</i> Markets are volatile! The investment return formula is subject to change
+                            at any time.</p>
                         <h4 id="calculator">Investment Calculator</h4>
                         <div class="input-field col s12 m12 l6">
                             <input type="text" id="investment-start-score" class="row"/>
