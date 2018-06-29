@@ -21,3 +21,4 @@ services:
     mysql:
         volumes:
           - /data/memeinvestor/mysql:/var/lib/mysql
+	  
