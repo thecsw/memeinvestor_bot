@@ -16,4 +16,5 @@ def main():
     print(">> RETURN:",calculate(args.u_final,args.u_init) * args.invested, "M¢" )
 
 if __name__ == "__main__":
-    main()
+    main
+    
