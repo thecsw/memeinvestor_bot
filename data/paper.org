@@ -1,4 +1,4 @@
-#+TITLE: Step 3: PROFIT! A Numerical Analysis of Investment ROI in /r/MemeEconomy
+#+TITLE: Step 3: PROFIT! A Numerical Analysis of Investment in /r/MemeEconomy
 #+LATEX_CLASS: article
 #+LATEX_CLASS_OPTIONS: [a4paper, 12pt]
 #+LATEX_HEADER:\usepackage{amsmath}\usepackage{authblk}\usepackage{float}
