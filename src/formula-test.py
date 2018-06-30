@@ -14,7 +14,9 @@ def main():
     print("Starting Upvotes:", args.u_init)
     print("Final Upvotes:", args.u_final)
     print("Amount Invested:", args.invested, "M¢")
-    print(">> RETURN:",calculate(args.u_final,args.u_init) * args.invested, "M¢" )
+    inv_return = calculate(args.u_final,args.u_init) * args.invested
+    profit = inv_return - args.invested
+    print(">> RETURN:", inv_return, "M¢ (Profit:", profit, "M¢)")
    
     #Generate data for performance plot
     olds = list(range(args.u_init, args.u_final, 1)) + list(range(args.u_final, args.u_final * 2, 10))
@@ -29,7 +31,7 @@ def main():
         if i <= args.u_final:
             x2.append(i)
             y2.append(result)
-
+            
     #Generate performance plot
     fig = plt.figure(figsize=(7,7))
     plt.grid(color='k', alpha=0.15, which='major')
@@ -38,7 +40,7 @@ def main():
     plt.ylabel('Return / M¢',fontsize='14')
     plt.plot(x,y,label='Return curve')
     plt.plot(x2,y2,label='Meme Performance',color='r')
-    plt.plot(args.u_final, calculate(args.u_final,args.u_init) * args.invested,color='r', marker='X')
+    plt.plot(args.u_final, inv_return, color='r', marker='X', markersize=8, linestyle='none', label='Return: %i M¢ (Profit: %i M¢)' %(inv_return,profit))
     plt.legend(fontsize='12')
     fig.savefig('investment_performance.png')
             
