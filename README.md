@@ -64,7 +64,7 @@ The only thing that needs to be done before execution is the config profile. For
 steps below:
 
 ```
-git clone https://github.com/thecsw/memeinvestor_bot
+git clone https://github.com/MemeInvestor/memeinvestor_bot.git
 cd memeinvestor_bot
 cp .env.example .env
 nano .env
@@ -98,4 +98,4 @@ database directly via Python code or a database manager like `adminer`.
 ## License
 
 This project is licensed under the The GNU General Public License (see the
-[LICENSE.md](https://github.com/thecsw/prequelmemes_bot/blob/master/LICENSE) file for details), it explains everything pretty well. 
+[LICENSE](./LICENSE) file for details), it explains everything pretty well.
