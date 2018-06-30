@@ -1,7 +1,7 @@
 #+TITLE: Step 3: PROFIT! A Numerical Analysis of Investment ROI in /r/MemeEconomy
 #+LATEX_CLASS: article
 #+LATEX_CLASS_OPTIONS: [a4paper, 12pt]
-#+LATEX_HEADER:\usepackage{amsmath}\usepackage{authblk}
+#+LATEX_HEADER:\usepackage{amsmath}\usepackage{authblk}\usepackage{float}
 #+LATEX_HEADER:\author[1]{jimbobur}\author[2]{rickles42}\author[2]{thecsw}
 #+LATEX_HEADER:\affil[1]{University of Memechester}\affil[2]{Memeachusetts Institute of Dankology}
 #+OPTIONS: toc:nil H:3 num:0
@@ -111,6 +111,7 @@ The result is that:
 
 #+CAPTION: Investment return curve for $v_0 = 3$
 #+LABEL: fig:small_curve
+#+ATTR_LATEX: :placement [H]
 [[./paper_figure_1.png]]
 
 If you invest in a meme that has 3 initial upvotes, it needs to earn approximately 50
@@ -125,6 +126,7 @@ initial upvotes.
 
 #+CAPTION: Investment return curve for $v_0 = 500$
 #+LABEL: fig:large_curve
+#+ATTR_LATEX: :placement [H]
 [[./paper_figure_2.png]]
 
 If you invest in a meme that has 500 initial upvotes, it needs to earn approximately 60
