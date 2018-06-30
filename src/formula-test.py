@@ -17,7 +17,7 @@ def main():
     print(">> RETURN:",calculate(args.u_final,args.u_init) * args.invested, "M¢" )
    
     #Generate data for performance plot
-    olds = list(range(args.u_init, args.u_final * 2, 10))
+    olds = list(range(args.u_init, args.u_final, 1)) + list(range(args.u_final, args.u_final * 2, 10))
     x = []
     x2 = []
     y = []
@@ -38,6 +38,7 @@ def main():
     plt.ylabel('Return / M¢',fontsize='14')
     plt.plot(x,y,label='Return curve')
     plt.plot(x2,y2,label='Meme Performance',color='r')
+    plt.plot(args.u_final, calculate(args.u_final,args.u_init) * args.invested,color='r', marker='X')
     plt.legend(fontsize='12')
     fig.savefig('investment_performance.png')
             
