@@ -141,9 +141,14 @@ class CommentWorker():
         author = comment.author.name
         q = sess.query(Investor).filter(Investor.name == author).exists()
 
-        if not sess.query(q).scalar():
-            sess.add(Investor(name=author))
-            comment.reply_wrap(message.modify_create(comment.author, 1000))
+        # Let user know they already have an account
+        if sess.query(q).scalar():
+            comment.reply_wrap(message.create_exists_org)
+            return
+
+        # Create new investor account
+        sess.add(Investor(name=author))
+        comment.reply_wrap(message.modify_create(comment.author, 1000))
 
     @req_user
     def invest(self, sess, comment, investor, amount):

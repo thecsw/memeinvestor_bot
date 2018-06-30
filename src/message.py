@@ -14,6 +14,12 @@ def modify_create(username, balance):
     create = create.replace("%BALANCE%", str(balance))
     return create
 
+# This message will be sent if a user tries to create an account but already
+# has one.
+create_exists_org = """
+I love the enthusiasm, but you've already got an account!
+"""
+
 # This message will be sent when an investment
 # was successful
 
