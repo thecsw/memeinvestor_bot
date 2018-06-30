@@ -154,7 +154,7 @@ Here is a list of commands that summon me:
 
 For market stats and more information, visit [memes.market](https://memes.market).
 
-You can help improve me by contributing to my source code on [GitHub](https://github.com/thecsw/memeinvestor_bot).
+You can help improve me by contributing to my source code on [GitHub](https://github.com/MemeInvestor/memeinvestor_bot).
 """
 
 no_account_org = """
