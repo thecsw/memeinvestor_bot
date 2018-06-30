@@ -91,6 +91,7 @@ def investments():
         "done": x.done,
         "response": x.response,
         "success": x.success,
+        "profit": x.profit,
     } for x in sql_res]
 
     return jsonify(res)
@@ -194,6 +195,7 @@ def investor_investments(name):
         "done": x.done,
         "response": x.response,
         "success": x.success,
+        "profit": x.profit,
     } for x in sql_res]
 
     return jsonify(res)
@@ -229,6 +231,7 @@ def investor_active(name):
         "done": x.done,
         "response": x.response,
         "success": x.success,
+        "profit": x.profit,
     } for x in sql_res]
 
     return jsonify(res)

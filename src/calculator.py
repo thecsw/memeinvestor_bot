@@ -102,6 +102,7 @@ def main():
 
             new_balance = int(balance + (amount * factor))
             change = new_balance - balance
+            profit = change - amount
 
             # Updating the investor's variables
             investor.completed += 1
@@ -121,6 +122,7 @@ def main():
                 response.edit_wrap(message.modify_invest_lose(text, lost_memes, new_balance))
 
             investment.success = (change > amount)
+            investment.profit = profit
             investment.done = True
 
             sess.commit()
