@@ -41,7 +41,7 @@ def main():
 
     killhandler = KillHandler()
 
-    engine = create_engine(config.db)
+    engine = create_engine(config.db, pool_recycle=60)
     sm = sessionmaker(bind=engine)
     
     reddit = praw.Reddit(client_id=config.client_id,
