@@ -9,6 +9,7 @@ def main():
     parser.add_argument('u_init', metavar='u_init', type=int, help='Post upvotes at time of investment.')
     parser.add_argument('u_final', metavar='u_final', type=int, help='Post upvotes at maturation of investment.')
     parser.add_argument('invested', metavar='invested', type=int, help='MemeCoins Invested in post.')
+    parser.add_argument("-s", "--save-img", help="increase output verbosity", action="store_true")
     args = parser.parse_args()
 
     print("Starting Upvotes:", args.u_init)
@@ -19,7 +20,7 @@ def main():
     print(">> RETURN:", inv_return, "M¢ (Profit:", profit, "M¢)")
    
     #Generate data for performance plot
-    olds = list(range(args.u_init, args.u_final, 1)) + list(range(args.u_final, args.u_final * 2, 10))
+    olds = list(range(args.u_init, args.u_final * 2, 1))# + list(range(args.u_final, args.u_final * 2, 10))
     x = []
     x2 = []
     y = []
@@ -42,7 +43,14 @@ def main():
     plt.plot(x2,y2,label='Meme Performance',color='r')
     plt.plot(args.u_final, inv_return, color='r', marker='X', markersize=8, linestyle='none', label='Return: %i M¢ (Profit: %i M¢)' %(inv_return,profit))
     plt.legend(fontsize='12')
-    fig.savefig('investment_performance.png')
+    
+    #Interactive show plot
+    fig.show()
+    #Optional save plot
+    if args.save_img:
+        out_filename = 'investment_performance.png'
+        print ("Saving image to: '",out_filename,"'")
+        fig.savefig(out_filename)
             
 if __name__ == "__main__":
     main()
