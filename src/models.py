@@ -26,6 +26,7 @@ class Investment(Base):
     done = Column(Boolean, default=False, nullable=False)
     response = Column(String(11))
     success = Column(Boolean, default=False)
+    profit = Column(BigInteger, default=0)
 
 class Investor(Base):
     __tablename__ = "Investors"
