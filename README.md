@@ -27,44 +27,6 @@ The README below is a bit outdated. New version will be soon.
 
 If you want to contribute, please do so! Check the [Issues](https://github.com/MemeInvestor/memeinvestor_bot/issues) list and help meme investments thrive!
 
-## Investment behaviour
-
-To calculate the investment return, the bot performs a two-step procedure.
-
-### First step
-
-The bot calculates an initial growth factor, `y`, using a power function of the form `y = x^m`,
-where `m` is a constant (`m=1/3`) and `x` is the relative change in
-upvotes on the post since the investment was made as a proportion of the upvotes 
-at the time of investment:  
-`x=1+(final_upvotes - initial_upvotes)/initial_upvotes`.  
-The 1/3 power function (cube root) behaviour was chosen so that the overall behavior
-of the investment return function is a steep rise which levels off at higher upvote
-growth. The reasoning behind this is to prevent a small handful of investors who get lucky
-and invest in one or more posts that 'blow up' from earning so many MemeCoins that they
-dominate the market from then on. This helps keep the playing field somewhat more
-level for new investors. 
-  
-![Investment Return Initial Growth Factor](./data/investment_return_multiplier.png)
-*Investment Return Initial Growth Factor*
-
-### Second step
-
-Unlike real stocks, reddit post upvotes typically either grow or don't grow; posts
-don't usually get mass-downvoted by an appreciable amount and if they do, they quickly 
-get buried, reducing the potential for downvoting. In light of this, so that investments aren't
-risk-free, a graduated threshold is applied to the the factor calculated by the power function in the
-first step. If the post grows such that this factor `y` is above the success threshold, `thresh = 1.2`,
-the investment return is simply `invested_amount * y`. If the post grows (`y>1`) but the factor is at or
-below 1.2, the investor only gets back `invested_amount * (y-1)/(thresh - 1)`. If the post doesn't grow
-or is downvoted (`y<=1`), the investor gets back nothing.
-
-![Investment Return Final Return Multiplier](./data/investment_return_multiplier_thresholding.png)
-*Investment Return Final Return Multiplier vs Initial Growth Factor*
-
-*Note:* The investment behaviour has already been through several design iterations
-and may well be revised again in the future.
-
 ## Commands
 
 The bot has the following commands:
