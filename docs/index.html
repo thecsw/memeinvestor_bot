@@ -51,12 +51,14 @@
     </nav>
 
     <ul class="sidenav" id="mobile-sidebar">
-        <li>
-          <div class="input-field mobile">
-            <input id="investor-username-mobile" class="custom-sidenav-search" type="search" placeholder="redditor name" >
-            <label class="label-icon" for="search-nav"><i class="material-icons">search</i></label>
-            <i class="material-icons" onclick="userAccount.show('mobile')" >send</i>
-          </div>
+        <li class="sidenav-top">
+         <h5>menu</h5>
+         <a class="sidenav-close" href="#!"><i class="material-icons">close</i></a>
+        </li>
+        <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/issues" target="_blank">bugs</a>
+        </li>
+        <li class="sidebar-search">        
+            <input id="investor-username-mobile" placeholder="search user" type="text" class="browser-default" >  
         </li>
         <!-- <li><a href="foo.html">brokers</a></li> -->
         <!-- <li><a href="bar.html">commands</a></li> -->

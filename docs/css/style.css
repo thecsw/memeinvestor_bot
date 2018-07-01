@@ -1,7 +1,9 @@
 /* custom page styles */
 
 body{
-  background-color: #f2f2f2;
+  background-color: #2d3239;
+  color: white;
+  width:100%;
 }
 /* --[nav bar]-- */
 nav{
@@ -37,22 +39,51 @@ nav{
   vertical-align:middle
 }
 
-#mobile-sidebar li > span, #nav-mobile li > span {
-    cursor: pointer;
-}
-
 /* --[sidebar]-- */
-#search-nav-mobile{
-border: none;
+#mobile-sidebar{
+  background-color:#2d3239;
+  overflow-x: hidden;
+}
+/* lol i'm bad at css */
+.sidenav li:first-child{
+  height: 64px;
+  line-height: 64px;
+}
+.sidenav li:first-child h5{
+  background-color:#222222;
+  height: 100%;
+  line-height: 64px;
+  margin:0;
+  text-align:center;
+}
+.sidenav li:first-child a {
+  height: 64px;
+  position:relative;
+  top:-64px;
+  
+}
+.sidenav li:first-child a i{
+  height: 64px;
+  line-height: 64px;
+  color: white;
+}
+.sidenav li a{
+  color: white;
+  padding-left: 18px;
+}
+
+.sidebar-search{
 
 }
-.custom-sidenav-search{
-  padding-left: 50px!important;
+.sidebar-search-wrapper{
+  
 }
-.custom-sidenav-search::-webkit-input-placeholder { color:#999999; }
-.custom-sidenav-search:-moz-placeholder { color:#999999; } /* FF 4-18 */
-.custom-sidenav-search::-moz-placeholder { color:#999999; } /* FF 19+ */
-.custom-sidenav-search:-ms-input-placeholder { color:#999999; } /* IE 10+ */
+#investor-username-mobile {
+  padding:0;
+  margin:0;
+  height:48px;
+width:100%;  
+}
 
 
 /* --[main page]-- */
