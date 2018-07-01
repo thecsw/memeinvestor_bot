@@ -138,7 +138,7 @@ nav{
   padding: 2px 4px;
   border-radius: 2px;
   opacity: .8;
-  color: black;
+  color: #cccccc;
   border-bottom:3px solid #ffa726;
 }
  .legenda-b{
@@ -146,35 +146,17 @@ nav{
   padding: 2px 4px;
   border-radius: 2px;
   opacity: .8;
-  color: black;
+  color: #cccccc;
   border-bottom:3px solid #f06156;
 }
-/* Use this selector to override the line style on a chart given series */
-.ct-series-a .ct-line {
-  /* Set the colour of this series line */
-  stroke: #ffa726  ;
-  /* Control the thikness of your lines */
-  stroke-width: 3px;
-}
-.ct-series-b .ct-line {
-  /* Set the colour of this series line */
-  stroke: #f05b4f;
-  /* Control the thikness of your lines */
-  stroke-width: 3px;
-}
+
 
 /* --[description row]-- */
-
-.code-block{
-  padding-left: 4px;
-  padding-right: 4px;
-  border-radius: 2px;
-}
 
 .investment-result{
   height:36px;
   border-top: 2px solid rgba(0,0,0,0.2);
-  border-bottom: 2px solid white;
+  border-bottom: 2px solid rgba(255,255,255,0.2);
   text-align:center;
 }
 .custom-preloader-wrapper{
