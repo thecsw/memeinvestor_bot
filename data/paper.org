@@ -80,8 +80,8 @@ stp(v_0) =& \frac{0.04}{\frac{v_0}{100} + 1}
 \end{align*}
 
 The maximum value, $max(v_0)$, represents an investment's maximum possible return. This maximum 
-value decreases logarithmically as a function of $v_0$: the more initial upvotes the meme has, the lower 
-the maximum possible return. In addition, steepness $stp(v_0)$, decreases with the inverse of $v_0$, 
+value decreases with the inverse of $v_0$: the more initial upvotes the meme has, the lower 
+the maximum possible return. In addition, steepness $stp(v_0)$, also decreases with the inverse of $v_0$, 
 whilst the midpoint, $mid(v_0)$, increases linearly with $v_0$. 
 
 Given a meme investment with initial upvote count $v_0$, a curve is constructed representing
@@ -92,8 +92,8 @@ the manner described above.
 The result is that:
 
 + The return curve's maximum decreases as $v_0$ increases. Thus, small-cap
-  investments have *high* potential returns (up to \sim310%), while large-cap
-  investments have *low* potential returns (as low as \sim5%).
+  investments have *high* potential profits (up to \sim210%), while large-cap
+  investments have *high* potential *losses* (as high as \sim95% loss).
 
 + The return curve's steepness decreases as $v_0$ increases. Thus, small-cap
   investments are *riskier* while large-cap investments are *safer*. (If a
@@ -117,7 +117,7 @@ The result is that:
 If you invest in a meme that has 3 initial upvotes, it needs to earn approximately 90
 additional upvotes before maturity for you to break even. If it gains
 approximately 132 upvotes before maturity, you'll double your money. If it gains
-at least 200, your return will be \sim260%.
+at least 200, your profit will be \sim160%.
 
 ** Example 2: A blue chip investment
    
@@ -132,7 +132,7 @@ initial upvotes.
 If you invest in a meme that has 500 initial upvotes, it needs to earn approximately 324
 additional upvotes before maturity for you to break even, but the loss if you
 fail to do so is less than with the penny stock. If the meme gains approximately
-500 upvotes or more, the return will be \sim115%. Beyond this, the return caps out at \sim123%
+500 upvotes or more, the profit will be \sim15%. Beyond this, the profit caps out at \sim23%
 for roughly 900 upvotes gained.
 
 * Conclusions
