@@ -92,12 +92,12 @@ the manner described above.
 The result is that:
 
 + The return curve's maximum decreases as $v_0$ increases. Thus, small-cap
-  investments have *high* potential profits (up to \sim210%), while large-cap
-  investments have *high* potential *losses* (as high as \sim95% loss).
+  investments have *high* maximum potential profit (up to \sim210%), while large-cap
+  investments have *low* maximum potential profit (as low as \sim20%).
 
 + The return curve's steepness decreases as $v_0$ increases. Thus, small-cap
   investments are *riskier* while large-cap investments are *safer*. (If a
-  small-cap investment fails to gain many upvotes, it's likely to a significant
+  small-cap investment fails to gain many upvotes, it's likely to lose a significant
   proportion of its value.)
 
 + The return curve's midpoint increases as $v_0$ increases. Thus, larger cap
