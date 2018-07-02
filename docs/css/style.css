@@ -30,6 +30,7 @@ nav{
 .brand-logo{
   margin-left:10px;
   margin-right:10px;
+  text-decoration: none;
 }
 .custom-dark-search{
   color:#f2f2f2;
@@ -131,6 +132,13 @@ nav{
   margin-left: 10px;
   float:none;
 }
+.table-wrap table tr{
+  border-bottom: 1px solid rgba(0,0,0,0.3);
+}
+.table-wrap table > tbody > tr:nth-child(2n+1) {
+  background-color: rgba(0,0,0,0.1);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
 .bankrupt-badge{
   padding: 2px 4px;
   border-radius: 2px;
@@ -161,11 +169,6 @@ nav{
 
 
 /* --[description row]-- */
-
-.paper-link{
-  text-decoration: underline;
-  color: #f9a825;
-}
 
 .dark-collapsible .collapsible-header{
   background-color: #262626 !important;
@@ -204,6 +207,10 @@ nav{
 /* --[misc]-- */
 h4{
   color: white;
+}
+a{
+  text-decoration: underline;
+  color: #f9a825;
 }
 .dark-toast{
   background-color: #e9a435;
