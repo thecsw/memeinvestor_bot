@@ -1,6 +1,7 @@
 import re
 import time
 import logging
+import traceback
 
 import sqlalchemy
 from sqlalchemy import create_engine, func
@@ -40,6 +41,7 @@ def reply_wrap(self, body):
             return self.reply(body)
         except Exception as e:
             logging.error(e)
+            traceback.print_exc()
             return False
     else:
         logging.info(body)
@@ -108,6 +110,7 @@ class CommentWorker():
                 getattr(self, attrname)(sess, comment, *matches.groups())
             except Exception as e:
                 logging.error(e)
+                traceback.print_exc()
                 sess.rollback()
             else:
                 sess.commit()
@@ -141,9 +144,14 @@ class CommentWorker():
         author = comment.author.name
         q = sess.query(Investor).filter(Investor.name == author).exists()
 
-        if not sess.query(q).scalar():
-            sess.add(Investor(name=author))
-            comment.reply_wrap(message.modify_create(comment.author, 1000))
+        # Let user know they already have an account
+        if sess.query(q).scalar():
+            comment.reply_wrap(message.create_exists_org)
+            return
+
+        # Create new investor account
+        sess.add(Investor(name=author))
+        comment.reply_wrap(message.modify_create(comment.author, 1000))
 
     @req_user
     def invest(self, sess, comment, investor, amount):
@@ -294,6 +302,7 @@ def main():
                 stopwatch.reset()
         except Exception as e:
             logging.error(e)
+            traceback.print_exc()
             time.sleep(10)
 
 if __name__ == "__main__":
