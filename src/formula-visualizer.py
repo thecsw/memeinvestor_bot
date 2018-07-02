@@ -18,8 +18,8 @@ def main():
     # Upper left subplot
     ax = plt.subplot2grid((6, 2), (0, 0), rowspan=3, colspan=1)
 
-    olds = [0, 1, 5, 10, 50, 100, 500, 1000, 2500, 5000, 7500, 10000, 15000, 20000]
-    news = range(0, 25000, 100)
+    olds = [0, 1, 5, 10, 25, 50, 100, 200, 500, 1000, 2500, 5000, 7500, 10000, 15000, 20000]
+    news = range(0, 25000)
 
     xy = []
     for o in olds:
@@ -89,6 +89,7 @@ def main():
     plt.plot(x, y)
 
     ax.grid(color='k', alpha=0.15, which='major')
+    ax.set_ylim([0, 5.5])
 
     plt.title('sigmoid_max(old)')
     plt.xlabel('old')
@@ -193,13 +194,13 @@ def main():
     # Bottom right subplot
     ax = plt.subplot2grid((6, 2), (3, 1), rowspan=3, colspan=2)
 
-    olds = range(0, 20000, 100)
+    olds = range(0, 1000, 1)
     min_n = 0
-    max_n = 30000
+    max_n = 10000
     
     xy = []
     x2y2 = []
-    mult_threshs = [1,1.25,1.5] + list(range(2,8))
+    mult_threshs = [1, 1.25, 1.5, 2, 3, 4, 5]
     for M in mult_threshs:
         x = []
         y = []
@@ -220,7 +221,7 @@ def main():
     for (x, y) in x2y2:
         plt.plot(x, y)
 
-    ax.legend(['break-even','1.25x','1.5x','x2','x3','x4','x5','x6','x7','x8'])
+    ax.legend(['break-even','1.25x','1.5x','x2','x3','x4','x5'])
 
     plt.grid(color='k', alpha=0.15, which='major')
     plt.title('1-8 Factor thresholds')
