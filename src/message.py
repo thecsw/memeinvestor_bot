@@ -70,7 +70,7 @@ Your current balance is %BALANCE% MemeCoins.
 """
 
 def modify_invest_break_even(text, upvotes_now, coins, profit, balance):
-    invest_return = invest_return_org
+    invest_return = invest_break_even_org
     invest_return = invest_return.replace("%INVESTMENT%", str(text))
     invest_return = invest_return.replace("%UPVOTES_NOW%", str(upvotes_now))
     invest_return = invest_return.replace("%NUMBER%", str(coins))
