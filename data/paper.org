@@ -74,9 +74,9 @@ C(v_0, v_f) = S(gain(v_0, v_f),\ max(v_0),\ stp(v_0))
 Where:
 \begin{align*}
 gain(v_0, v_f) =& \ v_f - v_0\\
-max(v_0) =& \ 5 - \frac{4}{5} \log_{10}(v_0 + 1)\\
-mid(v_0) =& \frac{77}{1000}v_0 + 75 \\
-stp(v_0) =& \frac{0.04}{\left( \frac{v_0}{200} + 1 \right)}  
+max(v_0) =& \ 1.2 + \frac{1.9}{\frac{v_0}{10}+1}\\
+mid(v_0) =& \frac{2}{125}v_0 + 100 \\
+stp(v_0) =& \frac{0.04}{\frac{v_0}{100} + 1}  
 \end{align*}
 
 The maximum value, $max(v_0)$, represents an investment's maximum possible return. This maximum 
@@ -92,8 +92,8 @@ the manner described above.
 The result is that:
 
 + The return curve's maximum decreases as $v_0$ increases. Thus, small-cap
-  investments have *high* potential returns (up to 500%), while large-cap
-  investments have *low* potential returns (as low as 20%).
+  investments have *high* potential returns (up to \sim310%), while large-cap
+  investments have *low* potential returns (as low as \sim5%).
 
 + The return curve's steepness decreases as $v_0$ increases. Thus, small-cap
   investments are *riskier* while large-cap investments are *safer*. (If a
@@ -114,10 +114,10 @@ The result is that:
 #+ATTR_LATEX: :placement [H]
 [[./paper_figure_1.png]]
 
-If you invest in a meme that has 3 initial upvotes, it needs to earn approximately 50
+If you invest in a meme that has 3 initial upvotes, it needs to earn approximately 90
 additional upvotes before maturity for you to break even. If it gains
-approximately 75 upvotes before maturity, you'll double your money. If it gains
-at least 200, your return will be 450%.
+approximately 132 upvotes before maturity, you'll double your money. If it gains
+at least 200, your return will be \sim260%.
 
 ** Example 2: A blue chip investment
    
@@ -129,10 +129,11 @@ initial upvotes.
 #+ATTR_LATEX: :placement [H]
 [[./paper_figure_2.png]]
 
-If you invest in a meme that has 500 initial upvotes, it needs to earn approximately 60
+If you invest in a meme that has 500 initial upvotes, it needs to earn approximately 324
 additional upvotes before maturity for you to break even, but the loss if you
 fail to do so is less than with the penny stock. If the meme gains approximately
-190 upvotes, you'll double your money.
+500 upvotes or more, the return will be \sim115%. Beyond this, the return caps out at \sim123%
+for roughly 900 upvotes gained.
 
 * Conclusions
 
