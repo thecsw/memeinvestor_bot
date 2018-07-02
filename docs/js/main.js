@@ -125,9 +125,11 @@ let overviewChart = (function(){
       let ctx = canvas1.getContext('2d');
       //generate labels for x axys
       let graphLabels = [];
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
       iterateDays(7, function(index, from, to) {
          //note: months are zero-based
-         graphLabels[index] = to.getDate() + '/' + (to.getMonth()+1);
+         graphLabels[index] = to.getDate() + ' ' + monthNames[to.getMonth()];
       })
       ch1 = new Chart(ctx, {
          type: 'line',
