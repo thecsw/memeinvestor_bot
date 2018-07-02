@@ -1,6 +1,7 @@
 import time
 import datetime
 import logging
+import traceback
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -31,6 +32,7 @@ def edit_wrap(self, body):
             return self.edit(body)
         except Exception as e:
             logging.error(e)
+            traceback.print_exc()
             return False
     else:
         logging.info(body)
@@ -84,14 +86,6 @@ def main():
             else:
                 response = EmptyResponse()
 
-            # If comment is deleted, skip it
-            try:
-                reddit.comment(id=investment.comment)
-            except:
-                logging.info(f" -- skipped (deleted comment)")
-                response.edit_wrap(message.deleted_comment_org)
-                continue
-
             post = reddit.submission(investment.post)
             upvotes_now = post.ups # <--- triggers a Reddit API call
 
@@ -137,6 +131,7 @@ def main():
             logging.info(f" -- API calls remaining: {rem:3d}, resetting in {res:3d}s")
         except Exception as e:
             logging.error(e)
+            traceback.print_exc()
             time.sleep(10)
         finally:
             sess.close()
