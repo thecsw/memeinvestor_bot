@@ -29,7 +29,7 @@ def render_graph(old, deltas, filename):
     plt.plot(x, y)
 
     ax.grid(color='k', alpha=0.15, which='major')
-    ax.set_ylim([0, 5])
+    ax.set_ylim([0, 3])
 
     plt.xlabel('Upvotes gained')
     plt.ylabel('Investment return factor')
