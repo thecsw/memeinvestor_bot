@@ -18,8 +18,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <script src="js/libs/countup.min.js"></script>
     <!-- page -->
-    <link type="text/css" rel="stylesheet" href="css/style.css"/>
-    <script src="js/main.js?c=1"></script>
+    <link type="text/css" rel="stylesheet" href="css/style.css?c=2"/>
+    <script src="js/main.js?c=2"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
@@ -35,7 +35,7 @@
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li>
                   <div class="input-field">
-                    <input id="investor-username" class="custom-dark-search" type="search" placeholder="redditor name" >
+                    <input id="investor-username" class="custom-dark-search" type="search" placeholder="search user" >
                     <label class="label-icon" for="search-nav"><i class="material-icons">search</i></label>
                     <i class="material-icons" onclick="userAccount.show('desktop')" >send</i>
                   </div>
@@ -83,7 +83,7 @@
             <p>MemeInvestor is a r/MemeEconomy reddit bot that can help you invest in memes and make a fortune out of
                 it! </p>
             <!-- <p><a class="waves-effect waves-light btn orange darken-4" onclick="createWalletToast()"><i class="material-icons left">add</i>create your wallet</a> -->
-            <a href="#info1" class="waves-effect waves-light btn amber darken-4"><i
+            <a href="#info1" class="waves-effect waves-light btn yellow darken-3"><i
                     class="material-icons left">show_chart</i>learn more</a>
             </p>
             <div class="divider"></div>
@@ -173,7 +173,7 @@
                         <p>To invoke a command, reply to either the top-level u/MemeInvestor_bot comment in the comment
                             section of any r/MemeEconomy post or to one of its subsequent replies to your command
                             comment.<br>
-                            <span class=" orange-text text-darken-1 "> commands that are not direct replies to the bot will be ignored</span>
+                            <span class=" yellow-text text-darken-3 "> commands that are not direct replies to the bot will be ignored</span>
                         </p>
                         <p>The bot has the following commands:</p>
                         <ul class="collapsible">
@@ -217,7 +217,7 @@
                         <p>For an exhaustive description of the meme market's inner workings, please see our
                         <i>extremely professional</i> academic paper, which was published in all the
                         <i>most prestigious</i> peer-reviewed meme journals:</p>
-                        <p><i><a href="resources/paper.pdf">Step 3: PROFIT! A Numerical Analysis of ROI in /r/MemeEconomy</a></i></p>
+                        <p><i><a href="resources/paper.pdf" class="paper-link" >Step 3: PROFIT! A Numerical Analysis of ROI in /r/MemeEconomy</a></i></p>
                         <p><i>Note:</i> Markets are volatile! The investment return formula is subject to change
                             at any time.</p>
                         <h4 id="calculator">Investment Calculator</h4>
@@ -234,7 +234,7 @@
                             <label for="investment-amount">Memecoins invested</label>
                         </div>
                         <div class="input-field row col s12 m12 l6">
-                            <a onclick="calculateInvestmentResult()" class="btn col s6 waves-effect waves-light btn amber darken-4">estimate</a>
+                            <a onclick="calculateInvestmentResult()" class="btn col s6 waves-effect waves-light btn yellow darken-3">estimate</a>
                             <div class="col s6 investment-result valign-wrapper"><p id="investment-result">000</p></div>
                         </div>
 

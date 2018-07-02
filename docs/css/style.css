@@ -153,6 +153,11 @@ nav{
 
 /* --[description row]-- */
 
+.paper-link{
+  text-decoration: underline;
+  color: #f9a825;
+}
+
 .investment-result{
   height:36px;
   border-top: 2px solid rgba(0,0,0,0.2);
@@ -166,4 +171,12 @@ nav{
   height:32px !important;
 }
 
+
+
+/* --[misc]-- */
+
+.dark-toast{
+  background-color: #e9a435;
+  border-bottom: 4px solid rgba(0,0,0,0.3);
+}
 

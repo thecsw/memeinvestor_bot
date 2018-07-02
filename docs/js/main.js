@@ -340,7 +340,7 @@ let userAccount = (function(){
 }());
 
 
-function connectionErrorToast(error){
+function connectionErrorToast(error, defaultErrorText = 'we couldn\'t get the latest data.'){
    let toastHTML = '';
    //simple connection error
    if(error.status === 0 || error.statusText === ""){
@@ -348,9 +348,10 @@ function connectionErrorToast(error){
    }//more serious problem, that is worth reporting
    else{
       globalError = error;
-      toastHTML = '<p>an error occurred while trying to get the latest data. </p><button class="btn-flat toast-action" onclick="reportError()">report</button>';   
+      toastHTML = `<p>${defaultErrorText} </p><button class="btn-flat toast-action white-text" onclick="reportError()">report</button>`;   
    }
-   M.toast({html: toastHTML,displayLength:2000}); 
+   //M.Toast.dismissAll();
+   M.toast({html: toastHTML,displayLength:2000, classes:"dark-toast"}); 
 }
 
 var globalError;
@@ -398,30 +399,33 @@ function calculateInvestmentResult() {
     let start = parseInt(document.getElementById('investment-start-score').value);
     let end = parseInt(document.getElementById('investment-end-score').value);
     let amount = parseInt(document.getElementById('investment-amount').value);
-    //creates a spinning loader
-    document.getElementById('investment-result').innerHTML =
-     `<div class="preloader-wrapper small active custom-preloader-wrapper">
-       <div class="spinner-layer spinner-green-only">
-         <div class="circle-clipper left">
-           <div class="circle"></div>
-         </div><div class="gap-patch">
-           <div class="circle"></div>
-         </div><div class="circle-clipper right">
-           <div class="circle"></div>
-         </div>
-       </div>
-     </div>`
-    jsonApi.get('/calculate?old='+start+'&new='+end).then(function(data) {
-        let factor = data.factor.valueOf()
-        let output = (amount * factor).toFixed();
-        output = isNaN(output)?"invalid data":output;
-        output = (output+[]).length>20?formatToUnits(output):output;
-        //replaces the spinning loader with the calculated result
-        document.getElementById('investment-result').innerText = output;
-    }).catch(function(er){
-        let errorString = '<p>'+er.status+' connection error</p>';
-        //removes the spinnign loader
-        document.getElementById('investment-result').innerText = '000';
-        M.toast({html: errorString,displayLength:2000});
-    });
+    if(start>0 && end>0 && amount > 100){
+       //creates a spinning loader
+       document.getElementById('investment-result').innerHTML =
+        `<div class="preloader-wrapper small active custom-preloader-wrapper">
+          <div class="spinner-layer spinner-green-only">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div><div class="gap-patch">
+              <div class="circle"></div>
+            </div><div class="circle-clipper right">
+              <div class="circle"></div>
+            </div>
+          </div>
+        </div>`
+       jsonApi.get('/calculate?old='+start+'&new='+end).then(function(data) {
+           let factor = data.factor.valueOf()
+           let output = (amount * factor).toFixed();
+           output = isNaN(output)?"invalid data":output;
+           output = (output+[]).length>20?formatToUnits(output):output;
+           //replaces the spinning loader with the calculated result
+           document.getElementById('investment-result').innerText = output;
+       }).catch(function(er){
+           connectionErrorToast(er,'connection error');
+           //removes the spinnign loader
+           document.getElementById('investment-result').innerText = '000';
+       });
+    }else{
+       document.getElementById('investment-result').innerText = 'invalid data';
+    }
 }
