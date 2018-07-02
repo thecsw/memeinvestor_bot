@@ -97,7 +97,7 @@ def main():
             new_balance = int(balance + (amount * factor))
             change = new_balance - balance
             profit = change - amount
-            profit_str = f"{profit:d}%"
+            profit_str = f"{int((profit/amount)*100)}%"
 
             # Updating the investor's variables
             investor.completed += 1
