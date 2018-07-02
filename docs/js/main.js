@@ -403,7 +403,7 @@ function calculateInvestmentResult() {
        //creates a spinning loader
        document.getElementById('investment-result').innerHTML =
         `<div class="preloader-wrapper small active custom-preloader-wrapper">
-          <div class="spinner-layer spinner-green-only">
+          <div class="spinner-layer spinner-yellow-only">
             <div class="circle-clipper left">
               <div class="circle"></div>
             </div><div class="gap-patch">
