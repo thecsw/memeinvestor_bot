@@ -272,6 +272,69 @@ let userAccount = (function(){
 })();
 
 
+let updater = (function(){
+   let hidden, visibilityChange; 
+   let updateInterval = 10000;
+   let interval = false;
+   function init(){
+      //start the updater
+      start();
+      // Set the name of the hidden property and the change event for visibility
+      if (typeof document.hidden !== "undefined") {
+        hidden = "hidden";
+        visibilityChange = "visibilitychange";
+      } else if (typeof document.msHidden !== "undefined") {
+        hidden = "msHidden";
+        visibilityChange = "msvisibilitychange";
+      } else if (typeof document.webkitHidden !== "undefined") {
+        hidden = "webkitHidden";
+        visibilityChange = "webkitvisibilitychange";
+      }
+      document.addEventListener(visibilityChange, handleVisibilityChange, false);
+   }
+   //pause the updater when the window lose its focus
+   function handleVisibilityChange() {
+      if (document[hidden]) {
+         stop();
+      } else {
+         start();
+      }
+   }
+   function update(){
+      console.log('updating data..')
+      let tempData = jsonApi.getAll()
+      .then(function (data) {
+         overview.update(data.coins, data.investments);
+         leaderboard.update(data.investors.top);
+      })
+      .catch(function (err) {
+         console.error('error while retrieving apis data', err.statusText);
+         connectionErrorToast(err)
+      }); 
+      //beep(500, 2);//used for debugging on mobile
+   }
+   function stop(){
+      if(interval){
+         clearInterval(interval);
+         interval = false;
+      }
+   }
+   function start(){
+      if(!interval){
+         update()
+         interval = setInterval(update,updateInterval);
+      }
+   }
+   
+   return {
+      init: init,
+      update: update,
+      pause: stop,
+      resume: start
+   }
+})();
+
+
 (function(){
    //get session cookie
    
@@ -304,6 +367,7 @@ let userAccount = (function(){
       overview.init()
       overviewChart.init()
       userAccount.init()
+      updater.init()
       
       //load chart
       iterateDays(7, function(index, dateFrom, to){
@@ -320,21 +384,6 @@ let userAccount = (function(){
               })
       })
       
-      //start infinite short polling updater with 5s frequency
-      setInterval(updater,10000);
-      function updater(){
-         console.log('updating data..')
-         let tempData = jsonApi.getAll()
-         .then(function (data) {
-            overview.update(data.coins, data.investments);
-            leaderboard.update(data.investors.top);
-         })
-         .catch(function (err) {
-            console.error('error while retrieving apis data', err.statusText);
-            connectionErrorToast(err)
-         });      
-      } 
-      updater();
    });
    
 }());

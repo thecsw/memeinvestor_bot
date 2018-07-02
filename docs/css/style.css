@@ -168,11 +168,11 @@ nav{
 }
 
 .dark-collapsible .collapsible-header{
-  background-color: #222222 !important;
+  background-color: #262626 !important;
   border-bottom: 2px solid rgba(255,255,255, 0.1) !important;
 }
 .dark-collapsible .collapsible-body{
-  border-bottom: 2px solid rgba(255,255,255, 0.1) !important;
+  border-bottom: 0px solid rgba(0,0,0, 0.1) !important;
 }
 
 .investment-result{
