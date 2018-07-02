@@ -97,6 +97,7 @@ def main():
             new_balance = int(balance + (amount * factor))
             change = new_balance - balance
             profit = change - amount
+            profit_str = f"{profit:d}%"
 
             # Updating the investor's variables
             investor.completed += 1
@@ -104,18 +105,18 @@ def main():
 
             # Editing the comment as a confirmation
             text = response.body # <--- triggers a Reddit API call
-            if change > amount:
-                logging.info(f" -- gained {change}")
-                response.edit_wrap(message.modify_invest_return(text, change, new_balance))
-            elif change == amount:
-                logging.info(f" -- broke even ({change})")
-                response.edit_wrap(message.modify_invest_break_even(text, change, new_balance))
+            if profit > 0:
+                logging.info(f" -- profited {profit}")
+                response.edit_wrap(message.modify_invest_return(text, upvotes_now, change, profit_str, new_balance))
+            elif profit == 0:
+                logging.info(f" -- broke even")
+                response.edit_wrap(message.modify_invest_break_even(text, upvotes_now, change, profit_str, new_balance))
             else:
                 lost_memes = int( amount - change )
-                logging.info(f" -- lost {lost_memes}")
-                response.edit_wrap(message.modify_invest_lose(text, lost_memes, new_balance))
+                logging.info(f" -- lost {profit}")
+                response.edit_wrap(message.modify_invest_lose(text, upvotes_now, lost_memes, profit_str, new_balance))
 
-            investment.success = (change > amount)
+            investment.success = (profit > 0)
             investment.profit = profit
             investment.done = True
 

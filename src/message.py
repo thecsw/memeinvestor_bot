@@ -43,51 +43,57 @@ def modify_invest(amount, entry, balance):
 invest_return_org = """
 %INVESTMENT%
 
-UPDATE: Your investment was successful!
+UPDATE: Your investment has matured at %UPVOTES_NOW% upvotes. It was successful!
 
-This investment has brought you %WIN% MemeCoins. 
+This investment has brought you %WIN% MemeCoins (%PROFIT%).
 
 Your current balance is %BALANCE% MemeCoins.
 """
 
-def modify_invest_return(text, win, balance):
+def modify_invest_return(text, upvotes_now, win, profit, balance):
     invest_return = invest_return_org
     invest_return = invest_return.replace("%INVESTMENT%", str(text))
+    invest_return = invest_return.replace("%UPVOTES_NOW%", str(upvotes_now))
     invest_return = invest_return.replace("%WIN%", str(win))
+    invest_return = invest_return.replace("%PROFIT%", str(profit))
     invest_return = invest_return.replace("%BALANCE%", str(balance))
     return invest_return
 
 invest_break_even_org = """
 %INVESTMENT%
 
-UPDATE: Your investment broke even!
+UPDATE: Your investment has matured at %UPVOTES_NOW% upvotes. It broke even!
 
-This investment has brought you %NUMBER% MemeCoins. 
+This investment has brought you %NUMBER% MemeCoins (%PROFIT%).
 
 Your current balance is %BALANCE% MemeCoins.
 """
 
-def modify_invest_break_even(text, coins, balance):
+def modify_invest_break_even(text, upvotes_now, coins, profit, balance):
     invest_return = invest_return_org
     invest_return = invest_return.replace("%INVESTMENT%", str(text))
+    invest_return = invest_return.replace("%UPVOTES_NOW%", str(upvotes_now))
     invest_return = invest_return.replace("%NUMBER%", str(coins))
+    invest_return = invest_return.replace("%PROFIT%", str(profit))
     invest_return = invest_return.replace("%BALANCE%", str(balance))
     return invest_return
 
 invest_lose_org = """
 %INVESTMENT%
 
-UPDATE: Your investment was unsuccessful!
+UPDATE: Your investment has matured at %UPVOTES_NOW% upvotes. It was unsuccessful!
 
-You lost %NUMBER% MemeCoins.
+You lost %NUMBER% MemeCoins (%PROFIT%).
 
 Your current balance is %BALANCE% MemeCoins.
 """
 
-def modify_invest_lose(text, lost, balance):
+def modify_invest_lose(text, upvotes_now, lost, profit, balance):
     invest_lose = invest_lose_org
     invest_lose = invest_lose.replace("%INVESTMENT%", str(text))
+    invest_lose = invest_lose.replace("%UPVOTES_NOW%", str(upvotes_now))
     invest_lose = invest_lose.replace("%NUMBER%", str(lost))
+    invest_lose = invest_lose.replace("%PROFIT%", str(profit))
     invest_lose = invest_lose.replace("%BALANCE%", str(balance))
     return invest_lose
     
