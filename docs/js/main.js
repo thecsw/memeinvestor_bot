@@ -176,8 +176,9 @@ let overviewChart = (function(){
                   type: 'linear',
                   position: 'left',
                   gridLines: {
-                     zeroLineWidth: 2,
-                     color: 'rgba(255,255,255,0.1)'
+                     display: true,
+                     color: 'rgba(255,255,255,0.1)',
+                     zeroLineColor: 'rgba(255,255,255,0.0)'                     
                   },
                   ticks: {
                      fontColor: 'rgba(255,255,255,0.4)',
@@ -190,9 +191,9 @@ let overviewChart = (function(){
                   position: 'right',
                   gridLines: {
                      display: false,
-                     drawBorder: true,
-                     zeroLineWidth: 2,
-                     color: 'rgba(255,255,255,0.1)'
+                     drawBorder: false,
+                     color: 'rgba(255,255,255,0.1)',
+                     zeroLineColor: 'rgba(255,255,255,0.0)'
                   },
                   ticks: {
                      fontColor: 'rgba(255,255,255,0.4)',
@@ -202,8 +203,9 @@ let overviewChart = (function(){
                }],
                xAxes: [{
                   gridLines: {
-                     drawBorder: true,
-                     color: 'rgba(255,255,255,0.1)'
+                     display: true,
+                     color: 'rgba(255,255,255,0.1)',
+                     zeroLineColor: 'rgba(255,255,255,0.0)'
                   },                  
                   ticks: {
                      display: true,
