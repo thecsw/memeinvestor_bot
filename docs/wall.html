@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>meme investor bot</title>
+    <meta charset="utf-8">
+    <meta name="application-name" content=""/>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="Start investing in memes with the best broker in r/MemeEconomy today!"/>
+    <meta name="theme-color" content="#212121"/>
+    <link rel="icon" type="image/png" href="resources/favicon/favicon-32x32.png" sizes="32x32"/>
+    <link rel="icon" type="image/png" href="resources/favicon/favicon-32x32.png" sizes="16x16"/>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- materialize -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+    <!-- fancy charts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script src="js/libs/countup.min.js"></script>
+    <!-- page -->
+    <link type="text/css" rel="stylesheet" href="css/wall.css?c=3"/>
+    <script src="js/main.js?c=3"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo"><img src="resources/logo240.png" class="logo-img"/><span
+                    class="hide-on-small-only">emeInvestor bot</span></a>
+            <a href="#" data-target="mobile-sidebar" class="sidenav-trigger"><i
+                    class="material-icons">menu</i></a>
+
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li>
+                  <div class="input-field">
+                    <input id="investor-username" class="custom-dark-search" type="search" placeholder="search user" >
+                    <label class="label-icon" for="search-nav"><i class="material-icons">search</i></label>
+                    <i class="material-icons" onclick="userAccount.show('desktop')" >send</i>
+                  </div>
+                </li>
+                <!-- <li><a href="foo.html">overview</a></li> -->
+                <!-- <li><a href="bar.html">market</a></li> -->
+                <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/issues" target="_blank">bugs</a></li>
+                <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/" target="_blank"><img class="icon-32"
+                                                                                              src="resources/GitHub-Mark-Light-32px.png"/></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <ul class="sidenav" id="mobile-sidebar">
+        <li class="sidenav-top">
+         <h5>menu</h5>
+         <a class="sidenav-close" href="#!"><i class="material-icons">close</i></a>
+        </li>
+        <li><a id="without-this-everything-brokes">lol</a></li>
+        <li class="sidebar-search">
+            <input id="investor-username-mobile" placeholder="search user" type="search"  >
+        </li>
+        <!-- <li><a href="foo.html">brokers</a></li> -->
+        <!-- <li><a href="bar.html">commands</a></li> -->
+        <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/issues" target="_blank">bugs</a></li>
+        <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/"><img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"
+                                               target="_blank"></a></li>
+    </ul>
