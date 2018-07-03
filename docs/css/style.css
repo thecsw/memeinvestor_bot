@@ -30,7 +30,6 @@ nav{
 .brand-logo{
   margin-left:10px;
   margin-right:10px;
-  text-decoration: none;
 }
 .custom-dark-search{
   color:#f2f2f2;
@@ -209,8 +208,10 @@ h4{
   color: white;
 }
 a{
-  text-decoration: underline;
   color: #f9a825;
+}
+.underlined{
+  border-bottom: 1px solid #f9a825;
 }
 .dark-toast{
   background-color: #e9a435;

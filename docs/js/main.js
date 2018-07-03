@@ -133,28 +133,29 @@ let overviewChart = (function(){
       })
       ch1 = new Chart(ctx, {
          type: 'line',
-          // The data for our dataset
          data: {
             labels: graphLabels,
             datasets: [{
                //red dataset
-               label: "M¢ invested",
-               backgroundColor: 'rgb(240, 91, 79, 0)',
-               borderColor: 'rgb(240, 91, 79)',
                data: [10, 20, 22, 40, 89, 100, 150],
+               label: "M¢ invested",
                yAxisID: "A",
-               lineTension: 0
+               backgroundColor: 'rgba(240, 91, 79, 0.0)',
+               borderColor: 'rgb(240, 91, 79)',
+               lineTension: 0,
+               borderWidth: 2,
             },{
                //ORANG dataset
-               label: "investments",
-               backgroundColor: 'rgba(255, 167, 38, 0)',
-               borderColor: 'rgb(255, 167, 38)',
                data: [10, 20, 3, 5, 14, 20, 35],
+               label: "investments",
                yAxisID: "B",
-               lineTension: 0
+               backgroundColor: 'rgba(255, 167, 38, 0.0)',
+               borderColor: 'rgb(255, 167, 38)',
+               lineTension: 0,
+               borderWidth: 2,
+               
             }]
          },
-         // Configuration options go here
          options: {
             responsive: true,
             maintainAspectRatio: false,
@@ -163,27 +164,50 @@ let overviewChart = (function(){
                //we use our own
                display: false
             },
+            tooltips: {
+               cornerRadius: 2,
+               backgroundColor: 'rgba(233, 164, 53, 0.8)',
+               displayColors: false
+              
+            },
             scales: {
                yAxes: [{
-                  ticks: {
-                     display: displayAxysLabel,
-                     callback: val => formatToUnits(val)
-                  },
                   id: 'A',
                   type: 'linear',
-                  position: 'left'
-               }, {
+                  position: 'left',
+                  gridLines: {
+                     zeroLineWidth: 2,
+                     color: 'rgba(255,255,255,0.1)'
+                  },
                   ticks: {
+                     fontColor: 'rgba(255,255,255,0.4)',
                      display: displayAxysLabel,
                      callback: val => formatToUnits(val)
-                  },
+                  }
+               }, {
                   id: 'B',
                   type: 'linear',
-                  position: 'right'
+                  position: 'right',
+                  gridLines: {
+                     display: false,
+                     drawBorder: true,
+                     zeroLineWidth: 2,
+                     color: 'rgba(255,255,255,0.1)'
+                  },
+                  ticks: {
+                     fontColor: 'rgba(255,255,255,0.4)',
+                     display: displayAxysLabel,
+                     callback: val => formatToUnits(val)
+                  }
                }],
                xAxes: [{
+                  gridLines: {
+                     drawBorder: true,
+                     color: 'rgba(255,255,255,0.1)'
+                  },                  
                   ticks: {
-                     display: true
+                     display: true,
+                     fontColor: 'rgba(255,255,255,0.4)',
                   }                  
                }]
             }
