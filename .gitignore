@@ -8,9 +8,6 @@ data.db
 # Mac metadata
 .DS_Store
 
-# Shell files
-*.sh
-
 # My personal garbage in the folders
 *.saves
 *~
