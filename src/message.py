@@ -220,7 +220,7 @@ def modify_market(inves, cap, invs_cap):
 
 # Message used for !top command
 top_org = """
-Investors with the largest balances:
+Investors with the highest net worth (balance + active investments):
 
 %TOP_STRING%
 """
@@ -228,7 +228,7 @@ Investors with the largest balances:
 def modify_top(leaders):
     top_string = ""
     for l in leaders:
-        top_string = f"{top_string}\n\n{l.name}: {l.balance} MemeCoins"
+        top_string = f"{top_string}\n\n{l.name}: {int(l.networth)} MemeCoins"
 
     top_response = top_org
     top_response = top_response.replace("%TOP_STRING%", top_string)
