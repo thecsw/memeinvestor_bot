@@ -33,7 +33,9 @@ a{
   background-color: rgba(255,255,255,0.1);
   border-top:2px solid rgba(0,0,0,0.4 );
 }
-
+.btn.disabled{
+  background-color: rgba(255,255,255,0.1) !important;
+}
 /* --[nav bar]-- */
 nav{
   background-color:#222222;
