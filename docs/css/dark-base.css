@@ -21,6 +21,9 @@ a{
 .underlined{
   border-bottom: 1px solid #f9a825;
 }
+.no-margin-top{
+  margin-top:0px;
+}
 .dark-toast{
   background-color: #e9a435;
   border-bottom: 4px solid rgba(0,0,0,0.3);

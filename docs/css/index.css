@@ -2,9 +2,6 @@
 @import 'dark-base.css';
 
 /* --[graph row]-- */
-.row-title{
-  margin-top:0px;
-}
 .chart-wrap{
   height:300px;
 }
