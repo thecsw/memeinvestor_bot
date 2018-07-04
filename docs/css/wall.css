@@ -2,7 +2,14 @@
 
 @import 'dark-base.css';
 
+/* --[top 3 row]-- */
 .top3-cards{
+  max-width:880px;
+  margin: 0 auto;  
+  margin-bottom:25px;
+}
+.divider{
+  margin: 20px !important
 }
 .top3-cards h5{
   margin: 0;  
@@ -10,25 +17,14 @@
 .top3-cards p{
   margin: 5px;  
 }
-.top-card .card{
-  background-color: transparent;
-  box-shadow: none;
-}
-.top-card .card img{
-  padding-left:80px;
-  padding-right:80px;
-}
-.top-card{
-max-width:280px;
-margin: 0 auto;  
-}
-.left-card img{
-  width: 70px;
+
+.top-card img{
+  width: 120px;
   height:auto;
 }
-.right-card img{
+.left-card img, .right-card img{
   width: 70px;
-  height:auto;  
+  height:auto;
 }
 
 /* --[table row]-- */
