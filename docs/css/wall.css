@@ -1,5 +1,35 @@
 
+
 @import 'dark-base.css';
+
+.top3-cards{
+}
+.top3-cards h5{
+  margin: 0;  
+}
+.top3-cards p{
+  margin: 5px;  
+}
+.top-card .card{
+  background-color: transparent;
+  box-shadow: none;
+}
+.top-card .card img{
+  padding-left:80px;
+  padding-right:80px;
+}
+.top-card{
+max-width:280px;
+margin: 0 auto;  
+}
+.left-card img{
+  width: 70px;
+  height:auto;
+}
+.right-card img{
+  width: 70px;
+  height:auto;  
+}
 
 /* --[table row]-- */
 .table-wrap table td span{
@@ -13,7 +43,7 @@
   float:none;
 }
 .table-wrap{
-    max-width:800px;
+max-width:800px;
 margin: 0 auto;
 }
 .table-wrap table tr{
