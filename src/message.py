@@ -48,6 +48,8 @@ UPDATE: Your investment has matured at %UPVOTES_NOW% upvotes. It was successful!
 This investment has brought you %WIN% MemeCoins (%PROFIT%).
 
 Your current balance is %BALANCE% MemeCoins.
+
+^(formula v3)
 """
 
 def modify_invest_return(text, upvotes_now, win, profit, balance):
@@ -67,6 +69,8 @@ UPDATE: Your investment has matured at %UPVOTES_NOW% upvotes. It broke even!
 This investment has brought you %NUMBER% MemeCoins (%PROFIT%).
 
 Your current balance is %BALANCE% MemeCoins.
+
+^(formula v3)
 """
 
 def modify_invest_break_even(text, upvotes_now, coins, profit, balance):
@@ -86,6 +90,8 @@ UPDATE: Your investment has matured at %UPVOTES_NOW% upvotes. It was unsuccessfu
 You lost %NUMBER% MemeCoins (%PROFIT%).
 
 Your current balance is %BALANCE% MemeCoins.
+
+^(formula v3)
 """
 
 def modify_invest_lose(text, upvotes_now, lost, profit, balance):
