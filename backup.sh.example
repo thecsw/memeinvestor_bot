@@ -1,6 +1,0 @@
-#!/bin/bash
-_now=$(date +"%m_%d_%Y")
-_file="/tmp/backup_$_now.sql"
-echo "Starting backup to $_file..."
-docker-compose exec mysql mysqldump DATABASE_NAME -u USERNAME -p -f "$_file"
-docker cp memeinvestor_bot_mysql_1:/tmp/"$_file" .
