@@ -85,6 +85,16 @@ boring (no investors and no investments) but you can interact with your test bot
 populate the database, or you can manually set up investor accounts by interacting with the
 database directly via Python code or a database manager like `adminer`.
 
+## Built with
+1. [praw](https://github.com/praw-dev/praw) an acronym for "Python Reddit API Wrapper",
+is a python package that allows for simple access to Reddit's API.
+2. [fastnumbers](https://pypi.org/project/fastnumbers/). Super-fast and clean conversions to numbers.
+3. [Flask](http://flask.pocoo.org/) is a microframework for Python based on Werkzeug, Jinja 2 and good intentions.
+4. [gunicorn](http://gunicorn.org/) is a Python WSGI HTTP Server for UNIX. 
+5. [mysqlclient](https://github.com/PyMySQL/mysqlclient-python). MySQL database connector for Python (with Python 3 support).
+6. [SQLAlchemy](http://www.sqlalchemy.org/) is the Python SQL toolkit and Object Relational Mapper that gives application
+developers the full power and flexibility of SQL. 
+
 ## Authors
 
  - *Sagindyk Urazayev* - Core developer. Initial work & SQLite - [thecsw](https://github.com/thecsw)
