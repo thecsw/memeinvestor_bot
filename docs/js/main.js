@@ -209,7 +209,7 @@ let leaderboard = (function(){
              let badge = top[i].broke>0? '<span class="red bankrupt-badge white-text">'+top[i].broke+'</span>':"";
              // all in badge <span class="amber badge white-text">all in 3</span>
              html += "<tr><td>"+top[i].name + badge+"</td>"+
-                         "<td>"+formatToUnits(top[i].balance)+"</td>"+
+                         "<td>"+formatToUnits(top[i].networth)+"</td>"+
                          "<td>"+top[i].completed+"</td></tr>"
           }
       tb.innerHTML = html

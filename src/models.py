@@ -20,7 +20,7 @@ class Investment(Base):
     post = Column(String(11), nullable=False)
     upvotes = Column(Integer, default=0)
     comment = Column(String(11), nullable=False, unique=True)
-    name = Column(String(20), nullable=False)
+    name = Column(String(20), nullable=False, index=True)
     amount = Column(BigInteger, default=100)
     time = Column(Integer, server_default=unix_timestamp())
     done = Column(Boolean, default=False, nullable=False)

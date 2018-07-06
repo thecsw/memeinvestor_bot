@@ -4,7 +4,7 @@ import logging
 import traceback
 
 import sqlalchemy
-from sqlalchemy import create_engine, func
+from sqlalchemy import create_engine, func, desc, and_
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 import praw
@@ -137,7 +137,15 @@ class CommentWorker():
         comment.reply_wrap(message.modify_market(active, total, invested))
 
     def top(self, sess, comment):
-        leaders = sess.query(Investor).order_by(Investor.balance.desc()).limit(5).all()
+        leaders = sess.query(
+            Investor.name,
+            func.coalesce(Investor.balance+func.sum(Investment.amount), Investor.balance).label('networth')).\
+        outerjoin(Investment, and_(Investor.name == Investment.name, Investment.done == 0)).\
+        group_by(Investor.name).\
+        order_by(desc('networth')).\
+        limit(5).\
+        all()
+
         comment.reply_wrap(message.modify_top(leaders))
 
     def create(self, sess, comment):
