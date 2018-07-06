@@ -24,7 +24,7 @@ function modal(id){
       <p>Write your message here</p>
    </div>
    <div class="modal-footer">
-      <a href="#!" class="modal-close waves-effect waves-green btn-flat">close</a>
+      <a href="#!" class="modal-close waves-effect waves-light btn grey darken-3">close</a>
    </div>
    `
    //uncomment this while debugging the popup to show it on every page reload
@@ -32,7 +32,6 @@ function modal(id){
 
    let modalEl = document.getElementById(id);
    if(SHOWPOPUP && localStorage.getItem('viewed_info') != POPUP){
-      debugger;
       modalEl.innerHTML = message
       M.Modal.init(modalEl);
       setTimeout(
