@@ -46,7 +46,7 @@ export function connectionErrorToast(error, defaultErrorText = 'we couldn\'t get
    //simple connection error
    if(error.status === 0 || error.statusText === ""){
       toastHTML = '<p>We couldn\'t get the latest data. Please check your connection</p>';
-   }//more serious problem, that is worth reporting
+   }//more serious problem
    else{
       toastHTML = `<p>${defaultErrorText} Error ${error.status}</p>`;   
    }
