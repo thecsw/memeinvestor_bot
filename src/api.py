@@ -3,7 +3,7 @@ import json
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import desc, func
+from sqlalchemy import desc, func, and_
 
 import config
 from models import Investor, Investment
@@ -131,16 +131,27 @@ def investments_total():
 
 
 @app.route("/investors/top")
-@app.route("/investors/top/<string:field>")
-def investors_top(field="balance"):
+def investors_top():
     page, per_page = get_pagination()
 
-    sql = db.session.query(Investor).order_by(desc(field)).\
-          limit(per_page).offset(page*per_page).all()
+    sql = db.session.query(
+        Investor.name,
+        Investor.balance,
+        func.sum(Investment.amount),
+        func.coalesce(Investor.balance+func.sum(Investment.amount), Investor.balance).label('networth'),
+        Investor.completed,
+        Investor.broke).\
+    outerjoin(Investment, and_(Investor.name == Investment.name, Investment.done == 0)).\
+    group_by(Investor.name).\
+    order_by(desc('networth')).\
+    limit(per_page).\
+    offset(page*per_page).\
+    all()
 
     res = [{
         "name": x.name,
         "balance": x.balance,
+        "networth": int(x.networth),
         "completed": x.completed,
         "broke": x.broke,
     } for x in sql]

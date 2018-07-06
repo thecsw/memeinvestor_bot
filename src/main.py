@@ -1,9 +1,10 @@
 import re
 import time
 import logging
+import traceback
 
 import sqlalchemy
-from sqlalchemy import create_engine, func
+from sqlalchemy import create_engine, func, desc, and_
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 import praw
@@ -40,6 +41,7 @@ def reply_wrap(self, body):
             return self.reply(body)
         except Exception as e:
             logging.error(e)
+            traceback.print_exc()
             return False
     else:
         logging.info(body)
@@ -108,6 +110,7 @@ class CommentWorker():
                 getattr(self, attrname)(sess, comment, *matches.groups())
             except Exception as e:
                 logging.error(e)
+                traceback.print_exc()
                 sess.rollback()
             else:
                 sess.commit()
@@ -134,7 +137,15 @@ class CommentWorker():
         comment.reply_wrap(message.modify_market(active, total, invested))
 
     def top(self, sess, comment):
-        leaders = sess.query(Investor).order_by(Investor.balance.desc()).limit(5).all()
+        leaders = sess.query(
+            Investor.name,
+            func.coalesce(Investor.balance+func.sum(Investment.amount), Investor.balance).label('networth')).\
+        outerjoin(Investment, and_(Investor.name == Investment.name, Investment.done == 0)).\
+        group_by(Investor.name).\
+        order_by(desc('networth')).\
+        limit(5).\
+        all()
+
         comment.reply_wrap(message.modify_top(leaders))
 
     def create(self, sess, comment):
@@ -299,6 +310,7 @@ def main():
                 stopwatch.reset()
         except Exception as e:
             logging.error(e)
+            traceback.print_exc()
             time.sleep(10)
 
 if __name__ == "__main__":

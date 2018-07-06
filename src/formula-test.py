@@ -45,7 +45,8 @@ def main():
     plt.legend(fontsize='12')
     
     #Interactive show plot
-    fig.show()
+    plt.show()
+
     #Optional save plot
     if args.save_img:
         out_filename = 'investment_performance.png'

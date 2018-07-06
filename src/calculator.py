@@ -1,6 +1,7 @@
 import time
 import datetime
 import logging
+import traceback
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -31,6 +32,7 @@ def edit_wrap(self, body):
             return self.edit(body)
         except Exception as e:
             logging.error(e)
+            traceback.print_exc()
             return False
     else:
         logging.info(body)
@@ -84,14 +86,6 @@ def main():
             else:
                 response = EmptyResponse()
 
-            # If comment is deleted, skip it
-            try:
-                reddit.comment(id=investment.comment)
-            except:
-                logging.info(f" -- skipped (deleted comment)")
-                response.edit_wrap(message.deleted_comment_org)
-                continue
-
             post = reddit.submission(investment.post)
             upvotes_now = post.ups # <--- triggers a Reddit API call
 
@@ -103,6 +97,7 @@ def main():
             new_balance = int(balance + (amount * factor))
             change = new_balance - balance
             profit = change - amount
+            profit_str = f"{int((profit/amount)*100)}%"
 
             # Updating the investor's variables
             investor.completed += 1
@@ -110,18 +105,18 @@ def main():
 
             # Editing the comment as a confirmation
             text = response.body # <--- triggers a Reddit API call
-            if change > amount:
-                logging.info(f" -- gained {change}")
-                response.edit_wrap(message.modify_invest_return(text, change, new_balance))
-            elif change == amount:
-                logging.info(f" -- broke even ({change})")
-                response.edit_wrap(message.modify_invest_break_even(text, change, new_balance))
+            if profit > 0:
+                logging.info(f" -- profited {profit}")
+                response.edit_wrap(message.modify_invest_return(text, upvotes_now, change, profit_str, new_balance))
+            elif profit == 0:
+                logging.info(f" -- broke even")
+                response.edit_wrap(message.modify_invest_break_even(text, upvotes_now, change, profit_str, new_balance))
             else:
                 lost_memes = int( amount - change )
-                logging.info(f" -- lost {lost_memes}")
-                response.edit_wrap(message.modify_invest_lose(text, lost_memes, new_balance))
+                logging.info(f" -- lost {profit}")
+                response.edit_wrap(message.modify_invest_lose(text, upvotes_now, lost_memes, profit_str, new_balance))
 
-            investment.success = (change > amount)
+            investment.success = (profit > 0)
             investment.profit = profit
             investment.done = True
 
@@ -137,6 +132,7 @@ def main():
             logging.info(f" -- API calls remaining: {rem:3d}, resetting in {res:3d}s")
         except Exception as e:
             logging.error(e)
+            traceback.print_exc()
             time.sleep(10)
         finally:
             sess.close()
