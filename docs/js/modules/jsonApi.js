@@ -38,7 +38,3 @@ export function get(param){
    return makeRequest(param, options);
 }
 
-// export getAll;
-// export get;
-
-

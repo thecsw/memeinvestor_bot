@@ -20,7 +20,6 @@
     <!-- page -->
     <link type="text/css" rel="stylesheet" href="css/index.css?c=3"/>
     <script type="module" src="js/main.js?c=3"></script>
-    <script nomodule src="js/main.js?c=3"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
@@ -38,14 +37,15 @@
                   <div class="input-field">
                     <input id="investor-username" class="custom-dark-search" type="search" placeholder="search user" >
                     <label class="label-icon" for="search-nav"><i class="material-icons">search</i></label>
-                    <i class="material-icons" onclick="userAccount.show('desktop')" >send</i>
+                    <i class="material-icons" id="investor-username-search">send</i>
                   </div>
                 </li>
                 <!-- <li><a href="foo.html">overview</a></li> -->
                 <!-- <li><a href="bar.html">market</a></li> -->
                 <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/issues" target="_blank">bugs</a></li>
-                <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/" target="_blank"><img class="icon-32"
-                                                                                              src="resources/GitHub-Mark-Light-32px.png"/></a>
+                <li>
+                  <a href="https://github.com/MemeInvestor/memeinvestor_bot/" target="_blank">
+                  <img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"/></a>
                 </li>
             </ul>
         </div>
@@ -66,6 +66,11 @@
         <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/"><img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"
                                                target="_blank"></a></li>
     </ul>
+    
+    <div id="announcements-modal" class="modal">
+    </div>
+
+<!-- PUT PAGE CODE HERE -->
 
     <div class="container" id="overview">
         <div class="section">
@@ -238,7 +243,7 @@
                             <label for="investment-amount">Memecoins invested</label>
                         </div>
                         <div class="input-field row col s12 m12 l6">
-                            <a onclick="calculateInvestmentResult()" class="btn col s6 waves-effect waves-light btn yellow darken-3">estimate</a>
+                            <a  id="investment-calc" class="btn col s6 waves-effect waves-light btn yellow darken-3">estimate</a>
                             <div class="col s6 investment-result valign-wrapper"><p id="investment-result">000</p></div>
                         </div>
 
@@ -247,25 +252,6 @@
             </div>
 
 
-        </div>
-    </div>
-
-
-    <!-- Modal Structure -->
-    <div id="modal1" class="modal">
-        <div class="modal-content" id="message-popup" >
-            <!--
-              some icons that can be placed inside the popup title
-              <i class="material-icons medium left orange-text">info</i>
-              <i class="material-icons medium left orange-text">warning</i>
-              <i class="material-icons medium left amber-text">new_releases</i>
-            -->
-            <h4><i class="material-icons medium left orange-text">info</i> INFO</h4>
-            <p>Write your message here</p>
-        </div>
-        <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-green btn-flat">close</a>
-        <!--<a href="#!" id="i-hate-this-btn" class="waves-effect waves-green btn-flat">i hate this</a>-->
         </div>
     </div>
 

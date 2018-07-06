@@ -1,4 +1,6 @@
-import * as jsonApi from './jsonApi.js';
+import {connectionErrorToast} from './modules/uiElements.js';
+import * as jsonApi from './modules/jsonApi.js';
+import {formatToUnits, iterateDays} from './modules/dataUtils.js';
 
 let overview = (function(){
    let counters = {
@@ -165,8 +167,7 @@ let overviewChart = (function(){
             }
          }
       });
-
-      
+   
    }
    return{
       init: init,
@@ -183,7 +184,6 @@ let leaderboard = (function(){
           for(let i=0; i<top.length;i++){
              //broke badge
              let badge = top[i].broke>0? '<span class="red bankrupt-badge white-text">'+top[i].broke+'</span>':"";
-             // all in badge <span class="amber badge white-text">all in 3</span>
              html += "<tr><td>"+top[i].name + badge+"</td>"+
                          "<td>"+formatToUnits(top[i].balance)+"</td>"+
                          "<td>"+top[i].completed+"</td></tr>"
@@ -195,14 +195,20 @@ let leaderboard = (function(){
    }
 })();
 
-
+//TODO: move all this to a custom page
 let userAccount = (function(){
-   let searchBarIds = {
-      desktop: 'investor-username',
-      mobile:'investor-username-mobile'      
+   let ids = {
+      searchBar: {
+         desktop: 'investor-username',
+         mobile: 'investor-username-mobile'         
+      },
+      searchButton: {
+         desktop: 'investor-username-search',
+         mobile: undefined
+      }
    }
    function show(device) {
-      let username = document.getElementById(searchBarIds[device]).value;
+      let username = document.getElementById(ids.searchBar[device]).value;
       if(username.length > 0){
          let domPopup = document.getElementById('investor-info'); 
          M.Modal.init(domPopup);
@@ -226,10 +232,13 @@ let userAccount = (function(){
    }
    function init(){
       //add ENTER key listener
-      let searchEl = document.getElementById(searchBarIds['desktop']);
+      let searchEl = document.getElementById(ids.searchBar['desktop']);
       searchEl.addEventListener('keypress', e=> {if((e.which || e.keyCode) === 13)show('desktop')} );     
-      searchEl = document.getElementById(searchBarIds['mobile']);
+      searchEl = document.getElementById(ids.searchBar['mobile']);
       searchEl.addEventListener('keypress', e=> {if((e.which || e.keyCode) === 13)show('mobile')} );
+      //add SEARCH button click listener
+      let searchButton = document.getElementById(ids.searchButton['desktop']);
+      searchButton.addEventListener('click', e=> show('desktop') );  
       // check if url contains ?account=
       let url = new URL(window.location.href);
       let username = url.searchParams.get("account");
@@ -247,6 +256,60 @@ let userAccount = (function(){
    }
 })();
 
+
+let investmentsCalculator = (function() {
+   let startEl, endEl, amountEl;
+   let ids = {
+/*    input: {
+         start: 'investment-start-score',
+         end: 'investment-end-score',
+         amount: 'investment-amount'
+      },
+      output: 'investment-result', */
+      button: 'investment-calc'
+   }
+   function init(){
+      let calcButton = document.getElementById(ids.button);
+      calcButton.addEventListener('click', e=> calc() );
+   }
+   function calc(){
+      let start = parseInt(document.getElementById('investment-start-score').value);
+      let end = parseInt(document.getElementById('investment-end-score').value);
+      let amount = parseInt(document.getElementById('investment-amount').value);
+      if(start>0 && end>0 && amount > 100){
+         //creates a spinning loader
+         document.getElementById('investment-result').innerHTML =
+         `<div class="preloader-wrapper small active custom-preloader-wrapper">
+          <div class="spinner-layer spinner-yellow-only">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div><div class="gap-patch">
+              <div class="circle"></div>
+            </div><div class="circle-clipper right">
+              <div class="circle"></div>
+            </div>
+          </div>
+         </div>`
+         jsonApi.get('/calculate?old='+start+'&new='+end).then(function(data) {
+            let factor = data.factor.valueOf()
+            let output = (amount * factor).toFixed();
+            output = isNaN(output)?"invalid data":output;
+            output = (output+[]).length>20?formatToUnits(output):output;
+            //replaces the spinning loader with the calculated result
+            document.getElementById('investment-result').innerText = output;
+         }).catch(function(er){
+            connectionErrorToast(er,'connection error');
+            //removes the spinnign loader
+            document.getElementById('investment-result').innerText = '000';
+         });
+      }else{
+         document.getElementById('investment-result').innerText = 'invalid data';
+      }
+   }
+   return {
+      init: init
+   }
+})();
 
 let updater = (function(){
    let hidden, visibilityChange; 
@@ -312,38 +375,14 @@ let updater = (function(){
 
 
 (function(){
-   //get session cookie
-   
-   //dom ready listener
    document.addEventListener('DOMContentLoaded', function(){
-      //init all materialize elements
-      let elems = document.querySelectorAll('.sidenav');
-      let instances = M.Sidenav.init(elems);
-      elems = document.querySelectorAll('.collapsible');
-      M.Collapsible.init(elems);
-      elems = document.querySelectorAll('.materialboxed');
-      M.Materialbox.init(elems);
-      //popup code. after the first view, the current popup viewed is stored in localStorage,
-      //to avoid showing it on every page reload. increment const popup and refresh cache to show
-      //the popup message again
-      const POPUP = 2
-      const SHOWPOPUP = false
-      //debug
-      //localStorage.removeItem('viewed_info')   
-      if(SHOWPOPUP && localStorage.getItem('viewed_info') != POPUP){
-         let domPopup = document.getElementById('modal1');
-         M.Modal.init(domPopup);
-         setTimeout(
-            ()=> M.Modal.getInstance(domPopup).open(),
-            2000 );
-         localStorage.setItem('viewed_info',POPUP)            
-      }
-
-      //init modules
+      //init local modules
       overview.init()
       overviewChart.init()
       userAccount.init()
       updater.init()
+      investmentsCalculator.init()
+      
       
       //load chart
       iterateDays(7, function(index, dateFrom, to){
@@ -365,92 +404,6 @@ let updater = (function(){
 }());
 
 
-function connectionErrorToast(error, defaultErrorText = 'we couldn\'t get the latest data.'){
-   let toastHTML = '';
-   //simple connection error
-   if(error.status === 0 || error.statusText === ""){
-      toastHTML = '<p>We couldn\'t get the latest data. Please check your connection</p>';
-   }//more serious problem, that is worth reporting
-   else{
-      globalError = error;
-      toastHTML = `<p>${defaultErrorText} </p><button class="btn-flat toast-action white-text" onclick="reportError()">report</button>`;   
-   }
-   //M.Toast.dismissAll();
-   M.toast({html: toastHTML,displayLength:2000, classes:"dark-toast"}); 
-}
-
-var globalError;
-function reportError(){
-   let responsable = "robalborb";
-   let subject = "BRUH%20YOU%20MESSED%20UP!!1!";
-   let message = "error: "+JSON.stringify(globalError);
-   let url = "https://www.reddit.com/message/compose/?to="+responsable+"&subject="+subject+"&message="+message;
-   let win = window.open(url, '_blank');
-   win.focus();
-}
 
 
-function formatToUnits(val) {
-    let number = parseInt(val);
-    let abbrev = ['', 'K', 'M', 'B', 'T', 'q', 'Q', 's', 'S'];
-    //, 'Sx', 'Sp', 'Oc', 'No', 'Dc', 'Ud', 'Dd', 'Td', 'Qad', 'Qid', 'Sxd', 'Spd', 'Ocd', 'Nod', 'Vg', 'Uvg','Dvg'];
-    //after the Dvg (duovigintillion) use scientific notation
-    let unrangifiedOrder = Math.floor(Math.log10(Math.abs(number)) / 3);
-    let order = Math.max(0, Math.min(unrangifiedOrder, abbrev.length -1 ));
-    let suffix = abbrev[order];
-    let precision = suffix ? 1 : 0;
-    let res = (number / Math.pow(10, order * 3)).toFixed(precision) + suffix;
-    return res;
-}
 
-function iterateDays(days, callback) {
-    let to = new Date();
-    to.setHours(23);
-    to.setMinutes(59);
-    to.setSeconds(59);
-    to.setMilliseconds(999);
-    let dateFrom = new Date();
-    dateFrom.setTime(to.getTime());
-    dateFrom.setDate(dateFrom.getDate() - 1);
-
-    for (let i = days - 1; i >= 0; i--) {
-        callback(i, dateFrom, to);
-        dateFrom.setDate(dateFrom.getDate() - 1);
-        to.setDate(to.getDate() - 1);
-    }
-}
-
-export function calculateInvestmentResult() {
-    let start = parseInt(document.getElementById('investment-start-score').value);
-    let end = parseInt(document.getElementById('investment-end-score').value);
-    let amount = parseInt(document.getElementById('investment-amount').value);
-    if(start>0 && end>0 && amount > 100){
-       //creates a spinning loader
-       document.getElementById('investment-result').innerHTML =
-        `<div class="preloader-wrapper small active custom-preloader-wrapper">
-          <div class="spinner-layer spinner-yellow-only">
-            <div class="circle-clipper left">
-              <div class="circle"></div>
-            </div><div class="gap-patch">
-              <div class="circle"></div>
-            </div><div class="circle-clipper right">
-              <div class="circle"></div>
-            </div>
-          </div>
-        </div>`
-       jsonApi.get('/calculate?old='+start+'&new='+end).then(function(data) {
-           let factor = data.factor.valueOf()
-           let output = (amount * factor).toFixed();
-           output = isNaN(output)?"invalid data":output;
-           output = (output+[]).length>20?formatToUnits(output):output;
-           //replaces the spinning loader with the calculated result
-           document.getElementById('investment-result').innerText = output;
-       }).catch(function(er){
-           connectionErrorToast(er,'connection error');
-           //removes the spinnign loader
-           document.getElementById('investment-result').innerText = '000';
-       });
-    }else{
-       document.getElementById('investment-result').innerText = 'invalid data';
-    }
-}
