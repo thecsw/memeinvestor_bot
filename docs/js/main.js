@@ -1,55 +1,6 @@
-"use strict";
-let jsonApi = (function(){
-   let options = {
-      method: "GET",
-      //url: "/api",
-      url: "https://memes.market/api",
-      //url: "http://localhost/memeinvestor_bot/docs/testApiData.json",
-   }
-   function makeRequest (param, options) {
-      
-     return new Promise(function (resolve, reject) {
-       var xhr = new XMLHttpRequest();
-       let url = options.url+param;
-       xhr.open(options.method, url);
-       xhr.onload = function () {
-         if (this.status >= 200 && this.status < 300) {
-           resolve(JSON.parse(xhr.response));
-         } else {
-           reject({
-             status: this.status,
-             statusText: xhr.statusText
-           });
-         }
-       };
-       xhr.onerror = function () {
-         reject({
-           status: this.status,
-           statusText: xhr.statusText
-         });
-       };
-       xhr.send();
-     });
-   }
-   
-   function getAll(){
-      return makeRequest("?per_page=5", options);
-   }
-
-   function get(param){
-      return makeRequest(param, options);
-   }
-   
-   return {
-      getAll: getAll,
-      get: get
-   }
-})();
-
-
+import * as jsonApi from './jsonApi.js';
 
 let overview = (function(){
-   
    let counters = {
       coinsInvested: undefined,
       coinsTotal: undefined,
@@ -69,8 +20,7 @@ let overview = (function(){
       counters.coinsTotal.update(coins.total.coins)
       counters.investmentsActive.update(investments.active.investments)
       //counters.investmentsTotal.update(investments.total.investments)
-   }
-   
+   }  
    return {
       init:init,
       update: update
@@ -470,7 +420,7 @@ function iterateDays(days, callback) {
     }
 }
 
-function calculateInvestmentResult() {
+export function calculateInvestmentResult() {
     let start = parseInt(document.getElementById('investment-start-score').value);
     let end = parseInt(document.getElementById('investment-end-score').value);
     let amount = parseInt(document.getElementById('investment-amount').value);
