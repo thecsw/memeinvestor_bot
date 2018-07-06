@@ -14,12 +14,9 @@
     <!-- materialize -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
-    <!-- fancy charts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
-    <script src="js/libs/countup.min.js"></script>
     <!-- page -->
-    <link type="text/css" rel="stylesheet" href="css/wall.css?c=3"/>
-    <script src="js/main.js?c=3"></script>
+    <link type="text/css" rel="stylesheet" href="css/wall.css"/>
+    <script type="module" src="js/wall.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
@@ -37,14 +34,15 @@
                   <div class="input-field">
                     <input id="investor-username" class="custom-dark-search" type="search" placeholder="search user" >
                     <label class="label-icon" for="search-nav"><i class="material-icons">search</i></label>
-                    <i class="material-icons" onclick="userAccount.show('desktop')" >send</i>
+                    <i class="material-icons" id="investor-username-search">send</i>
                   </div>
                 </li>
                 <!-- <li><a href="foo.html">overview</a></li> -->
                 <!-- <li><a href="bar.html">market</a></li> -->
                 <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/issues" target="_blank">bugs</a></li>
-                <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/" target="_blank"><img class="icon-32"
-                                                                                              src="resources/GitHub-Mark-Light-32px.png"/></a>
+                <li>
+                  <a href="https://github.com/MemeInvestor/memeinvestor_bot/" target="_blank">
+                  <img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"/></a>
                 </li>
             </ul>
         </div>
@@ -65,6 +63,11 @@
         <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/"><img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"
                                                target="_blank"></a></li>
     </ul>
+    
+    <div id="announcements-modal" class="modal ">
+    </div>
+
+<!-- PUT PAGE CODE HERE -->
 
     <div class="container" >
       <div class="section center-align">

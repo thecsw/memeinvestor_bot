@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function(){
 //to avoid showing it on every page reload. increment const popup and refresh cache to show
 //the popup message again
 function modal(id){
-   const POPUP = 2
+   const POPUP = 3
    const SHOWPOPUP = true
    /*
    some icons that can be placed inside the popup title
@@ -28,7 +28,7 @@ function modal(id){
    </div>
    `
    //uncomment this while debugging the popup to show it on every page reload
-   localStorage.removeItem('viewed_info')
+   //localStorage.removeItem('viewed_info')
 
    let modalEl = document.getElementById(id);
    if(SHOWPOPUP && localStorage.getItem('viewed_info') != POPUP){
