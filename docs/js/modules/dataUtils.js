@@ -1,12 +1,19 @@
 export function formatToUnits(val) {
-    let number = parseInt(val);
-    let abbrev = ['', 'K', 'M', 'B', 'T', 'q', 'Q', 's', 'S'];
-    let unrangifiedOrder = Math.floor(Math.log10(Math.abs(number)) / 3);
-    let order = Math.max(0, Math.min(unrangifiedOrder, abbrev.length -1 ));
-    let suffix = abbrev[order];
-    let precision = suffix ? 1 : 0;
-    let res = (number / Math.pow(10, order * 3)).toFixed(precision) + suffix;
-    return res;
+   let res = getSuffix(val)
+   return res.val + res.suffix;
+}
+
+export function getSuffix(val){
+   let number = parseInt(val);
+   let abbrev = ['', 'K', 'M', 'B', 'T', 'q', 'Q', 's', 'S'];
+   let unrangifiedOrder = Math.floor(Math.log10(Math.abs(number)) / 3);
+   let order = Math.max(0, Math.min(unrangifiedOrder, abbrev.length -1 ));
+   let suffix = abbrev[order];
+   let precision = suffix ? 1 : 0;
+   return {
+      val: (number / Math.pow(10, order * 3)).toFixed(precision),
+      suffix: suffix
+   }  
 }
 
 export function iterateDays(days, callback) {
