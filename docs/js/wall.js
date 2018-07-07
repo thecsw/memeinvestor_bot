@@ -1,6 +1,7 @@
 import {connectionErrorToast} from './modules/uiElements.js';
 import * as jsonApi from './modules/jsonApi.js';
 import {formatToUnits, getSuffix} from './modules/dataUtils.js';
+
 let leaderboard = (function(){
    let ids = {
       buttons: {
