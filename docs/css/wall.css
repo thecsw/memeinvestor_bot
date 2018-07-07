@@ -27,28 +27,10 @@
   height:auto;
 }
 
-.flip-char{
+.flip{
   display: block;
   overflow: none;
   animation: mirrorflip 0.5s 0s linear;
-}
-
-
-.logo {
-  display: block;
-  width: 780px;
-  height: 359px;
-  margin: 54px auto;
-  font-size: 260px;
-  text-align: center;
-  text-decoration: none;
-  overflow: hidden;
-  color: #FFF;
-}
-.flipchar {
-  display: inline-block;
-  animation: mirrorflip 10s 0s linear infinite;
-  color: #f66e49;
 }
 
 @keyframes mirrorflip {
