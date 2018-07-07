@@ -1,0 +1,33 @@
+
+
+@import 'dark-base.css';
+
+/* --[table row]-- */
+.table-wrap table td span{
+  border-radius: 2px;
+  font-size: 12px;
+  line-height: 20px;
+  height: 20px;
+  position: relative;
+  right: auto;
+  margin-left: 10px;
+  float:none;
+}
+.table-wrap{
+max-width:800px;
+margin: 0 auto;
+}
+.table-wrap th{
+  color: rgba(100, 100, 100, 1);
+}
+.table-wrap table tr{
+  border-bottom: 1px solid rgba(0,0,0,0.3);
+}
+.table-wrap table > tbody > tr:nth-child(2n+1) {
+  background-color: rgba(0,0,0,0.1);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.bankrupt-badge{
+  padding: 2px 4px;
+  border-radius: 2px;
+}

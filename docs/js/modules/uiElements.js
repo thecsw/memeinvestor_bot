@@ -1,8 +1,46 @@
 
+let searchBar = (function(){
+   let ids = {
+      searchBar: {
+         desktop: 'investor-username',
+         mobile: 'investor-username-mobile'         
+      },
+      searchButton: {
+         desktop: 'investor-username-search',
+         mobile: undefined
+      }
+   }
+   function redirect(device) {
+      let username = document.getElementById(ids.searchBar[device]).value;
+      if(username.length > 0){
+         location.href = './user.html?account='+username;
+      }
+   }
+   function init(){
+      let path = window.location.pathname;
+      let page = path.split("/").pop();
+      //if the page is not user.html
+      if(page !== "user.html" && page !== "user"){
+         //add ENTER key listener
+         let searchEl = document.getElementById(ids.searchBar['desktop']);
+         searchEl.addEventListener('keypress', e=> {if((e.which || e.keyCode) === 13)redirect('desktop')} );     
+         searchEl = document.getElementById(ids.searchBar['mobile']);
+         searchEl.addEventListener('keypress', e=> {if((e.which || e.keyCode) === 13)redirect('mobile')} );
+         //add SEARCH button click listener
+         let searchButton = document.getElementById(ids.searchButton['desktop']);
+         searchButton.addEventListener('click', e=> redirect('desktop') );
+      }
+   }
+   return {
+      init: init
+   }
+})();
 
 document.addEventListener('DOMContentLoaded', function(){
       //init all materialize elements
-      M.AutoInit();      
+      M.AutoInit();
+      
+      searchBar.init();
       //show modal box
       modal("announcements-modal");
 });
@@ -10,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function(){
 //to avoid showing it on every page reload. increment const popup and refresh cache to show
 //the popup message again
 function modal(id){
-   const POPUP = 3
+   const POPUP = 4
    const SHOWPOPUP = true
    /*
    some icons that can be placed inside the popup title
@@ -25,11 +63,9 @@ function modal(id){
    </div>
    <div class="modal-footer">
       <a href="#!" class="modal-close waves-effect waves-light btn grey darken-3">close</a>
-   </div>
-   `
+   </div>`
    //uncomment this while debugging the popup to show it on every page reload
    //localStorage.removeItem('viewed_info')
-
    let modalEl = document.getElementById(id);
    if(SHOWPOPUP && localStorage.getItem('viewed_info') != POPUP){
       modalEl.innerHTML = message
