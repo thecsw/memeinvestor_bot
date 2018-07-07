@@ -126,7 +126,7 @@ let leaderboard = (function(){
          let netWorth = getSuffix(data.netWorth)
          card.netWorth.update(netWorth.val);
          card.netWorthSuffix.innerText = netWorth.suffix
-         card.profile.setAttribute("href", "./index.html?account="+data.name);
+         card.profile.setAttribute("href", "./user.html?account="+data.name);
       }
    }
    return {
