@@ -1,0 +1,152 @@
+/* custom page styles */
+
+body{
+  background-color: #333333;
+  color: #f2f2f2;
+  color: #e6e6e6;
+  width:100%;
+}
+*{
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+/* --[misc]-- */
+h4{
+  color: white;
+}
+a{
+  color: #f9a825;
+  cursor: pointer;
+}
+.underlined{
+  border-bottom: 1px solid #f9a825;
+}
+.no-margin-top{
+  margin-top:0px;
+}
+.dark-toast{
+  background-color: #e9a435;
+  border-bottom: 4px solid rgba(0,0,0,0.3);
+}
+.divider{
+  height: 4px !important;
+  background-color: rgba(255,255,255,0.1);
+  border-top:2px solid rgba(0,0,0,0.4 );
+}
+.btn.disabled{
+  background-color: rgba(255,255,255,0.1) !important;
+}
+.modal{
+  background-color: #333333;
+  -webkit-box-shadow: 0 8px 17px 2px rgba(0,0,0,0.14),0 3px 14px 2px rgba(0,0,0,0.12),0 5px 5px -3px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 17px 2px rgba(0,0,0,0.14),0 3px 14px 2px rgba(0,0,0,0.12),0 5px 5px -3px rgba(0,0,0,0.2);
+}
+.modal .modal-footer{
+  background-color: #333333;
+}
+
+/* --[nav bar]-- */
+nav{
+  background-color:#222222;
+}
+.logo-img{
+  height:50px;
+  width:auto;
+  vertical-align:middle;
+  margin-right:5px;
+  padding-top: 0;
+  position: relative;
+  top: -5px;
+}
+.brand-logo{
+  margin-left:10px;
+  margin-right:10px;
+}
+.custom-dark-search{
+  color:#f2f2f2;
+  height:100% !important;
+}
+.custom-dark-search:focus{
+  background-color:#e6e6e6;
+  color:#222222;
+}
+.custom-dark-search:focus::-webkit-input-placeholder { color:#222222; }
+.custom-dark-search:focus:-moz-placeholder { color:#222222; } /* FF 4-18 */
+.custom-dark-search:focus::-moz-placeholder { color:#222222; } /* FF 19+ */
+.custom-dark-search:focus:-ms-input-placeholder { color:#222222; } /* IE 10+ */
+
+.icon-32{
+  vertical-align:middle
+}
+
+
+/* --[sidebar]-- */
+#mobile-sidebar{
+  background-color:#333333;
+  overflow-x: hidden;
+}
+/* this is the dirtiest css i've ever written lol */
+.sidenav li:first-child{
+  height: 64px;
+  line-height: 64px;
+}
+.sidenav li:first-child h5{
+  background-color:#222222;
+  height: 100%;
+  line-height: 64px;
+  margin:0;
+  text-align:center;
+}
+.sidenav li:first-child a {
+  height: 64px;
+  position:relative;
+  top:-64px;
+  
+}
+.sidenav li:first-child a i{
+  height: 64px;
+  line-height: 64px;
+  color: white;
+}
+.sidenav li a{
+  color: white;
+  padding-left: 18px;
+}
+#without-this-everything-brokes{
+  opacity: .0;
+}
+.sidebar-search{
+  height:48px;
+  line-height:48px;
+}
+#investor-username-mobile {
+  padding:0;
+  padding-left: 18px;
+  margin:0;
+  border-top:1px solid rgba(0,0,0,0.2);
+  border-bottom:1px solid rgba(255,255,255,0.2);
+  background-color:rgba(0,0,0,0.1);
+  color:white;
+  height:100%;
+  width:100%;
+  
+  line-height: 48px;
+  box-sizing: border-box;
+  position: relative;
+  top: -40px;
+}
+#investor-username-mobile:focus{
+  border-bottom: 1px solid rgba(255, 167, 38, 0.5);
+  box-shadow: 0 1px 0 0 rgba(255, 167, 38, 0.5);  
+}
+
+
+/* --[main pagination]-- */
+.container {
+  margin: 0 auto;
+  padding: 0 0.5rem;
+  max-width: 100% !important;
+  width: 98%;
+}
+

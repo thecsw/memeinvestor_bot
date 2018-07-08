@@ -12,14 +12,14 @@
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- materialize -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
     <!-- fancy charts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <script src="js/libs/countup.min.js"></script>
     <!-- page -->
-    <link type="text/css" rel="stylesheet" href="css/style.css"/>
-    <script src="js/main.js?c=1"></script>
+    <link type="text/css" rel="stylesheet" href="css/index.css"/>
+    <script type="module" src="js/index.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
@@ -27,43 +27,50 @@
 <body>
     <nav>
         <div class="nav-wrapper">
-            <a href="#" onclick="showOverview()" class="brand-logo"><img src="resources/logo240.png" class="logo-img"/><span
+            <a href="./index.html" class="brand-logo"><img src="resources/logo240.png" class="logo-img"/><span
                     class="hide-on-small-only">emeInvestor bot</span></a>
-            <a href="#" onclick="showOverview()" data-target="mobile-sidebar" class="sidenav-trigger"><i
+            <a data-target="mobile-sidebar" class="sidenav-trigger"><i
                     class="material-icons">menu</i></a>
 
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li>
                   <div class="input-field">
-                    <input id="investor-username" class="custom-dark-search" type="search" placeholder="redditor name" >
+                    <input id="investor-username" class="custom-dark-search" type="search" placeholder="search user" >
                     <label class="label-icon" for="search-nav"><i class="material-icons">search</i></label>
-                    <i class="material-icons" onclick="userAccount.show('desktop')" >send</i>
+                    <i class="material-icons" id="investor-username-search">send</i>
                   </div>
                 </li>
                 <!-- <li><a href="foo.html">overview</a></li> -->
-                <!-- <li><a href="bar.html">market</a></li> -->
-                <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/issues" target="_blank">bugs</a></li>
-                <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/" target="_blank"><img class="icon-32"
-                                                                                              src="resources/GitHub-Mark-Light-32px.png"/></a>
+                <li><a class="grey-text" >home</a></li>
+                <li><a href="./leaderboards.html" >leaderboards</a></li>
+                <li>
+                  <a href="https://github.com/MemeInvestor/memeinvestor_bot/" target="_blank">
+                  <img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"/></a>
                 </li>
             </ul>
         </div>
     </nav>
 
     <ul class="sidenav" id="mobile-sidebar">
-        <li>
-          <div class="input-field mobile">
-            <input id="investor-username-mobile" class="custom-sidenav-search" type="search" placeholder="redditor name" >
-            <label class="label-icon" for="search-nav"><i class="material-icons">search</i></label>
-            <i class="material-icons" onclick="userAccount.show('mobile')" >send</i>
-          </div>
+        <li class="sidenav-top">
+         <h5>menu</h5>
+         <a class="sidenav-close"><i class="material-icons">close</i></a>
+        </li>
+        <li><a id="without-this-everything-brokes">lol</a></li>
+        <li class="sidebar-search">
+            <input id="investor-username-mobile" placeholder="search user" type="search"  >
         </li>
         <!-- <li><a href="foo.html">brokers</a></li> -->
-        <!-- <li><a href="bar.html">commands</a></li> -->
-        <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/issues" target="_blank">bugs</a></li>
+        <li><a class="grey-text">home</a></li>
+        <li><a href="./leaderboards.html" >leaderboards</a></li>
         <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/"><img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"
                                                target="_blank"></a></li>
     </ul>
+    
+    <div id="announcements-modal" class="modal ">
+    </div>
+
+<!-- PUT PAGE CODE HERE -->
 
     <div class="container" id="overview">
         <div class="section">
@@ -82,18 +89,19 @@
             <p>MemeInvestor is a r/MemeEconomy reddit bot that can help you invest in memes and make a fortune out of
                 it! </p>
             <!-- <p><a class="waves-effect waves-light btn orange darken-4" onclick="createWalletToast()"><i class="material-icons left">add</i>create your wallet</a> -->
-            <a href="#info1" class="waves-effect waves-light btn amber darken-1"><i
+            <a href="#info1" class="waves-effect waves-light btn yellow darken-3"><i
                     class="material-icons left">show_chart</i>learn more</a>
             </p>
             <div class="divider"></div>
             <div class="section">
                 <div class="row">
                     <div class="col s12 m4 l3">
-                        <h4 class="row-title">Overview</h4>
+                        <h4 class="no-margin-top">Overview</h4>
                         <p>Market active since 2018-06-29</p>
-                        <p class="overview-text">Active investments: <span id="active-investments">--</span>, detaining
-                            <span id="detained-memecoins">--</span> MemeCoins.<br>
-                            All investors currently possess <span id="existing-memecoins">---</span> M¢</p>
+                        <p class="overview-text">Active investments: <span id="active-investments">--</span><br>
+                            Total invested: <span id="detained-memecoins">--</span> M¢<br>
+                            Total balances: <span id="existing-memecoins">---</span> M¢</p>
+                            <p>
                         <p><br class="hide-on-small-only">
                             <a class="legenda-b">memeCoins invested</a>
                             <a class="legenda-a">daily investments</a>
@@ -158,7 +166,10 @@
                     <div class="col s12 m4 l4">
                         <h4>Top Investors</h4>
                         <p>This is a list of the top 5 investors since 2018-06-29<br>
+                        <a href="./leaderboards.html" class="underlined" >view full leaderboards</a>
+                        </p><p>
                             A red badge next to the username indicates the number of times the user went bankrupt. </p>
+              
                         <!-- <p>A yellow badge next to the username indicates the amounts of full-in investments done.</p> -->
                     </div>
 
@@ -172,10 +183,10 @@
                         <p>To invoke a command, reply to either the top-level u/MemeInvestor_bot comment in the comment
                             section of any r/MemeEconomy post or to one of its subsequent replies to your command
                             comment.<br>
-                            <span class="red lighten-1 white-text code-block"> commands that are not direct replies to the bot will be ignored</span>
+                            <span class=" yellow-text text-darken-3 "> commands that are not direct replies to the bot will be ignored</span>
                         </p>
                         <p>The bot has the following commands:</p>
-                        <ul class="collapsible">
+                        <ul class="collapsible popout dark-collapsible">
                             <li>
                                 <div class="collapsible-header"><i class="material-icons">expand_more</i>!create</div>
                                 <div class="collapsible-body"><span>Creates a bank account for you with a new balance of 1000 MemeCoins.</span>
@@ -216,7 +227,7 @@
                         <p>For an exhaustive description of the meme market's inner workings, please see our
                         <i>extremely professional</i> academic paper, which was published in all the
                         <i>most prestigious</i> peer-reviewed meme journals:</p>
-                        <p><i><a href="resources/paper.pdf">Step 3: PROFIT! A Numerical Analysis of ROI in /r/MemeEconomy</a></i></p>
+                        <p><i><a href="resources/paper.pdf" class="underlined" >Step 3: PROFIT! A Numerical Analysis of ROI in /r/MemeEconomy</a></i></p>
                         <p><i>Note:</i> Markets are volatile! The investment return formula is subject to change
                             at any time.</p>
                         <h4 id="calculator">Investment Calculator</h4>
@@ -233,7 +244,7 @@
                             <label for="investment-amount">Memecoins invested</label>
                         </div>
                         <div class="input-field row col s12 m12 l6">
-                            <input type="button" onclick="calculateInvestmentResult()" value="Estimate" class="btn col s6"/>
+                            <a  id="investment-calc" class="btn col s6 waves-effect waves-light btn yellow darken-3">estimate</a>
                             <div class="col s6 investment-result valign-wrapper"><p id="investment-result">000</p></div>
                         </div>
 
@@ -244,39 +255,6 @@
 
         </div>
     </div>
-
-
-    <!-- Modal Structure -->
-    <div id="modal1" class="modal">
-        <div class="modal-content" id="message-popup" >
-            <!--
-              some icons that can be placed inside the popup title
-              <i class="material-icons medium left orange-text">info</i>
-              <i class="material-icons medium left orange-text">warning</i>
-              <i class="material-icons medium left amber-text">new_releases</i>
-            -->
-            <h4><i class="material-icons medium left orange-text">info</i> INFO</h4>
-            <p>Write your message here</p>
-        </div>
-        <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-green btn-flat">close</a>
-        <!--<a href="#!" id="i-hate-this-btn" class="waves-effect waves-green btn-flat">i hate this</a>-->
-        </div>
-    </div>
-
-  <!-- user info modal -->
-  <div id="investor-info" class="modal">
-    <div class="modal-content">
-            <div class="row">
-                <div class="col s12">
-                    <div id="investor-account-data" class="table-wrap"></div>
-                </div>
-            </div>
-    </div>
-    <div class="modal-footer">
-      <a class="modal-close waves-effect waves-green btn-flat">close</a>
-    </div>
-  </div>
 
 </body>
 </html>

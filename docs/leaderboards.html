@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>meme investor bot</title>
+    <meta charset="utf-8">
+    <meta name="application-name" content=""/>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="Start investing in memes with the best broker in r/MemeEconomy today!"/>
+    <meta name="theme-color" content="#212121"/>
+    <link rel="icon" type="image/png" href="resources/favicon/favicon-32x32.png" sizes="32x32"/>
+    <link rel="icon" type="image/png" href="resources/favicon/favicon-32x32.png" sizes="16x16"/>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- materialize -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+    <!-- page -->
+    <script src="js/libs/countup.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="css/leaderboards.css"/>
+    <script type="module" src="js/leaderboards.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-wrapper">
+            <a href="./index.html" class="brand-logo"><img src="resources/logo240.png" class="logo-img"/><span
+                    class="hide-on-small-only">emeInvestor bot</span></a>
+            <a data-target="mobile-sidebar" class="sidenav-trigger"><i
+                    class="material-icons">menu</i></a>
+
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li>
+                  <div class="input-field">
+                    <input id="investor-username" class="custom-dark-search" type="search" placeholder="search user" >
+                    <label class="label-icon" for="search-nav"><i class="material-icons">search</i></label>
+                    <i class="material-icons" id="investor-username-search">send</i>
+                  </div>
+                </li>
+                <!-- <li><a href="foo.html">overview</a></li> -->
+                <li><a href="./index.html">home</a></li>
+                <li><a class="grey-text" >leaderboards</a></li>
+                <li>
+                  <a href="https://github.com/MemeInvestor/memeinvestor_bot/" target="_blank">
+                  <img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"/></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <ul class="sidenav" id="mobile-sidebar">
+        <li class="sidenav-top">
+         <h5>menu</h5>
+         <a class="sidenav-close" ><i class="material-icons">close</i></a>
+        </li>
+        <li><a id="without-this-everything-brokes">lol</a></li>
+        <li class="sidebar-search">
+            <input id="investor-username-mobile" placeholder="search user" type="search"  >
+        </li>
+        <!-- <li><a href="foo.html">brokers</a></li> -->
+        <li><a href="index.html">home</a></li>
+        <li><a class="grey-text" >leaderboards</a></li>
+        <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/">
+        <img class="icon-32" src="resources/GitHub-Mark-Light-32px.png" target="_blank"></a></li>
+    </ul>
+    
+    <div id="announcements-modal" class="modal ">
+    </div>
+
+<!-- PUT PAGE CODE HERE -->
+
+    <div class="container" >
+      <div class="section center-align">
+        <h4 class="no-margin-top" >Top Traders wall</h4>
+        <p>Select one of the market seasons below</p>
+        <a id="beta-bt" class="waves-effect waves-light btn grey darken-3 disabled">beta</a>
+    <!--<a href="#info1" class="waves-effect waves-light btn grey darken-3 disabled"><i class="material-icons right">expand_more</i>select</a> -->
+        <a id="current-bt" class="waves-effect waves-light btn grey darken-3">current</a>
+        
+      <div class="row top3-cards">
+        <br>
+        <div class="top-card">
+          <img src="resources/first.png">
+          <h5 id="top-name">-</h5>
+          <p><span id="top-net-worth">0</span> <span id="top-net-worth-suffix"></span><br>
+          <a id="top-profile">profile</a></p>     
+        </div>   
+    
+        <div class="col s12 m6 l6 left-card">
+          <div class="divider hide-on-med-and-up"></div>
+          <img src="resources/2.png">
+          <h5 id="left-name">-</h5>
+          <p><span id="left-net-worth">0</span> <span id="left-net-worth-suffix"></span><br>
+          <a id="left-profile">profile</a></p> 
+        </div>
+        
+        <div class="col s12 m6 l6 right-card">
+          <div class="divider hide-on-med-and-up"></div>
+          <img src="resources/3.png">
+          <h5 id="right-name">-</h5>
+          <p><span id="right-net-worth">0</span> <span id="right-net-worth-suffix"></span><br>
+          <a id="right-profile">profile</a></p> 
+        </div>
+        
+
+        
+      </div>
+      
+      <div class="table-wrap" >
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Net worth</th>
+                <th>Completed investments</th>
+            </tr>
+            </thead>
+            <tbody id="leaderboards-table">
+            <tr>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            
+            </tbody>
+        </table>        
+        </div>
+        <br>
+        <a href="#" class="btn-floating btn-large waves-effect waves-light grey darken-3"><i class="material-icons">expand_less</i></a>
+      </div>
+    </div>
+
+  </body>  
+</html>   
