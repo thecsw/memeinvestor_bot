@@ -27,7 +27,7 @@
 <body>
     <nav>
         <div class="nav-wrapper">
-            <a href="#" class="brand-logo"><img src="resources/logo240.png" class="logo-img"/><span
+            <a href="./index.html" class="brand-logo"><img src="resources/logo240.png" class="logo-img"/><span
                     class="hide-on-small-only">emeInvestor bot</span></a>
             <a href="#" data-target="mobile-sidebar" class="sidenav-trigger"><i
                     class="material-icons">menu</i></a>
@@ -42,7 +42,7 @@
                 </li>
                 <!-- <li><a href="foo.html">overview</a></li> -->
                 <li><a class="grey-text" >home</a></li>
-                <li><a href="./wall.html" >leaderboard</a></li>
+                <li><a href="./leaderboards.html" >leaderboards</a></li>
                 <li>
                   <a href="https://github.com/MemeInvestor/memeinvestor_bot/" target="_blank">
                   <img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"/></a>
@@ -54,7 +54,7 @@
     <ul class="sidenav" id="mobile-sidebar">
         <li class="sidenav-top">
          <h5>menu</h5>
-         <a class="sidenav-close" href="#!"><i class="material-icons">close</i></a>
+         <a class="sidenav-close"><i class="material-icons">close</i></a>
         </li>
         <li><a id="without-this-everything-brokes">lol</a></li>
         <li class="sidebar-search">
@@ -62,7 +62,7 @@
         </li>
         <!-- <li><a href="foo.html">brokers</a></li> -->
         <li><a class="grey-text">home</a></li>
-        <li><a href="./wall.html" >leaderboard</a></li>
+        <li><a href="./leaderboards.html" >leaderboards</a></li>
         <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/"><img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"
                                                target="_blank"></a></li>
     </ul>
@@ -98,9 +98,10 @@
                     <div class="col s12 m4 l3">
                         <h4 class="no-margin-top">Overview</h4>
                         <p>Market active since 2018-06-29</p>
-                        <p class="overview-text">Active investments: <span id="active-investments">--</span>, detaining
-                            <span id="detained-memecoins">--</span> MemeCoins.<br>
-                            All investors currently possess <span id="existing-memecoins">---</span> M¢</p>
+                        <p class="overview-text">Active investments: <span id="active-investments">--</span><br>
+                            Total invested: <span id="detained-memecoins">--</span> M¢<br>
+                            Total balances: <span id="existing-memecoins">---</span> M¢</p>
+                            <p>
                         <p><br class="hide-on-small-only">
                             <a class="legenda-b">memeCoins invested</a>
                             <a class="legenda-a">daily investments</a>
@@ -165,7 +166,7 @@
                     <div class="col s12 m4 l4">
                         <h4>Top Investors</h4>
                         <p>This is a list of the top 5 investors since 2018-06-29<br>
-                        <a href="./wall.html" class="underlined" >view the wall of fame</a>
+                        <a href="./leaderboards.html" class="underlined" >view full leaderboards</a>
                         </p><p>
                             A red badge next to the username indicates the number of times the user went bankrupt. </p>
               
