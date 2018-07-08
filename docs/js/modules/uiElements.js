@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function(){
 //the popup message again
 function modal(id){
    const POPUP = 4
-   const SHOWPOPUP = true
+   const SHOWPOPUP = false
    /*
    some icons that can be placed inside the popup title
    <i class="material-icons medium left orange-text">info</i>
