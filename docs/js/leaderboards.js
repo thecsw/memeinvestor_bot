@@ -74,7 +74,7 @@ let leaderboard = (function(){
       document.getElementById(ids.buttons.beta).classList.remove("disabled");
       document.getElementById(ids.buttons.current).classList.add("disabled");
       if(!currentBlob){
-         currentBlob = jsonApi.get('/investors/top?per_page=50')
+         jsonApi.get('/investors/top?per_page=50')
          .then(function (data) {
             currentBlob = data;
             loadFromObject(data);
