@@ -54,10 +54,15 @@ nav{
   height:50px;
   width:auto;
   vertical-align:middle;
-  margin-right:5px;
-  padding-top: 0;
-  position: relative;
-  top: -5px;
+  margin-bottom: 3px;
+}
+@media only screen and (min-width: 600px) {
+  .logo-img{
+    margin-bottom: 7px;
+  }
+}
+.logo-text{
+  margin-left:5px;
 }
 .brand-logo{
   margin-left:10px;
