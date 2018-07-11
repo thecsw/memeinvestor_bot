@@ -68,7 +68,7 @@ The precise shape of this function is determined by a set of parameters that var
 The return on meme investment is governed by the following set of equations:
 
 \begin{equation*}
-C(v_0, v_f) = S(gain(v_0, v_f),\ max(v_0),\ stp(v_0))
+C(v_0, v_f) = S(gain(v_0, v_f),\ max(v_0),\ mid(v_0),\ stp(v_0))
 \end{equation*}
 
 Where:
