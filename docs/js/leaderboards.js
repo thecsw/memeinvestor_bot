@@ -54,9 +54,10 @@ let leaderboard = (function(){
           for(let i=3,l=betaBlob.length; i<l;i++){
              let user = betaBlob[i]
              let badge = user[4]>0? '<span class="red bankrupt-badge white-text">'+user[4]+'</span>':"";
-             html += "<tr><td>"+user[1] + badge+"</td>"+
-                         "<td>"+formatToUnits(user[2])+"</td>"+
-                         "<td>"+user[3]+"</td></tr>"
+             html += "<tr><td>#"+(i+1)+"</td>"+
+                        "<td>"+user[1] + badge+"</td>"+
+                        "<td>"+formatToUnits(user[2])+"</td>"+
+                        "<td>"+user[3]+"</td></tr>"
           }
       tb.innerHTML = html
       //create top 3 object to pass to updatecards
@@ -104,9 +105,10 @@ let leaderboard = (function(){
           for(let i=3,l=obj.length; i<l;i++){
              let user = obj[i]
              let badge = obj.broke>0? '<span class="red bankrupt-badge white-text">'+obj.broke+'</span>':"";
-             html += "<tr><td>"+user.name + badge+"</td>"+
-                         "<td>"+formatToUnits(user.networth)+"</td>"+
-                         "<td>"+user.completed+"</td></tr>"
+             html += "<tr><td>#"+(i+1)+"</td>"+
+                        "<td>"+user.name + badge+"</td>"+
+                        "<td>"+formatToUnits(user.networth)+"</td>"+
+                        "<td>"+user.completed+"</td></tr>"
           }
       tb.innerHTML = html      
    }
