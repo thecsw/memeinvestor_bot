@@ -2,6 +2,16 @@
 
 @import 'dark-base.css';
 
+/* --[generic]-- */
+.badge{
+  width: 100px;
+  height: auto;
+  padding: 5px;
+}
+.badges-container{
+  background-color: rgba(0,0,0,0.0);
+}
+
 /* --[table row]-- */
 .table-wrap table td span{
   border-radius: 2px;
