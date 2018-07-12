@@ -231,11 +231,13 @@ class CommentWorker():
 
     @req_user
     def active(self, sess, comment, investor):
-        total = sess.query(
-            func.count(Investment.id)
-        ).filter(Investment.done == 0).\
-        filter(Investment.name == investor.name).scalar()
-        comment.reply_wrap(message.modify_active(total))
+        active_investments = sess.query(Investment).\
+            filter(Investment.done == 0).\
+            filter(Investment.name == investor.name).\
+            order_by(Investment.time).\
+            all()
+
+        comment.reply_wrap(message.modify_active(active_investments))
 
     def no_such_user(self, comment):
         comment.reply_wrap(message.no_account_org)

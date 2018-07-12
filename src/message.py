@@ -1,3 +1,8 @@
+import datetime
+import time
+
+import config
+
 # This message will be sent if an account has been
 # successfully created
 create_org = """
@@ -191,12 +196,30 @@ def modify_balance(balance):
     return balance_t
 
 active_org = """
-Currently, you have %NUMBER% active investments.
+You have %NUMBER% active investments:
+
+%INVESTMENTS_LIST%
 """
 
-def modify_active(active):
+def modify_active(active_investments):
+    if len(active_investments) == 0:
+        return "You don't have any active investments right now."
+
+    investments_strings = []
+    i = 1
+    for inv in active_investments:
+        seconds_remaining = inv.time + config.investment_duration - time.time()
+        td = datetime.timedelta(seconds=seconds_remaining)
+        remaining_string = str(td).split(".")[0]
+        post_url = f"https://www.reddit.com/r/MemeEconomy/comments/{inv.post}"
+        inv_string = f"[#{i}]({post_url}): {inv.amount} M¢ @ {inv.upvotes} upvotes ({remaining_string} remaining)"
+        investments_strings.append(inv_string)
+        i += 1
+    investments_list = "\n\n".join(investments_strings)
+
     active_t = active_org
-    active_t = active_t.replace("%NUMBER%", str(active))
+    active_t = active_t.replace("%NUMBER%", str(len(active_investments)))
+    active_t = active_t.replace("%INVESTMENTS_LIST%", investments_list)
     return active_t
 
 min_invest_org = """
