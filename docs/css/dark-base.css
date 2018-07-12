@@ -156,7 +156,7 @@ nav{
 .container {
   margin: 0 auto;
   padding: 0 0.5rem;
-  max-width: 100% !important;
+  max-width:1280px !important;
   width: 98%;
 }
 
