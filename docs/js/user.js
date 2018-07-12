@@ -13,10 +13,10 @@ var userAccount = (function(){
          mobile: undefined
       }
    }
-   function show(device) {
+   function show(device,pushState=true) {
       let username = document.getElementById(ids.searchBar[device]).value;
       if(username.length > 0){
-         history.pushState(null, '', '?account='+username);
+         if(pushState)history.pushState(null, '', '?account='+username);
          jsonApi.get('/investor/'+username).then(function(data) {
          document.getElementById('investor-account-data').innerHTML = `
               <h5>${username}'s profile</h5>
@@ -34,6 +34,16 @@ var userAccount = (function(){
          });
       }
    }
+   function checkUrl(){
+      // check if url contains ?account=
+      let url = new URL(window.location.href);
+      let username = url.searchParams.get("account");
+      const reg = /^[a-zA-Z0-9\-\_]+$/;
+      if (reg.test(username)) {
+         document.getElementById('investor-username').value = username;
+         show('desktop',false);
+      }      
+   }
    function init(){
       //add ENTER key listener
       let searchEl = document.getElementById(ids.searchBar['desktop']);
@@ -42,15 +52,12 @@ var userAccount = (function(){
       searchEl.addEventListener('keypress', e=> {if((e.which || e.keyCode) === 13)show('mobile')} );
       //add SEARCH button click listener
       let searchButton = document.getElementById(ids.searchButton['desktop']);
-      searchButton.addEventListener('click', e=> show('desktop') );  
-      // check if url contains ?account=
-      let url = new URL(window.location.href);
-      let username = url.searchParams.get("account");
-      const reg = /^[a-zA-Z0-9\-\_]+$/;
-      if (reg.test(username)) {
-         document.getElementById('investor-username').value = username;
-         show('desktop');
-      }
+      searchButton.addEventListener('click', e=> show('desktop') );
+      //add history back listener
+      window.addEventListener('popstate', function(e) {
+         checkUrl();
+      });
+      checkUrl();
 
    }
    return {
