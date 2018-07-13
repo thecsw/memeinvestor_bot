@@ -163,7 +163,7 @@ Here is a list of commands that summon me:
 
 3. !balance - returns your current balance.
 
-4. !active - returns a number of active investments.
+4. !active - returns a list of your active investments.
 
 5. !broke - only if your balance is less than 100 MemeCoins and you do not have any active investments, declares bankruptcy on your account and sets your balance to 100 MemeCoins (minimum possible investment).
 
