@@ -253,7 +253,10 @@ let updater = (function(){
    let hidden, visibilityChange; 
    let updateInterval = 10000;
    let interval = false;
-   function init(){
+   let callback;
+   function init(callbackParam,updateIntervalParam){
+      callback = callbackParam;
+      updateInterval = updateIntervalParam;
       //start the updater
       start();
       // Set the name of the hidden property and the change event for visibility
@@ -277,17 +280,10 @@ let updater = (function(){
          start();
       }
    }
+
    function update(){
-      console.log('updating data..')
-      let tempData = jsonApi.getAll()
-      .then(function (data) {
-         overview.update(data.coins, data.investments);
-         leaderboard.update(data.investors.top);
-      })
-      .catch(function (err) {
-         console.error('error while retrieving apis data', err.statusText);
-         connectionErrorToast(err)
-      }); 
+      callback();
+      beep();
       //beep(500, 2);//used for debugging on mobile
    }
    function stop(){
@@ -317,8 +313,20 @@ let updater = (function(){
       //init local modules
       overview.init()
       overviewChart.init()
-      updater.init()
       investmentsCalculator.init()
+      updater.init(function(){
+      console.log('updating data..')
+      jsonApi.getAll()
+      .then(function (data) {
+         overview.update(data.coins, data.investments);
+         leaderboard.update(data.investors.top);
+      })
+      .catch(function (err) {
+         console.error('error while retrieving apis data', err.statusText);
+         connectionErrorToast(err)
+      }); 
+      },10000)
+
       
       
       //load chart

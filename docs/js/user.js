@@ -1,6 +1,6 @@
 import {connectionErrorToast} from './modules/uiElements.js';
 import * as jsonApi from './modules/jsonApi.js';
-
+import {Scheduler} from './modules/scheduler.js';
 
 var userAccount = (function(){
    let ids = {
@@ -70,5 +70,6 @@ var userAccount = (function(){
 (function(){
    document.addEventListener('DOMContentLoaded', function(){
       userAccount.init();
+      var up1 = new Scheduler(function(){console.log(1)},5000)
    });
 })();
