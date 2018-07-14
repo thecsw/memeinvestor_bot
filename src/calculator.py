@@ -83,13 +83,11 @@ def main():
             logging.info(f"New mature investment: {investment.comment}")
             logging.info(f" -- by {investor.name}")
 
-            if investment.response != "0":
-                response = reddit.comment(id=investment.response)
-            else:
-                response = EmptyResponse()
-
+            # Retrieve the post the user invested in (lazily, no API call)
             post = reddit.submission(investment.post)
-            upvotes_now = post.ups # <--- triggers a Reddit API call
+
+            # Retrieve the post's current upvote count (triggers an API call)
+            upvotes_now = post.ups
             investment.final_upvotes = upvotes_now
 
             # Updating the investor's balance
@@ -100,34 +98,35 @@ def main():
             new_balance = int(balance + (amount * factor))
             change = new_balance - balance
             profit = change - amount
-            profit_str = f"{int((profit/amount)*100)}%"
+            percent_str = f"{int((profit/amount)*100)}%"
 
             # Updating the investor's variables
             investor.completed += 1
 
+            # Retrieve the bot's original response (lazily, no API call)
+            if investment.response != "0":
+                response = reddit.comment(id=investment.response)
+            else:
+                response = EmptyResponse()
+
             if new_balance < BalanceCap:
                 investor.balance = new_balance
 
-                # Editing the comment as a confirmation
-                text = response.body # <--- triggers a Reddit API call
+                # Edit the bot's response (triggers an API call)
                 if profit > 0:
                     logging.info(f" -- profited {profit}")
-                    response.edit_wrap(message.modify_invest_return(text, upvotes_now, change, profit_str, new_balance))
                 elif profit == 0:
                     logging.info(f" -- broke even")
-                    response.edit_wrap(message.modify_invest_break_even(text, upvotes_now, change, profit_str, new_balance))
                 else:
-                    lost_memes = int( amount - change )
                     logging.info(f" -- lost {profit}")
-                    response.edit_wrap(message.modify_invest_lose(text, upvotes_now, lost_memes, profit_str, new_balance))
+                response.edit_wrap(message.modify_invest_return(investment.amount, investment.upvotes, upvotes_now, change, profit, percent_str, investor.balance))
             else:
                 # This investment pushed the investor's balance over the cap
                 investor.balance = BalanceCap
 
-                # Editing the comment as a confirmation
-                text = response.body # <--- triggers a Reddit API call
+                # Edit the bot's response (triggers an API call)
                 logging.info(f" -- profited {profit} but got capped")
-                response.edit_wrap(message.modify_invest_capped(text, upvotes_now, change, profit_str, BalanceCap))
+                response.edit_wrap(message.modify_invest_capped(investment.amount, investment.upvotes, upvotes_now, change, profit, percent_str, investor.balance))
 
             investment.success = (profit > 0)
             investment.profit = profit
