@@ -170,6 +170,7 @@ def investor(name):
         Investor.completed,
         Investor.broke).\
     outerjoin(Investment, and_(Investor.name == Investment.name, Investment.done == 0)).\
+    filter(Investor.name == name).\
     first()
 
     if not sql:
