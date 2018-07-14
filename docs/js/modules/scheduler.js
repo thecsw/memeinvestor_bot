@@ -32,9 +32,6 @@ export class Scheduler {
       document.addEventListener(this.visibilityChange, this.handleVisibilityChange.bind(this), false);
       this.start();
    }
-   beep(){
-      beep(200,440)
-   }
    handleVisibilityChange(){     
       if(document[this.hidden]){
          this.pause()
