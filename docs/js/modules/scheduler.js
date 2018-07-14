@@ -40,7 +40,7 @@ export class Scheduler {
       }
    }
    execute(){
-      //beep()//debugging on mobile
+      //beep(500,880)//debugging on mobile
       this.callback();
    }
    pause(){
