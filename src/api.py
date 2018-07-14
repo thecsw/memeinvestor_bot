@@ -12,6 +12,7 @@ from formula import calculate
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = config.db
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_POOL_RECYCLE"] = 60
 
 db = SQLAlchemy(app)
 CORS(app)
@@ -140,7 +141,8 @@ def investors_top():
         func.sum(Investment.amount),
         func.coalesce(Investor.balance+func.sum(Investment.amount), Investor.balance).label('networth'),
         Investor.completed,
-        Investor.broke).\
+        Investor.broke,
+        Investor.badges).\
     outerjoin(Investment, and_(Investor.name == Investment.name, Investment.done == 0)).\
     group_by(Investor.name).\
     order_by(desc('networth')).\
@@ -154,6 +156,7 @@ def investors_top():
         "networth": int(x.networth),
         "completed": x.completed,
         "broke": x.broke,
+        "badges": json.loads(x.badges),
     } for x in sql]
 
     return jsonify(res)
@@ -173,6 +176,7 @@ def investor(name):
         "balance": sql.balance,
         "completed": sql.completed,
         "broke": sql.broke,
+        "badges": json.loads(sql.badges),
     }
 
     return jsonify(res)
