@@ -161,9 +161,16 @@ def investors_top():
 
 @app.route("/investor/<string:name>")
 def investor(name):
-    sql = db.session.query(Investor).\
-        filter(Investor.name == name).\
-        first()
+
+    sql = db.session.query(
+        Investor.name,
+        Investor.balance,
+        func.sum(Investment.amount),
+        func.coalesce(Investor.balance+func.sum(Investment.amount), Investor.balance).label('networth'),
+        Investor.completed,
+        Investor.broke).\
+    outerjoin(Investment, and_(Investor.name == Investment.name, Investment.done == 0)).\
+    first()
 
     if not sql:
         return not_found("User not found")
@@ -171,12 +178,12 @@ def investor(name):
     res = {
         "name": sql.name,
         "balance": sql.balance,
+        "networth": int(x.networth),
         "completed": sql.completed,
         "broke": sql.broke,
     }
 
     return jsonify(res)
-
 
 @app.route("/investor/<string:name>/investments")
 def investor_investments(name):
