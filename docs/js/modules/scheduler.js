@@ -25,10 +25,13 @@ function beep(duration, frequency, volume, type, callback) {
 };*/
 
 export class Scheduler {
-   constructor(callback,updateInterval) {
-      this.callback = callback;
+   constructor(task,updateInterval,executeOnCreation = true,executeAfterPauseResume = true) {
+      this.task = task;
       this.updateInterval = updateInterval;
       this.interval = false;
+      this.executeAfterPauseResume = executeAfterPauseResume;
+      this.canExecute = executeOnCreation;
+      //this.visibilityChange and this.hidden are injected in the class proto by external code
       document.addEventListener(this.visibilityChange, this.handleVisibilityChange.bind(this), false);
       this.start();
    }
@@ -36,12 +39,13 @@ export class Scheduler {
       if(document[this.hidden]){
          this.pause()
       }else{
+         if(!this.executeAfterPauseResume) this.canExecute = false;
          this.start()
       }
    }
    execute(){
       //beep(500,880)//debugging on mobile
-      this.callback();
+      this.task();
    }
    pause(){
       if(this.interval){
@@ -52,12 +56,17 @@ export class Scheduler {
    start(){
       if(!this.interval){
          this.interval = setInterval(this.execute.bind(this),this.updateInterval);
-         this.execute();
+         if(this.canExecute){
+            this.execute();
+         }else{
+            this.canExecute = true;
+         }
       }
    }
 }
 
 (function(){
+   //inject hidden and visibilityChange into the Scheduler prototype
    let hidden, visibilityChange;
    // Set the name of the hidden property and the change event for visibility
    if (typeof document.hidden !== "undefined") {

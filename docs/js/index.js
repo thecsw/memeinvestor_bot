@@ -293,8 +293,9 @@ let investmentsCalculator = (function() {
       //init short polling chart update scheduler
       let chartUpdater = new Scheduler(
          updateChart,
-         //every 2 minutes
-         120000
+         120000,//every 2 minutes
+         true,
+         false//don't execute immediately after a pause resume
       );
       
    });
