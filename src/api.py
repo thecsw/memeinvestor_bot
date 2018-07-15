@@ -179,7 +179,7 @@ def investor(name):
     res = {
         "name": sql.name,
         "balance": sql.balance,
-        "networth": int(x.networth),
+        "networth": int(sql.networth),
         "completed": sql.completed,
         "broke": sql.broke,
     }
