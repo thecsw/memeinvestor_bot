@@ -32,7 +32,8 @@ export class Scheduler {
       this.executeAfterPauseResume = executeAfterPauseResume;
       this.canExecute = executeOnCreation;
       //this.visibilityChange and this.hidden are injected in the class proto by external code
-      document.addEventListener(this.visibilityChange, this.handleVisibilityChange.bind(this), false);
+      this.handler = this.handleVisibilityChange.bind(this);
+      document.addEventListener(this.visibilityChange, this.handler, false);
       this.start();
    }
    handleVisibilityChange(){     
@@ -55,6 +56,9 @@ export class Scheduler {
    }
    stop(){
       this.pause();
+      document.removeEventListener(this.visibilityChange, this.handler, false);
+      //will this successfully remove every reference to the object? or will it leak
+      //memory in eternity? Who knows.
    }
    start(){
       if(!this.interval){
