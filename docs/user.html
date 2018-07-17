@@ -68,12 +68,18 @@
     <div id="announcements-modal" class="modal ">
     </div>
 
-    <!-- PUT PAGE CODE HERE --> 
+    <!-- PUT PAGE CODE HERE -->
+    <div class="overlay" id="overlay" >
+        <div class="oriz-center" id="overlay-content">
+          <h5> no user selected </h5>
+          <p>Enter your username or the name of another investor in the search bar </p>
+        </div>
+    </div>
     <div class="container">
         <div class="section">
           <div class="row">
               <div class="col s12 m6 l4">
-                  <h5 class="orange-text text-lighten-1">u/genericUsername123</h5>
+                  <h5 class="orange-text text-lighten-1" id="username" >----</h5>
                   <p class="overview-text">
                       net worth: <span id="net-worth">--</span> <span>M¢</span><br>
                       balance: <span id="balance">---</span> <span>M¢</span><br>
@@ -108,25 +114,11 @@
         </div>
         <div class="divider"></div>
         <div class="section">
-          <p>the tables above will have all the info received from the api. if user is logged over
-          oauth, they will also include the original title, image preview and more.
-          navbar should have a 'login' link for authenticaing over oauth. if user is logged, the
-          link should be 'account' instead, that redirects to this page with the name of the user (got 
-          from the reddit apis) as parameter. if the user is on its own page, some extra options
-          should appear, such as the logout from oauth button, upgrade rank, other</p>
-          <p>the username color should change based on the rank(maybe also a small icon on its left), and 
-          if the user is logged there should be the option for buying new ranks</p>
+
         </div>
         <div class="divider"></div>
     </div>
-    
-    <div class="container" >
-      <div id="investor-account-data" class="table-wrap">
-      <h5 style="grey-text">No user selected</h5>
-      <p>Enter your username or the name of another investor in the search bar.</p>
-      <p>This page is still under construction, more features will be added soon.</p>
-      </div>
-    </div>
+
   
   </body>  
 </html>   

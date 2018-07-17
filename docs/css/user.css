@@ -3,8 +3,52 @@
 @import 'dark-base.css';
 
 /* --[generic]-- */
+body{
+  overflow: hidden;
+}
 
-
+/* --[overlay]-- */
+.overlay{
+  display: block;
+  position: absolute;
+  top: 65px;
+  left: 0px;
+  height: 110%;
+  width: 100%;
+  background-color: #333;
+}
+.fade-out{
+  animation: fadeout 1s;
+}
+.fade-out > div{
+  animation: roll 1s;
+}
+@keyframes fadeout {
+  0%{
+    opacity: 1;
+  }
+  100%{
+    opacity:0;
+  }
+}
+@keyframes roll {
+  0% {
+    transform: scale(1, 1);  
+    opacity: 1;
+  }
+  30% {
+    transform: scale(1.1, 1.1);
+  }
+  100% {
+    transform: scale(0.1, 0.1);
+    opacity: 0.1;
+  }
+}
+.overlay .oriz-center{
+  text-align:center;
+  margin: 0 auto;
+  max-width: 600px; 
+}
 /* --[overview row]-- */
 .overview-text span {
   color: #9e9e9e;

@@ -54,23 +54,74 @@ var getUser = (function(){
 
 let pageManager = (function(){
    let ids = {
-      overlay: 'loading-overlay'
+      overlay: 'overlay',
+      overlayContent: 'overlay-content',
+      username: 'username'
    }
+   let overviewUpdater = undefined;
    function init(){
-      //init ids
+      //nothing to init
    }
    function search(username){
-      //make ajax to investor/username
-      //if good, call display(data)
-      //else call displaynotfound()
+      //set overlay to loading 
+      document.body.style.overflowY = 'hidden'
+      document.getElementById(ids.overlay).style.display = 'block'
+      document.getElementById(ids.overlayContent).innerHTML = 
+      `<h4>Searching. </h4>
+      <div class="preloader-wrapper big active">
+          <div class="spinner-layer spinner-yellow-only">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div><div class="gap-patch">
+              <div class="circle"></div>
+            </div><div class="circle-clipper right">
+              <div class="circle"></div>
+            </div>
+          </div>
+         </div>`
+      //search user
+      jsonApi.get('/investor/'+username)
+      .then(display)
+      .catch(er=>{
+         if(er.status == 404){
+            notFound();
+         }else{
+            connectionErrorToast(er)
+         }
+      })
    }
-   function displayNotFound(){
-      //change overlay text with "username not found"
+   function notFound(){
+      document.body.style.overflowY = 'hidden'
+      document.getElementById(ids.overlay).style.display = 'block'
+      document.getElementById(ids.overlayContent).innerHTML = 
+      `<h5>User not found</h5>`
+      //kill old overview updater
+      if(overviewUpdater)overviewUpdater.stop();
    }
    function display(data){
-      //init overview(data)
-      //create scheduler for overview update (executeOnCreation = false)
+      //remove overlay with animation
+      let overlay = document.getElementById(ids.overlay);
+      overlay.classList.add('fade-out')
+      setTimeout(_=>{
+      document.body.style.overflowY = 'auto'
+         overlay.style.display = 'none'
+         overlay.classList.remove('fade-out')
+      },900)
       
+      //update name
+      document.getElementById(ids.username).innerText = 'u/'+data.name
+      //kill old overview updater
+      if(overviewUpdater)overviewUpdater.stop();
+      //create a new one, for the new username
+      overviewUpdater = new Scheduler(
+      function(){
+         jsonApi.get('/investor/'+data.name)
+         .then(overview.update)
+         .catch(connectionErrorToast)
+      },
+      10000 //every 10 seconds
+      )    
+
       //call investments.init()
       //call activeInvestments.init()
    }
@@ -101,23 +152,7 @@ let overview = (function(){
       counters.netWorth.update(9876544321)
       counters.balance.update(data.balance)
       counters.completedInvestments.update(data.completed)
-      counters.goneBroke.update(data.broke)
-      let overviewUpdater = new Scheduler(
-         function(){
-            console.log('updating overview..')
-            jsonApi.get('user/')
-            .then(function (data) {
-               overview.update(data.coins, data.investments);
-               leaderboard.update(data.investors.top);
-            })
-            .catch(function (err) {
-               console.error('error while retrieving apis data', err.statusText);
-               connectionErrorToast(err)
-            }); 
-         },
-         //every 10 seconds
-         10000
-      )      
+      counters.goneBroke.update(data.broke)   
    }  
    return {
       init:init,
@@ -129,6 +164,9 @@ let overview = (function(){
 
 let investments = (function(){
    //init ids and stuff. create own update scheduler
+   function init(){
+      
+   }
    return {
       init: init
    }
@@ -137,6 +175,9 @@ let investments = (function(){
 
 let activeInvestments = (function(){
    //init ids and stuff. create own update scheduler
+   function init(){
+      
+   }
    return {
       init: init
    }
@@ -146,5 +187,6 @@ let activeInvestments = (function(){
    document.addEventListener('DOMContentLoaded', function(){
       getUser.init();
       pageManager.init();
+      overview.init();
    });
 })();

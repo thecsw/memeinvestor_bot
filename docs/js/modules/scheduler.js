@@ -53,6 +53,9 @@ export class Scheduler {
          this.interval = false;         
       }
    }
+   stop(){
+      this.pause();
+   }
    start(){
       if(!this.interval){
          this.interval = setInterval(this.execute.bind(this),this.updateInterval);
