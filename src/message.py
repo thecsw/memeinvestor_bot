@@ -107,7 +107,32 @@ def modify_invest_lose(text, upvotes_now, lost, profit, balance):
     invest_lose = invest_lose.replace("%PROFIT%", str(profit))
     invest_lose = invest_lose.replace("%BALANCE%", str(balance))
     return invest_lose
-    
+
+invest_capped_org = """
+%INVESTMENT%
+
+UPDATE: Your investment has matured at %UPVOTES_NOW% upvotes, earning you %NUMBER% MemeCoins (%PROFIT%).
+
+**Congratulations,** you've reached the maximum balance! You've triumphed over your competition in the
+meme marketplace, and your wealth is inconceivable! Indeed, future generations shall remember you as a titan
+of meme industry.
+
+*"And Alexander wept, for there were no more worlds to conquer."* (...yet)
+
+Your current balance is %BALANCE% MemeCoins (the maximum balance).
+
+^(formula v3)
+"""
+
+def modify_invest_capped(text, upvotes_now, lost, profit, balance):
+    return invest_capped_org.\
+        replace("%INVESTMENT%", str(text)).\
+        replace("%UPVOTES_NOW%", str(upvotes_now)).\
+        replace("%NUMBER%", str(lost)).\
+        replace("%PROFIT%", str(profit)).\
+        replace("%BALANCE%", str(balance))
+
+
 # If funds are insufficient to make an investment
 # say that
 insuff_org = """

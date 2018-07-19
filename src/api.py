@@ -1,6 +1,7 @@
 import json
 
 from flask import Flask, jsonify, request
+from flask_caching import Cache
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import desc, func, and_
@@ -13,6 +14,9 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = config.db
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_POOL_RECYCLE"] = 60
+
+# Create a simple cache to store the results of some of our API calls
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 db = SQLAlchemy(app)
 CORS(app)
@@ -132,6 +136,7 @@ def investments_total():
 
 
 @app.route("/investors/top")
+@cache.cached(timeout=10, query_string=True)
 def investors_top():
     page, per_page = get_pagination()
 
