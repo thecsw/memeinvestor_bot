@@ -36,3 +36,4 @@ class Investor(Base):
     balance = Column(BigInteger, default=1000)
     completed = Column(Integer, default=0)
     broke = Column(Integer, default=0)
+    badges = Column(String(1024), default="[]")
