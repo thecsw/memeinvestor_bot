@@ -46,8 +46,3 @@ services:
         image: mariadb:10.2.15
         env_file: .env
         restart: unless-stopped
-    
-    adminer:
-        image: adminer
-        ports:
-          - "8080:8080"
