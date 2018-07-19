@@ -55,7 +55,7 @@ let leaderboard = (function(){
              let user = betaBlob[i]
              let badge = user[4]>0? '<span class="red bankrupt-badge white-text">'+user[4]+'</span>':"";
              html += "<tr><td>#"+(i+1)+"</td>"+
-                        "<td>"+user[1] + badge+"</td>"+
+                        '<td><a href="./user.html?account='+user[1]+'">'+user[1] + badge+"</a></td>"+
                         "<td>"+formatToUnits(user[2])+"</td>"+
                         "<td>"+user[3]+"</td></tr>"
           }
@@ -106,7 +106,7 @@ let leaderboard = (function(){
              let user = obj[i]
              let badge = obj.broke>0? '<span class="red bankrupt-badge white-text">'+obj.broke+'</span>':"";
              html += "<tr><td>#"+(i+1)+"</td>"+
-                        "<td>"+user.name + badge+"</td>"+
+                        '<td><a href="./user.html?account='+user.name+'">'+user.name + badge+"</a></td>"+
                         "<td>"+formatToUnits(user.networth)+"</td>"+
                         "<td>"+user.completed+"</td></tr>"
           }

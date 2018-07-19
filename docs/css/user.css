@@ -4,7 +4,7 @@
 
 /* --[generic]-- */
 body{
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 /* --[overlay]-- */
@@ -63,16 +63,30 @@ body{
 }
 
 /* --[table row]-- */
-.table-wrap table td span{
-  border-radius: 2px;
-  font-size: 12px;
-  line-height: 20px;
-  height: 20px;
-  position: relative;
-  right: auto;
-  margin-left: 10px;
-  float:none;
+.table-controls{
+  margin:10px;
+  padding: 5px;
+  background-color: rgba(0,0,0,0.0);
 }
+.table-controls .datepicker{
+  color: white;
+}
+.table-controls .datepicker-date-display {
+  background-color: #f9a825;
+}
+.table-controls .datepicker-controls button svg{
+  fill: white !important;
+}
+.table-controls .datepicker-controls button:focus{
+  background-color: #f9a825;
+}
+.table-controls .datepicker-controls input{
+  color: white;
+}
+.table-controls .datepicker-footer button{
+  color: #f9a825;
+}
+
 .table-wrap{
 max-width:800px;
 margin: 0 auto;

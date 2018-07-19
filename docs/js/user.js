@@ -16,6 +16,12 @@ var getUser = (function(){
    function show(device,pushState=true) {
       let username = document.getElementById(ids.searchBar[device]).value;
       if(username.length > 0){
+         if(device === 'mobile'){
+            //close sidenav
+            let elem = document.getElementById('mobile-sidebar');
+            let instance = M.Sidenav.getInstance(elem);
+            instance.close();
+         }
          if(pushState)history.pushState(null, '', '?account='+username);
          pageManager.search(username);
       }
@@ -109,7 +115,9 @@ let pageManager = (function(){
       },900)
       
       //update name
-      document.getElementById(ids.username).innerText = 'u/'+data.name
+      let nameEl = document.getElementById(ids.username);
+      nameEl.innerText = 'u/'+data.name
+      nameEl.setAttribute('href','https://www.reddit.com/u/'+data.name)
       //kill old overview updater
       if(overviewUpdater)overviewUpdater.stop();
       //create a new one, for the new username
