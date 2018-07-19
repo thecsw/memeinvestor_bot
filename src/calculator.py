@@ -16,6 +16,8 @@ from stopwatch import Stopwatch
 
 logging.basicConfig(level=logging.INFO)
 
+BalanceCap = 1000000000000000000 # One quintillion MemeCoins
+
 class EmptyResponse(object):
     def __init__(self):
         self.body = "[fake response body]"
@@ -101,20 +103,30 @@ def main():
 
             # Updating the investor's variables
             investor.completed += 1
-            investor.balance = new_balance
 
-            # Editing the comment as a confirmation
-            text = response.body # <--- triggers a Reddit API call
-            if profit > 0:
-                logging.info(f" -- profited {profit}")
-                response.edit_wrap(message.modify_invest_return(text, upvotes_now, change, profit_str, new_balance))
-            elif profit == 0:
-                logging.info(f" -- broke even")
-                response.edit_wrap(message.modify_invest_break_even(text, upvotes_now, change, profit_str, new_balance))
+            if new_balance < BalanceCap:
+                investor.balance = new_balance
+
+                # Editing the comment as a confirmation
+                text = response.body # <--- triggers a Reddit API call
+                if profit > 0:
+                    logging.info(f" -- profited {profit}")
+                    response.edit_wrap(message.modify_invest_return(text, upvotes_now, change, profit_str, new_balance))
+                elif profit == 0:
+                    logging.info(f" -- broke even")
+                    response.edit_wrap(message.modify_invest_break_even(text, upvotes_now, change, profit_str, new_balance))
+                else:
+                    lost_memes = int( amount - change )
+                    logging.info(f" -- lost {profit}")
+                    response.edit_wrap(message.modify_invest_lose(text, upvotes_now, lost_memes, profit_str, new_balance))
             else:
-                lost_memes = int( amount - change )
-                logging.info(f" -- lost {profit}")
-                response.edit_wrap(message.modify_invest_lose(text, upvotes_now, lost_memes, profit_str, new_balance))
+                # This investment pushed the investor's balance over the cap
+                investor.balance = BalanceCap
+
+                # Editing the comment as a confirmation
+                text = response.body # <--- triggers a Reddit API call
+                logging.info(f" -- profited {profit} but got capped")
+                response.edit_wrap(message.modify_invest_capped(text, upvotes_now, change, profit_str, BalanceCap))
 
             investment.success = (profit > 0)
             investment.profit = profit
