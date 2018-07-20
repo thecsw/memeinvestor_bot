@@ -8,9 +8,9 @@ export const badgesList = {
       'the richest investor on memeEconomy',
       'top-investor.png'
    ],
-   'contributorz': [
+   'contributor': [
       'contributed in the development of memeInvestor',
-      'laurel.png'
+      'contributor.png'
    ],
    'unknown': [
       'unknown badge',
