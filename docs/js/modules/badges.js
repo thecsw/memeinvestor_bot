@@ -8,18 +8,24 @@ export const badgesList = {
       'the richest investor on memeEconomy',
       'top-investor.png'
    ],
-   'dev': [
-      'developers for memeInvestor inc.',
-      'dev.png'
+   'contributorz': [
+      'contributed in the development of memeInvestor',
+      'laurel.png'
    ],
-   'test': [
-      'this is a test badge',
-      'test.png'
+   'unknown': [
+      'unknown badge',
+      'laurel.png'
    ]
 }
 export function getFileName(badge){
+   if(!badgesList.hasOwnProperty(badge)){
+      badge = 'unknown'
+   }
    return badgesList[badge][1]
 }
 export function getDescription(badge){
+   if(!badgesList.hasOwnProperty(badge)){
+      badge = 'unknown'
+   }
    return badgesList[badge][0]
 }

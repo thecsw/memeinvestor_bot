@@ -122,6 +122,9 @@ let pageManager = (function(){
       nameEl.setAttribute('href','https://www.reddit.com/u/'+data.name)
       //update badges
       badges.set(data.badges)
+      //update investments
+      investments.set(data.name);
+      
       //kill old overview updater
       if(overviewUpdater)overviewUpdater.stop();
       //create a new one, for the new username
@@ -197,12 +200,8 @@ let badges = (function(){
       let elems = container.querySelectorAll('.tooltipped');
       M.Tooltip.init(elems);
    }
-   function update(badges){
-      if(badges.length !== amount)render(badges)
-   }
    return {
-      set: set,
-      update: update
+      set: set
    }
 })();
 
@@ -213,10 +212,14 @@ let investments = (function(){
       tableControls: 'table-controls',
       dateFrom : 'date-from',
       dateTo : 'date-to',
-      applyFilters: 'filters-apply'
+      applyFilters: 'filters-apply',
+      table: 'investments-table'
    }
    let toggleBt = undefined;
    let filtersOpen = false;
+   
+   let perPage = 10;
+   let page = 0;
    function toggleFilters(){
       let tableControls = document.getElementById(ids.tableControls);
       if(filtersOpen){
@@ -233,8 +236,53 @@ let investments = (function(){
       toggleBt = document.getElementById(ids.toggleFilters);
       toggleBt.addEventListener('click',toggleFilters);
    }
+   function set(name){
+
+      let options = `?per_page=${perPage}&page=${page}`
+      jsonApi.get(`/investor/${name}/investments${options}`)
+      .then(render)
+      .catch(er=>{
+         if(er.status === 404)noInvestments();
+         else connectionErrorToast(er);
+      })
+       
+   }
+   function noInvestments(){
+      document.getElementById(ids.table).innerHTML = 
+      `<h5 class="grey-text">No investments found</h5>`
+   }
+   function render(data){
+      console.log(data)
+      let html = `
+      <thead>
+        <tr>
+            <th>Post url</th>
+            <th>date</th>
+            <th>In</th>
+            <th>out</th>
+        </tr>
+      </thead>
+      <tbody>
+      `
+      for(let inv of data){
+         html += `
+         <tr>
+            <td><a href="https://redd.it/${inv.post}">${inv.post}</a></td>
+            <td><span class="grey-text">23:22<br>19/jan</span></td>
+            <td>${inv.amount} Mc<br>${inv.upvotes} upvotes</td>
+            <td><span class="green-text">+340 Mc</span><br>423 upvotes</td>
+         </tr>`
+      }
+      html += `</tbody>`
+      document.getElementById(ids.table).innerHTML = html
+   }
+   function update(){
+      
+   }
    return {
-      init: init
+      init: init,
+      set: set,
+      update: update
    }
 })();
 
