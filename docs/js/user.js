@@ -1,6 +1,7 @@
 import {connectionErrorToast} from './modules/uiElements.js';
 import * as jsonApi from './modules/jsonApi.js';
 import {Scheduler} from './modules/scheduler.js';
+import {getFileName, getDescription} from './modules/badges.js';
 
 var getUser = (function(){
    let ids = {
@@ -119,6 +120,8 @@ let pageManager = (function(){
       let nameEl = document.getElementById(ids.username);
       nameEl.innerText = 'u/'+data.name
       nameEl.setAttribute('href','https://www.reddit.com/u/'+data.name)
+      //update badges
+      badges.set(data.badges)
       //kill old overview updater
       if(overviewUpdater)overviewUpdater.stop();
       //create a new one, for the new username
@@ -168,6 +171,39 @@ let overview = (function(){
       update: update
    }
    
+})();
+
+let badges = (function(){
+   let ids = {
+      container: 'badges-container'
+   }
+   let amount = 0;
+   function set(badges){
+      render(badges);
+   }
+   function render(badges){
+      let html = '';
+      for(let badge of badges){
+         html += `
+         <img class="badge z-depth-2 tooltipped" 
+         data-position="top" 
+         data-tooltip="${getDescription(badge)}" 
+         src="./resources/badges/${getFileName(badge)}"/>
+         `
+      }
+      if(!html)html='<p class="grey-text">This account doesn\'t have any badge.</p>'
+      let container = document.getElementById(ids.container);
+      container.innerHTML = html;
+      let elems = container.querySelectorAll('.tooltipped');
+      M.Tooltip.init(elems);
+   }
+   function update(badges){
+      if(badges.length !== amount)render(badges)
+   }
+   return {
+      set: set,
+      update: update
+   }
 })();
 
 
