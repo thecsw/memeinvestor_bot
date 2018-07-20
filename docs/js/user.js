@@ -6,7 +6,7 @@ var getUser = (function(){
    let ids = {
       searchBar: {
          desktop: 'investor-username',
-         mobile: 'investor-username-mobile'         
+         mobile: 'investor-username-mobile'
       },
       searchButton: {
          desktop: 'investor-username-search',
@@ -39,7 +39,7 @@ var getUser = (function(){
    function init(){
       //add ENTER key listener
       let searchEl = document.getElementById(ids.searchBar['desktop']);
-      searchEl.addEventListener('keypress', e=> {if((e.which || e.keyCode) === 13)show('desktop')} );     
+      searchEl.addEventListener('keypress', e=> {if((e.which || e.keyCode) === 13)show('desktop')} );
       searchEl = document.getElementById(ids.searchBar['mobile']);
       searchEl.addEventListener('keypress', e=> {if((e.which || e.keyCode) === 13)show('mobile')} );
       //add SEARCH button click listener
@@ -103,6 +103,7 @@ let pageManager = (function(){
       `<h5>User not found</h5>`
       //kill old overview updater
       if(overviewUpdater)overviewUpdater.stop();
+      overviewUpdater = undefined;
    }
    function display(data){
       //remove overlay with animation
@@ -151,7 +152,7 @@ let overview = (function(){
          netWorth: new CountUp("net-worth", 10, 1.5),
          balance: new CountUp("balance", 10, 0, 1.5),
          completedInvestments: new CountUp("completed-investments", 3, 1.5),
-         goneBroke: new CountUp("gone-broke", 12, 99.99)      
+         goneBroke: new CountUp("gone-broke", 12, 99.99)
       }
       if(data)update(data);
    }
@@ -160,8 +161,8 @@ let overview = (function(){
       counters.netWorth.update(9876544321)
       counters.balance.update(data.balance)
       counters.completedInvestments.update(data.completed)
-      counters.goneBroke.update(data.broke)   
-   }  
+      counters.goneBroke.update(data.broke)
+   }
    return {
       init:init,
       update: update
@@ -171,9 +172,30 @@ let overview = (function(){
 
 
 let investments = (function(){
-   //init ids and stuff. create own update scheduler
+   let ids = {
+      toggleFilters: 'filters-show',
+      tableControls: 'table-controls',
+      dateFrom : 'date-from',
+      dateTo : 'date-to',
+      applyFilters: 'filters-apply'
+   }
+   let toggleBt = undefined;
+   let filtersOpen = false;
+   function toggleFilters(){
+      let tableControls = document.getElementById(ids.tableControls);
+      if(filtersOpen){
+         filtersOpen = false;
+         toggleBt.firstChild.innerText = 'expand_more';
+         tableControls.classList.remove('f-scale');
+      }else{
+         filtersOpen = true;
+         toggleBt.firstChild.innerText = 'expand_less';
+         tableControls.classList.add('f-scale');
+      }
+   }
    function init(){
-      
+      toggleBt = document.getElementById(ids.toggleFilters);
+      toggleBt.addEventListener('click',toggleFilters);
    }
    return {
       init: init
@@ -181,20 +203,12 @@ let investments = (function(){
 })();
 
 
-let activeInvestments = (function(){
-   //init ids and stuff. create own update scheduler
-   function init(){
-      
-   }
-   return {
-      init: init
-   }
-})();
 
 (function(){
    document.addEventListener('DOMContentLoaded', function(){
       getUser.init();
       pageManager.init();
       overview.init();
+      investments.init();
    });
 })();

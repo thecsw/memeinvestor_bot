@@ -16,6 +16,7 @@ body{
   height: 110%;
   width: 100%;
   background-color: #333;
+  z-index:2;
 }
 .fade-out{
   animation: fadeout 1s;
@@ -64,9 +65,14 @@ body{
 
 /* --[table row]-- */
 .table-controls{
-  margin:10px;
-  padding: 5px;
-  background-color: rgba(0,0,0,0.0);
+  overflow: hidden;
+  -webkit-transition: all 0.5s ease;
+  overflow: hidden;
+  padding-bottom: 10px;
+  max-height: 0;
+}
+.f-scale{
+  max-height: 400px;
 }
 .table-controls .datepicker{
   color: white;
@@ -87,9 +93,9 @@ body{
   color: #f9a825;
 }
 
+
 .table-wrap{
-max-width:800px;
-margin: 0 auto;
+
 }
 .table-wrap th{
   color: rgba(100, 100, 100, 1);
@@ -97,6 +103,12 @@ margin: 0 auto;
 .table-wrap table tr{
   border-bottom: 1px solid rgba(0,0,0,0.3);
 }
+@media only screen and (max-width: 600px) {
+.table-wrap table tr > td:first-child{
+  width:20px;
+}
+}
+
 .table-wrap table > tbody > tr:nth-child(2n+1) {
   background-color: rgba(0,0,0,0.1);
   border-bottom: 1px solid rgba(255,255,255,0.1);

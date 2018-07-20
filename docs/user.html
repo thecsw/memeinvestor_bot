@@ -104,24 +104,16 @@
         <div class="divider"></div>
         <div class="section">
           <div class="row">
-            <div class="col s12 m7 l6">
+            <div class="col s12 m12 l6">
               <h5>investments table</h5>
-              <a id="" class="waves-effect waves-light btn grey darken-3"><i class="material-icons left">sort</i>filter</a>
-              <a id="" class="waves-effect waves-light btn grey darken-3"><i class="material-icons left">whatshot</i>active</a>
-              <a id="" class="waves-effect waves-light btn grey darken-3 disabled"><i class="material-icons left"></i>all</a>
-              <div class="table-controls hide">
-                <ul class="pagination col s12">
-                  <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
-                  <li class="active"><a href="#!">1</a></li>
-                  <li class="waves-effect"><a href="#!">2</a></li>
-                  <li class="waves-effect"><a href="#!">3</a></li>
-                  <li class="waves-effect"><a href="#!">4</a></li>
-                  <li class="waves-effect"><a href="#!">5</a></li>
-                  <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
-                </ul>
-                <input type="text" placeholder="from" class="datepicker col l3">
-                <input type="text" placeholder="to" class="datepicker col l3">
-<!--
+              <a id="filters-show" class="waves-effect waves-light btn grey darken-3"><i class="material-icons left">expand_more</i> filters</a>
+              <div id="table-controls" class="table-controls">
+                <p>Select a time range</p>
+                <input id="date-from" type="text" placeholder="from" class="datepicker col s12 m3 l3">
+                <input id="date-to" type="text" placeholder="to" class="datepicker col s12 m3 l3">
+                <br><br><br>
+                <a id="filters-apply" class="waves-effect waves-light btn grey darken-3"><i class="material-icons left">arrow_right</i>apply</a>
+                <!--
                 <div class="switch">
                   <label>
                     Active
@@ -145,13 +137,13 @@
 
                   <tbody>
                     <tr>
-                      <td>Lol who did this xd so funny</td>
+                      <td><a href="https://redd.it/9056s4">9056s4</a></td>
                       <td><span class="grey-text">23:22<br>19/jan</span></td>
                       <td>10000 Mc<br>7 upvotes</td>
                       <td><span class="green-text">+340 Mc</span><br>423 upvotes</td>
                     </tr>
                     <tr>
-                      <td>Lol dont invest! bad! go away!</td>
+                      <td><a href="https://redd.it/9056s5">9056s5</a></td>
                       <td><span class="grey-text">23:43<br>19/jan</span></td>
                       <td>23000 Mc<br>652k upvotes</td>
                       <td><span class="orange-text">-870 Mc</span><br>652k upvotes</td>
@@ -206,6 +198,15 @@
                     </tr>
                   </tbody>
                 </table>
+                                <ul class="pagination col s12">
+                  <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+                  <li class="active"><a href="#!">1</a></li>
+                  <li class="waves-effect"><a href="#!">2</a></li>
+                  <li class="waves-effect"><a href="#!">3</a></li>
+                  <li class="waves-effect"><a href="#!">4</a></li>
+                  <li class="waves-effect"><a href="#!">5</a></li>
+                  <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+                </ul>
               </div>
             </div>
             <div class="col s12 m5 l6">
