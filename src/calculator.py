@@ -90,6 +90,7 @@ def main():
 
             post = reddit.submission(investment.post)
             upvotes_now = post.ups # <--- triggers a Reddit API call
+            investment.final_upvotes = upvotes_now
 
             # Updating the investor's balance
             factor = formula.calculate(upvotes_now, investment.upvotes)
