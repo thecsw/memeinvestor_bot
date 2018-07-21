@@ -25,6 +25,7 @@ class Investment(Base):
     time = Column(Integer, server_default=unix_timestamp())
     done = Column(Boolean, default=False, nullable=False)
     response = Column(String(11))
+    final_upvotes = Column(Integer)
     success = Column(Boolean, default=False)
     profit = Column(BigInteger, default=0)
 
