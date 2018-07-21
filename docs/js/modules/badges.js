@@ -12,6 +12,10 @@ export const badgesList = {
       'contributed in the development of memeInvestor',
       'contributor.png'
    ],
+   'overflow': [
+      'overflow',
+      'overflow.png'
+   ],
    'unknown': [
       'unknown badge',
       'laurel.png'

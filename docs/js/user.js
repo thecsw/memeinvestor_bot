@@ -1,6 +1,7 @@
 import {connectionErrorToast} from './modules/uiElements.js';
 import * as jsonApi from './modules/jsonApi.js';
 import {Scheduler} from './modules/scheduler.js';
+import {formatToUnits} from './modules/dataUtils.js';
 import {getFileName, getDescription} from './modules/badges.js';
 
 var getUser = (function(){
@@ -220,6 +221,8 @@ let investments = (function(){
    
    let perPage = 10;
    let page = 0;
+   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
    function toggleFilters(){
       let tableControls = document.getElementById(ids.tableControls);
       if(filtersOpen){
@@ -265,13 +268,30 @@ let investments = (function(){
       <tbody>
       `
       for(let inv of data){
+         let invTime = new Date(inv.time*1000)
+         let time = invTime.getHours()+':'+invTime.getMinutes()
+         let date = invTime.getDate()+'/'+monthNames[invTime.getMonth()]
          html += `
          <tr>
             <td><a href="https://redd.it/${inv.post}">${inv.post}</a></td>
-            <td><span class="grey-text">23:22<br>19/jan</span></td>
-            <td>${inv.amount} Mc<br>${inv.upvotes} upvotes</td>
-            <td><span class="green-text">+340 Mc</span><br>423 upvotes</td>
-         </tr>`
+            <td><span class="grey-text">${time}<br>${date}</span></td>
+            <td>${formatToUnits(inv.amount)} M¢<br>${formatToUnits(inv.upvotes)} upvotes</td>
+            <td>`
+         if(inv.done){
+            let color = inv.success? 'green-text' : 'red-text text-lighten-1'
+            let sign = inv.success? '<i class="material-icons">arrow_drop_up</i>' : '<i class="material-icons">arrow_drop_down</i>'
+            let profit = sign+formatToUnits(Math.abs(inv.profit))
+            let finalUpvotes = inv.final_upvotes? inv.final_upvotes : '--';
+            html += `<span class="${color}">${profit} M¢</span><br>${finalUpvotes} upvotes`
+         }else{
+            let currentTime = new Date();
+            let timeLeftTimeStamp = currentTime.getTime() - invTime.getTime();
+            let timeLeft = new Date(timeLeftTimeStamp)
+            let hoursLeft = timeLeft.getHours()+':'+timeLeft.getMinutes();
+            html += `<span><i class="material-icons">access_time</i> ${hoursLeft} left</span>`
+         }
+         html += '</td></tr>'
+
       }
       html += `</tbody>`
       document.getElementById(ids.table).innerHTML = html
