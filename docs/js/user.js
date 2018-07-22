@@ -400,6 +400,104 @@ let investments = (function(){
 })();
 
 
+let profitChart = (function(){
+   let desktopRatio = false;
+   let canvas1;
+   let ch1;
+
+   function getScreenSize(){
+      let w = window,
+      d = document,
+      e = d.documentElement,
+      g = d.getElementsByTagName('body')[0],
+      x = w.innerWidth || e.clientWidth || g.clientWidth,
+      y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+      return {x,y};
+   }
+   function update(index, val, label){
+       let chartDataSet = ch1.data.datasets[0];
+       chartDataSet.data[index] = val;
+       ch1.update();
+   }
+   function init(){
+      canvas1 = document.getElementById('profit-graph');
+      let x = getScreenSize().x;
+      //if on desktop
+      if(x>=800){
+         //DO EVERYTHING
+      }
+      //display axys labels based on device width
+      let displayAxysLabel = desktopRatio;
+      let ctx = canvas1.getContext('2d');
+      //generate labels for x axys
+      let graphLabels = ['','','','','','','','','',''];
+      ch1 = new Chart(ctx, {
+         type: 'line',
+         data: {
+            labels: graphLabels,
+            datasets: [{
+               //red dataset
+               data: [10, 20, 22, 40, 89, 100, 150],
+               label: "M¢ invested",
+               yAxisID: "A",
+               backgroundColor: 'rgba(240, 91, 79, 0.0)',
+               borderColor: 'rgb(240, 91, 79)',
+               lineTension: 0,
+               borderWidth: 2,
+            }]
+         },
+         options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            
+            legend: {
+               //we use our own
+               display: false
+            },
+            tooltips: {
+               cornerRadius: 2,
+               backgroundColor: 'rgba(233, 164, 53, 0.8)',
+               displayColors: false
+              
+            },
+            scales: {
+               yAxes: [{
+                  id: 'A',
+                  type: 'linear',
+                  position: 'left',
+                  gridLines: {
+                     display: true,
+                     color: 'rgba(255,255,255,0.1)',
+                     zeroLineColor: 'rgba(255,255,255,0.0)'                     
+                  },
+                  ticks: {
+                     fontColor: 'rgba(255,255,255,0.4)',
+                     display: displayAxysLabel,
+                     callback: val => formatToUnits(val)
+                  }
+               },],
+               xAxes: [{
+                  gridLines: {
+                     display: true,
+                     color: 'rgba(255,255,255,0.1)',
+                     zeroLineColor: 'rgba(255,255,255,0.0)'
+                  },                  
+                  ticks: {
+                     display: false,
+                     fontColor: 'rgba(255,255,255,0.4)',
+                  }                  
+               }]
+            }
+         }
+      });
+   
+   }
+   return{
+      init: init,
+      update: update
+   }
+})();
+
 
 (function(){
    document.addEventListener('DOMContentLoaded', function(){
@@ -407,5 +505,6 @@ let investments = (function(){
       pageManager.init();
       overview.init();
       investments.init();
+      profitChart.init();
    });
 })();

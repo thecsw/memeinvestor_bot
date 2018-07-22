@@ -140,3 +140,9 @@ td span .material-icons{
     display: inline-flex;
     vertical-align: top;
 }
+
+/* --[graph row]-- */
+.chart-wrap{
+  margin-top: 10px
+  height:400px;
+}

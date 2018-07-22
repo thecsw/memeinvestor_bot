@@ -117,16 +117,6 @@
                 <br><br><br>
                 <a id="filters-apply" class="waves-effect waves-light btn grey darken-3"><i class="material-icons left">arrow_right</i>apply</a>
                 <a id="filters-clear" class="waves-effect waves-light btn grey darken-3">clear</a>
-                <!--
-                <div class="switch">
-                  <label>
-                    Active
-                    <input type="checkbox">
-                    <span class="lever"></span>
-                    old
-                  </label>
-                </div>
-                -->
               </div>
               <div class="table-wrap">
                 <div id="investments-table-overlay" class="investments-table-overlay" >
@@ -146,92 +136,23 @@
                 <table id="investments-table">
                   <thead>
                     <tr>
-                        <th>Post url</th>
-                        <th>date</th>
-                        <th>In</th>
-                        <th>out</th>
                     </tr>
                   </thead>
-
                   <tbody>
-                  <!--
-                    <tr>
-                      <td><a href="https://redd.it/9056s4">9056s4</a></td>
-                      <td><span class="grey-text">23:22<br>19/jan</span></td>
-                      <td>10000 Mc<br>7 upvotes</td>
-                      <td><span class="green-text">+340 Mc</span><br>423 upvotes</td>
-                    </tr>
-                    <tr>
-                      <td><a href="https://redd.it/9056s5">9056s5</a></td>
-                      <td><span class="grey-text">23:43<br>19/jan</span></td>
-                      <td>23000 Mc<br>652k upvotes</td>
-                      <td><span class="orange-text">-870 Mc</span><br>652k upvotes</td>
-                    </tr>
-                    <tr>
-                      <td>INVEST now if you like investing</td>
-                      <td><span class="grey-text">23:55<br>19/jan</span></td>
-                      <td>23q Mc<br>42 upvotes</td>
-                      <td><span class="green-text">+985Q Mc</span><br>76b upvotes</td>
-                    </tr>
-                    <tr>
-                      <td>Lol who did this xd so funny</td>
-                      <td><span class="grey-text">23:22<br>19/jan</span></td>
-                      <td>10000 Mc<br>7 upvotes</td>
-                      <td><span class="green-text">+340 Mc</span><br>423 upvotes</td>
-                    </tr>
-                    <tr>
-                      <td>Lol dont invest! bad! go away!</td>
-                      <td><span class="grey-text">23:43<br>19/jan</span></td>
-                      <td>23000 Mc<br>652k upvotes</td>
-                      <td><span class="orange-text">-870 Mc</span><br>652k upvotes</td>
-                    </tr>
-                    <tr>
-                      <td>Lol who did this xd so funny</td>
-                      <td><span class="grey-text">23:22<br>19/jan</span></td>
-                      <td>10000 Mc<br>7 upvotes</td>
-                      <td><span class="green-text">+340 Mc</span><br>423 upvotes</td>
-                    </tr>
-                    <tr>
-                      <td>Lol dont invest! bad! go away!</td>
-                      <td><span class="grey-text">23:43<br>19/jan</span></td>
-                      <td>23000 Mc<br>652k upvotes</td>
-                      <td><span class="orange-text">-870 Mc</span><br>652k upvotes</td>
-                    </tr>
-                    <tr>
-                      <td>INVEST now if you like investing</td>
-                      <td><span class="grey-text">23:55<br>19/jan</span></td>
-                      <td>23q Mc<br>42 upvotes</td>
-                      <td><span class="green-text">+985Q Mc</span><br>76b upvotes</td>
-                    </tr>
-                    <tr>
-                      <td>Lol who did this xd so funny</td>
-                      <td><span class="grey-text">23:22<br>19/jan</span></td>
-                      <td>10000 Mc<br>7 upvotes</td>
-                      <td><span class="green-text">+340 Mc</span><br>423 upvotes</td>
-                    </tr>
-                    <tr>
-                      <td>Lol dont invest! bad! go away!</td>
-                      <td><span class="grey-text">23:43<br>19/jan</span></td>
-                      <td>23000 Mc<br>652k upvotes</td>
-                      <td><span class="orange-text">-870 Mc</span><br>652k upvotes</td>
-                    </tr>
-                    -->
-                  </tbody>
+                  </tbody>                  
                 </table>
-             <!--<ul class="pagination col s12">
-                  <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
-                  <li class="active"><a href="#!">1</a></li>
-                  <li class="waves-effect"><a href="#!">2</a></li>
-                  <li class="waves-effect"><a href="#!">3</a></li>
-                  <li class="waves-effect"><a href="#!">4</a></li>
-                  <li class="waves-effect"><a href="#!">5</a></li>
-                  <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
-                </ul>-->
+                
               </div>
             </div>
-            <div class="col s12 m5 l6">
-              <h5></h5>
-
+            <div class="col s12 m5 l6 ">
+              <div class="hide-on-med-and-down">
+                <h5>profit history</h5>
+                <div class="chart-wrap">
+                    <canvas id="profit-graph"></canvas>
+                    <!-- THIS RATIO ON MOBILE (max-width:640px) -->
+                    <!--<div class="ct-chart ct-perfect-fourth"></div> -->
+                </div>
+              </div>
             </div>
           </div>
         </div>
