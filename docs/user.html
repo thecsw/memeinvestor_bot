@@ -107,7 +107,10 @@
             <div class="col s12 m12 l6">
               <h5>investments table</h5>
               <a id="filters-show" class="waves-effect waves-light btn grey darken-3"><i class="material-icons left">expand_more</i> filters</a>
-              <div id="table-controls" class="table-controls">
+              <a id="page-previous" class="waves-effect waves-light btn grey darken-3 page-nav disabled"><i class="material-icons left">chevron_left</i></a>
+              <a id="page-indicator" class="page-indicator grey-text">1/32</a>
+              <a id="page-next" class="waves-effect waves-light btn grey darken-3 page-nav disabled"><i class="material-icons left">chevron_right</i></a>      
+             <div id="table-controls" class="table-controls">
                 <p>Select a time range</p>
                 <input id="date-from" type="text" placeholder="from" class="datepicker col s12 m3 l3">
                 <input id="date-to" type="text" placeholder="to" class="datepicker col s12 m3 l3">
@@ -125,6 +128,20 @@
                 -->
               </div>
               <div class="table-wrap">
+                <div id="investments-table-overlay" class="investments-table-overlay" >
+                  <h5>loading. </h5>
+                  <div class="preloader-wrapper big active">
+                    <div class="spinner-layer spinner-yellow-only">
+                      <div class="circle-clipper left">
+                        <div class="circle"></div>
+                      </div><div class="gap-patch">
+                        <div class="circle"></div>
+                      </div><div class="circle-clipper right">
+                        <div class="circle"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <table id="investments-table">
                   <thead>
                     <tr>

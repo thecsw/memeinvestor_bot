@@ -124,7 +124,7 @@ let pageManager = (function(){
       //update badges
       badges.set(data.badges)
       //update investments
-      investments.set(data.name);
+      investments.setUser(data.name,data.completed);
       
       //kill old overview updater
       if(overviewUpdater)overviewUpdater.stop();
@@ -214,12 +214,22 @@ let investments = (function(){
       dateFrom : 'date-from',
       dateTo : 'date-to',
       applyFilters: 'filters-apply',
-      table: 'investments-table'
+      table: 'investments-table',
+      tableOverlay: 'investments-table-overlay',
+      page: {
+         previous: 'page-previous',
+         indicator: 'page-indicator',
+         next: 'page-next'
+      }
    }
    let toggleBt = undefined;
    let filtersOpen = false;
    
-   let perPage = 10;
+   let name = '';
+   let loading = false;
+   
+   let perPage = 15;
+   let pages = 1;
    let page = 0;
    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -235,26 +245,79 @@ let investments = (function(){
          tableControls.classList.add('f-scale');
       }
    }
+   function previous(){
+      if(!loading){
+         page--
+         updatePageNumber();
+         let options = `?per_page=${perPage}&page=${page}`
+         updateTable(options)
+      }
+   }
+   function updatePageNumber(){
+      console.log(pages,page)
+      let previousBt = document.getElementById(ids.page.previous).classList;
+      let nextBt = document.getElementById(ids.page.next).classList;
+      document.getElementById(ids.page.indicator).innerText = (page+1)+'/'+pages
+      
+      if(page>0) previousBt.remove('disabled')
+      else previousBt.add('disabled')
+   
+      if((page+1)<pages) nextBt.remove('disabled')
+      else nextBt.add('disabled')
+   }
+   function next(){
+      if(!loading){
+         page++
+         updatePageNumber();
+         let options = `?per_page=${perPage}&page=${page}`
+         updateTable(options)
+      }
+   }
    function init(){
       toggleBt = document.getElementById(ids.toggleFilters);
       toggleBt.addEventListener('click',toggleFilters);
+      document.getElementById(ids.page.previous).addEventListener('click',previous);
+      document.getElementById(ids.page.next).addEventListener('click',next);
    }
-   function set(name){
-
+   function setUser(userName,amount){
+      name = userName;
+      pages = Math.ceil(amount/perPage);
+      page = 0;
+      updatePageNumber();
       let options = `?per_page=${perPage}&page=${page}`
+      updateTable(options)
+   }
+   function updateTable(options){
+      showOverlay()
       jsonApi.get(`/investor/${name}/investments${options}`)
       .then(render)
       .catch(er=>{
+         removeOverlay()
          if(er.status === 404)noInvestments();
          else connectionErrorToast(er);
-      })
-       
+      })      
+   }
+   function showOverlay(){
+      loading = true;
+      document.getElementById(ids.table).style.opacity = 0.4
+      document.getElementById(ids.tableOverlay).style.opacity = 1      
+   }
+   function removeOverlay(){ 
+      let overlay = document.getElementById(ids.tableOverlay)
+      document.getElementById(ids.table).style.opacity = 1
+      overlay.classList.add('pulse-out')
+      setTimeout(_=>{
+         loading = false;
+         overlay.style.opacity = 0
+         overlay.classList.remove('pulse-out')
+      },400)
    }
    function noInvestments(){
       document.getElementById(ids.table).innerHTML = 
       `<h5 class="grey-text">No investments found</h5>`
    }
    function render(data){
+      removeOverlay()
       console.log(data)
       let html = `
       <thead>
@@ -285,7 +348,8 @@ let investments = (function(){
             html += `<span class="${color}">${profit} M¢</span><br>${finalUpvotes} upvotes`
          }else{
             let currentTime = new Date();
-            let timeLeftTimeStamp = currentTime.getTime() - invTime.getTime();
+            //14400000 == 4h
+            let timeLeftTimeStamp = 14400000 - ( currentTime.getTime() - invTime.getTime() );
             let timeLeft = new Date(timeLeftTimeStamp)
             let hoursLeft = timeLeft.getHours()+':'+timeLeft.getMinutes();
             html += `<span><i class="material-icons">access_time</i> ${hoursLeft} left</span>`
@@ -296,13 +360,9 @@ let investments = (function(){
       html += `</tbody>`
       document.getElementById(ids.table).innerHTML = html
    }
-   function update(){
-      
-   }
    return {
       init: init,
-      set: set,
-      update: update
+      setUser: setUser
    }
 })();
 
