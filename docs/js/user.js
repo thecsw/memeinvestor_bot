@@ -214,6 +214,7 @@ let investments = (function(){
       dateFrom : 'date-from',
       dateTo : 'date-to',
       applyFilters: 'filters-apply',
+      clearFilters: 'filters-clear',
       table: 'investments-table',
       tableOverlay: 'investments-table-overlay',
       page: {
@@ -222,18 +223,38 @@ let investments = (function(){
          next: 'page-next'
       }
    }
-   let toggleBt = undefined;
    let filtersOpen = false;
+   let loading = false;
    
    let name = '';
-   let loading = false;
    
    let perPage = 15;
    let pages = 1;
    let page = 0;
+   let tFrom = '';
+   let tTo = '';
    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+   
+   function init(){
+      document.getElementById(ids.toggleFilters).addEventListener('click',toggleFilters);
+      document.getElementById(ids.applyFilters).addEventListener('click',applyFilters);
+      document.getElementById(ids.clearFilters).addEventListener('click',clearFilters);
+      document.getElementById(ids.page.previous).addEventListener('click',previous);
+      document.getElementById(ids.page.next).addEventListener('click',next);
+   }
+   //initialize the table for a specific user
+   function setUser(userName,amount){
+      name = userName;
+      pages = Math.ceil(amount/perPage);
+      page = 0;
+      tFrom = '';
+      tTo = '';
+      updatePageNumber();
+      updateTable();
+   }
    function toggleFilters(){
+      let toggleBt = document.getElementById(ids.toggleFilters);
       let tableControls = document.getElementById(ids.tableControls);
       if(filtersOpen){
          filtersOpen = false;
@@ -245,16 +266,41 @@ let investments = (function(){
          tableControls.classList.add('f-scale');
       }
    }
+   function applyFilters(){
+      if(!loading){
+         let dateFrom = document.getElementById(ids.dateFrom)
+         let dateTo = document.getElementById(ids.dateTo)
+         if(dateFrom.value && dateTo.value){
+            tFrom = Date.parse(dateFrom.value)/1000
+            tTo = Date.parse(dateTo.value)/1000
+            page = 0;
+            updatePageNumber();
+            updateTable();
+         }else{
+            let toastHTML = 'invalid data'
+            M.toast({html: toastHTML,displayLength:2000, classes:"dark-toast"}); 
+         }
+      }
+   }
+   function clearFilters(){
+      if(!loading){
+         document.getElementById(ids.dateFrom).value = '';
+         document.getElementById(ids.dateTo).value = '';
+         page = 0;
+         tFrom = '';
+         tTo = '';
+         updatePageNumber();
+         updateTable();
+      }
+   }
    function previous(){
       if(!loading){
          page--
          updatePageNumber();
-         let options = `?per_page=${perPage}&page=${page}`
-         updateTable(options)
+         updateTable()
       }
    }
    function updatePageNumber(){
-      console.log(pages,page)
       let previousBt = document.getElementById(ids.page.previous).classList;
       let nextBt = document.getElementById(ids.page.next).classList;
       document.getElementById(ids.page.indicator).innerText = (page+1)+'/'+pages
@@ -269,26 +315,12 @@ let investments = (function(){
       if(!loading){
          page++
          updatePageNumber();
-         let options = `?per_page=${perPage}&page=${page}`
-         updateTable(options)
+         updateTable()
       }
    }
-   function init(){
-      toggleBt = document.getElementById(ids.toggleFilters);
-      toggleBt.addEventListener('click',toggleFilters);
-      document.getElementById(ids.page.previous).addEventListener('click',previous);
-      document.getElementById(ids.page.next).addEventListener('click',next);
-   }
-   function setUser(userName,amount){
-      name = userName;
-      pages = Math.ceil(amount/perPage);
-      page = 0;
-      updatePageNumber();
-      let options = `?per_page=${perPage}&page=${page}`
-      updateTable(options)
-   }
-   function updateTable(options){
+   function updateTable(){
       showOverlay()
+      let options = `?per_page=${perPage}&page=${page}&from=${tFrom}&to=${tTo}`
       jsonApi.get(`/investor/${name}/investments${options}`)
       .then(render)
       .catch(er=>{
@@ -315,6 +347,7 @@ let investments = (function(){
    function noInvestments(){
       document.getElementById(ids.table).innerHTML = 
       `<h5 class="grey-text">No investments found</h5>`
+      document.getElementById(ids.page.next).classList.add('disabled')
    }
    function render(data){
       removeOverlay()
