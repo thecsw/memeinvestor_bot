@@ -322,7 +322,11 @@ let investments = (function(){
       showOverlay()
       let options = `?per_page=${perPage}&page=${page}&from=${tFrom}&to=${tTo}`
       jsonApi.get(`/investor/${name}/investments${options}`)
-      .then(render)
+      .then(d=>{
+         removeOverlay()
+         render(d)
+         profitChart.updateAll(d)
+      })
       .catch(er=>{
          removeOverlay()
          if(er.status === 404)noInvestments();
@@ -350,7 +354,6 @@ let investments = (function(){
       document.getElementById(ids.page.next).classList.add('disabled')
    }
    function render(data){
-      removeOverlay()
       console.log(data)
       let html = `
       <thead>
@@ -401,7 +404,10 @@ let investments = (function(){
 
 
 let profitChart = (function(){
-   let desktopRatio = false;
+   let desktop = false;
+   const fields = ['profit','amount','upvotes','final_upvotes']
+   let field = fields[0]
+   let tempData;
    let canvas1;
    let ch1;
 
@@ -415,33 +421,41 @@ let profitChart = (function(){
       return {x,y};
    }
    function update(index, val, label){
-       let chartDataSet = ch1.data.datasets[0];
-       chartDataSet.data[index] = val;
-       ch1.update();
+      if(desktop){         
+          let chartDataSet = ch1.data.datasets[0];
+          chartDataSet.data[index] = val;
+          ch1.update();
+      }
+   }
+   function updateAll(data){
+      if(desktop){
+         tempData = data;
+         for(let i=0,l=data.length; i<l; i++){
+            let inv = data[i]
+            update(i,inv[field])
+         }
+      }
    }
    function init(){
       canvas1 = document.getElementById('profit-graph');
       let x = getScreenSize().x;
       //if on desktop
       if(x>=800){
-         //DO EVERYTHING
-      }
-      //display axys labels based on device width
-      let displayAxysLabel = desktopRatio;
+         desktop = true
       let ctx = canvas1.getContext('2d');
       //generate labels for x axys
-      let graphLabels = ['','','','','','','','','',''];
+      let graphLabels = ['','','','','','','','','','','','','','',''];
       ch1 = new Chart(ctx, {
          type: 'line',
          data: {
             labels: graphLabels,
             datasets: [{
                //red dataset
-               data: [10, 20, 22, 40, 89, 100, 150],
-               label: "M¢ invested",
+               data: [],
+               label: "profit: ",
                yAxisID: "A",
-               backgroundColor: 'rgba(240, 91, 79, 0.0)',
-               borderColor: 'rgb(240, 91, 79)',
+               backgroundColor: 'rgba(255, 167, 38, 0.0)',
+               borderColor: 'rgb(255, 167, 38)',
                lineTension: 0,
                borderWidth: 2,
             }]
@@ -451,7 +465,6 @@ let profitChart = (function(){
             maintainAspectRatio: false,
             
             legend: {
-               //we use our own
                display: false
             },
             tooltips: {
@@ -472,7 +485,7 @@ let profitChart = (function(){
                   },
                   ticks: {
                      fontColor: 'rgba(255,255,255,0.4)',
-                     display: displayAxysLabel,
+                     display: true,
                      callback: val => formatToUnits(val)
                   }
                },],
@@ -490,11 +503,14 @@ let profitChart = (function(){
             }
          }
       });
+      
+      }
    
    }
    return{
       init: init,
-      update: update
+      update: update,
+      updateAll: updateAll
    }
 })();
 

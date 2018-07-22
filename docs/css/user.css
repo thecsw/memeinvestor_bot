@@ -142,7 +142,14 @@ td span .material-icons{
 }
 
 /* --[graph row]-- */
+.custom-select{
+  width:200px;
+  color: white !important;
+}
+.custom-select svg{
+  fill: white !important;
+}
 .chart-wrap{
-  margin-top: 10px
+  margin-top: 40px;
   height:400px;
 }
