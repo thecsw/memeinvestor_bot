@@ -83,9 +83,6 @@ def investments():
     sql_res = sql.order_by(Investment.id.desc()).\
               limit(per_page).offset(page*per_page).all()
 
-    if not sql_res:
-        return not_found("No investments found")
-
     res = [{
         "id": x.id,
         "post": x.post,
@@ -203,10 +200,6 @@ def investor_investments(name):
     sql_res = sql.order_by(Investment.id.desc()).\
               limit(per_page).offset(page*per_page).all()
 
-    if not sql_res:
-        noRes = []
-        return jsonify(noRes)
-
     res = [{
         "id": x.id,
         "post": x.post,
@@ -240,9 +233,6 @@ def investor_active(name):
 
     sql_res = sql.order_by(Investment.id.desc()).\
               limit(per_page).offset(page*per_page).all()
-
-    if not sql_res:
-        return not_found("No investments found")
 
     res = [{
         "id": x.id,
