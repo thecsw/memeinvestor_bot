@@ -432,7 +432,7 @@ let profitChart = (function(){
          let chartDataSet = ch1.data.datasets[0];
          let data = tempData;
          for(let i=0; i<points; i++){
-            let inv = data[i] || 0;
+            let inv = data[i] || {};
             chartDataSet.data[points-i-1] = inv[field];
          }
          ch1.update();
