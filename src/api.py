@@ -204,7 +204,8 @@ def investor_investments(name):
               limit(per_page).offset(page*per_page).all()
 
     if not sql_res:
-        return not_found("No investments found")
+        noRes = []
+        return jsonify(noRes)
 
     res = [{
         "id": x.id,
