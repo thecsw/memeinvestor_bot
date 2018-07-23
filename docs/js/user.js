@@ -385,10 +385,14 @@ let investments = (function(){
          }else{
             let currentTime = new Date();
             //14400000 == 4h
-            let timeLeftTimeStamp = 14400000 - ( currentTime.getTime() - invTime.getTime() );
-            let timeLeft = new Date(timeLeftTimeStamp)
-            let hoursLeft = timeLeft.getHours()+':'+timeLeft.getMinutes();
-            html += `<span><i class="material-icons">access_time</i> ${hoursLeft} left</span>`
+            let millisecondsLeft = 14400000 - ( currentTime.getTime() - invTime.getTime() );
+            let hoursLeftString = Math.floor(millisecondsLeft / 3600000).toString()
+            let minutesLeftString = Math.floor((millisecondsLeft % 3600000) / 60000).toString()
+            if(minutesLeftString.length < 2){
+              minutesLeftString = "0" + minutesLeftString
+            }
+            let timeLeftString = hoursLeftString+':'+minutesLeftString;
+            html += `<span><i class="material-icons">access_time</i> ${timeLeftString} left</span>`
          }
          html += '</td></tr>'
 
