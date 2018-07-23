@@ -4,7 +4,7 @@ export const badgesList = {
       'Billionaire during the first beta',
       'top-beta.png'
    ],
-   'top-investor': [
+   'top-s1': [
       'the richest investor on memeEconomy',
       'top-investor.png'
    ],

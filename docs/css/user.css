@@ -146,8 +146,20 @@ td span .material-icons{
   width:200px;
   color: white !important;
 }
-.custom-select svg{
-  fill: white !important;
+.custom-select select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  border: 0px;
+  background-repeat: no-repeat;
+  background-size: 25px auto;
+  background-position: left 20px center;
+  background-image: url(../resources/baseline-expand_more-24px.svg);
+}
+.custom-select select:active{
+  outline: 0;
+  border: 0px;
 }
 .chart-wrap{
   margin-top: 40px;

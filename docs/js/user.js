@@ -325,7 +325,7 @@ let investments = (function(){
       .then(d=>{
          removeOverlay()
          render(d)
-         profitChart.updateAll(d)
+         profitChart.updateDataSet(d)
       })
       .catch(er=>{
          removeOverlay()
@@ -410,6 +410,11 @@ let profitChart = (function(){
    let tempData;
    let canvas1;
    let ch1;
+   
+   let ids = {
+      chart: 'profit-graph',
+      dropdown: 'dataset-select'
+   }
 
    function getScreenSize(){
       let w = window,
@@ -420,31 +425,40 @@ let profitChart = (function(){
       y = w.innerHeight|| e.clientHeight|| g.clientHeight;
       return {x,y};
    }
-   function update(index, val, label){
-      if(desktop){         
-          let chartDataSet = ch1.data.datasets[0];
-          chartDataSet.data[index] = val;
-          ch1.update();
-      }
-   }
-   function updateAll(data){
+   function update(){
       if(desktop){
-         tempData = data;
+         let chartDataSet = ch1.data.datasets[0];
+         let data = tempData;
          for(let i=0,l=data.length; i<l; i++){
             let inv = data[i]
-            update(i,inv[field])
+            chartDataSet.data[i] = inv[field];
          }
+         ch1.update();
       }
    }
+   function updateDataSet(data){
+      if(desktop){
+         tempData = data;
+         update();
+      }
+   }
+   function updateField(){
+      field = document.getElementById(ids.dropdown).value;
+      update();
+   }
    function init(){
-      canvas1 = document.getElementById('profit-graph');
       let x = getScreenSize().x;
       //if on desktop
       if(x>=800){
-         desktop = true
-      let ctx = canvas1.getContext('2d');
-      //generate labels for x axys
+      canvas1 = document.getElementById(ids.chart)
+      desktop = true
+      //init dropdown listener
+      let dropDown = document.getElementById(ids.dropdown);
+      dropDown.addEventListener('change',updateField)
+      field = dropDown.value
+      
       let graphLabels = ['','','','','','','','','','','','','','',''];
+      let ctx = canvas1.getContext('2d');
       ch1 = new Chart(ctx, {
          type: 'line',
          data: {
@@ -452,7 +466,7 @@ let profitChart = (function(){
             datasets: [{
                //red dataset
                data: [],
-               label: "profit: ",
+               label: "amount",
                yAxisID: "A",
                backgroundColor: 'rgba(255, 167, 38, 0.0)',
                borderColor: 'rgb(255, 167, 38)',
@@ -510,7 +524,7 @@ let profitChart = (function(){
    return{
       init: init,
       update: update,
-      updateAll: updateAll
+      updateDataSet: updateDataSet
    }
 })();
 
