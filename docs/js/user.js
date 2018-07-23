@@ -195,7 +195,7 @@ let badges = (function(){
          src="./resources/badges/${getFileName(badge)}"/>
          `
       }
-      if(!html)html='<p class="grey-text">This account doesn\'t have any badge.</p>'
+      if(!html)html='<p class="grey-text">This account doesn\'t have any badges.</p>'
       let container = document.getElementById(ids.container);
       container.innerHTML = html;
       let elems = container.querySelectorAll('.tooltipped');
@@ -358,9 +358,9 @@ let investments = (function(){
       let html = `
       <thead>
         <tr>
-            <th>Post url</th>
+            <th>Post</th>
             <th>date</th>
-            <th>In</th>
+            <th>in</th>
             <th>out</th>
         </tr>
       </thead>

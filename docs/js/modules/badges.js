@@ -1,19 +1,19 @@
 
 export const badgesList = {
    'top-beta': [
-      'Billionaire during the first beta',
+      'Beta Billionaire: Earned a billion MemeCoins or more during the beta',
       'top-beta.png'
    ],
    'top-s1': [
-      'the richest investor on memeEconomy',
+      'S1 Top Investor: Reached the height of riches in Season 1',
       'top-investor.png'
    ],
    'contributor': [
-      'contributed in the development of memeInvestor',
+      'Contributor: Made at least one commit to the MemeInvestor_bot project on GitHub',
       'contributor.png'
    ],
    'overflow': [
-      'overflow',
+      'Overflow: \'The value of his bank account is too damn high!\'',
       'overflow.png'
    ],
    'unknown': [
