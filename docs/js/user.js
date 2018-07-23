@@ -323,14 +323,14 @@ let investments = (function(){
       let options = `?per_page=${perPage}&page=${page}&from=${tFrom}&to=${tTo}`
       jsonApi.get(`/investor/${name}/investments${options}`)
       .then(d=>{
+         if(d.length>0)render(d)
+         else noInvestments()
          removeOverlay()
-         render(d)
          profitChart.updateDataSet(d)
       })
       .catch(er=>{
          removeOverlay()
-         if(er.status === 404)noInvestments();
-         else connectionErrorToast(er);
+         connectionErrorToast(er);
       })      
    }
    function showOverlay(){
