@@ -1,6 +1,7 @@
 import {connectionErrorToast} from './modules/uiElements.js';
 import * as jsonApi from './modules/jsonApi.js';
 import {formatToUnits, iterateDays} from './modules/dataUtils.js';
+import {Scheduler} from './modules/scheduler.js';
 
 let overview = (function(){
    let counters = {
@@ -249,67 +250,6 @@ let investmentsCalculator = (function() {
    }
 })();
 
-let updater = (function(){
-   let hidden, visibilityChange; 
-   let updateInterval = 10000;
-   let interval = false;
-   function init(){
-      //start the updater
-      start();
-      // Set the name of the hidden property and the change event for visibility
-      if (typeof document.hidden !== "undefined") {
-        hidden = "hidden";
-        visibilityChange = "visibilitychange";
-      } else if (typeof document.msHidden !== "undefined") {
-        hidden = "msHidden";
-        visibilityChange = "msvisibilitychange";
-      } else if (typeof document.webkitHidden !== "undefined") {
-        hidden = "webkitHidden";
-        visibilityChange = "webkitvisibilitychange";
-      }
-      document.addEventListener(visibilityChange, handleVisibilityChange, false);
-   }
-   //pause the updater when the window lose its focus
-   function handleVisibilityChange() {
-      if (document[hidden]) {
-         stop();
-      } else {
-         start();
-      }
-   }
-   function update(){
-      console.log('updating data..')
-      let tempData = jsonApi.getAll()
-      .then(function (data) {
-         overview.update(data.coins, data.investments);
-         leaderboard.update(data.investors.top);
-      })
-      .catch(function (err) {
-         console.error('error while retrieving apis data', err.statusText);
-         connectionErrorToast(err)
-      }); 
-      //beep(500, 2);//used for debugging on mobile
-   }
-   function stop(){
-      if(interval){
-         clearInterval(interval);
-         interval = false;
-      }
-   }
-   function start(){
-      if(!interval){
-         update()
-         interval = setInterval(update,updateInterval);
-      }
-   }
-   
-   return {
-      init: init,
-      update: update,
-      pause: stop,
-      resume: start
-   }
-})();
 
 
 (function(){
@@ -317,24 +257,46 @@ let updater = (function(){
       //init local modules
       overview.init()
       overviewChart.init()
-      updater.init()
       investmentsCalculator.init()
-      
-      
-      //load chart
-      iterateDays(7, function(index, dateFrom, to){
-          let ufrom = dateFrom.valueOf() / 1000;
-          let uto = to.valueOf() / 1000;
-
-          jsonApi.get('/investments/total?from='+ufrom+'&to='+uto)
-              .then(function (data) {
-                  overviewChart.update(1, index, parseInt(data.investments));
-              })
-          jsonApi.get('/investments/amount?from='+ufrom+'&to='+uto)
-              .then(function (data) {
-                  overviewChart.update(0, index, parseInt(data.coins));
-              })
-      })
+      //init short polling update schedulers
+      let dataUpdater = new Scheduler(
+         function(){
+            console.log('updating data..')
+            jsonApi.getAll()
+            .then(function (data) {
+               overview.update(data.coins, data.investments);
+               leaderboard.update(data.investors.top);
+            })
+            .catch(function (err) {
+               console.error('error while retrieving apis data', err.statusText);
+               connectionErrorToast(err)
+            }); 
+         },
+         //every 10 seconds
+         10000
+      )
+      function updateChart(){
+         iterateDays(7, function(index, dateFrom, to){
+            console.log("updating chart---")
+            let ufrom = dateFrom.valueOf() / 1000;
+            let uto = to.valueOf() / 1000;
+            jsonApi.get('/investments/total?from='+ufrom+'&to='+uto)
+            .then(function (data) {
+               overviewChart.update(1, index, parseInt(data.investments));
+            })
+            jsonApi.get('/investments/amount?from='+ufrom+'&to='+uto)
+            .then(function (data) {
+               overviewChart.update(0, index, parseInt(data.coins));
+            })
+         })
+      }
+      //init short polling chart update scheduler
+      let chartUpdater = new Scheduler(
+         updateChart,
+         120000,//every 2 minutes
+         true,
+         false//don't execute immediately after a pause resume
+      );
       
    });
    
