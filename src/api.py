@@ -133,6 +133,39 @@ def investments_total():
     return jsonify({"investments": str(res.scalar())})
 
 
+@app.route("/investments/post/<string:id>")
+def investments_post(id):
+    time_from, time_to = get_timeframes()
+    page, per_page = get_pagination()
+    
+    sql = db.session.query(Investment).\
+        filter(Investment.post == id)
+
+    if time_from > 0:
+        sql = sql.filter(Investment.time > time_from)
+    if time_to > 0:
+        sql = sql.filter(Investment.time < time_to)
+
+    sql_res = sql.order_by(Investment.time.desc()).\
+              limit(per_page).offset(page*per_page).all()
+
+    res = [{
+        "id": x.id,
+        "post": x.post,
+        "upvotes": x.upvotes,
+        "final_upvotes": x.final_upvotes,
+        "name": x.name,
+        "amount": x.amount,
+        "time": x.time,
+        "done": x.done,
+        "response": x.response,
+        "success": x.success,
+        "profit": x.profit,
+    } for x in sql_res]
+
+    return jsonify(res)
+
+
 @app.route("/investors/top")
 @cache.cached(timeout=10, query_string=True)
 def investors_top():
