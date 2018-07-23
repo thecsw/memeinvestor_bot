@@ -149,14 +149,14 @@ let pageManager = (function(){
 
 let overview = (function(){
    let counters = {
-      netWorth: undefined,
+      //netWorth: undefined,
       balance: undefined,
       investmentsActive: undefined,
       goneBroke: undefined
    }
    function init(data){
       counters = {
-         netWorth: new CountUp("net-worth", 10, 1.5),
+         //netWorth: new CountUp("net-worth", 10, 1.5),
          balance: new CountUp("balance", 10, 0, 1.5),
          completedInvestments: new CountUp("completed-investments", 3, 1.5),
          goneBroke: new CountUp("gone-broke", 12, 99.99)
@@ -165,7 +165,7 @@ let overview = (function(){
    }
    function update(data){
       //TODO: replace with data.netWorth when added to apis
-      counters.netWorth.update(9876544321)
+      //counters.netWorth.update(9876544321)
       counters.balance.update(data.balance)
       counters.completedInvestments.update(data.completed)
       counters.goneBroke.update(data.broke)
@@ -358,10 +358,10 @@ let investments = (function(){
       let html = `
       <thead>
         <tr>
-            <th>Post</th>
+            <th>post</th>
             <th>date</th>
             <th>in</th>
-            <th>out</th>
+            <th>result</th>
         </tr>
       </thead>
       <tbody>
