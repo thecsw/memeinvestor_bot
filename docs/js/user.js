@@ -410,6 +410,8 @@ let profitChart = (function(){
    let tempData;
    let canvas1;
    let ch1;
+   //the points displayed in the chart
+   let points = 15;
    
    let ids = {
       chart: 'profit-graph',
@@ -429,14 +431,14 @@ let profitChart = (function(){
       if(desktop){
          let chartDataSet = ch1.data.datasets[0];
          let data = tempData;
-         for(let i=0,l=data.length; i<l; i++){
-            let inv = data[i]
-            chartDataSet.data[i] = inv[field];
+         for(let i=0; i<points; i++){
+            let inv = data[i] || 0;
+            chartDataSet.data[points-i-1] = inv[field];
          }
          ch1.update();
       }
    }
-   function updateDataSet(data){
+   function updateDataSet(data = []){
       if(desktop){
          tempData = data;
          update();
@@ -457,7 +459,10 @@ let profitChart = (function(){
       dropDown.addEventListener('change',updateField)
       field = dropDown.value
       
-      let graphLabels = ['','','','','','','','','','','','','','',''];
+      let graphLabels = []
+      for(let i=0;i<points;i++){
+         graphLabels.push('')
+      }
       let ctx = canvas1.getContext('2d');
       ch1 = new Chart(ctx, {
          type: 'line',
