@@ -142,7 +142,7 @@ def investments_post(id):
     page, per_page = get_pagination()
     
     sql = db.session.query(Investment).\
-        filter(Investment.post == id).\
+        filter(Investment.post == id)
 
     if time_from > 0:
         sql = sql.filter(Investment.time > time_from)
@@ -151,10 +151,6 @@ def investments_post(id):
 
     sql_res = sql.order_by(Investment.time.desc()).\
               limit(per_page).offset(page*per_page).all()
-    
-    if not sql_res:
-        noRes = []
-        return jsonify(noRes)
 
     res = [{
         "id": x.id,
