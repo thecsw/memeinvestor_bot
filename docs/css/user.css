@@ -145,10 +145,10 @@ td span .material-icons{
 .custom-select{
   width:200px;
   color: white !important;
-  text-align: center !important;
 }
 .custom-select select {
-  text-align: center !important;
+  padding-left: 50px;
+  text-align: left;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
