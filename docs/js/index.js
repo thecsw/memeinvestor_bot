@@ -185,7 +185,7 @@ let leaderboard = (function(){
           for(let i=0; i<top.length;i++){
              //broke badge
              let badge = top[i].broke>0? '<span class="red bankrupt-badge white-text">'+top[i].broke+'</span>':"";
-             html += "<tr><td>"+top[i].name + badge+"</td>"+
+             html += '<tr><td><a href="./user.html?account='+top[i].name+'">'+top[i].name+"</a>"+badge+"</td>"+
                          "<td>"+formatToUnits(top[i].networth)+"</td>"+
                          "<td>"+top[i].completed+"</td></tr>"
           }
