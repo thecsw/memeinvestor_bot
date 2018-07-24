@@ -174,7 +174,6 @@ def investors_top():
     sql = db.session.query(
         Investor.name,
         Investor.balance,
-        func.sum(Investment.amount),
         func.coalesce(Investor.balance+func.sum(Investment.amount), Investor.balance).label('networth'),
         Investor.completed,
         Investor.broke,
@@ -207,9 +206,15 @@ def investor(name):
     if not sql:
         return not_found("User not found")
 
+    actives_value = db.session.query(func.coalesce(func.sum(Investment.amount), 0)).\
+        filter(Investment.name == name).\
+        filter(Investment.done == 0).\
+        scalar()
+
     res = {
         "name": sql.name,
         "balance": sql.balance,
+        "networth": int(sql.balance) + int(actives_value),
         "completed": sql.completed,
         "broke": sql.broke,
         "badges": json.loads(sql.badges),

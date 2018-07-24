@@ -135,7 +135,7 @@ let pageManager = (function(){
          .then(overview.update)
          .catch(connectionErrorToast)
       },
-      10000 //every 10 seconds
+      60000 //every 60 seconds
       )    
 
       //call investments.init()
@@ -149,14 +149,14 @@ let pageManager = (function(){
 
 let overview = (function(){
    let counters = {
-      //netWorth: undefined,
+      netWorth: undefined,
       balance: undefined,
       investmentsActive: undefined,
       goneBroke: undefined
    }
    function init(data){
       counters = {
-         //netWorth: new CountUp("net-worth", 10, 1.5),
+         netWorth: new CountUp("net-worth", 10, 1.5),
          balance: new CountUp("balance", 10, 0, 1.5),
          completedInvestments: new CountUp("completed-investments", 3, 1.5),
          goneBroke: new CountUp("gone-broke", 12, 99.99)
@@ -164,8 +164,7 @@ let overview = (function(){
       if(data)update(data);
    }
    function update(data){
-      //TODO: replace with data.netWorth when added to apis
-      //counters.netWorth.update(9876544321)
+      counters.netWorth.update(data.networth)
       counters.balance.update(data.balance)
       counters.completedInvestments.update(data.completed)
       counters.goneBroke.update(data.broke)
