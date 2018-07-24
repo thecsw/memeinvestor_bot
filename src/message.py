@@ -293,11 +293,15 @@ invest_place_here = """
 
 To prevent thread spam and other natural disasters, please invoke all your commands by replying to this comment.
 
-If you don't invoke your command here, you may receive a penalty or your account may be suspended. We are respected investors, so let's keep our community clean! Reply directly to this comment and not to other investors' comments/commands.
+If you don't invoke your command here, you may receive a penalty or your account may be suspended. We are respected investors, so let's keep our community clean! Reply directly to this comment and not to other investors' comments or commands.
 
 **ONLY DIRECT REPLIES TO THE BOT WILL BE PROCESSED**
 
 For market stats and more information, visit [memes.market](https://memes.market).
+
+For questions, suggestions or advices, please go to our [subreddit](https://reddit.com/r/MemeInvestor_bot).
+
+You can improve me by contributing to my source code on [GitHub](https://github.com/MemeInvestor/memeinvestor_bot).
 """
 
 inside_trading_org = """
