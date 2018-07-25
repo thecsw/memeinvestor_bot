@@ -184,7 +184,8 @@ class CommentWorker():
         new_balance = investor.balance - amount
 
         if new_balance < 0:
-            comment.reply_wrap(message.insuff_org)
+            money_needed = -new_balance
+            comment.reply_wrap(message.modify_insuff(money_needed))
             return
 
         # Sending a confirmation
