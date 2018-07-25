@@ -226,10 +226,13 @@ let investments = (function(){
    let filtersOpen = false;
    let loading = false;
    
+   let showOverlayTimer;
+   let showingOverlay = false;
+   
    let name = '';
    
    let perPage = 15;
-   let pages = 1;
+   let pages = 0;
    let page = 0;
    let tFrom = '';
    let tTo = '';
@@ -303,7 +306,9 @@ let investments = (function(){
    function updatePageNumber(){
       let previousBt = document.getElementById(ids.page.previous).classList;
       let nextBt = document.getElementById(ids.page.next).classList;
-      document.getElementById(ids.page.indicator).innerText = (page+1)+'/'+pages
+      //increment by one the page number. keep it to zero if there are zero pages
+      let pageNonZeroIndexed = pages>0 ? page+1 : page
+      document.getElementById(ids.page.indicator).innerText = (pageNonZeroIndexed)+'/'+pages
       
       if(page>0) previousBt.remove('disabled')
       else previousBt.add('disabled')
@@ -334,19 +339,37 @@ let investments = (function(){
       })      
    }
    function showOverlay(){
+      console.log(9)
       loading = true;
-      document.getElementById(ids.table).style.opacity = 0.4
-      document.getElementById(ids.tableOverlay).style.opacity = 1      
+      //set a timer that displays the loading overlay after x milliseconds
+      showOverlayTimer = setTimeout(function(){
+         console.log(10)
+         showingOverlay = true;
+         document.getElementById(ids.table).style.opacity = 0.4
+         document.getElementById(ids.tableOverlay).style.opacity = 1      
+      },200//the max millis of time allowed to api calls before the loader overlay is shown
+      )
    }
-   function removeOverlay(){ 
-      let overlay = document.getElementById(ids.tableOverlay)
-      document.getElementById(ids.table).style.opacity = 1
-      overlay.classList.add('pulse-out')
-      setTimeout(_=>{
+   function removeOverlay(){
+      //remove the overlay if it is being shown
+      console.log(11)
+      if(showingOverlay){
+         console.log(12)
+         let overlay = document.getElementById(ids.tableOverlay)
+         document.getElementById(ids.table).style.opacity = 1
+         overlay.classList.add('pulse-out')
+         setTimeout(_=>{
+         showingOverlay = false;
+            loading = false;
+            overlay.style.opacity = 0
+            overlay.classList.remove('pulse-out')
+         },400)
+      }else{
          loading = false;
-         overlay.style.opacity = 0
-         overlay.classList.remove('pulse-out')
-      },400)
+         //if the overlay is not not being shown (there is a timer that is about to show it)
+         //stop the timer 
+         clearTimeout(showOverlayTimer)
+      }
    }
    function noInvestments(){
       document.getElementById(ids.table).innerHTML = 
