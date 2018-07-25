@@ -1,3 +1,4 @@
+pip
 https://github.com/praw-dev/praw/archive/master.zip
 fastnumbers
 flask
