@@ -298,8 +298,6 @@ To prevent thread spam and other natural disasters, I only respond to direct rep
 - Visit [memes.market](https://memes.market) for help, market statistics, and investor profiles.
 
 - Visit /r/MemeInvestor_bot for questions or suggestions about me.
-
-- Visit my [GitHub page](https://github.com/MemeInvestor/memeinvestor_bot) to help improve me!
 """
 
 inside_trading_org = """
