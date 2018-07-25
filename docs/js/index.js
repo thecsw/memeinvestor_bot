@@ -215,7 +215,7 @@ let investmentsCalculator = (function() {
       let start = parseInt(document.getElementById('investment-start-score').value);
       let end = parseInt(document.getElementById('investment-end-score').value);
       let amount = parseInt(document.getElementById('investment-amount').value);
-      if(start>0 && end>0 && amount >= 100){
+      if(start>=0 && end>=0 && amount >= 100){
          //creates a spinning loader
          document.getElementById('investment-result').innerHTML =
          `<div class="preloader-wrapper small active custom-preloader-wrapper">
@@ -243,7 +243,7 @@ let investmentsCalculator = (function() {
          });
       }else{
          document.getElementById('investment-result').innerText = 'invalid data';
-         let toastHTML = 'you have to fill all the fields with a number'
+         let toastHTML = 'you have to fill all the fields with a valid number'
          if(amount<100){
             toastHTML = 'you can\'t invest less than 100 M¢'
          }
