@@ -156,10 +156,10 @@ let overview = (function(){
    }
    function init(data){
       counters = {
-         netWorth: new CountUp("net-worth", 10, 1.5),
-         balance: new CountUp("balance", 10, 0, 1.5),
-         completedInvestments: new CountUp("completed-investments", 3, 1.5),
-         goneBroke: new CountUp("gone-broke", 12, 99.99)
+         netWorth: new CountUp("net-worth", 0, 0),
+         balance: new CountUp("balance", 0, 0),
+         completedInvestments: new CountUp("completed-investments", 0, 0),
+         goneBroke: new CountUp("gone-broke", 0, 0)
       }
       if(data)update(data);
    }

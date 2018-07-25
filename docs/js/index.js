@@ -12,10 +12,10 @@ let overview = (function(){
    }
    function init(){
       counters = {
-         coinsInvested: new CountUp("detained-memecoins", 0, 1.5),
-         coinsTotal: new CountUp("existing-memecoins", 100000000, 0, 1.5),
-         investmentsActive: new CountUp("active-investments", 0, 1.5)
-         //investmentsTotal: new CountUp("total-investments", 24.02, 99.99)      
+         coinsInvested: new CountUp("detained-memecoins", 0, 0),
+         coinsTotal: new CountUp("existing-memecoins", 0, 0),
+         investmentsActive: new CountUp("active-investments", 0, 0)
+         //investmentsTotal: new CountUp("total-investments", 0)
       }
    }
    function update(coins,investments){
