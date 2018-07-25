@@ -289,19 +289,17 @@ Whatever, investment is lost.
 """
 
 invest_place_here = """
-**ALL YOUR INVESTMENTS GO HERE**
+**INVESTMENTS GO HERE - ONLY DIRECT REPLIES TO ME WILL BE PROCESSED**
 
-To prevent thread spam and other natural disasters, please invoke all your commands by replying to this comment.
+To prevent thread spam and other natural disasters, I only respond to direct replies. Other commands will be ignored and may be penalized. Let's keep our marketplace clean!
 
-If you don't invoke your command here, you may receive a penalty or your account may be suspended. We are respected investors, so let's keep our community clean! Reply directly to this comment and not to other investors' comments or commands.
+---
 
-**ONLY DIRECT REPLIES TO THE BOT WILL BE PROCESSED**
+- Visit [memes.market](https://memes.market) for help, market statistics, and investor profiles.
 
-For market stats and more information, visit [memes.market](https://memes.market).
+- Visit /r/MemeInvestor_bot for questions or suggestions about me.
 
-For questions, suggestions or advices, please go to our [subreddit](https://reddit.com/r/MemeInvestor_bot).
-
-You can improve me by contributing to my source code on [GitHub](https://github.com/MemeInvestor/memeinvestor_bot).
+- Visit my [GitHub page](https://github.com/MemeInvestor/memeinvestor_bot) to help improve me!
 """
 
 inside_trading_org = """
