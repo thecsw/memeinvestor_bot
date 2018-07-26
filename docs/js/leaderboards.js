@@ -1,5 +1,5 @@
 import {connectionErrorToast} from './modules/uiElements.js';
-import * as jsonApi from './modules/jsonApi.js';
+import * as jsonApi from './modules/jsonApi.js?c=1';
 import {formatToUnits, getSuffix} from './modules/dataUtils.js';
 
 let leaderboard = (function(){
