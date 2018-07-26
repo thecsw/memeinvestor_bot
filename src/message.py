@@ -138,12 +138,12 @@ def modify_invest_capped(text, upvotes_now, lost, profit, balance):
 insuff_org = """
 You do not have enough MemeCoins to make the investment.
 
-You would need additional %MEMECOINS% MemeCoins.
+Your current balance is %BALANCE% MemeCoins.
 """
 
-def modify_insuff(more_money):
+def modify_insuff(balance_t):
     insuff = insuff_org
-    insuff = insuff.replace("%MEMECOINS%", str(more_money))
+    insuff = insuff.replace("%BALANCE%", str(balance_t))
     return insuff
 
 # Message if you are broke
