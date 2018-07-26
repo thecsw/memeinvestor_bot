@@ -26,7 +26,11 @@ def req_user(fn):
             first()
 
         if not investor:
-            return self.no_such_user(comment)
+            self.create(sess, comment)
+            time.sleep(5) # avoid rapid back-to-back comments
+            investor = sess.query(Investor).\
+                filter(Investor.name == comment.author.name).\
+                first()
 
         return fn(self, sess, comment, investor, *args)
     return wrapper
@@ -238,10 +242,6 @@ class CommentWorker():
             all()
 
         comment.reply_wrap(message.modify_active(active_investments))
-
-    def no_such_user(self, comment):
-        comment.reply_wrap(message.no_account_org)
-
 
 def main():
     logging.info("Starting main")
