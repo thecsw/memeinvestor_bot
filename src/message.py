@@ -136,7 +136,7 @@ def modify_invest_capped(text, upvotes_now, lost, profit, balance):
 # If funds are insufficient to make an investment
 # say that
 insuff_org = """
-You do not have enough MemeCoins to make the investment.
+You do not have enough MemeCoins to make that investment.
 
 Your current balance is %BALANCE% MemeCoins.
 """
