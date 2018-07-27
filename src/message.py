@@ -10,7 +10,7 @@ create_org = """
 
 Thank you %USERNAME% for creating a bank account in r/MemeEconomy!
 
-Your current balance is %BALANCE% MemeCoins.
+Your starting balance is %BALANCE% MemeCoins.
 """
 
 def modify_create(username, balance):
@@ -210,12 +210,6 @@ Here is a list of commands that summon me:
 For market stats and more information, visit [memes.market](https://memes.market).
 
 You can help improve me by contributing to my source code on [GitHub](https://github.com/MemeInvestor/memeinvestor_bot).
-"""
-
-no_account_org = """
-You do not have permission to perform this operation.
-
-Please create an account with the !create command.
 """
 
 balance_org = """
