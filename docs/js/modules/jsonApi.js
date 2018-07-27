@@ -31,7 +31,7 @@ function makeRequest (param, options) {
 }
 
 export function getAll(){
-   return makeRequest("?per_page=5", options);
+   return makeRequest("/summary?per_page=5", options);
 }
 
 export function get(param){

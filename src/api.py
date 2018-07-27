@@ -289,7 +289,7 @@ def investor_active(name):
     return jsonify(res)
 
 
-@app.route("/")
+@app.route("/summary")
 def index():
     data = {
         "coins": {

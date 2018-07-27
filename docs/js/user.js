@@ -1,5 +1,5 @@
 import {connectionErrorToast} from './modules/uiElements.js';
-import * as jsonApi from './modules/jsonApi.js';
+import * as jsonApi from './modules/jsonApi.js?c=1';
 import {Scheduler} from './modules/scheduler.js';
 import {formatToUnits} from './modules/dataUtils.js';
 import {getFileName, getDescription} from './modules/badges.js';
