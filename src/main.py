@@ -26,8 +26,8 @@ def req_user(fn):
             first()
 
         if not investor:
+            logging.info(" -- autocreating")
             self.create(sess, comment)
-            time.sleep(5) # avoid rapid back-to-back comments
             investor = sess.query(Investor).\
                 filter(Investor.name == comment.author.name).\
                 first()
