@@ -29,89 +29,77 @@ I love the enthusiasm, but you've already got an account!
 # was successful
 
 invest_org = """
-*%AMOUNT% MemeCoins were successfully invested!*
+*%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% upvotes*
 
-You bought in at %ENTRY% upvotes.
+Your investment is active. I'll evaluate your return in 4 hours and update this comment. Stay tuned!
+
+Your current balance is %BALANCE% MemeCoins.
+"""
+
+def modify_invest(amount, initial_upvotes, new_balance):
+    return invest_org.\
+        replace("%AMOUNT%", str(amount)).\
+        replace("%INITIAL_UPVOTES%", str(initial_upvotes)).\
+        replace("%BALANCE%", str(new_balance))
+
+invest_win_org = """
+*%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% upvotes*
+
+UPDATE: Your investment has matured. It was successful! You profited %PROFIT% MemeCoins (%PERCENT%).
+
+*%RETURNED% MemeCoins returned @ %FINAL_UPVOTES% upvotes*
 
 Your new balance is %BALANCE% MemeCoins.
 
-In 4 hours your investment will be evaluated and I will update this comment. Stay tuned!
-"""
-
-def modify_invest(amount, entry, balance):
-    invest = invest_org
-    invest = invest.replace("%AMOUNT%", str(amount))
-    invest = invest.replace("%ENTRY%", str(entry))
-    invest = invest.replace("%BALANCE%", str(balance))
-    return invest
-
-invest_return_org = """
-%INVESTMENT%
-
-UPDATE: Your investment has matured at %UPVOTES_NOW% upvotes. It was successful!
-
-This investment has brought you %WIN% MemeCoins (%PROFIT%).
-
-Your current balance is %BALANCE% MemeCoins.
-
 ^(formula v3)
 """
-
-def modify_invest_return(text, upvotes_now, win, profit, balance):
-    invest_return = invest_return_org
-    invest_return = invest_return.replace("%INVESTMENT%", str(text))
-    invest_return = invest_return.replace("%UPVOTES_NOW%", str(upvotes_now))
-    invest_return = invest_return.replace("%WIN%", str(win))
-    invest_return = invest_return.replace("%PROFIT%", str(profit))
-    invest_return = invest_return.replace("%BALANCE%", str(balance))
-    return invest_return
-
-invest_break_even_org = """
-%INVESTMENT%
-
-UPDATE: Your investment has matured at %UPVOTES_NOW% upvotes. It broke even!
-
-This investment has brought you %NUMBER% MemeCoins (%PROFIT%).
-
-Your current balance is %BALANCE% MemeCoins.
-
-^(formula v3)
-"""
-
-def modify_invest_break_even(text, upvotes_now, coins, profit, balance):
-    invest_return = invest_break_even_org
-    invest_return = invest_return.replace("%INVESTMENT%", str(text))
-    invest_return = invest_return.replace("%UPVOTES_NOW%", str(upvotes_now))
-    invest_return = invest_return.replace("%NUMBER%", str(coins))
-    invest_return = invest_return.replace("%PROFIT%", str(profit))
-    invest_return = invest_return.replace("%BALANCE%", str(balance))
-    return invest_return
 
 invest_lose_org = """
-%INVESTMENT%
+*%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% upvotes*
 
-UPDATE: Your investment has matured at %UPVOTES_NOW% upvotes. It was unsuccessful!
+UPDATE: Your investment has matured. It was unsuccessful! You lost %PROFIT% MemeCoins (%PERCENT%).
 
-You lost %NUMBER% MemeCoins (%PROFIT%).
+*%RETURNED% MemeCoins returned @ %FINAL_UPVOTES% upvotes*
 
-Your current balance is %BALANCE% MemeCoins.
+Your new balance is %BALANCE% MemeCoins.
 
 ^(formula v3)
 """
 
-def modify_invest_lose(text, upvotes_now, lost, profit, balance):
-    invest_lose = invest_lose_org
-    invest_lose = invest_lose.replace("%INVESTMENT%", str(text))
-    invest_lose = invest_lose.replace("%UPVOTES_NOW%", str(upvotes_now))
-    invest_lose = invest_lose.replace("%NUMBER%", str(lost))
-    invest_lose = invest_lose.replace("%PROFIT%", str(profit))
-    invest_lose = invest_lose.replace("%BALANCE%", str(balance))
-    return invest_lose
+invest_break_even_org = """
+*%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% upvotes*
+
+UPDATE: Your investment has matured. It broke even! You profited %PROFIT% MemeCoins (%PERCENT%).
+
+*%RETURNED% MemeCoins returned @ %FINAL_UPVOTES% upvotes*
+
+Your new balance is %BALANCE% MemeCoins.
+
+^(formula v3)
+"""
+
+def modify_invest_return(amount, initial_upvotes, final_upvotes, returned, profit, percent_str, new_balance):
+    if profit > 0:
+        original = invest_win_org
+    elif profit < 0:
+        original = invest_lose_org
+        profit *= -1
+    else:
+        original = invest_break_even_org
+
+    return original.\
+        replace("%AMOUNT%", str(amount)).\
+        replace("%INITIAL_UPVOTES%", str(initial_upvotes)).\
+        replace("%FINAL_UPVOTES%", str(final_upvotes)).\
+        replace("%RETURNED%", str(returned)).\
+        replace("%PROFIT%", str(profit)).\
+        replace("%PERCENT%", str(percent_str)).\
+        replace("%BALANCE%", str(new_balance))
 
 invest_capped_org = """
-%INVESTMENT%
+*%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% upvotes*
 
-UPDATE: Your investment has matured at %UPVOTES_NOW% upvotes, earning you %NUMBER% MemeCoins (%PROFIT%).
+UPDATE: Your investment has matured at %FINAL_UPVOTES% upvotes, profiting %PROFIT% MemeCoins (%PERCENT%).
 
 **Congratulations,** you've reached the maximum balance! You've triumphed over your competition in the
 meme marketplace, and your wealth is inconceivable! Indeed, future generations shall remember you as a titan
@@ -124,13 +112,14 @@ Your current balance is %BALANCE% MemeCoins (the maximum balance).
 ^(formula v3)
 """
 
-def modify_invest_capped(text, upvotes_now, lost, profit, balance):
+def modify_invest_capped(amount, initial_upvotes, final_upvotes, returned, profit, percent_str, new_balance):
     return invest_capped_org.\
-        replace("%INVESTMENT%", str(text)).\
-        replace("%UPVOTES_NOW%", str(upvotes_now)).\
-        replace("%NUMBER%", str(lost)).\
+        replace("%AMOUNT%", str(amount)).\
+        replace("%INITIAL_UPVOTES%", str(initial_upvotes)).\
+        replace("%FINAL_UPVOTES%", str(final_upvotes)).\
         replace("%PROFIT%", str(profit)).\
-        replace("%BALANCE%", str(balance))
+        replace("%PERCENT%", str(percent_str)).\
+        replace("%BALANCE%", str(new_balance))
 
 
 # If funds are insufficient to make an investment
