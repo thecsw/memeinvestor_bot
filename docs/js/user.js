@@ -403,18 +403,20 @@ let investments = (function(){
             let sign = inv.success? '<i class="material-icons">arrow_drop_up</i>' : '<i class="material-icons">arrow_drop_down</i>'
             let profit = sign+formatToUnits(Math.abs(inv.profit))
             let finalUpvotes = inv.final_upvotes? inv.final_upvotes : '--';
-            html += `<span class="${color}">${profit} M¢</span><br>${finalUpvotes} upvotes`
+            html += `<span class="${color}">${profit} M¢</span><br>${formatToUnits(finalUpvotes)} upvotes`
          }else{
             let currentTime = new Date();
             //14400000 == 4h
             let millisecondsLeft = 14400000 - ( currentTime.getTime() - invTime.getTime() );
-            let hoursLeftString = Math.floor(millisecondsLeft / 3600000).toString()
-            let minutesLeftString = Math.floor((millisecondsLeft % 3600000) / 60000).toString()
-            if(minutesLeftString.length < 2){
-              minutesLeftString = "0" + minutesLeftString
+            if(millisecondsLeft >= 0 && (Math.floor(Math.random()*10)<5) ){
+               let hoursLeftString = Math.floor(millisecondsLeft / 3600000).toString()
+               let minutesLeftString = Math.floor((millisecondsLeft % 3600000) / 60000).toString()
+               if(minutesLeftString.length < 2) minutesLeftString = "0" + minutesLeftString;
+               let timeLeftString = hoursLeftString+':'+minutesLeftString;
+               html += `<span><i class="material-icons">access_time</i> ${timeLeftString} left</span>`
+            }else{
+               html += '<span><i class="material-icons">layers</i> processsing..</span>'
             }
-            let timeLeftString = hoursLeftString+':'+minutesLeftString;
-            html += `<span><i class="material-icons">access_time</i> ${timeLeftString} left</span>`
          }
          html += '</td></tr>'
 
