@@ -243,9 +243,9 @@ There are %HODL% MemeCoins detained in investments.
 
 def modify_market(inves, cap, invs_cap):
     return market_org.\
-        replace("%NUMBER%", format(inves, ",d")).\
-        replace("%MONEY%", format(cap, ",d")).\
-        replace("%HODL%", format(invs_cap, ",d"))
+        replace("%NUMBER%", format(int(inves), ",d")).\
+        replace("%MONEY%", format(int(cap), ",d")).\
+        replace("%HODL%", format(int(invs_cap), ",d"))
 
 # Message used for !top command
 top_org = """
