@@ -65,6 +65,7 @@ class CommentWorker():
         r"!invest ([\d,]+)",
         r"!market",
         r"!top",
+        r"!grant",
     ]
 
     def __init__(self, sm):
@@ -242,6 +243,15 @@ class CommentWorker():
             all()
 
         comment.reply_wrap(message.modify_active(active_investments))
+
+    def grant(self, sess, comment, grantee, badge):
+        author = comment.author.name
+
+        if author in config.admin_accounts:
+            comment.reply_wrap(message.modify_grant())
+            return
+
+        # if sess.query(Investor).filter(Investor.name == author).exists().scalar()
 
 def main():
     logging.info("Starting main")

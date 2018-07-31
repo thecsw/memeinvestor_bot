@@ -284,3 +284,6 @@ To prevent thread spam and other natural disasters, I only respond to direct rep
 inside_trading_org = """
 You can't invest in your own memes, insider trading is not allowed!
 """
+
+def modify_grant():
+    return "Granted!"
