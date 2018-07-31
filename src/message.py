@@ -217,10 +217,13 @@ def modify_active(active_investments):
     i = 1
     for inv in active_investments:
         seconds_remaining = inv.time + config.investment_duration - time.time()
-        td = datetime.timedelta(seconds=seconds_remaining)
-        remaining_string = str(td).split(".")[0]
+        if seconds_remaining > 0:
+            td = datetime.timedelta(seconds=seconds_remaining)
+            remaining_string = str(td).split(".")[0] + " remaining"
+        else:
+            remaining_string = "processing"
         post_url = f"https://www.reddit.com/r/MemeEconomy/comments/{inv.post}"
-        inv_string = f"[#{i}]({post_url}): {inv.amount} M¢ @ {inv.upvotes} upvotes ({remaining_string} remaining)"
+        inv_string = f"[#{i}]({post_url}): {inv.amount} M¢ @ {inv.upvotes} upvotes ({remaining_string})"
         investments_strings.append(inv_string)
         i += 1
     investments_list = "\n\n".join(investments_strings)
