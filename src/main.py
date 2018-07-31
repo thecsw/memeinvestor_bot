@@ -62,7 +62,7 @@ class CommentWorker():
         r"!create",
         r"!help",
         r"!ignore",
-        r"!invest (\d+)",
+        r"!invest ([\d,]+)",
         r"!market",
         r"!top",
     ]
@@ -176,7 +176,7 @@ class CommentWorker():
                 return
 
         try:
-            amount = int(amount)
+            amount = int(amount.replace(',',''))
         except ValueError:
             return
 
