@@ -65,7 +65,7 @@ class CommentWorker():
         r"!invest ([\d,]+)",
         r"!market",
         r"!top",
-        r"!grant",
+        r"!grant (\S+) (\S+)",
     ]
 
     def __init__(self, sm):
@@ -246,6 +246,10 @@ class CommentWorker():
 
     def grant(self, sess, comment, grantee, badge):
         author = comment.author.name
+
+        logging.info(f"Received args: {grantee}, {badge}")
+        logging.info(f"Author: {author}")
+        logging.info(f"Admins: {config.admin_accounts}")
 
         if author in config.admin_accounts:
             comment.reply_wrap(message.modify_grant())
