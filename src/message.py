@@ -2,33 +2,9 @@ import datetime
 import time
 
 import config
+import utils
 
-def investment_duration_string(duration):
-    hours = duration // 3600
-    duration %= 3600
-    minutes = duration // 60
-    duration %= 60
-
-    inv_string = ""
-    if (hours):
-        inv_string += f"{hours} hour"
-        if (hours > 1):
-            inv_string += "s "
-        inv_string += " "
-    if (minutes):
-        inv_string += f"{minutes} minute"
-        if (minutes > 1):
-            inv_string += "s "
-        inv_string += " "
-    if (duration):
-        inv_string += f"{duration} second"
-        if (duration > 1):
-            inv_string += "s "
-        inv_string += " "
-
-    return inv_string
-
-investment_duration_var = investment_duration_string(config.investment_duration)
+investment_duration_var = utils.investment_duration_string(config.investment_duration)
 
 # This message will be sent if an account has been
 # successfully created
