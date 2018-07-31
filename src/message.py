@@ -3,6 +3,33 @@ import time
 
 import config
 
+def investment_duration_string(duration):
+    hours = duration // 3600
+    duration %= 3600
+    minutes = duration // 60
+    duration %= 60
+
+    inv_string = ""
+    if (hours):
+        inv_string += f"{hours} hour"
+        if (hours > 1):
+            inv_string += "s "
+        inv_string += " "
+    if (minutes):
+        inv_string += f"{minutes} minute"
+        if (minutes > 1):
+            inv_string += "s "
+        inv_string += " "
+    if (duration):
+        inv_string += f"{duration} second"
+        if (duration > 1):
+            inv_string += "s "
+        inv_string += " "
+
+    return inv_string
+
+investment_duration_var = investment_duration_string(config.investment_duration)
+
 # This message will be sent if an account has been
 # successfully created
 create_org = """
@@ -30,10 +57,10 @@ I love the enthusiasm, but you've already got an account!
 invest_org = """
 *%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% upvotes*
 
-Your investment is active. I'll evaluate your return in 4 hours and update this comment. Stay tuned!
+Your investment is active. I'll evaluate your return in %TIME% and update this comment. Stay tuned!
 
 Your current balance is %BALANCE% MemeCoins.
-"""
+""".replace("%TIME%", investment_duration_var)
 
 def modify_invest(amount, initial_upvotes, new_balance):
     return invest_org.\
