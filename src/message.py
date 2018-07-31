@@ -33,7 +33,7 @@ I love the enthusiasm, but you've already got an account!
 invest_org = """
 *%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% upvotes*
 
-Your investment is active. I'll evaluate your return in %TIME% and update this comment. Stay tuned!
+Your investment is active. I'll evaluate your return in %TIME%and update this comment. Stay tuned!
 
 Your current balance is %BALANCE% MemeCoins.
 """.replace("%TIME%", investment_duration_var)
