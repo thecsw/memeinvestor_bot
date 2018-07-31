@@ -1,6 +1,7 @@
+import json
+import logging
 import re
 import time
-import logging
 import traceback
 
 import sqlalchemy
@@ -65,7 +66,7 @@ class CommentWorker():
         r"!invest ([\d,]+)",
         r"!market",
         r"!top",
-        r"!grant (\S+) (\S+)",
+        r"!grant\s+(\S+)\s+(\S+)",
     ]
 
     def __init__(self, sm):
@@ -246,16 +247,24 @@ class CommentWorker():
 
     def grant(self, sess, comment, grantee, badge):
         author = comment.author.name
-
-        logging.info(f"Received args: {grantee}, {badge}")
-        logging.info(f"Author: {author}")
-        logging.info(f"Admins: {config.admin_accounts}")
+        badge = badge.lower().replace('\\','')
+        grantee_unescaped = grantee.replace('\\','')
 
         if author in config.admin_accounts:
-            comment.reply_wrap(message.modify_grant())
-            return
+            investor = sess.query(Investor).\
+                filter(Investor.name == grantee_unescaped).\
+                first()
 
-        # if sess.query(Investor).filter(Investor.name == author).exists().scalar()
+            if not investor:
+                return comment.reply_wrap(message.modify_grant_failure("no such investor"))
+
+            badge_list = json.loads(investor.badges)
+            if badge in badge_list:
+                return comment.reply_wrap(message.modify_grant_failure("already owned"))
+
+            badge_list.append(badge)
+            investor.badges = json.dumps(badge_list)
+            return comment.reply_wrap(message.modify_grant_success(grantee, badge))
 
 def main():
     logging.info("Starting main")

@@ -285,5 +285,8 @@ inside_trading_org = """
 You can't invest in your own memes, insider trading is not allowed!
 """
 
-def modify_grant():
-    return "Granted!"
+def modify_grant_success(grantee, badge):
+    return f"Successfully granted badge `{badge}` to {grantee}!"
+
+def modify_grant_failure(failure_message):
+    return f"Oops, I couldn't grant that badge ({failure_message})"
