@@ -1,5 +1,9 @@
-Description of the pull request. What feature have you introduced or what issue you have solved with the pull request.
+Thanks for contributing to the bot! Help us review your change by following the rules below.
 
-If it is a solution to an issue, please include `Fixes #123` or `Closes #123` to automatically close an issue if PR is merged.
+Please include a description of your change. What feature have you introduced, or what issue you have solved, with the pull request?
 
-Every PR should have a testing link attached to it. Most of the time, we conduct our tests on our [test subreddit](https://reddit.com/r/memeinvestor_test). When you have done testing and your modifications do not throw exceptions when executed, attach a link to the submission where testings were held. [Example](https://www.reddit.com/r/memeinvestor_test/comments/936puk/de_niro_is_really_good/)
+If your change fixes one of our Issues, please include `Fixes #N` to in your PR description to automatically close Issue *N* when the PR is merged.
+
+For anything but the most minor tweaks, we also ask that you test your change before submitting it, and describe the testing you've done. If you're making a change to the bot itself, please use the instructions in our README to deploy the bot locally and test your change on our [test subreddit](https://reddit.com/r/memeinvestor_test). Once you've confirmed your change works as intended and does not throw exceptions when executed, please include a link to the testing evidence so we can see the change in action. [Example](https://www.reddit.com/r/memeinvestor_test/comments/936puk/de_niro_is_really_good/)
+
+Thanks!
