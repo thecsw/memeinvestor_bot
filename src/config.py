@@ -4,6 +4,7 @@ post_to_reddit      = int(os.environ['BOT_POST_TO_REDDIT'])
 is_moderator        = int(os.environ['BOT_IS_MODERATOR'])
 prevent_insiders    = int(os.environ['BOT_PREVENT_INSIDERS'])
 investment_duration = int(os.environ['BOT_INVESTMENT_DURATION'])
+admin_accounts      = os.environ['BOT_ADMIN_REDDIT_ACCOUNTS'].split(',')
 
 client_id     = os.environ['BOT_CLIENT_ID']
 client_secret = os.environ['BOT_CLIENT_SECRET']
