@@ -2,6 +2,9 @@ import datetime
 import time
 
 import config
+import utils
+
+investment_duration_var = utils.investment_duration_string(config.investment_duration)
 
 # This message will be sent if an account has been
 # successfully created
@@ -30,10 +33,10 @@ I love the enthusiasm, but you've already got an account!
 invest_org = """
 *%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% upvotes*
 
-Your investment is active. I'll evaluate your return in 4 hours and update this comment. Stay tuned!
+Your investment is active. I'll evaluate your return in %TIME%and update this comment. Stay tuned!
 
 Your current balance is %BALANCE% MemeCoins.
-"""
+""".replace("%TIME%", investment_duration_var)
 
 def modify_invest(amount, initial_upvotes, new_balance):
     return invest_org.\
