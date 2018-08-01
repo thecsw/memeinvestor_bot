@@ -62,7 +62,7 @@ class CommentWorker():
         r"!create",
         r"!help",
         r"!ignore",
-        r"!invest ([\d,]+)",
+        r"!invest\s+([\d,]+)",
         r"!market",
         r"!top",
     ]
