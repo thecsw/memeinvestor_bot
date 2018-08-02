@@ -1,5 +1,5 @@
 import {connectionErrorToast} from './modules/uiElements.js';
-import * as jsonApi from './modules/jsonApi.js?c=1';
+import * as jsonApi from './modules/jsonApi.js?c=2';
 import {formatToUnits, getSuffix} from './modules/dataUtils.js';
 import {seasons} from '../resources/leaderboards/seasons.js';
 
@@ -11,13 +11,6 @@ let getSeason = (function(){
    function init(){
       let dropDown = document.getElementById(ids.dropdown);
       let html = seasons.map(s=>`<option value="${s.id}" >${s.name}</option>`).join('')
-      /*the line above is the equivalent of 
-      let html = '';
-      for(let season of seasons){
-         html+= `<option value="${season.id}" >${season.name}</option>`
-      }
-      i'll be using this ugly hack a lot. sorry.
-      */
       dropDown.innerHTML = html;
       dropDown.addEventListener('change', _=> search(dropDown.value) )
       window.addEventListener('popstate', function(e){
@@ -91,9 +84,9 @@ let leaderboard = (function(){
          }
       }
    }
-   function update(d){
-      renderCards(d)
-      renderTable(d)
+   function update(data){
+      renderCards(data)
+      renderTable(data)
    }
    function renderTable(obj){
       let html = ''
