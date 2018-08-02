@@ -408,7 +408,7 @@ let investments = (function(){
             let currentTime = new Date();
             //14400000 == 4h
             let millisecondsLeft = 14400000 - ( currentTime.getTime() - invTime.getTime() );
-            if(millisecondsLeft >= 0 && (Math.floor(Math.random()*10)<5) ){
+            if(millisecondsLeft >= 0 ){
                let hoursLeftString = Math.floor(millisecondsLeft / 3600000).toString()
                let minutesLeftString = Math.floor((millisecondsLeft % 3600000) / 60000).toString()
                if(minutesLeftString.length < 2) minutesLeftString = "0" + minutesLeftString;
