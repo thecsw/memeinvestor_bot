@@ -18,15 +18,15 @@ export function getSuffix(val){
 
 export function iterateDays(days, callback) {
     let to = new Date();
-    to.setHours(23);
-    to.setMinutes(59);
-    to.setSeconds(59);
-    to.setMilliseconds(999);
+    to.setHours(0);
+    to.setMinutes(0);
+    to.setSeconds(0);
+    to.setMilliseconds(0);
     let dateFrom = new Date();
     dateFrom.setTime(to.getTime());
-    dateFrom.setDate(dateFrom.getDate() - 2);
+    dateFrom.setDate(dateFrom.getDate() - 1);
 
-    for (let i = days + 14; i >= 0; i--) {
+    for (let i = days + 15; i >= 0; i--) {
         callback(i, dateFrom, to);
         dateFrom.setDate(dateFrom.getDate() - 1);
         to.setDate(to.getDate() - 1);
