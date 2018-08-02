@@ -1,20 +1,13 @@
 import {connectionErrorToast} from './modules/uiElements.js';
 import * as jsonApi from './modules/jsonApi.js?c=1';
 import {formatToUnits, getSuffix} from './modules/dataUtils.js';
-
-const seasons = [
-   {name:'beta season', id:'beta', dataUrl:'./resources/leaderboards/beta.json'},
-   {name:'season 1', id:'s1', dataUrl:'./resources/leaderboards/s1.json'},
-   {name:'season 2', id:'s2', dataUrl:'https://memes.market/api/investors/top?per_page=50'},
-]
+import {seasons} from '../resources/leaderboards/seasons.js';
 
 let getSeason = (function(){
    let ids = {
       dropdown: 'dataset-select'
    }
    let cache = {};
-   /*seasons are hardcoded here.
-   the current season is the last one in the array.*/
    function init(){
       let dropDown = document.getElementById(ids.dropdown);
       let html = seasons.map(s=>`<option value="${s.id}" >${s.name}</option>`).join('')
@@ -76,6 +69,7 @@ let getSeason = (function(){
 
 let leaderboard = (function(){
    let ids = {
+      table: 'leaderboards-table',
       cards: {
          prefix: ['top','left','right'],
          name: 'name',
@@ -89,104 +83,36 @@ let leaderboard = (function(){
    function init(){
       //init card elements
       for(let prefix of ids.cards.prefix){
-         cardElements[prefix] = {}
-         let card = cardElements[prefix];
-         card.name = document.getElementById(prefix+'-'+ids.cards.name)
-         card.netWorth = new CountUp(prefix+'-'+ids.cards.netWorth,0, 1.5);
-         card.netWorthSuffix = document.getElementById(prefix+'-'+ids.cards.netWorthSuffix)
-         card.profile = document.getElementById(prefix+'-'+ids.cards.profile)
-      } 
-      //add buttons click listener
-      let button = document.getElementById(ids.buttons.beta);
-      button.addEventListener('click', e=> loadBeta() );
-      button = document.getElementById(ids.buttons.current);
-      button.addEventListener('click', e=> loadCurrent() );
-      // check if url contains ?s=
-      let url = new URL(window.location.href);
-      let season = url.searchParams.get("s");
-      if (season === 'current'){
-         loadCurrent();
-      }
-      else{
-         loadBeta();
+         cardElements[prefix] = {
+            name: document.getElementById(prefix+'-'+ids.cards.name),
+            netWorth: new CountUp(prefix+'-'+ids.cards.netWorth,0, 0),
+            netWorthSuffix: document.getElementById(prefix+'-'+ids.cards.netWorthSuffix),
+            profile: document.getElementById(prefix+'-'+ids.cards.profile)
+         }
       }
    }
    function update(d){
-      console.log('-- update --')
-      console.log(d)
-      console.log('-- update --')
+      renderCards(d)
+      renderTable(d)
    }
-   function loadBeta(){
-      document.getElementById(ids.buttons.beta).classList.add("disabled");
-      document.getElementById(ids.buttons.current).classList.remove("disabled");
-      //render leaderboard table
-      let tb = document.getElementById("leaderboards-table");
-      let html = ""
-          for(let i=3,l=betaBlob.length; i<l;i++){
-             let user = betaBlob[i]
-             let badge = user[4]>0? '<span class="red bankrupt-badge white-text">'+user[4]+'</span>':"";
-             html += "<tr><td>#"+(i+1)+"</td>"+
-                        '<td><a href="./user.html?account='+user[1]+'">'+user[1] + badge+"</a></td>"+
-                        "<td>"+formatToUnits(user[2])+"</td>"+
-                        "<td>"+user[3]+"</td></tr>"
-          }
-      tb.innerHTML = html
-      //create top 3 object to pass to updatecards
-      let firstThree = {}
-      for(let i=0; i<3; i++){
-         let prefix = ids.cards.prefix[i];
-         firstThree[prefix] = {}
-         let card = firstThree[prefix];
-         card.name = betaBlob[i][1]
-         card.netWorth = betaBlob[i][2]
+   function renderTable(obj){
+      let html = ''
+      for(let i=3,l=obj.length; i<l;i++){
+         let user = obj[i]
+         let badge = user.broke>0 ? `<span class="red bankrupt-badge white-text">${user.broke}</span>`: '';
+         html += `<tr>
+                     <td>#${i+1}</td>
+                     <td><a href="./user.html?account=${user.name}">${user.name} ${badge}</a></td>
+                     <td>${formatToUnits(user.networth)}</td>
+                     <td>${user.completed}</td>
+                  </tr>`
       }
-      updateCards(firstThree)
+      document.getElementById(ids.table).innerHTML = html  
    }
-   function loadCurrent(){
-      document.getElementById(ids.buttons.beta).classList.remove("disabled");
-      document.getElementById(ids.buttons.current).classList.add("disabled");
-      if(!currentBlob){
-         jsonApi.get('/investors/top?per_page=50')
-         .then(function (data) {
-            currentBlob = data;
-            loadFromObject(data);
-         })
-         .catch(function (err) {
-            console.error('error while retrieving apis data', err);
-            connectionErrorToast(err)
-         });
-      }else{
-         loadFromObject(currentBlob);
-      } 
-   }
-   function loadFromObject(obj){
-      //create top 3 object to pass to updatecards
-      let firstThree = {}
+   function renderCards(obj){
       for(let i=0; i<3; i++){
-         let prefix = ids.cards.prefix[i];
-         firstThree[prefix] = {}
-         let card = firstThree[prefix];
-         card.name = obj[i].name
-         card.netWorth = obj[i].networth
-      }
-      updateCards(firstThree)  
-      //update table
-      let tb = document.getElementById("leaderboards-table");
-      let html = ""
-          for(let i=3,l=obj.length; i<l;i++){
-             let user = obj[i]
-             let badge = obj.broke>0? '<span class="red bankrupt-badge white-text">'+obj.broke+'</span>':"";
-             html += "<tr><td>#"+(i+1)+"</td>"+
-                        '<td><a href="./user.html?account='+user.name+'">'+user.name + badge+"</a></td>"+
-                        "<td>"+formatToUnits(user.networth)+"</td>"+
-                        "<td>"+user.completed+"</td></tr>"
-          }
-      tb.innerHTML = html      
-   }
-   function updateCards(cards){
-      for (let el in cards) {
-         let data = cards[el]
-         let card = cardElements[el]
+         let data = obj[i]
+         let card = cardElements[ids.cards.prefix[i]]
          card.name.classList.add("flip")
          setTimeout(updateName,240);
          function updateName(){
@@ -196,7 +122,7 @@ let leaderboard = (function(){
          function removeClass(){
             card.name.classList.remove("flip")
          }
-         let netWorth = getSuffix(data.netWorth)
+         let netWorth = getSuffix(data.networth)
          card.netWorth.update(netWorth.val);
          card.netWorthSuffix.innerText = netWorth.suffix
          card.profile.setAttribute("href", "./user.html?account="+data.name);
@@ -211,7 +137,8 @@ let leaderboard = (function(){
 (function(){
    document.addEventListener('DOMContentLoaded', function(){
       getSeason.init();
-      //leaderboard.init();
+      leaderboard.init();
+      document.getElementById('scroll-top').addEventListener('click',_=>scroll(0,0))
       
    });
 })();
