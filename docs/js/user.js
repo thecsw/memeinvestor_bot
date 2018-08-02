@@ -402,8 +402,8 @@ let investments = (function(){
             let color = inv.success? 'green-text' : 'red-text text-lighten-1'
             let sign = inv.success? '<i class="material-icons">arrow_drop_up</i>' : '<i class="material-icons">arrow_drop_down</i>'
             let profit = sign+formatToUnits(Math.abs(inv.profit))
-            let finalUpvotes = inv.final_upvotes? inv.final_upvotes : '--';
-            html += `<span class="${color}">${profit} M¢</span><br>${formatToUnits(finalUpvotes)} upvotes`
+            let finalUpvotes = inv.final_upvotes? formatToUnits(inv.final_upvotes) : '--';
+            html += `<span class="${color}">${profit} M¢</span><br>${finalUpvotes} upvotes`
          }else{
             let currentTime = new Date();
             //14400000 == 4h
