@@ -24,9 +24,9 @@ export function iterateDays(days, callback) {
     to.setMilliseconds(999);
     let dateFrom = new Date();
     dateFrom.setTime(to.getTime());
-    dateFrom.setDate(dateFrom.getDate() - 1);
+    dateFrom.setDate(dateFrom.getDate() - 2);
 
-    for (let i = days - 1; i >= 0; i--) {
+    for (let i = days + 14; i >= 0; i--) {
         callback(i, dateFrom, to);
         dateFrom.setDate(dateFrom.getDate() - 1);
         to.setDate(to.getDate() - 1);

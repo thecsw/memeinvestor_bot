@@ -1,6 +1,6 @@
 import {connectionErrorToast} from './modules/uiElements.js';
 import * as jsonApi from './modules/jsonApi.js?c=1';
-import {formatToUnits, iterateDays} from './modules/dataUtils.js';
+import {formatToUnits, iterateDays} from './modules/dataUtils.js?c=1';
 import {Scheduler} from './modules/scheduler.js';
 
 let overview = (function(){
@@ -90,23 +90,26 @@ let overviewChart = (function(){
             labels: graphLabels,
             datasets: [{
                //red dataset
-               data: [10, 20, 22, 40, 89, 100, 150],
+               data: [],
                label: "M¢ invested",
                yAxisID: "A",
                backgroundColor: 'rgba(240, 91, 79, 0.0)',
                borderColor: 'rgb(240, 91, 79)',
                lineTension: 0,
                borderWidth: 2,
+               pointRadius: 2,
+               pointHoverRadius: 3
             },{
                //ORANG dataset
-               data: [10, 20, 3, 5, 14, 20, 35],
+               data: [],
                label: "investments",
                yAxisID: "B",
                backgroundColor: 'rgba(255, 167, 38, 0.0)',
                borderColor: 'rgb(255, 167, 38)',
                lineTension: 0,
                borderWidth: 2,
-               
+               pointRadius: 2,
+               pointHoverRadius: 3
             }]
          },
          options: {
@@ -280,28 +283,21 @@ let investmentsCalculator = (function() {
          //every 10 seconds
          10000
       )
-      function updateChart(){
-         iterateDays(7, function(index, dateFrom, to){
-            console.log("updating chart---")
-            let ufrom = dateFrom.valueOf() / 1000;
-            let uto = to.valueOf() / 1000;
-            jsonApi.get('/investments/total?from='+ufrom+'&to='+uto)
-            .then(function (data) {
-               overviewChart.update(1, index, parseInt(data.investments));
-            })
-            jsonApi.get('/investments/amount?from='+ufrom+'&to='+uto)
-            .then(function (data) {
-               overviewChart.update(0, index, parseInt(data.coins));
-            })
+
+      iterateDays(7, function(index, dateFrom, to){
+         console.log("updating chart---")
+         let ufrom = dateFrom.valueOf() / 1000;
+         let uto = to.valueOf() / 1000;
+         jsonApi.get('/investments/total?from='+ufrom+'&to='+uto)
+         .then(function (data) {
+            overviewChart.update(1, index, parseInt(data.investments));
          })
-      }
-      //init short polling chart update scheduler
-      let chartUpdater = new Scheduler(
-         updateChart,
-         120000,//every 2 minutes
-         true,
-         false//don't execute immediately after a pause resume
-      );
+         jsonApi.get('/investments/amount?from='+ufrom+'&to='+uto)
+         .then(function (data) {
+            overviewChart.update(0, index, parseInt(data.coins));
+         })
+      })
+
       
    });
    
