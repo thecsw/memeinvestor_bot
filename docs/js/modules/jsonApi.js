@@ -5,7 +5,7 @@ let options = {
    url: "https://memes.market/api",
    //url: "http://localhost/memeinvestor_bot/docs/testApiData.json",
 }
-function makeRequest (param, options) {
+function makeRequest (param = '', options) {
   return new Promise(function (resolve, reject) {
     var xhr = new XMLHttpRequest();
     let url = options.url+param;
@@ -34,7 +34,7 @@ export function getAll(){
    return makeRequest("/summary?per_page=5", options);
 }
 
-export function get(param){
-   return makeRequest(param, options);
+export function get(param, newOptions = options){
+   return makeRequest(param, newOptions);
 }
 

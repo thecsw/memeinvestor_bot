@@ -2,6 +2,36 @@
 
 @import 'dark-base.css';
 
+/* --[general]-- */
+body{
+  overflow-x: hidden;
+}
+
+/* --[ overlay ] -- */
+
+/* --[ controls] -- */
+.custom-select{
+  width:200px;
+  color: white !important;
+  margin: 0 auto;
+}
+.custom-select select {
+  padding-left: 50px;
+  text-align: left;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  border: 0px;
+  background-repeat: no-repeat;
+  background-size: 25px auto;
+  background-position: left 20px center;
+  background-image: url(../resources/baseline-expand_more-24px.svg);
+}
+.custom-select select:active{
+  outline: 0;
+  border: 0px;
+}
 /* --[top 3 row]-- */
 .top3-cards{
   max-width:880px;
