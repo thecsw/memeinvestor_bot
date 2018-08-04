@@ -78,7 +78,7 @@ let leaderboard = (function(){
       for(let prefix of ids.cards.prefix){
          cardElements[prefix] = {
             name: document.getElementById(prefix+'-'+ids.cards.name),
-            netWorth: new CountUp(prefix+'-'+ids.cards.netWorth,0, 0),
+            netWorth: new CountUp(prefix+'-'+ids.cards.netWorth,0, 0, 1),
             netWorthSuffix: document.getElementById(prefix+'-'+ids.cards.netWorthSuffix),
             profile: document.getElementById(prefix+'-'+ids.cards.profile)
          }
