@@ -16,7 +16,7 @@ from stopwatch import Stopwatch
 
 logging.basicConfig(level=logging.INFO)
 
-BalanceCap = 1000000000000000000 # One quintillion MemeCoins
+BalanceCap = 1000*1000*1000*1000*1000*1000 # One quintillion MemeCoins
 
 class EmptyResponse(object):
     def __init__(self):
@@ -142,6 +142,14 @@ def main():
             rem = int(reddit.auth.limits['remaining'])
             res = int(reddit.auth.limits['reset_timestamp'] - time.time())
             logging.info(f" -- API calls remaining: {rem:3d}, resetting in {res:3d}s")
+
+        except prawcore.exceptions.OAuthException as e_creds:
+            traceback.print_exc()
+            logging.error(e_creds)
+            logging.critical("Invalid login credentials. Check your .env!")
+            logging.critical("Fatal error. Cannot continue or fix the problem. Bailing out...")
+            exit()
+    
         except Exception as e:
             logging.error(e)
             traceback.print_exc()
