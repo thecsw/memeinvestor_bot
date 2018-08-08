@@ -9,6 +9,7 @@ from sqlalchemy import create_engine, func, desc, and_
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 import praw
+import prawcore
 
 import config
 import message
@@ -294,7 +295,7 @@ def main():
                          username=config.username,
                          password=config.password,
                          user_agent=config.user_agent)
-
+        
     stopwatch = Stopwatch()
 
     logging.info("Listening for inbox replies...")
@@ -333,6 +334,14 @@ def main():
                     break
 
                 stopwatch.reset()
+
+        except prawcore.exceptions.OAuthException as e_creds:
+            traceback.print_exc()
+            logging.error(e_creds)
+            logging.critical("Invalid login credentials. Check your .env!")
+            logging.critical("Fatal error. Cannot continue or fix the problem. Bailing out...")
+            exit()
+
         except Exception as e:
             logging.error(e)
             traceback.print_exc()

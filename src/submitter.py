@@ -3,6 +3,7 @@ import logging
 import traceback
 
 import praw
+import prawcore
 
 import config
 import message
@@ -53,6 +54,14 @@ def main():
                 if killhandler.killed:
                     logging.info("Termination signal received - exiting")
                     break
+
+        except prawcore.exceptions.OAuthException as e_creds:
+            traceback.print_exc()
+            logging.error(e_creds)
+            logging.critical("Invalid login credentials. Check your .env!")
+            logging.critical("Fatal error. Cannot continue or fix the problem. Bailing out...")
+            exit()
+                
         except Exception as e:
             logging.error(e)
             traceback.print_exc()
