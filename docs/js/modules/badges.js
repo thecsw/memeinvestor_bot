@@ -16,6 +16,10 @@ export const badgesList = {
       'Overflow: \'The value of his bank account is too damn high!\'',
       'overflow.png'
    ],
+   'donor': [
+      'Donor: Supported the bot on Patreon and is generally an awesome person',
+      'donor.png'
+   ],
    'unknown': [
       'unknown badge',
       'laurel.png'
