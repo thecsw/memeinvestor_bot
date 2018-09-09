@@ -36,7 +36,7 @@ You may also need to generate Reddit API credentials for the bot (see below).
 ## Configuration
 
 After installing the prerequisites and cloning the project, you'll need to configure
-the bot. To do so, copy the `.env.example` flie to `.env` and open it in the editor
+the bot. To do so, copy the `.env.example` file to `.env` and open it in the editor
 of your choice:
 
 ```
