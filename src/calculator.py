@@ -6,6 +6,7 @@ import traceback
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import praw
+import prawcore
 
 import config
 import formula

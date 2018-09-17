@@ -22,6 +22,9 @@ services:
         env_file: .env
         restart: on-failure
         command: ["python", "submitter.py"]
+        depends_on:
+          - mysql
+
 
     api:
         build: .
