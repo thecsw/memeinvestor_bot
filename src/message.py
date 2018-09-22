@@ -13,7 +13,7 @@ create_org = """
 
 Thank you %USERNAME% for creating a bank account in r/MemeEconomy!
 
-Your starting balance is %BALANCE% MemeCoins.
+Your starting balance is **%BALANCE% MemeCoins**.
 """
 
 def modify_create(username, balance):
@@ -35,7 +35,7 @@ invest_org = """
 
 Your investment is active. I'll evaluate your return in %TIME%and update this comment. Stay tuned!
 
-Your current balance is %BALANCE% MemeCoins.
+Your current balance is **%BALANCE% MemeCoins**.
 """.replace("%TIME%", investment_duration_var)
 
 def modify_invest(amount, initial_upvotes, new_balance):
@@ -51,7 +51,7 @@ UPDATE: Your investment has matured. It was successful! You profited %PROFIT% Me
 
 *%RETURNED% MemeCoins returned @ %FINAL_UPVOTES% upvotes*
 
-Your new balance is %BALANCE% MemeCoins.
+Your new balance is **%BALANCE% MemeCoins**.
 
 ^(formula v3)
 """
@@ -63,7 +63,7 @@ UPDATE: Your investment has matured. It was unsuccessful! You lost %PROFIT% Meme
 
 *%RETURNED% MemeCoins returned @ %FINAL_UPVOTES% upvotes*
 
-Your new balance is %BALANCE% MemeCoins.
+Your new balance is **%BALANCE% MemeCoins**.
 
 ^(formula v3)
 """
@@ -75,7 +75,7 @@ UPDATE: Your investment has matured. It broke even! You profited %PROFIT% MemeCo
 
 *%RETURNED% MemeCoins returned @ %FINAL_UPVOTES% upvotes*
 
-Your new balance is %BALANCE% MemeCoins.
+Your new balance is **%BALANCE% MemeCoins**.
 
 ^(formula v3)
 """
@@ -109,7 +109,7 @@ of meme industry.
 
 *"And Alexander wept, for there were no more worlds to conquer."* (...yet)
 
-Your current balance is %BALANCE% MemeCoins (the maximum balance).
+Your current balance is **%BALANCE% MemeCoins** (the maximum balance).
 
 ^(formula v3)
 """
@@ -128,7 +128,9 @@ def modify_invest_capped(amount, initial_upvotes, final_upvotes, returned, profi
 insuff_org = """
 You do not have enough MemeCoins to make that investment.
 
-Your current balance is %BALANCE% MemeCoins.
+Your current balance is **%BALANCE% MemeCoins**.
+
+If you have less than 100 MemeCoins and no active investments, try running `!broke`!
 """
 
 def modify_insuff(balance_t):
@@ -161,7 +163,7 @@ def modify_broke_active(active):
     
 # Message if you are broke and have more than 100 MemeCoins
 broke_money_org = """
-You are not broke. You still have %AMOUNT% MemeCoins.
+You are not broke. You still have **%AMOUNT% MemeCoins**.
 """
 
 def modify_broke_money(amount):
@@ -175,23 +177,23 @@ I am a bot that will help you invest in memes and make a fortune out of it!
 
 Here is a list of commands that summon me:
 
-1. !create - creates a bank account for you with a new balance of 1000 MemeCoins.
+1. `!create` - creates a bank account for you with a new balance of 1000 MemeCoins.
 
-2. !invest AMOUNT - invests AMOUNT in the meme (post). 4 hours after the investment, the meme growth will be evaluated and your investment can profit you or make you bankrupt. Minimum possible investment is 100 MemeCoins.
+2. `!invest AMOUNT` - invests AMOUNT in the meme (post). 4 hours after the investment, the meme growth will be evaluated and your investment can profit you or make you bankrupt. Minimum possible investment is 100 MemeCoins.
 
-3. !balance - returns your current balance.
+3. `!balance` - returns your current balance.
 
-4. !active - returns a list of your active investments.
+4. `!active` - returns a list of your active investments.
 
-5. !broke - only if your balance is less than 100 MemeCoins and you do not have any active investments, declares bankruptcy on your account and sets your balance to 100 MemeCoins (minimum possible investment).
+5. `!broke` - only if your balance is less than 100 MemeCoins and you do not have any active investments, declares bankruptcy on your account and sets your balance to 100 MemeCoins (minimum possible investment).
 
-6. !market - gives an overview for the whole Meme market.
+6. `!market` - gives an overview for the whole Meme market.
 
-7. !top - gives a list of the users with the largest account balances.
+7. `!top` - gives a list of the users with the largest account balances.
 
-8. !ignore - ignores the whole message.
+8. `!ignore` - ignores the whole message.
 
-9. !help - returns this help message.
+9. `!help` - returns this help message.
 
 For market stats and more information, visit [memes.market](https://memes.market).
 
@@ -199,7 +201,7 @@ You can help improve me by contributing to my source code on [GitHub](https://gi
 """
 
 balance_org = """
-Currently, your account balance is %BALANCE% MemeCoins.
+Currently, your account balance is **%BALANCE% MemeCoins**.
 """
 
 def modify_balance(balance):
@@ -240,11 +242,11 @@ The minimum possible investment is 100 MemeCoins.
 """
 
 market_org = """
-The market has %NUMBER% active investments.
+The market has **%NUMBER%** active investments.
 
-All investors currently possess %MONEY% MemeCoins.
+All investors currently possess **%MONEY% MemeCoins**.
 
-There are %HODL% MemeCoins detained in investments.
+There are %HODL% MemeCoins** detained in investments.
 """
 
 def modify_market(inves, cap, invs_cap):
@@ -280,12 +282,18 @@ invest_place_here = """
 
 To prevent thread spam and other natural disasters, I only respond to direct replies. Other commands will be ignored and may be penalized. Let's keep our marketplace clean!
 
+The author of this post paid **%MEMECOIN% MemeCoins** to post this.
+
 ---
 
 - Visit [memes.market](https://memes.market) for help, market statistics, and investor profiles.
 
 - Visit /r/MemeInvestor_bot for questions or suggestions about me.
 """
+
+def modify_invest_place_here(amount):
+    return invest_place_here.\
+        replace("%MEMECOIN%", format(int(amount), ",d"))
 
 inside_trading_org = """
 You can't invest in your own memes, insider trading is not allowed!
@@ -296,3 +304,23 @@ def modify_grant_success(grantee, badge):
 
 def modify_grant_failure(failure_message):
     return f"Oops, I couldn't grant that badge ({failure_message})"
+
+no_account_post_org = """
+You need an account to post a meme. Please reply to one of my comments with `!create`.
+
+For more information please type `!help`
+"""
+
+pay_to_post_org = """
+Due to latest regulations, in order to post a meme you should pay 1000 MemeCoins or 10% of your balance!
+
+If you can't afford it, your post will be deleted. Nothing personal, kiddo. Only Meme Street business.
+
+When you get enough cash, resubmit your meme with a new post.
+
+Your current balance is **%MEMECOINS% MemeCoins**.
+"""
+
+def modify_pay_to_post(balance):
+    return pay_to_post_org.\
+        replace("%MEMECOINS%", str(balance))

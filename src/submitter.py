@@ -2,12 +2,17 @@ import time
 import logging
 import traceback
 
+import sqlalchemy
+from sqlalchemy import create_engine, func, desc, and_
+from sqlalchemy.orm import scoped_session, sessionmaker
+
 import praw
 import prawcore
 
 import config
 import message
 from kill_handler import KillHandler
+from models import Base, Investment, Investor
 from main import reply_wrap
 from stopwatch import Stopwatch
 
@@ -16,6 +21,9 @@ logging.basicConfig(level=logging.INFO)
 
 def main():
     killhandler = KillHandler()
+
+    engine = create_engine(config.db, pool_recycle=60)
+    sm = scoped_session(sessionmaker(bind=engine))
 
     reddit = praw.Reddit(client_id=config.client_id,
                          client_secret=config.client_secret,
@@ -28,7 +36,9 @@ def main():
     stopwatch = Stopwatch()
 
     while not killhandler.killed:
+        
         try:
+            sess = sm()
             for submission in reddit.subreddit('+'.join(config.subreddits)).stream.submissions(skip_existing=True):
                 duration = stopwatch.measure()
 
@@ -40,13 +50,37 @@ def main():
                     logging.info(f" -- skipping (stickied)")
                     continue
 
-                # Post a comment to let people know where to invest
-                bot_reply = submission.reply_wrap(message.invest_place_here)
+                # If a poster doesn't have an account, delete the post
+                # if he has, take 1000 MemeCoins and invest them
+                investor = sess.query(Investor).\
+                    filter(Investor.name == submission.author.name).\
+                    first()
 
+                hide_post = False
+                
+                if not investor:
+                    bot_reply = submission.reply_wrap(message.no_account_post_org)
+                    hide_post = True
+                elif (investor.balance < 1000):
+                    bot_reply = submission.reply_wrap(message.modify_pay_to_post(investor.balance))
+                    hide_post = True
+                else:
+                    # Post a comment to let people know where to invest
+                    required_fee = int(investor.balance * 0.1)
+                    if (required_fee < 1000):
+                        required_fee = 1000
+                    new_balance = investor.balance - required_fee
+                    investor.balance = new_balance
+                    bot_reply = submission.reply_wrap(message.modify_invest_place_here(required_fee))
+
+                sess.commit()
+                    
                 # Sticky the comment
                 if config.is_moderator:
                     bot_reply.mod.distinguish(how='yes', sticky=True)
-
+                    if (hide_post):
+                        submission.hide()
+                    
                 # Measure how long processing took
                 duration = stopwatch.measure()
                 logging.info(f" -- processed in {duration:5.2f}s")
