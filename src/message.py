@@ -277,6 +277,18 @@ Where did he go?
 Whatever, investment is lost.
 """
 
+invest_place_here_no_fee = """
+**INVESTMENTS GO HERE - ONLY DIRECT REPLIES TO ME WILL BE PROCESSED**
+
+To prevent thread spam and other natural disasters, I only respond to direct replies. Other commands will be ignored and may be penalized. Let's keep our marketplace clean!
+
+---
+
+- Visit [memes.market](https://memes.market) for help, market statistics, and investor profiles.
+
+- Visit /r/MemeInvestor_bot for questions or suggestions about me.
+"""
+
 invest_place_here = """
 **INVESTMENTS GO HERE - ONLY DIRECT REPLIES TO ME WILL BE PROCESSED**
 
