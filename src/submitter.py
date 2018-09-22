@@ -56,14 +56,14 @@ def main():
                     filter(Investor.name == submission.author.name).\
                     first()
 
-                hide_post = False
+                delete_post = False
                 
                 if not investor:
                     bot_reply = submission.reply_wrap(message.no_account_post_org)
-                    hide_post = True
+                    delete_post = True
                 elif (investor.balance < 1000):
                     bot_reply = submission.reply_wrap(message.modify_pay_to_post(investor.balance))
-                    hide_post = True
+                    delete_post = True
                 else:
                     # Post a comment to let people know where to invest
                     required_fee = int(investor.balance * 0.1)
@@ -78,8 +78,9 @@ def main():
                 # Sticky the comment
                 if config.is_moderator:
                     bot_reply.mod.distinguish(how='yes', sticky=True)
-                    if (hide_post):
-                        submission.hide()
+                    if (delete_post):
+                        #Should we hide or just delete the post?
+                        submission.mod.remove()
                     
                 # Measure how long processing took
                 duration = stopwatch.measure()
