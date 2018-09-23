@@ -50,35 +50,45 @@ def main():
                     logging.info(f" -- skipping (stickied)")
                     continue
 
-                # If a poster doesn't have an account, delete the post
-                # if he has, take 1000 MemeCoins and invest them
-                investor = sess.query(Investor).\
-                    filter(Investor.name == submission.author.name).\
-                    first()
-
+                bot_reply = 0
                 delete_post = False
                 
-                if not investor:
-                    bot_reply = submission.reply_wrap(message.no_account_post_org)
-                    delete_post = True
-                elif (investor.balance < 1000):
-                    bot_reply = submission.reply_wrap(message.modify_pay_to_post(investor.balance))
-                    delete_post = True
+                # This is a bit of a controversial update, so im gonna make it
+                # agile to switch between different modes
+                if config.submission_fee:
+                    # If a poster doesn't have an account, delete the post
+                    # if he has, take 1000 MemeCoins and invest them
+                    investor = sess.query(Investor).\
+                        filter(Investor.name == submission.author.name).\
+                        first()
+
+                    if not investor:
+                        bot_reply = submission.reply_wrap(message.no_account_post_org)
+                        delete_post = True
+                        logging.info(f" -- Not a registered investor!")
+                    elif (investor.balance < 1000):
+                        bot_reply = submission.reply_wrap(message.modify_pay_to_post(investor.balance))
+                        delete_post = True
+                        logging.info(f" -- Not enough funds!")
+                    else:
+                        # We will make it 6%
+                        required_fee = int(investor.balance * 0.06)
+                        if (required_fee < 1000):
+                            required_fee = 1000
+                        new_balance = investor.balance - required_fee
+                        investor.balance = new_balance
+                        bot_reply = submission.reply_wrap(message.modify_invest_place_here(required_fee))
+                        
+                    sess.commit()
                 else:
                     # Post a comment to let people know where to invest
-                    required_fee = int(investor.balance * 0.1)
-                    if (required_fee < 1000):
-                        required_fee = 1000
-                    new_balance = investor.balance - required_fee
-                    investor.balance = new_balance
-                    bot_reply = submission.reply_wrap(message.modify_invest_place_here(required_fee))
-
-                sess.commit()
+                    bot_reply = submission.reply_wrap(message.invest_place_here_no_fee)
                     
                 # Sticky the comment
                 if config.is_moderator:
                     bot_reply.mod.distinguish(how='yes', sticky=True)
                     if (delete_post):
+                        logging.info(f" -- Deleting the post...")
                         #Should we hide or just delete the post?
                         submission.mod.remove()
                     
