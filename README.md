@@ -75,7 +75,7 @@ database with Python or a database manager like `adminer`.
 
 ## Authors
 
- - *Sagindyk Urazayev* - Core developer. Founder, server, database, and system maintainer. - [thecsw](https://github.com/thecsw)
+ - *Sagindyk Urazayev* - Core developer. Founder. Server, database, and system maintainer. - [thecsw](https://github.com/thecsw)
  - *Dimitris Zervas* - Main back-end developer. Wrote our API module and introduced Docker. - [dzervas](https://github.com/dzervas)
  - *jimbobur* - Our maths guy. Can make really pretty graphs. - [jimbobur](https://github.com/jimbobur)
  - *Alberto Ventafridda* - Main front-end and web developer. Made our beautiful website. - [robalb](https://github.com/robalb)
