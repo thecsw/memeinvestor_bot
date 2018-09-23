@@ -75,13 +75,12 @@ database with Python or a database manager like `adminer`.
 
 ## Authors
 
- - *Sagindyk Urazayev* - Core developer. Initial work & SQLite - [thecsw](https://github.com/thecsw)
- - *Dimitris Zervas* - Main back-end developer. MySQL, Docker, API and overall support - [dzervas](https://github.com/dzervas)
- - *jimbobur* - Our maths guy. Can make really pretty graphs - [jimbobur](https://github.com/jimbobur)
- - *Alberto Ventafridda* - Main front-end and web developer - [robalb](https://github.com/robalb)
- - *rickles42* - Back-end and infrastructure developer - [rickles42](https://github.com/rickles42)
- - *TwinProduction* - Heavy outside contributor - [TwinProduction](https://github.com/TwinProduction)
- - *ggppjj* - Minor fixes - [ggppjj](https://github.com/ggppjj)
+ - *Sagindyk Urazayev* - Core developer. Founder, server, database, and system maintainer. - [thecsw](https://github.com/thecsw)
+ - *Dimitris Zervas* - Main back-end developer. Wrote our API module and introduced Docker. - [dzervas](https://github.com/dzervas)
+ - *jimbobur* - Our maths guy. Can make really pretty graphs. - [jimbobur](https://github.com/jimbobur)
+ - *Alberto Ventafridda* - Main front-end and web developer. Made our beautiful website. - [robalb](https://github.com/robalb)
+ - *rickles42* - Back-end and infrastructure developer. Heavy new features and debugging. - [rickles42](https://github.com/rickles42)
+ - *TwinProduction* - Heavy outside contributor. - [TwinProduction](https://github.com/TwinProduction)
 
 ## License
 
