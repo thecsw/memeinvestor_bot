@@ -39,7 +39,7 @@ def main():
         
         try:
             sess = sm()
-            for submission in reddit.subreddit('+'.join(config.subreddits)).stream.submissions(skip_existing=True):
+            for submission in reddit.subreddit('+'.join(config.subreddits)).stream.submissions():
                 duration = stopwatch.measure()
 
                 logging.info(f"New submission: {submission}")
