@@ -39,6 +39,7 @@ def main():
         
         try:
             sess = sm()
+            submission_time = int(time.time())
             for submission in reddit.subreddit('+'.join(config.subreddits)).stream.submissions(skip_existing=True):
                 duration = stopwatch.measure()
 
@@ -50,6 +51,17 @@ def main():
                     logging.info(f" -- skipping (stickied)")
                     continue
 
+                # We are looking if the post is created in the past
+                # so we won't double charge it
+                logging.info(f" -- UNIX Time {submission.created_utc}")
+                logging.info(f" -- Submission Time {submission_time}")
+                
+                if (submission.created_utc < submission_time):
+                    logging.info(f" -- skipping (timeout)")
+                    continue
+                submission_time = int(submission.created_utc)
+                logging.info(f" -- Submission timestamp: {time.asctime(time.gmtime(submission_time))}")
+                
                 bot_reply = 0
                 delete_post = False
                 
