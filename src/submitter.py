@@ -53,9 +53,6 @@ def main():
 
                 # We are looking if the post is created in the past
                 # so we won't double charge it
-                logging.info(f" -- UNIX Time {submission.created_utc}")
-                logging.info(f" -- Submission Time {submission_time}")
-                
                 if (submission.created_utc < submission_time):
                     logging.info(f" -- skipping (timeout)")
                     continue
