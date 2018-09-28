@@ -324,7 +324,7 @@ For more information please type `!help`
 """
 
 pay_to_post_org = """
-Due to latest regulations, in order to post a meme you should pay 1000 MemeCoins or 6% of your balance!
+Due to latest regulations, in order to post a meme you should pay 6% tax with minimum of 1000 MemeCoins.
 
 If you can't afford it, your post will be deleted. Nothing personal, kiddo. Only Meme Street business.
 
