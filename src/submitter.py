@@ -82,8 +82,8 @@ def main():
                     else:
                         # We will make it 6%
                         required_fee = int(investor.balance * 0.06)
-                        if (required_fee < 1000):
-                            required_fee = 1000
+                        if (required_fee < 250):
+                            required_fee = 250
                         new_balance = investor.balance - required_fee
                         investor.balance = new_balance
                         bot_reply = submission.reply_wrap(message.modify_invest_place_here(required_fee))
