@@ -390,7 +390,7 @@ let investments = (function(){
       `
       for(let inv of data){
          let invTime = new Date(inv.time*1000)
-         let time = invTime.getHours()+':'+invTime.getMinutes()
+         let time = invTime.toLocaleString()
          let date = invTime.getDate()+'/'+monthNames[invTime.getMonth()]
          html += `
          <tr>
