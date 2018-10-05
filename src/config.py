@@ -13,6 +13,8 @@ user_agent    = os.environ['BOT_USER_AGENT']
 username      = os.environ['BOT_USERNAME']
 password      = os.environ['BOT_PASSWORD']
 
+maintenance = os.environ['BOT_MAINTENANCE']
+
 subreddits = [os.environ['BOT_SUBREDDIT']]
 
 mysql_user     = os.environ['MYSQL_USER']

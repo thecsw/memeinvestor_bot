@@ -336,3 +336,11 @@ Your current balance is **%MEMECOINS% MemeCoins**.
 def modify_pay_to_post(balance):
     return pay_to_post_org.\
         replace("%MEMECOINS%", str(balance))
+
+maintenance_org = """
+**The bot is under maintenance due to technical reasons.**
+
+**Expect it to be back online soon. (Several hours)**
+
+**Sorry for any inconvenience caused.**
+"""
