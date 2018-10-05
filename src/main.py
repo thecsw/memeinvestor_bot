@@ -301,9 +301,18 @@ def main():
     logging.info("Listening for inbox replies...")
 
     while not killhandler.killed:
-        try:
+        try:    
             # Iterate over the latest comment replies in inbox
             reply_function = reddit.inbox.comment_replies
+
+            if (config.maintenance):
+                logging.info("ENTERING MAINTENANCE MODE. NO OPERATIONS WILL BE PROCESSED.")
+                for comment in praw.models.util.stream_generator(reply_function):
+                    logging.info(f"New comment {comment}:")
+                    if comment.new:
+                        comment.reply_wrap(message.maintenance_org)
+                        comment.mark_read()
+                        
             for comment in praw.models.util.stream_generator(reply_function):
                 # Measure how long since we finished the last loop iteration
                 duration = stopwatch.measure()

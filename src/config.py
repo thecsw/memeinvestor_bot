@@ -4,7 +4,7 @@ post_to_reddit      = int(os.environ['BOT_POST_TO_REDDIT'])
 is_moderator        = int(os.environ['BOT_IS_MODERATOR'])
 prevent_insiders    = int(os.environ['BOT_PREVENT_INSIDERS'])
 investment_duration = int(os.environ['BOT_INVESTMENT_DURATION'])
-submission_fee      = int(os.environ['SUBMISSION_FEE'])
+submission_fee      = int(os.environ['BOT_SUBMISSION_FEE'])
 admin_accounts      = os.environ['BOT_ADMIN_REDDIT_ACCOUNTS'].split(',')
 
 client_id     = os.environ['BOT_CLIENT_ID']
@@ -12,6 +12,8 @@ client_secret = os.environ['BOT_CLIENT_SECRET']
 user_agent    = os.environ['BOT_USER_AGENT']
 username      = os.environ['BOT_USERNAME']
 password      = os.environ['BOT_PASSWORD']
+
+maintenance = os.environ['BOT_MAINTENANCE']
 
 subreddits = [os.environ['BOT_SUBREDDIT']]
 
