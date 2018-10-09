@@ -31,7 +31,7 @@ I love the enthusiasm, but you've already got an account!
 # was successful
 
 invest_org = """
-*%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% upvotes*
+*%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% """ + "updoots" if datetime.date.today().month == 10 else "upvotes" + """*
 
 Your investment is active. I'll evaluate your return in %TIME%and update this comment. Stay tuned!
 
@@ -45,11 +45,11 @@ def modify_invest(amount, initial_upvotes, new_balance):
         replace("%BALANCE%", format(new_balance, ",d"))
 
 invest_win_org = """
-*%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% upvotes*
+*%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% """ + "updoots" if datetime.date.today().month == 10 else "upvotes" + """*
 
 UPDATE: Your investment has matured. It was successful! You profited %PROFIT% MemeCoins (%PERCENT%).
 
-*%RETURNED% MemeCoins returned @ %FINAL_UPVOTES% upvotes*
+*%RETURNED% MemeCoins returned @ %FINAL_UPVOTES% """ + "updoots" if datetime.date.today().month == 10 else "upvotes" + """*
 
 Your new balance is **%BALANCE% MemeCoins**.
 
@@ -57,11 +57,11 @@ Your new balance is **%BALANCE% MemeCoins**.
 """
 
 invest_lose_org = """
-*%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% upvotes*
+*%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% """ + "updoots" if datetime.date.today().month == 10 else "upvotes" + """*
 
 UPDATE: Your investment has matured. It was unsuccessful! You lost %PROFIT% MemeCoins (%PERCENT%).
 
-*%RETURNED% MemeCoins returned @ %FINAL_UPVOTES% upvotes*
+*%RETURNED% MemeCoins returned @ %FINAL_UPVOTES% """ + "updoots" if datetime.date.today().month == 10 else "upvotes" + """*
 
 Your new balance is **%BALANCE% MemeCoins**.
 
@@ -69,11 +69,11 @@ Your new balance is **%BALANCE% MemeCoins**.
 """
 
 invest_break_even_org = """
-*%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% upvotes*
+*%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% """ + "updoots" if datetime.date.today().month == 10 else "upvotes" + """*
 
 UPDATE: Your investment has matured. It broke even! You profited %PROFIT% MemeCoins (%PERCENT%).
 
-*%RETURNED% MemeCoins returned @ %FINAL_UPVOTES% upvotes*
+*%RETURNED% MemeCoins returned @ %FINAL_UPVOTES% """ + "updoots" if datetime.date.today().month == 10 else "upvotes" + """*
 
 Your new balance is **%BALANCE% MemeCoins**.
 
@@ -99,9 +99,9 @@ def modify_invest_return(amount, initial_upvotes, final_upvotes, returned, profi
         replace("%BALANCE%", format(new_balance, ",d"))
 
 invest_capped_org = """
-*%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% upvotes*
+*%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% """ + "updoots" if datetime.date.today().month == 10 else "upvotes" + """*
 
-UPDATE: Your investment has matured at %FINAL_UPVOTES% upvotes, profiting %PROFIT% MemeCoins (%PERCENT%).
+UPDATE: Your investment has matured at %FINAL_UPVOTES% """ + "updoots" if datetime.date.today().month == 10 else "upvotes" + """, profiting %PROFIT% MemeCoins (%PERCENT%).
 
 **Congratulations,** you've reached the maximum balance! You've triumphed over your competition in the
 meme marketplace, and your wealth is inconceivable! Indeed, future generations shall remember you as a titan
@@ -228,7 +228,7 @@ def modify_active(active_investments):
         else:
             remaining_string = "processing"
         post_url = f"https://www.reddit.com/r/MemeEconomy/comments/{inv.post}"
-        inv_string = f"[#{i}]({post_url}): {inv.amount} M¢ @ {inv.upvotes} upvotes ({remaining_string})"
+        inv_string = f"[#{i}]({post_url}): {inv.amount} M¢ @ {inv.upvotes} " + "updoots" if datetime.date.today().month == 10 else "upvotes" + f"({remaining_string})"
         investments_strings.append(inv_string)
         i += 1
     investments_list = "\n\n".join(investments_strings)
