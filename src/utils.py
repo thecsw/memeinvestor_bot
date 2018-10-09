@@ -22,3 +22,8 @@ def investment_duration_string(duration):
         inv_string += " "
 
     return inv_string
+
+def upvote_string():
+    return {
+        10:"updoots",
+    }.get(datetime.date.today().month, "upvotes")
