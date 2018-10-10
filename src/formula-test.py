@@ -18,7 +18,7 @@ def main():
     inv_return = calculate(args.u_final,args.u_init) * args.invested
     profit = inv_return - args.invested
     print(">> RETURN:", inv_return, "M¢ (Profit:", profit, "M¢)")
-   
+
     #Generate data for performance plot
     olds = list(range(args.u_init, args.u_final * 2, 1))# + list(range(args.u_final, args.u_final * 2, 10))
     x = []
@@ -28,11 +28,11 @@ def main():
     for i in olds:
         x.append(i)
         result = calculate(i,args.u_init) * args.invested
-        y.append(result) 
+        y.append(result)
         if i <= args.u_final:
             x2.append(i)
             y2.append(result)
-            
+  
     #Generate performance plot
     fig = plt.figure(figsize=(7,7))
     plt.grid(color='k', alpha=0.15, which='major')
@@ -43,7 +43,7 @@ def main():
     plt.plot(x2,y2,label='Meme Performance',color='r')
     plt.plot(args.u_final, inv_return, color='r', marker='X', markersize=8, linestyle='none', label='Return: %i M¢ (Profit: %i M¢)' %(inv_return,profit))
     plt.legend(fontsize='12')
-    
+
     #Interactive show plot
     plt.show()
 
@@ -52,6 +52,6 @@ def main():
         out_filename = 'investment_performance.png'
         print ("Saving image to: '",out_filename,"'")
         fig.savefig(out_filename)
-            
+  
 if __name__ == "__main__":
     main()

@@ -6,7 +6,7 @@ class Stopwatch(object):
 
     def reset(self):
         self.previous_time = time.perf_counter()
-    
+
     # Returns the seconds elapsed since the last call to reset or measure
     def measure(self):
         new_time = time.perf_counter()

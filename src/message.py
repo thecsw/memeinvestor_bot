@@ -161,7 +161,7 @@ You need to wait until they are fully evaluated.
 def modify_broke_active(active):
     return broke_active_org.\
         replace("%ACTIVE%", str(active))
-    
+
 # Message if you are broke and have more than 100 MemeCoins
 broke_money_org = """
 You are not broke. You still have **%AMOUNT% MemeCoins**.
@@ -170,7 +170,7 @@ You are not broke. You still have **%AMOUNT% MemeCoins**.
 def modify_broke_money(amount):
     return broke_money_org.\
         replace("%AMOUNT%", format(amount, ",d"))
-    
+
 help_org = """
 *Welcome to MemeInvestment!*
 
