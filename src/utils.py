@@ -1,3 +1,5 @@
+import datetime
+
 def investment_duration_string(duration):
     hours = duration // 3600
     duration %= 3600
@@ -22,3 +24,8 @@ def investment_duration_string(duration):
         inv_string += " "
 
     return inv_string
+
+def upvote_string():
+    return {
+        10:"updoots",
+    }.get(datetime.date.today().month, "upvotes")
