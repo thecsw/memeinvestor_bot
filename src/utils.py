@@ -1,3 +1,5 @@
+import datetime
+
 def investment_duration_string(duration):
     hours = duration // 3600
     duration %= 3600
