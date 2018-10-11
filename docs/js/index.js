@@ -3,6 +3,27 @@ import * as jsonApi from './modules/jsonApi.js?c=2';
 import {formatToUnits, iterateDays} from './modules/dataUtils.js?c=1';
 import {Scheduler} from './modules/scheduler.js';
 
+let ticker = (function(){
+   function init() {
+      jsonApi.get('/investors/last24').then(function (top5) {
+         var tickerElements = document.getElementsByClassName("last24-item");
+         for (var i = tickerElements.length - 1; i >= 0; i--) {
+             tickerElements[i].innerHTML = `
+               <span class="last24-name">${top5[i].name}:</span>
+               <span class="last24-profit">${top5[i].profit}</span>
+             `
+             tickerElements[i].className += " last24-position-" + (i+1)
+          } 
+      });
+   }
+
+   return {
+      init: init,
+      update: function() {} // there isn't any real reason to update this, it's cached by the hour.
+      // update: init
+   }
+})();
+
 let overview = (function(){
    let counters = {
       coinsInvested: undefined,
@@ -266,6 +287,7 @@ let investmentsCalculator = (function() {
       overview.init()
       overviewChart.init()
       investmentsCalculator.init()
+      ticker.init()
       //init short polling update schedulers
       let dataUpdater = new Scheduler(
          function(){
