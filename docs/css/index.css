@@ -1,6 +1,77 @@
 
 @import 'dark-base.css';
 
+/* --[last 24 ticker]-- */
+.ticker-wrap{
+  width: 100%;
+  overflow: hidden;
+  height: 4rem;
+}
+
+.ticker{
+  display: inline-block;
+  width: 100%;
+  box-sizing: content-box;
+  
+  height: 4rem;
+  line-height: 4rem;
+  white-space: nowrap;
+
+  -webkit-animation-iteration-count: infinite; 
+          animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+          animation-timing-function: linear;
+ -webkit-animation-name: ticker;
+         animation-name: ticker;
+  -webkit-animation-duration: 30s;
+          animation-duration: 30s;
+
+}
+
+.ticker-item{
+  display: inline-block;
+  padding: 0 2rem;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.last24-header{
+  font-weight: bold;
+}
+
+.last24-position-1{
+  color: #FFD700;
+}
+.last24-profit{
+  font-style: italic;
+}
+
+@-webkit-keyframes ticker{
+  0%{
+    -webkit-transform: translate3d(100%, 0, 0);
+    transform: translate3d(100%, 0, 0);
+    visibility: visible;
+  }
+
+  100%{
+    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+@keyframes ticker{
+  0%{
+    -webkit-transform: translate3d(100%, 0, 0);
+    transform: translate3d(100%, 0, 0);
+    visibility: visible;
+  }
+
+  100%{
+    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
 /* --[graph row]-- */
 .chart-wrap{
   height:300px;

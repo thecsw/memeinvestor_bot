@@ -1,4 +1,5 @@
 import json
+import time
 
 from flask import Flask, jsonify, request
 from flask_caching import Cache
@@ -196,6 +197,29 @@ def investors_top():
 
     return jsonify(res)
 
+@app.route("/investors/last24")
+@cache.cached(timeout=3600)
+def investors_last24():
+    sql = db.session.query(
+        Investor.name,
+        func.sum(Investment.profit).label('total_profit')
+    ).\
+    outerjoin(Investment, and_(
+        Investor.name == Investment.name, 
+        Investment.done == 1,
+        Investment.time > (time.time() - 5184000),
+        Investment.profit > 0)).\
+    group_by(Investor.name).\
+    order_by(desc('total_profit')).\
+    limit(5).\
+    all()
+
+    res = [{
+        "name": x.name,
+        "profit": int(x.total_profit or 0)
+    } for x in sql]
+
+    return jsonify(res)
 
 @app.route("/investor/<string:name>")
 def investor(name):
