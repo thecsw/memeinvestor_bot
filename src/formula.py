@@ -10,7 +10,7 @@ def calculate(new, old):
     if old < 0:
         old = 0
     if new < 0:
-        new = 0 
+        new = 0
 
     # Compute gain
     delta = new - old

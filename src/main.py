@@ -79,7 +79,7 @@ class CommentWorker():
         # Ignore items that aren't Comments (i.e. Submissions)
         if not isinstance(comment, praw.models.Comment):
             return
-        
+
         # Ignore comments at the root of a Submission
         if comment.is_root:
             return
@@ -295,13 +295,13 @@ def main():
                          username=config.username,
                          password=config.password,
                          user_agent=config.user_agent)
-        
+
     stopwatch = Stopwatch()
 
     logging.info("Listening for inbox replies...")
 
     while not killhandler.killed:
-        try:    
+        try:
             # Iterate over the latest comment replies in inbox
             reply_function = reddit.inbox.comment_replies
 
@@ -312,7 +312,7 @@ def main():
                     if comment.new:
                         comment.reply_wrap(message.maintenance_org)
                         comment.mark_read()
-                        
+              
             for comment in praw.models.util.stream_generator(reply_function):
                 # Measure how long since we finished the last loop iteration
                 duration = stopwatch.measure()

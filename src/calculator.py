@@ -48,7 +48,7 @@ def main():
 
     engine = create_engine(config.db, pool_recycle=60)
     sm = sessionmaker(bind=engine)
-    
+
     reddit = praw.Reddit(client_id=config.client_id,
                          client_secret=config.client_secret,
                          username=config.username,
@@ -71,7 +71,7 @@ def main():
                 filter(Investment.time < then).\
                 order_by(Investment.time.asc()).\
                 first()
-            
+  
             if not investment:
                 # Nothing matured yet; wait a bit before trying again
                 time.sleep(5)
@@ -150,7 +150,7 @@ def main():
             logging.critical("Invalid login credentials. Check your .env!")
             logging.critical("Fatal error. Cannot continue or fix the problem. Bailing out...")
             exit()
-    
+
         except Exception as e:
             logging.error(e)
             traceback.print_exc()

@@ -137,7 +137,7 @@ def investments_total():
 def investments_post(id):
     time_from, time_to = get_timeframes()
     page, per_page = get_pagination()
-    
+
     sql = db.session.query(Investment).\
         filter(Investment.post == id)
 

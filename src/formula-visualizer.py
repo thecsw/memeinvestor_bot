@@ -36,7 +36,7 @@ def main():
 
     ax.grid(color='k', alpha=0.15, which='major')
     ax.set_ylim([0, 5.5])
-    
+
     plt.legend(list(olds))
     plt.title('Return factor')
     plt.xlabel('new')
@@ -63,7 +63,7 @@ def main():
 
     for (x, y) in xy:
         plt.plot(x, y)
-    
+
     ax.grid(color='k', alpha=0.15, which='major')
     ax.set_ylim([0, 5.5])
 
@@ -197,7 +197,7 @@ def main():
     olds = range(0, 1000, 1)
     min_n = 0
     max_n = 10000
-    
+
     xy = []
     x2y2 = []
     mult_threshs = [1, 1.25, 1.5, 2, 3, 4, 5]
@@ -215,8 +215,8 @@ def main():
                 y.append(n)
                 y2.append(n-o)
 
-        xy.append([x,y]) 
-        x2y2.append([x2,y2]) 
+        xy.append([x,y])
+        x2y2.append([x2,y2])
 
     for (x, y) in x2y2:
         plt.plot(x, y)
