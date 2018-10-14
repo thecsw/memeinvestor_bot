@@ -5,6 +5,8 @@ body{
   color: #f2f2f2;
   color: #e6e6e6;
   width:100%;
+  /*spooky season special theme. remove this when spooktober ends */
+  cursor: url("../resources/spooky-season/hand-cursor.svg"), auto;
 }
 *{
   outline: none;
@@ -18,6 +20,14 @@ h4{
 a{
   color: #f9a825;
   cursor: pointer;
+  /*spooky season special theme. remove this when spooktober ends */
+  cursor: url("../resources/spooky-season/hand-cursor-grab2.svg"), auto;
+}
+div .btn.grey.darken-3{
+  cursor: url("../resources/spooky-season/hand-cursor-grab2.svg"), auto;
+}
+ul li a{
+  cursor: url("../resources/spooky-season/hand-cursor-grab2.svg"), auto;  
 }
 .underlined{
   border-bottom: 1px solid #f9a825;
