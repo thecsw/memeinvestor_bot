@@ -207,7 +207,7 @@ def investors_last24():
     outerjoin(Investment, and_(
         Investor.name == Investment.name, 
         Investment.done == 1,
-        Investment.time > (time.time() - 5184000),
+        Investment.time > (time.time() - 86400),
         Investment.profit > 0)).\
     group_by(Investor.name).\
     order_by(desc('total_profit')).\
