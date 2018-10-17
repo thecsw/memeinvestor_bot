@@ -1,4 +1,7 @@
 
+# Ignore the backups folder that ./backup.sh generates
+backups/
+
 # Old SQLite3 database file
 data.db
 
