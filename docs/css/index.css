@@ -1,5 +1,5 @@
 
-@import 'dark-base.css';
+@import 'dark-base.css?c=1';
 
 /* --[last 24 ticker]-- */
 .ticker-wrap{
