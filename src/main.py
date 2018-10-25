@@ -183,6 +183,14 @@ class CommentWorker():
         except ValueError:
             return
 
+        multipliers = {'K': 1e3,'M': 1e6,'B': 1e9,'T': 1e12,'q': 1e15,'Q': 1e18}
+        pattern = r'([0-9.]+)([KMBTqQ])'
+        temp_amount = 0
+        for number, suffix in re.findall(pattern, amount):
+            number = float(number)
+            temp_amount += (number * multipliers[suffix])
+        amount = temp_amount 
+
         if amount < 100:
             comment.reply_wrap(message.min_invest_org)
             return
