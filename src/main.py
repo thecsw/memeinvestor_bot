@@ -190,7 +190,7 @@ class CommentWorker():
 
         try:
             amount = float(amount.replace(',',''))
-            amount = int(amount * CommentWorker.multiplier[suffix])
+            amount = int(amount * CommentWorker.multipliers[suffix])
         except ValueError:
             return
 
