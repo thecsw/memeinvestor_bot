@@ -9,8 +9,8 @@ evaluate meme performance resulting in positive or negative returns.
 
 ## Contributing
 
-We welcome contributions from the public! If you'd like to help improve the bot, please fork
-our project and feel free to tackle any [Issues](https://github.com/MemeInvestor/memeinvestor_bot/issues).
+We welcome contributions from the public! If you'd like to help improve the bot, [please fork
+our project](https://services.github.com/on-demand/github-cli/open-pull-request-github) and feel free to tackle any [Issues](https://github.com/MemeInvestor/memeinvestor_bot/issues).
 We also welcome feedback in the form of new issues, so feel free to create new ones for discussion.
 
 ## Overview
@@ -47,7 +47,7 @@ nano .env
 ```
 
 Follow the instructions in `.env` to configure your test deployment. The instructions
-include steps for generating Reddit bot credentials, which are necessary for clients
+include [steps for generating Reddit bot credentials](https://praw.readthedocs.io/en/latest/getting_started/quick_start.html), which are necessary for clients
 to fully access the Reddit API.
 
 Once you've finished, save `.env` and exit. You're now ready to deploy the bot locally.
