@@ -61,9 +61,10 @@ class CommentWorker():
         'k': 1e3,
         'm': 1e6,
         'b': 1e9,
-        'quad': 1e12,
-        'quin': 1e15,  # Has to be above q, or regex will stop at q instead of searching for quin/quad
-        'q': 1e12
+        't': 1e12,
+        'quad': 1e15,
+        'quin': 1e18,  # Has to be above q, or regex will stop at q instead of searching for quin/quad
+        'q': 1e15
     }
 
     commands = [
