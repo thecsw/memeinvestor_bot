@@ -74,7 +74,7 @@ class CommentWorker():
         r"!create",
         r"!help",
         r"!ignore",
-        r"!invest\s+([\d,.]+)\s+(%s)" % "|".join(multipliers),
+        r"!invest\s+([\d,.]+)\s?(%s)" % "|".join(multipliers),
         r"!market",
         r"!top",
         r"!grant\s+(\S+)\s+(\S+)",
