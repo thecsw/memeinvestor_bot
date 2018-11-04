@@ -57,6 +57,16 @@ praw.models.Comment.reply_wrap = reply_wrap
 
 
 class CommentWorker():
+    multipliers = {
+        'k': 1e3,
+        'm': 1e6,
+        'b': 1e9,
+        't': 1e12,
+        'quad': 1e15,
+        'quin': 1e18,  # Has to be above q, or regex will stop at q instead of searching for quin/quad
+        'q': 1e15
+    }
+
     commands = [
         r"!active",
         r"!balance",
@@ -64,7 +74,7 @@ class CommentWorker():
         r"!create",
         r"!help",
         r"!ignore",
-        r"!invest\s+([\d,]+)",
+        r"!invest\s+([\d,.]+)\s*(%s)?" % "|".join(multipliers),
         r"!market",
         r"!top",
         r"!grant\s+(\S+)\s+(\S+)",
@@ -169,7 +179,7 @@ class CommentWorker():
         comment.reply_wrap(message.modify_create(comment.author, 1000))
 
     @req_user
-    def invest(self, sess, comment, investor, amount):
+    def invest(self, sess, comment, investor, amount, suffix):
         if not isinstance(comment, praw.models.Comment):
             return
 
@@ -179,7 +189,8 @@ class CommentWorker():
                 return
 
         try:
-            amount = int(amount.replace(',',''))
+            amount = float(amount.replace(',',''))
+            amount = int(amount * CommentWorker.multipliers[suffix])
         except ValueError:
             return
 
