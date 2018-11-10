@@ -235,6 +235,43 @@ let investmentsCalculator = (function() {
       let calcButton = document.getElementById(ids.button);
       calcButton.addEventListener('click', e=> calc() );
    }
+   // formula functions are converted to JS from formula.py
+   // the function names follow the paper on memes.market
+   // parameter names also follow the paper, except for start and end, which replace v0 and vf for consistency with other parts of this code
+   function linear_interpolate(x, x_0, x_1, y_0, y_1){
+     let m = (y_1 - y_0) / x_1 - x_0;
+     let c = y_0;
+     let y = (m * x) + c;
+     return y;
+   }
+   function S(x, max, mid, stp){
+      let arg = -(stp * (x - mid));
+      let y = max / (1 + Math.exp(arg));
+      return y;
+   }
+   function gain(start, end) {
+      if(end < start) {
+        // treat negative gain as no gain
+        return 0;
+      }
+      else {
+        return end - start;
+      }
+   }
+   function max(start) {
+      return 1.2 + 1.9 / ((start / 10) + 1);
+   }
+   function mid(start) {
+      let sig_mp_0 = 50;
+      let sig_mp_1 = 500;
+      return linear_interpolate(start, 0, 25000, sig_mp_0, sig_mp_1);
+   }
+   function stp(start){
+      return 0.04 / ((start / 100) + 1);
+   }
+   function C(start, end) {
+     return S(gain(start, end), max(start), mid(start), stp(start));
+   }
    function calc(){
       let start = parseInt(document.getElementById('investment-start-score').value);
       let end = parseInt(document.getElementById('investment-end-score').value);
@@ -253,7 +290,14 @@ let investmentsCalculator = (function() {
             </div>
           </div>
          </div>`
-         jsonApi.get('/calculate?old='+start+'&new='+end).then(function(data) {
+         console.log('this is a test');
+         let factor = C(start, end);
+         let output = (amount * factor).toFixed();
+         output = isNaN(output)?"invalid data":output;
+         output = (output+[]).length>20?formatToUnits(output):output;
+         //replaces the spinning loader with the calculated result
+         document.getElementById('investment-result').innerText = output;
+         /**jsonApi.get('http://memes.market/calculate?old='+start+'&new='+end).then(function(data) {
             let factor = data.factor.valueOf()
             let output = (amount * factor).toFixed();
             output = isNaN(output)?"invalid data":output;
@@ -264,7 +308,7 @@ let investmentsCalculator = (function() {
             connectionErrorToast(er,'connection error');
             //removes the spinnign loader
             document.getElementById('investment-result').innerText = '000';
-         });
+         });**/
       }else{
          document.getElementById('investment-result').innerText = 'invalid data';
          let toastHTML = 'you have to fill all the fields with a valid number'
