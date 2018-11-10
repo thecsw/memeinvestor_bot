@@ -290,25 +290,12 @@ let investmentsCalculator = (function() {
             </div>
           </div>
          </div>`
-         console.log('this is a test');
          let factor = C(start, end);
          let output = (amount * factor).toFixed();
          output = isNaN(output)?"invalid data":output;
          output = (output+[]).length>20?formatToUnits(output):output;
          //replaces the spinning loader with the calculated result
          document.getElementById('investment-result').innerText = output;
-         /**jsonApi.get('http://memes.market/calculate?old='+start+'&new='+end).then(function(data) {
-            let factor = data.factor.valueOf()
-            let output = (amount * factor).toFixed();
-            output = isNaN(output)?"invalid data":output;
-            output = (output+[]).length>20?formatToUnits(output):output;
-            //replaces the spinning loader with the calculated result
-            document.getElementById('investment-result').innerText = output;
-         }).catch(function(er){
-            connectionErrorToast(er,'connection error');
-            //removes the spinnign loader
-            document.getElementById('investment-result').innerText = '000';
-         });**/
       }else{
          document.getElementById('investment-result').innerText = 'invalid data';
          let toastHTML = 'you have to fill all the fields with a valid number'
