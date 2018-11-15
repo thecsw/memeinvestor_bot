@@ -134,6 +134,10 @@ Feel free to open the produced html file with any compatible browser. Even Netsc
  - *jimbobur* - Our maths guy. Can make really pretty graphs. - [jimbobur](https://github.com/jimbobur)
  - *rickles42* - Back-end and infrastructure developer. Heavy new features and debugging. - [rickles42](https://github.com/rickles42)
  - *TwinProduction* - Heavy outside contributor. - [TwinProduction](https://github.com/TwinProduction)
+ - *Leo Wilson* - Ported our calculator to locally executed javascript.- [leomwilson](https://github.com/leomwilson)
+ - *tcmal* - Added the daily profit ticker to our website.- [tcmal](https://github.com/tcmal)
+ - *Matthew Sanetra* - Added suffixes support to the invest commands.- [matthewsanetra](https://github.com/matthewsanetra)
+ - *Dylan Hanson* - Variuos contributions to the API module.- [jovialis](https://github.com/jovialis)
 
 ## License
 
