@@ -64,6 +64,54 @@ boring (no investors and no investments) but you can interact with your test bot
 populate the database. Alternatively you can manually set up investor accounts by modifying the
 database with Python or a database manager like `adminer`.
 
+## Maintenance
+
+With the setup dockerized environment should work autonomously and non-stop. However, I would highly
+recommend to make regular database backups with our `backup.sh` script. The best way to do it is to
+install a cron job and make it run daily.
+
+Here is the cron job that is running on our production server with crontab
+
+``` bash
+0 0 * * * /path/to/memeinvestor_bot/backup.sh /path/to/memeinvestor_bot/backups
+```
+
+This job will be triggered every day at exactly 0 minutes and 0 hours.
+
+Important thing is how you update the production database with the git repository. Here is the general way
+to do it.
+
+``` bash
+git pull
+docker-compose build
+docker-compose up -d
+```
+
+It pulls the git repository, please make sure that you have the `origin` remote pointing to `https://github.com/MemeInvestor/memeinvestor_bot`
+After that it rebuilds all images and replaces the currently running ones with the freshly built. All the database
+data and other running containters' data will be safe in docker volumes. Do not forget to get rid of orphan images by `docker image prune`
+
+And after that you can start tailing logs to see if everything is working smoothly with `docker-compose logs -f --tail 10`
+Also, you can build individual modules by appending their alias to the `docker-compose` commands.
+
+*Warning* When you rebuild your containers all the logs are lost. If you want to save them and especially the http logs to track the
+website's stats, please follow the steps below to update http separately and you can just append all other containers' names to the
+build procedure above
+
+``` bash
+docker logs memeinvestor_bot_http_1 | tee -a ./http.log
+docker-compose build http
+docker-compose up -d http
+```
+
+Logs are saved to `http.log` that you can visualize them with `goaccess` and our `.goaccess.caddy.conf`
+
+``` bash
+goaccess -f ./http.log -p ~/.goaccess.caddy.conf -o html > /tmp/report.html
+```
+
+Feel free to open the produced html file with any compatible browser. Even Netscape.
+
 ## Built with
 
  - [praw](https://github.com/praw-dev/praw), a Python package that allows for simple access to Reddit's API.
@@ -75,10 +123,15 @@ database with Python or a database manager like `adminer`.
 
 ## Authors
 
+### Active contributors
+
  - *Sagindyk Urazayev* - Core developer. Founder. Server, database, and system maintainer. - [thecsw](https://github.com/thecsw)
+ - *Alberto Ventafridda* - Main front-end and web developer. Made our beautiful website. - [robalb](https://github.com/robalb)
+
+### Past contributors
+
  - *Dimitris Zervas* - Main back-end developer. Wrote our API module and introduced Docker. - [dzervas](https://github.com/dzervas)
  - *jimbobur* - Our maths guy. Can make really pretty graphs. - [jimbobur](https://github.com/jimbobur)
- - *Alberto Ventafridda* - Main front-end and web developer. Made our beautiful website. - [robalb](https://github.com/robalb)
  - *rickles42* - Back-end and infrastructure developer. Heavy new features and debugging. - [rickles42](https://github.com/rickles42)
  - *TwinProduction* - Heavy outside contributor. - [TwinProduction](https://github.com/TwinProduction)
 
