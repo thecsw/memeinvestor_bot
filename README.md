@@ -94,7 +94,7 @@ data and other running containters' data will be safe in docker volumes. Do not 
 And after that you can start tailing logs to see if everything is working smoothly with `docker-compose logs -f --tail 10`
 Also, you can build individual modules by appending their alias to the `docker-compose` commands.
 
-*Warning* When you rebuild your containers all the logs are lost. If you want to save them and especially the http logs to track the
+**Warning** When you rebuild your containers all the logs are lost. If you want to save them and especially the http logs to track the
 website's stats, please follow the steps below to update http separately and you can just append all other containers' names to the
 build procedure above
 
