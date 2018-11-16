@@ -1,6 +1,16 @@
-# /u/MemeInvestor_bot Documentation
 
-# Welcome to meme investment!
+<p align="center">
+
+<a href="https://waffle.io/MemeInvestor/memeinvestor_bot"><img src="https://badge.waffle.io/MemeInvestor/memeinvestor_bot.svg?columns=all" alt="Waffle.io - Columns and their card count"></a>
+<iframe src="https://carlo.github.io/patreon-buttons/patreon-btn.html?creator=MemeInvestor_bot"
+  allowtransparency="true"
+  frameborder="0"
+  scrolling="0"
+  width="62"
+  height="20"></iframe>
+</p>
+
+# Welcome to meme investments!
 
 Welcome to the source code repository of [/u/MemeInvestor_bot](https://www.reddit.com/user/MemeInvestor_bot). 
 This bot has been developed exclusively for [/r/MemeEconomy](https://reddit.com/r/MemeEconomy/). It allows users
@@ -66,6 +76,8 @@ database with Python or a database manager like `adminer`.
 
 # Maintenance
 
+## Backing up the database
+
 With the setup dockerized environment should work autonomously and non-stop. However, I would highly
 recommend to make regular database backups with our `backup.sh` script. The best way to do it is to
 install a cron job and make it run daily.
@@ -77,6 +89,8 @@ Here is the cron job that is running on our production server with crontab
 ```
 
 This job will be triggered every day at exactly 0 minutes and 0 hours.
+
+## Updating the deployment
 
 Important thing is how you update the production database with the git repository. Here is the general way
 to do it.
@@ -93,6 +107,8 @@ data and other running containters' data will be safe in docker volumes. Do not 
 
 And after that you can start tailing logs to see if everything is working smoothly with `docker-compose logs -f --tail 10`
 Also, you can build individual modules by appending their alias to the `docker-compose` commands.
+
+## Working with the website container
 
 **Warning!** When you rebuild your containers all the logs are lost. If you want to save them and especially the http logs to track the
 website's stats, please follow the steps below to update http separately and you can just append all other containers' names to the
