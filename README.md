@@ -1,15 +1,4 @@
 
-<p align="center">
-
-<a href="https://waffle.io/MemeInvestor/memeinvestor_bot"><img src="https://badge.waffle.io/MemeInvestor/memeinvestor_bot.svg?columns=all" alt="Waffle.io - Columns and their card count"></a>
-<iframe src="https://carlo.github.io/patreon-buttons/patreon-btn.html?creator=MemeInvestor_bot"
-  allowtransparency="true"
-  frameborder="0"
-  scrolling="0"
-  width="62"
-  height="20"></iframe>
-</p>
-
 # Welcome to meme investments!
 
 Welcome to the source code repository of [/u/MemeInvestor_bot](https://www.reddit.com/user/MemeInvestor_bot). 
@@ -22,6 +11,8 @@ evaluate meme performance resulting in positive or negative returns.
 We welcome contributions from the public! If you'd like to help improve the bot, please fork
 our project and feel free to tackle any [Issues](https://github.com/MemeInvestor/memeinvestor_bot/issues).
 We also welcome feedback in the form of new issues, so feel free to create new ones for discussion.
+
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/MemeInvestor/memeinvestor_bot.svg?columns=all)](https://waffle.io/MemeInvestor/memeinvestor_bot)
 
 # Overview
 
