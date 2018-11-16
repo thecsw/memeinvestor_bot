@@ -1,19 +1,19 @@
 # /u/MemeInvestor_bot Documentation
 
-## Welcome to meme investment!
+# Welcome to meme investment!
 
 Welcome to the source code repository of [/u/MemeInvestor_bot](https://www.reddit.com/user/MemeInvestor_bot). 
 This bot has been developed exclusively for [/r/MemeEconomy](https://reddit.com/r/MemeEconomy/). It allows users
 to create investment accounts with fictional MemeCoins, invest those MemeCoins in specific memes, and automatically
 evaluate meme performance resulting in positive or negative returns.
 
-## Contributing
+# Contributing
 
 We welcome contributions from the public! If you'd like to help improve the bot, please fork
 our project and feel free to tackle any [Issues](https://github.com/MemeInvestor/memeinvestor_bot/issues).
 We also welcome feedback in the form of new issues, so feel free to create new ones for discussion.
 
-## Overview
+# Overview
 
 The bot is implemented as a set of loosely-connected microservices written in Python and
 deployed with Docker. Each component handles a single job, such as:
@@ -28,12 +28,12 @@ deployed with Docker. Each component handles a single job, such as:
 The following instructions will get a copy of the project up and running on your local
 machine for development and testing purposes.
 
-## Prerequisites
+# Prerequisites
 
 In order to run the bot, you'll need to install [Docker](https://www.docker.com/community-edition).
 You may also need to generate Reddit API credentials for the bot (see below).
 
-## Configuration
+# Configuration
 
 After installing the prerequisites and cloning the project, you'll need to configure
 the bot. To do so, copy the `.env.example` file to `.env` and open it in the editor
@@ -52,7 +52,7 @@ to fully access the Reddit API.
 
 Once you've finished, save `.env` and exit. You're now ready to deploy the bot locally.
 
-## Deployment
+# Deployment
 
 From the root of the project directory, use `docker-compose build` to build all the
 microservices described above. Then use `docker-compose up -d` to launch them. This
@@ -64,7 +64,7 @@ boring (no investors and no investments) but you can interact with your test bot
 populate the database. Alternatively you can manually set up investor accounts by modifying the
 database with Python or a database manager like `adminer`.
 
-## Maintenance
+# Maintenance
 
 With the setup dockerized environment should work autonomously and non-stop. However, I would highly
 recommend to make regular database backups with our `backup.sh` script. The best way to do it is to
@@ -112,7 +112,7 @@ goaccess -f ./http.log -p ~/.goaccess.caddy.conf -o html > /tmp/report.html
 
 Feel free to open the produced html file with any compatible browser. Even Netscape.
 
-## Built with
+# Built with
 
  - [praw](https://github.com/praw-dev/praw), a Python package that allows for simple access to Reddit's API.
  - [fastnumbers](https://pypi.org/project/fastnumbers/), super-fast and clean conversions to numbers.
@@ -121,14 +121,22 @@ Feel free to open the produced html file with any compatible browser. Even Netsc
  - [mysqlclient](https://github.com/PyMySQL/mysqlclient-python), a MySQL database connector for Python (with Python 3 support).
  - [SQLAlchemy](http://www.sqlalchemy.org/), a Python SQL toolkit and Object Relational Mapper. 
 
-## Authors
+# Contributions
 
-### Active contributors
+MemeInvestor_bot is a community-driven and community-supported project. We need *you* to keep it live and well. Thank you for all your support!
+
+Here is a graph of some recent contributions:
+
+[![Throughput Graph](https://graphs.waffle.io/MemeInvestor/memeinvestor_bot/throughput.svg)](https://waffle.io/MemeInvestor/memeinvestor_bot/metrics/throughput)
+
+# Authors
+
+## Active contributors
 
  - *Sagindyk Urazayev* - Core developer. Founder. Server, database, and system maintainer. - [thecsw](https://github.com/thecsw)
  - *Alberto Ventafridda* - Main front-end and web developer. Made our beautiful website. - [robalb](https://github.com/robalb)
 
-### Past contributors
+## Past contributors
 
  - *Dimitris Zervas* - Main back-end developer. Wrote our API module and introduced Docker. - [dzervas](https://github.com/dzervas)
  - *jimbobur* - Our maths guy. Can make really pretty graphs. - [jimbobur](https://github.com/jimbobur)
@@ -139,7 +147,7 @@ Feel free to open the produced html file with any compatible browser. Even Netsc
  - *Matthew Sanetra* - Added suffixes support to the invest commands.- [matthewsanetra](https://github.com/matthewsanetra)
  - *Dylan Hanson* - Variuos contributions to the API module.- [jovialis](https://github.com/jovialis)
 
-## License
+# License
 
 This project is licensed under the The GNU General Public License (see the
 [LICENSE](./LICENSE) file for details), it explains everything pretty well.
