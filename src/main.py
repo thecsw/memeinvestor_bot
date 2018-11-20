@@ -77,11 +77,16 @@ class CommentWorker():
         r"!market",
         r"!top",
         r"!grant\s+(\S+)\s+(\S+)",
+        r"!createfirm\s+(.+)"
     ]
+
+    # allowed: alphanumeric, spaces, dashes
+    firm_name_format = r"[^\w \-]"
 
     def __init__(self, sm):
         self.regexes = [re.compile(x, re.MULTILINE | re.IGNORECASE)
                         for x in self.commands]
+        self.firm_name_regex = re.compile(self.firm_name_format)
         self.Session = sm
 
     def __call__(self, comment):
@@ -277,6 +282,37 @@ class CommentWorker():
             investor.badges = json.dumps(badge_list)
             return comment.reply_wrap(message.modify_grant_success(grantee, badge))
 
+    @req_user
+    def createfirm(self, sess, comment, investor, firm_name):
+        if investor.firm != 0:
+            existing_firm = sess.query(Firm).\
+                filter(Firm.id == investor.firm).\
+                first()
+            return comment.reply_wrap(message.modify_createfirm_exists_failure(existing_firm.name))
+
+        firm_name = firm_name.strip()
+
+        if 4 > len(firm_name) > 32:
+            return comment.reply_wrap(message.firmcreate_format_failure_org)
+
+        if self.firm_name_regex.search(firm_name):
+            return comment.reply_wrap(message.firmcreate_format_failure_org)
+
+        existing_firm = sess.query(Firm).\
+            filter(Firm.name == firm_name).\
+            first()
+
+        if existing_firm:
+            return comment.reply_wrap(message.firmcreate_exists_failure_org)
+
+        sess.add(Firm(name=firm_name))
+        firm = sess.query(Firm).\
+            filter(Firm.name == firm_name).\
+            first()
+        investor.firm = firm.id
+        investor.firm_role = "ceo"
+        return comment.reply_wrap(message.firmcreate_org)
+
 def main():
     logging.info("Starting main")
 
@@ -322,7 +358,7 @@ def main():
                     if comment.new:
                         comment.reply_wrap(message.maintenance_org)
                         comment.mark_read()
-              
+
             for comment in praw.models.util.stream_generator(reply_function):
                 # Measure how long since we finished the last loop iteration
                 duration = stopwatch.measure()

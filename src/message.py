@@ -346,3 +346,23 @@ maintenance_org = """
 
 **Sorry for any inconvenience caused.**
 """
+
+firmcreate_exists_failure_org = """
+You are already in a firm: **%FIRM_NAME%**
+
+Please leave this firm using the *!firm-leave* command before creating a new one.
+"""
+
+def modify_firmcreate_exists_failure(firm_name):
+    return firmcreate_failure_org.\
+        replace("%FIRM_NAME", firm_name)
+
+firmcreate_format_failure_org = """
+Firm names must be between 4 and 32 characters long, using only alphanumeric characters, spaces, dashes, and underscores.
+"""
+
+firmcreate_org = """
+The new firm has been created successfully.
+
+You are the firm's CEO and you have the ability to
+"""

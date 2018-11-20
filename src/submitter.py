@@ -58,10 +58,10 @@ def main():
                     continue
                 submission_time = int(submission.created_utc)
                 logging.info(f" -- Submission timestamp: {time.asctime(time.gmtime(submission_time))}")
-      
+
                 bot_reply = 0
                 delete_post = False
-      
+
                 # This is a bit of a controversial update, so im gonna make it
                 # agile to switch between different modes
                 if config.submission_fee:
@@ -87,12 +87,12 @@ def main():
                         new_balance = investor.balance - required_fee
                         investor.balance = new_balance
                         bot_reply = submission.reply_wrap(message.modify_invest_place_here(required_fee))
-              
+
                     sess.commit()
                 else:
                     # Post a comment to let people know where to invest
                     bot_reply = submission.reply_wrap(message.invest_place_here_no_fee)
-          
+
                 # Sticky the comment
                 if config.is_moderator:
                     bot_reply.mod.distinguish(how='yes', sticky=True)
@@ -100,7 +100,7 @@ def main():
                         logging.info(f" -- Deleting the post...")
                         #Should we hide or just delete the post?
                         submission.mod.remove()
-          
+
                 # Measure how long processing took
                 duration = stopwatch.measure()
                 logging.info(f" -- processed in {duration:5.2f}s")
@@ -115,7 +115,7 @@ def main():
             logging.critical("Invalid login credentials. Check your .env!")
             logging.critical("Fatal error. Cannot continue or fix the problem. Bailing out...")
             exit()
-      
+
         except Exception as e:
             logging.error(e)
             traceback.print_exc()
