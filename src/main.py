@@ -77,7 +77,8 @@ class CommentWorker():
         r"!market",
         r"!top",
         r"!grant\s+(\S+)\s+(\S+)",
-        r"!createfirm\s+(.+)"
+        r"!createfirm\s+(.+)",
+        r"!leavefirm"
     ]
 
     # allowed: alphanumeric, spaces, dashes
@@ -293,17 +294,17 @@ class CommentWorker():
         firm_name = firm_name.strip()
 
         if 4 > len(firm_name) > 32:
-            return comment.reply_wrap(message.firmcreate_format_failure_org)
+            return comment.reply_wrap(message.createfirm_format_failure_org)
 
         if self.firm_name_regex.search(firm_name):
-            return comment.reply_wrap(message.firmcreate_format_failure_org)
+            return comment.reply_wrap(message.createfirm_format_failure_org)
 
         existing_firm = sess.query(Firm).\
             filter(Firm.name == firm_name).\
             first()
 
         if existing_firm:
-            return comment.reply_wrap(message.firmcreate_exists_failure_org)
+            return comment.reply_wrap(message.createfirm_exists_failure_org)
 
         sess.add(Firm(name=firm_name))
         firm = sess.query(Firm).\
@@ -311,7 +312,17 @@ class CommentWorker():
             first()
         investor.firm = firm.id
         investor.firm_role = "ceo"
-        return comment.reply_wrap(message.firmcreate_org)
+        return comment.reply_wrap(message.createfirm_org)
+
+    @req_user
+    def leavefirm(self, sess, comment, investor, firm_name):
+        if investor.firm == 0:
+            return comment.reply_wrap(message.leavefirm_none_failure_org)
+
+        if investor.firm_role == "ceo":
+            return comment.reply_wrap(message.leavefirm_ceo_failure_org)
+
+        return comment.reply_wrap(message.leavefirm_org)
 
 def main():
     logging.info("Starting main")
