@@ -38,3 +38,12 @@ class Investor(Base):
     completed = Column(Integer, default=0)
     broke = Column(Integer, default=0)
     badges = Column(String(1024), default="[]")
+    firm = Column(Integer, default=0)
+    firm_role = Column(String(32), default="")
+
+class Firm(Base):
+    __tablename__ = "Firms"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(32), nullable=False, unique=True)
+    balance = Column(BigInteger, default=1000)

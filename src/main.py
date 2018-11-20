@@ -14,7 +14,7 @@ import prawcore
 import config
 import message
 from kill_handler import KillHandler
-from models import Base, Investment, Investor
+from models import Base, Investment, Investor, Firm
 from stopwatch import Stopwatch
 
 logging.basicConfig(level=logging.INFO)
@@ -54,7 +54,6 @@ def reply_wrap(self, body):
         return "0"
 
 praw.models.Comment.reply_wrap = reply_wrap
-
 
 class CommentWorker():
     multipliers = {
