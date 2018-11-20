@@ -109,7 +109,7 @@ class CommentWorker():
 
         # Parse the comment body for a command
         for reg in self.regexes:
-            matches = reg.search(comment.body.lower())
+            matches = reg.fullmatch(comment.body.strip().lower())
             if not matches:
                 continue
 
