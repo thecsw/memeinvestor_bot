@@ -77,6 +77,7 @@ class CommentWorker():
         r"!market",
         r"!top",
         r"!grant\s+(\S+)\s+(\S+)",
+        r"!firm",
         r"!createfirm\s+(.+)",
         r"!leavefirm"
     ]
@@ -282,6 +283,17 @@ class CommentWorker():
             badge_list.append(badge)
             investor.badges = json.dumps(badge_list)
             return comment.reply_wrap(message.modify_grant_success(grantee, badge))
+
+    @req_user
+    def firm(self, sess, comment, investor):
+        if investor.firm == 0:
+            return comment.reply_wrap(message.firm_none_org)
+
+        firm = sess.query(Firm).\
+            filter(Firm.id == investor.firm).\
+            first()
+
+        return comment.reply_wrap(message.modify_firm(investor.firm_role, firm))
 
     @req_user
     def createfirm(self, sess, comment, investor, firm_name):

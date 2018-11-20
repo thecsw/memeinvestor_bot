@@ -347,6 +347,31 @@ maintenance_org = """
 **Sorry for any inconvenience caused.**
 """
 
+firm_none_org = """
+You are not in a firm.
+
+You can create a new one with the **!createfirm <FIRM NAME>** command, or request to join one with **!joinfirm <FIRM NAME>**.
+"""
+
+firm_org = """
+Firm: **%FIRM_NAME%**
+Rank: **%RANK%**
+
+You can leave this firm with the **!leavefirm** command.
+"""
+
+rank_strs = {
+    "ceo": "CEO",
+    "exec": "Executive",
+    "": "Floor Trader"
+}
+
+def modify_firm(rank, firm):
+    rank_str = rank_strs[rank]
+    return firm_org.\
+        replace("%RANK%", rank_str).\
+        replace("%FIRM_NAME%", firm.name)
+
 createfirm_exists_failure_org = """
 You are already in a firm: **%FIRM_NAME%**
 
