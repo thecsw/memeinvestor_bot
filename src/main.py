@@ -116,12 +116,12 @@ class CommentWorker():
 
         # Parse the comment body for a command
         for reg in self.regexes:
-            matches = reg.fullmatch(comment.body.strip().lower())
+            matches = reg.fullmatch(comment.body.strip())
             if not matches:
                 continue
 
             cmd = matches.group()
-            attrname = cmd.split(" ")[0][1:]
+            attrname = cmd.split(" ")[0][1:].lower()
 
             if not hasattr(self, attrname):
                 continue
