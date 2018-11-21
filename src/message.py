@@ -355,6 +355,7 @@ You can create a new one with the **!createfirm <FIRM NAME>** command, or reques
 
 firm_org = """
 Firm: **%FIRM_NAME%**
+
 Rank: **%RANK%**
 
 You can leave this firm with the **!leavefirm** command.
@@ -375,15 +376,19 @@ def modify_firm(rank, firm):
 createfirm_exists_failure_org = """
 You are already in a firm: **%FIRM_NAME%**
 
-Please leave this firm using the *!firm-leave* command before creating a new one.
+Please leave this firm using the *!leavefirm* command before creating a new one.
 """
 
 def modify_createfirm_exists_failure(firm_name):
-    return createfirm_failure_org.\
-        replace("%FIRM_NAME", firm_name)
+    return createfirm_exists_failure_org.\
+        replace("%FIRM_NAME%", firm_name)
 
 createfirm_format_failure_org = """
 Firm names must be between 4 and 32 characters long, using only alphanumeric characters, spaces, dashes, and underscores.
+"""
+
+createfirm_nametaken_failure_org = """
+This firm name is already taken, please try again with a new one.
 """
 
 createfirm_org = """
@@ -397,7 +402,7 @@ You are not in a firm.
 """
 
 leavefirm_ceo_failure_org = """
-You are currently the CEO of your firm, so you are not allowed to leaveself.
+You are currently the CEO of your firm, so you are not allowed to leave.
 
 If you really want to leave, you will need to first demote yourself by promoting an executive member to CEO with the **!promote <username>** command.
 """

@@ -316,7 +316,7 @@ class CommentWorker():
             first()
 
         if existing_firm:
-            return comment.reply_wrap(message.createfirm_exists_failure_org)
+            return comment.reply_wrap(message.createfirm_nametaken_failure_org)
 
         sess.add(Firm(name=firm_name))
         firm = sess.query(Firm).\
