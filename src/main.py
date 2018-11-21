@@ -327,13 +327,18 @@ class CommentWorker():
         return comment.reply_wrap(message.createfirm_org)
 
     @req_user
-    def leavefirm(self, sess, comment, investor, firm_name):
+    def leavefirm(self, sess, comment, investor):
         if investor.firm == 0:
             return comment.reply_wrap(message.leavefirm_none_failure_org)
 
         if investor.firm_role == "ceo":
-            return comment.reply_wrap(message.leavefirm_ceo_failure_org)
+            members = sess.query(Investor).\
+                filter(Investor.firm == investor.firm).\
+                count()
+            if members > 1:
+                return comment.reply_wrap(message.leavefirm_ceo_failure_org)
 
+        investor.firm = 0
         return comment.reply_wrap(message.leavefirm_org)
 
 def main():
