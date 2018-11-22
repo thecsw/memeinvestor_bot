@@ -22,6 +22,9 @@ logging.basicConfig(level=logging.INFO)
 # Decorator to mark a commands that require a user
 # Adds the investor after the comment when it calls the method (see broke)
 def req_user(fn):
+    """
+    This is a wrapper function that ensures user exists
+    """
     def wrapper(self, sess, comment, *args):
         investor = sess.query(Investor).\
             filter(Investor.name == comment.author.name).\
@@ -40,9 +43,12 @@ def req_user(fn):
 
 # Monkey patch exception handling
 def reply_wrap(self, body):
+    """
+    Wrapper function to make a reddit reply
+    """
     logging.info(" -- replying")
 
-    if config.post_to_reddit:
+    if config.POST_TO_REDDIT:
         try:
             return self.reply(body)
         except Exception as e:
@@ -184,7 +190,7 @@ class CommentWorker():
         if not isinstance(comment, praw.models.Comment):
             return
 
-        if config.prevent_insiders:
+        if config.PREVENT_INSIDERS:
             if comment.submission.author.name == comment.author.name:
                 comment.reply_wrap(message.INSIDE_TRADING_ORG)
                 return
@@ -263,7 +269,7 @@ class CommentWorker():
         badge = badge.lower().replace('\\','')
         grantee_unescaped = grantee.replace('\\','')
 
-        if author in config.admin_accounts:
+        if author in config.ADMIN_ACCOUNTS:
             investor = sess.query(Investor).\
                 filter(Investor.name == grantee_unescaped).\
                 first()
@@ -282,15 +288,15 @@ class CommentWorker():
 def main():
     logging.info("Starting main")
 
-    if config.post_to_reddit:
+    if config.POST_TO_REDDIT:
         logging.info("Warning: Bot will actually post to Reddit!")
 
     logging.info("Setting up database")
 
     killhandler = KillHandler()
-    engine = create_engine(config.db, pool_recycle=60)
-    sm = scoped_session(sessionmaker(bind=engine))
-    worker = CommentWorker(sm)
+    engine = create_engine(config.DB, pool_recycle=60)
+    session_maker = scoped_session(sessionmaker(bind=engine))
+    worker = CommentWorker(session_maker)
 
     while True:
         try:
@@ -302,11 +308,11 @@ def main():
 
     logging.info("Setting up Reddit connection")
 
-    reddit = praw.Reddit(client_id=config.client_id,
-                         client_secret=config.client_secret,
-                         username=config.username,
-                         password=config.password,
-                         user_agent=config.user_agent)
+    reddit = praw.Reddit(client_id=config.CLIENT_ID,
+                         client_secret=config.CLIENT_SECRET,
+                         username=config.USERNAME,
+                         password=config.PASSWORD,
+                         user_agent=config.USER_AGENT)
 
     stopwatch = Stopwatch()
 
@@ -317,7 +323,7 @@ def main():
             # Iterate over the latest comment replies in inbox
             reply_function = reddit.inbox.comment_replies
 
-            if (config.maintenance):
+            if (config.MAINTENANCE):
                 logging.info("ENTERING MAINTENANCE MODE. NO OPERATIONS WILL BE PROCESSED.")
                 for comment in praw.models.util.stream_generator(reply_function):
                     logging.info(f"New comment {comment}:")
