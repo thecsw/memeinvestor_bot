@@ -1,3 +1,10 @@
+"""
+datetime gives us access to current month
+traceback flushes errors
+logging is the general stdout for us
+
+prawcore has the list of praw exceptions
+"""
 import datetime
 import traceback
 import logging
@@ -7,6 +14,11 @@ import prawcore
 logging.basicConfig(level=logging.INFO)
 
 def investment_duration_string(duration):
+    """
+    We may change the investment duration in the future
+    and this function allows us to have agile strings
+    depending on the duration from .env
+    """
     hours = duration // 3600
     duration %= 3600
     minutes = duration // 60
@@ -32,11 +44,25 @@ def investment_duration_string(duration):
     return inv_string
 
 def upvote_string():
+    """
+    We can make some funny replacements of upvotes
+    depending on what month it is
+    """
     return {
         10:"upd00ts",
     }.get(datetime.date.today().month, "upvotes")
 
 def test_reddit_connection(reddit):
+    """
+    This function just tests connection to reddit
+    Many things can happen:
+     - Wrong credentials
+     - Absolutly garbage credentials
+     - No internet
+
+    This function helps us to quickly check if we are online
+    Return true on success and false on failure
+    """
     try:
         reddit.user.me()
     except prawcore.exceptions.OAuthException as e_creds:
@@ -44,11 +70,11 @@ def test_reddit_connection(reddit):
         logging.error(e_creds)
         logging.critical("Invalid login credentials. Check your .env!")
         logging.critical("Fatal error. Cannot continue or fix the problem. Bailing out...")
-        return 1
+        return False
     except prawcore.exceptions.ResponseException as http_error:
         traceback.print_exc()
         logging.error(http_error)
         logging.critical("Received 401 HTTP response. Try checking your .env!")
         logging.critical("Fatal error. Cannot continue or fix the problem. Bailing out...")
-        return 1
-    return 0
+        return False
+    return True
