@@ -1,8 +1,9 @@
 import time
 
-class Stopwatch(object):
+class Stopwatch():
     def __init__(self):
         self.reset()
+        self.previous_time = -1
 
     def reset(self):
         self.previous_time = time.perf_counter()

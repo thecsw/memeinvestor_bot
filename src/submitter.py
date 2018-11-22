@@ -75,7 +75,7 @@ def main():
         # agile to switch between different modes
         if not config.submission_fee:
             # Post a comment to let people know where to invest
-            bot_reply = submission.reply_wrap(message.invest_place_here_no_fee)
+            bot_reply = submission.reply_wrap(message.INVEST_PLACE_HERE_NO_FEE)
         else:
 
             # If a poster doesn't have an account, delete the post
@@ -85,10 +85,10 @@ def main():
                 first()
 
             if not investor:
-                bot_reply = submission.reply_wrap(message.no_account_post_org)
+                bot_reply = submission.reply_wrap(message.NO_ACCOUNT_POST_ORG)
                 delete_post = True
                 logging.info(" -- Not a registered investor!")
-            elif investor.balance < 1000:
+            elif investor.balance < 250:
                 bot_reply = submission.reply_wrap(message.modify_pay_to_post(investor.balance))
                 delete_post = True
                 logging.info(" -- Not enough funds!")

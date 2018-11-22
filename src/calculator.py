@@ -17,7 +17,7 @@ from stopwatch import Stopwatch
 
 logging.basicConfig(level=logging.INFO)
 
-BalanceCap = 1000*1000*1000*1000*1000*1000 # One quintillion MemeCoins
+BALANCE_CAP = 1000*1000*1000*1000*1000*1000 # One quintillion MemeCoins
 
 class EmptyResponse(object):
     def __init__(self):
@@ -47,7 +47,7 @@ def main():
     killhandler = KillHandler()
 
     engine = create_engine(config.db, pool_recycle=60)
-    sm = sessionmaker(bind=engine)
+    session_maker = sessionmaker(bind=engine)
 
     reddit = praw.Reddit(client_id=config.client_id,
                          client_secret=config.client_secret,
@@ -63,7 +63,7 @@ def main():
 
     while not killhandler.killed:
         try:
-            sess = sm()
+            sess = session_maker()
 
             then = int(time.time()) - config.investment_duration
             investment = sess.query(Investment).\
@@ -71,7 +71,7 @@ def main():
                 filter(Investment.time < then).\
                 order_by(Investment.time.asc()).\
                 first()
-  
+
             if not investment:
                 # Nothing matured yet; wait a bit before trying again
                 time.sleep(5)
@@ -81,8 +81,8 @@ def main():
 
             investor = sess.query(Investor).filter(Investor.name == investment.name).one()
 
-            logging.info(f"New mature investment: {investment.comment}")
-            logging.info(f" -- by {investor.name}")
+            logging.info("New mature investment: %s", investment.comment)
+            logging.info(" -- by %s", investor.name)
 
             # Retrieve the post the user invested in (lazily, no API call)
             post = reddit.submission(investment.post)
@@ -110,24 +110,28 @@ def main():
             else:
                 response = EmptyResponse()
 
-            if new_balance < BalanceCap:
+            if new_balance < BALANCE_CAP:
                 investor.balance = new_balance
 
                 # Edit the bot's response (triggers an API call)
                 if profit > 0:
-                    logging.info(f" -- profited {profit}")
+                    logging.info(" -- profited %s", profit)
                 elif profit == 0:
-                    logging.info(f" -- broke even")
+                    logging.info(" -- broke even")
                 else:
-                    logging.info(f" -- lost {profit}")
-                response.edit_wrap(message.modify_invest_return(investment.amount, investment.upvotes, upvotes_now, change, profit, percent_str, investor.balance))
+                    logging.info(" -- lost %s", profit)
+                response.edit_wrap(message.modify_invest_return(investment.amount, investment.upvotes,
+                                                                upvotes_now, change, profit,
+                                                                percent_str, investor.balance))
             else:
                 # This investment pushed the investor's balance over the cap
-                investor.balance = BalanceCap
+                investor.balance = BalANCE_CAP
 
                 # Edit the bot's response (triggers an API call)
                 logging.info(f" -- profited {profit} but got capped")
-                response.edit_wrap(message.modify_invest_capped(investment.amount, investment.upvotes, upvotes_now, change, profit, percent_str, investor.balance))
+                response.edit_wrap(message.modify_invest_capped(investment.amount, investment.upvotes,
+                                                                upvotes_now, change, profit,
+                                                                percent_str, investor.balance))
 
             investment.success = (profit > 0)
             investment.profit = profit
@@ -137,12 +141,12 @@ def main():
 
             # Measure how long processing took
             duration = stopwatch.measure()
-            logging.info(f" -- processed in {duration:5.2f}s")
+            logging.info(" -- processed in %ss", duration)
 
             # Report the Reddit API call stats
             rem = int(reddit.auth.limits['remaining'])
             res = int(reddit.auth.limits['reset_timestamp'] - time.time())
-            logging.info(f" -- API calls remaining: {rem:3d}, resetting in {res:3d}s")
+            logging.info(" -- API calls remaining: %s, resetting in %ss", rem, res)
 
         except prawcore.exceptions.OAuthException as e_creds:
             traceback.print_exc()

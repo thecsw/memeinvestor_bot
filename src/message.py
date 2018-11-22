@@ -4,11 +4,11 @@ import time
 import config
 import utils
 
-investment_duration_var = utils.investment_duration_string(config.investment_duration)
+INVESTMENT_DURATION_VAR = utils.investment_duration_string(config.investment_duration)
 
 # This message will be sent if an account has been
 # successfully created
-create_org = """
+CREATE_ORG = """
 *Account created!*
 
 Thank you %USERNAME% for creating a bank account in r/MemeEconomy!
@@ -17,35 +17,35 @@ Your starting balance is **%BALANCE% MemeCoins**.
 """
 
 def modify_create(username, balance):
-    return create_org.\
+    return CREATE_ORG.\
         replace("%USERNAME%", str(username)).\
         replace("%BALANCE%", format(balance, ",d"))
 
 # This message will be sent if a user tries to create an account but already
 # has one.
-create_exists_org = """
+CREATE_EXISTS_ORG = """
 I love the enthusiasm, but you've already got an account!
 """
 
 # This message will be sent when an investment
 # was successful
 
-invest_org = """
+INVEST_ORG = """
 *%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% %UPVOTES_WORD%*
 
 Your investment is active. I'll evaluate your return in %TIME%and update this comment. Stay tuned!
 
 Your current balance is **%BALANCE% MemeCoins**.
-""".replace("%TIME%", investment_duration_var).\
+""".replace("%TIME%", INVESTMENT_DURATION_VAR).\
     replace("%UPVOTES_WORD%", utils.upvote_string())
 
 def modify_invest(amount, initial_upvotes, new_balance):
-    return invest_org.\
+    return INVEST_ORG.\
         replace("%AMOUNT%", format(amount, ",d")).\
         replace("%INITIAL_UPVOTES%", format(initial_upvotes, ",d")).\
         replace("%BALANCE%", format(new_balance, ",d"))
 
-invest_win_org = """
+INVEST_WIN_ORG = """
 *%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% %UPVOTES_WORD%*
 
 UPDATE: Your investment has matured. It was successful! You profited %PROFIT% MemeCoins (%PERCENT%).
@@ -57,7 +57,7 @@ Your new balance is **%BALANCE% MemeCoins**.
 ^(formula v3)
 """.replace("%UPVOTES_WORD%", utils.upvote_string())
 
-invest_lose_org = """
+INVEST_LOSE_ORG = """
 *%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% %UPVOTES_WORD%*
 
 UPDATE: Your investment has matured. It was unsuccessful! You lost %PROFIT% MemeCoins (%PERCENT%).
@@ -69,7 +69,7 @@ Your new balance is **%BALANCE% MemeCoins**.
 ^(formula v3)
 """.replace("%UPVOTES_WORD%", utils.upvote_string())
 
-invest_break_even_org = """
+INVEST_BREAK_EVEN_ORG = """
 *%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% %UPVOTES_WORD%*
 
 UPDATE: Your investment has matured. It broke even! You profited %PROFIT% MemeCoins (%PERCENT%).
@@ -81,14 +81,16 @@ Your new balance is **%BALANCE% MemeCoins**.
 ^(formula v3)
 """.replace("%UPVOTES_WORD%", utils.upvote_string())
 
-def modify_invest_return(amount, initial_upvotes, final_upvotes, returned, profit, percent_str, new_balance):
+def modify_invest_return(amount, initial_upvotes,
+                         final_upvotes, returned,
+                         profit, percent_str, new_balance):
     if profit > 0:
-        original = invest_win_org
+        original = INVEST_WIN_ORG
     elif profit < 0:
-        original = invest_lose_org
+        original = INVEST_LOSE_ORG
         profit *= -1
     else:
-        original = invest_break_even_org
+        original = INVEST_BREAK_EVEN_ORG
 
     return original.\
         replace("%AMOUNT%", format(amount, ",d")).\
@@ -99,7 +101,7 @@ def modify_invest_return(amount, initial_upvotes, final_upvotes, returned, profi
         replace("%PERCENT%", format(percent_str)).\
         replace("%BALANCE%", format(new_balance, ",d"))
 
-invest_capped_org = """
+INVEST_CAPPED_ORG = """
 *%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% %UPVOTES_WORD%*
 
 UPDATE: Your investment has matured at %FINAL_UPVOTES% %UPVOTES_WORD%, profiting %PROFIT% MemeCoins (%PERCENT%).
@@ -115,8 +117,10 @@ Your current balance is **%BALANCE% MemeCoins** (the maximum balance).
 ^(formula v3)
 """.replace("%UPVOTES_WORD%", utils.upvote_string())
 
-def modify_invest_capped(amount, initial_upvotes, final_upvotes, returned, profit, percent_str, new_balance):
-    return invest_capped_org.\
+def modify_invest_capped(amount, initial_upvotes,
+                         final_upvotes, returned,
+                         profit, percent_str, new_balance):
+    return INVEST_CAPPED_ORG.\
         replace("%AMOUNT%", format(amount, ",d")).\
         replace("%INITIAL_UPVOTES%", format(initial_upvotes, ",d")).\
         replace("%FINAL_UPVOTES%", format(final_upvotes, ",d")).\
@@ -126,7 +130,7 @@ def modify_invest_capped(amount, initial_upvotes, final_upvotes, returned, profi
 
 # If funds are insufficient to make an investment
 # say that
-insuff_org = """
+INSUFF_ORG = """
 You do not have enough MemeCoins to make that investment.
 
 Your current balance is **%BALANCE% MemeCoins**.
@@ -139,7 +143,7 @@ def modify_insuff(balance_t):
         replace("%BALANCE%", format(balance_t, ",d"))
 
 # Message if you are broke
-broke_org = """
+BROKE_ORG = """
 Welp, you are broke.
 
 Your balance has been reset to 100 MemeCoins. Be careful next time.
@@ -148,30 +152,30 @@ You have gone bankrupt %NUMBER% time(s).
 """
 
 def modify_broke(times):
-    return broke_org.\
+    return BROKE_ORG.\
         replace("%NUMBER%", str(times))
 
 # Message if you are broke and have active investments
-broke_active_org = """
+BROKE_ACTIVE_ORG = """
 You still have %ACTIVE% investment(s).
 
 You need to wait until they are fully evaluated.
 """
 
 def modify_broke_active(active):
-    return broke_active_org.\
+    return BROKE_ACTIVE_ORG.\
         replace("%ACTIVE%", str(active))
 
 # Message if you are broke and have more than 100 MemeCoins
-broke_money_org = """
+BROKE_MONEY_ORG = """
 You are not broke. You still have **%AMOUNT% MemeCoins**.
 """
 
 def modify_broke_money(amount):
-    return broke_money_org.\
+    return BROKE_MONEY_ORG.\
         replace("%AMOUNT%", format(amount, ",d"))
 
-help_org = """
+HELP_ORG = """
 *Welcome to MemeInvestment!*
 
 I am a bot that will help you invest in memes and make a fortune out of it!
@@ -201,22 +205,22 @@ For market stats and more information, visit [memes.market](https://memes.market
 You can help improve me by contributing to my source code on [GitHub](https://github.com/MemeInvestor/memeinvestor_bot).
 """
 
-balance_org = """
+BALANCE_ORG = """
 Currently, your account balance is **%BALANCE% MemeCoins**.
 """
 
 def modify_balance(balance):
-    return balance_org.\
+    return BALANCE_ORG.\
         replace("%BALANCE%", format(balance, ",d"))
 
-active_org = """
+ACTIVE_ORG = """
 You have %NUMBER% active investments:
 
 %INVESTMENTS_LIST%
 """
 
 def modify_active(active_investments):
-    if len(active_investments) == 0:
+    if not active_investments:
         return "You don't have any active investments right now."
 
     investments_strings = []
@@ -235,15 +239,15 @@ def modify_active(active_investments):
         i += 1
     investments_list = "\n\n".join(investments_strings)
 
-    return active_org.\
+    return ACTIVE_ORG.\
         replace("%NUMBER%", str(len(active_investments))).\
         replace("%INVESTMENTS_LIST%", investments_list)
 
-min_invest_org = """
+MIN_INVEST_ORG = """
 The minimum possible investment is 100 MemeCoins.
 """
 
-market_org = """
+MARKET_ORG = """
 The market has **%NUMBER%** active investments.
 
 All investors currently possess **%MONEY% MemeCoins**.
@@ -252,13 +256,13 @@ There are %HODL% MemeCoins** detained in investments.
 """
 
 def modify_market(inves, cap, invs_cap):
-    return market_org.\
+    return MARKET_ORG.\
         replace("%NUMBER%", format(int(inves), ",d")).\
         replace("%MONEY%", format(int(cap), ",d")).\
         replace("%HODL%", format(int(invs_cap), ",d"))
 
 # Message used for !top command
-top_org = """
+TOP_ORG = """
 Investors with the highest net worth (balance + active investments):
 
 %TOP_STRING%
@@ -266,20 +270,20 @@ Investors with the highest net worth (balance + active investments):
 
 def modify_top(leaders):
     top_string = ""
-    for l in leaders:
-        top_string = f"{top_string}\n\n{l.name}: {int(l.networth)} MemeCoins"
+    for leader in leaders:
+        top_string = f"{top_string}\n\n{leader.name}: {int(leader.networth)} MemeCoins"
 
-    top_response = top_org
+    top_response = TOP_ORG
     top_response = top_response.replace("%TOP_STRING%", top_string)
     return top_response
 
-deleted_comment_org = """
+DELETED_COMMENT_ORG = """
 Where did he go?
 
 Whatever, investment is lost.
 """
 
-invest_place_here_no_fee = """
+INVEST_PLACE_HERE_NO_FEE = """
 **INVESTMENTS GO HERE - ONLY DIRECT REPLIES TO ME WILL BE PROCESSED**
 
 To prevent thread spam and other natural disasters, I only respond to direct replies. Other commands will be ignored and may be penalized. Let's keep our marketplace clean!
@@ -291,7 +295,7 @@ To prevent thread spam and other natural disasters, I only respond to direct rep
 - Visit /r/MemeInvestor_bot for questions or suggestions about me.
 """
 
-invest_place_here = """
+INVEST_PLACE_HERE = """
 **INVESTMENTS GO HERE - ONLY DIRECT REPLIES TO ME WILL BE PROCESSED**
 
 To prevent thread spam and other natural disasters, I only respond to direct replies. Other commands will be ignored and may be penalized. Let's keep our marketplace clean!
@@ -306,10 +310,10 @@ The author of this post paid **%MEMECOIN% MemeCoins** to post this.
 """
 
 def modify_invest_place_here(amount):
-    return invest_place_here.\
+    return INVEST_PLACE_HERE.\
         replace("%MEMECOIN%", format(int(amount), ",d"))
 
-inside_trading_org = """
+INSIDE_TRADING_ORG = """
 You can't invest in your own memes, insider trading is not allowed!
 """
 
@@ -319,14 +323,14 @@ def modify_grant_success(grantee, badge):
 def modify_grant_failure(failure_message):
     return f"Oops, I couldn't grant that badge ({failure_message})"
 
-no_account_post_org = """
+NO_ACCOUNT_POST_ORG = """
 You need an account to post a meme. Please reply to one of my comments with `!create`.
 
 For more information please type `!help`
 """
 
-pay_to_post_org = """
-Due to latest regulations, in order to post a meme you should pay 6% tax with minimum of 1000 MemeCoins.
+PAY_TO_POST_ORG = """
+Due to latest regulations, in order to post a meme you should pay 6% tax with minimum of 250 MemeCoins.
 
 If you can't afford it, your post will be deleted. Nothing personal, kiddo. Only Meme Street business.
 
@@ -336,10 +340,10 @@ Your current balance is **%MEMECOINS% MemeCoins**.
 """
 
 def modify_pay_to_post(balance):
-    return pay_to_post_org.\
+    return PAY_TO_POST_ORG.\
         replace("%MEMECOINS%", str(balance))
 
-maintenance_org = """
+MAINTENANCE_ORG = """
 **The bot is under maintenance due to technical reasons.**
 
 **Expect it to be back online soon. (Several hours)**

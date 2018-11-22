@@ -63,7 +63,8 @@ class CommentWorker():
         'b': 1e9,
         't': 1e12,
         'quad': 1e15,
-        'quin': 1e18,  # Has to be above q, or regex will stop at q instead of searching for quin/quad
+        # Has to be above q, or regex will stop at q instead of searching for quin/quad
+        'quin': 1e18,
         'q': 1e15
     }
 
@@ -139,7 +140,7 @@ class CommentWorker():
         pass
 
     def help(self, sess, comment):
-        comment.reply_wrap(message.help_org)
+        comment.reply_wrap(message.HELP_ORG)
 
     def market(self, sess, comment):
         total = sess.query(
@@ -157,7 +158,7 @@ class CommentWorker():
         leaders = sess.query(
             Investor.name,
             func.coalesce(Investor.balance+func.sum(Investment.amount), Investor.balance).label('networth')).\
-        outerjoin(Investment, and_(Investor.name == Investment.name, Investment.done == 0)).\
+            outerjoin(Investment, and_(Investor.name == Investment.name, Investment.done == 0)).\
         group_by(Investor.name).\
         order_by(desc('networth')).\
         limit(5).\
@@ -171,7 +172,7 @@ class CommentWorker():
 
         # Let user know they already have an account
         if sess.query(q).scalar():
-            comment.reply_wrap(message.create_exists_org)
+            comment.reply_wrap(message.CREATE_EXISTS_ORG)
             return
 
         # Create new investor account
@@ -185,17 +186,17 @@ class CommentWorker():
 
         if config.prevent_insiders:
             if comment.submission.author.name == comment.author.name:
-                comment.reply_wrap(message.inside_trading_org)
+                comment.reply_wrap(message.INSIDE_TRADING_ORG)
                 return
 
         try:
-            amount = float(amount.replace(',',''))
+            amount = float(amount.replace(',', ''))
             amount = int(amount * CommentWorker.multipliers.get(suffix, 1))
         except ValueError:
             return
 
         if amount < 100:
-            comment.reply_wrap(message.min_invest_org)
+            comment.reply_wrap(message.MIN_INVEST_ORG)
             return
 
         author = comment.author.name
@@ -321,7 +322,7 @@ def main():
                 for comment in praw.models.util.stream_generator(reply_function):
                     logging.info(f"New comment {comment}:")
                     if comment.new:
-                        comment.reply_wrap(message.maintenance_org)
+                        comment.reply_wrap(message.MAINTENANCE_ORG)
                         comment.mark_read()
               
             for comment in praw.models.util.stream_generator(reply_function):
