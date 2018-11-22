@@ -21,7 +21,7 @@ from models import Investor, Investment
 from formula import calculate
 
 APP = Flask(__name__)
-APP.config["SQLALCHEMY_DATABASE_URI"] = config.db
+APP.config["SQLALCHEMY_DATABASE_URI"] = config.DB
 APP.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 APP.config["SQLALCHEMY_POOL_RECYCLE"] = 60
 
