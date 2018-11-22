@@ -1,4 +1,10 @@
 import datetime
+import traceback
+import logging
+
+import prawcore
+
+logging.basicConfig(level=logging.INFO)
 
 def investment_duration_string(duration):
     hours = duration // 3600
@@ -7,19 +13,19 @@ def investment_duration_string(duration):
     duration %= 60
 
     inv_string = ""
-    if (hours):
+    if hours:
         inv_string += f"{hours} hour"
-        if (hours > 1):
+        if hours > 1:
             inv_string += "s "
         inv_string += " "
-    if (minutes):
+    if minutes:
         inv_string += f"{minutes} minute"
-        if (minutes > 1):
+        if minutes > 1:
             inv_string += "s "
         inv_string += " "
-    if (duration):
+    if duration:
         inv_string += f"{duration} second"
-        if (duration > 1):
+        if duration > 1:
             inv_string += "s "
         inv_string += " "
 
@@ -29,3 +35,20 @@ def upvote_string():
     return {
         10:"upd00ts",
     }.get(datetime.date.today().month, "upvotes")
+
+def test_reddit_connection(reddit):
+    try:
+        reddit.user.me()
+    except prawcore.exceptions.OAuthException as e_creds:
+        traceback.print_exc()
+        logging.error(e_creds)
+        logging.critical("Invalid login credentials. Check your .env!")
+        logging.critical("Fatal error. Cannot continue or fix the problem. Bailing out...")
+        return 1
+    except prawcore.exceptions.ResponseException as http_error:
+        traceback.print_exc()
+        logging.error(http_error)
+        logging.critical("Received 401 HTTP response. Try checking your .env!")
+        logging.critical("Fatal error. Cannot continue or fix the problem. Bailing out...")
+        return 1
+    return 0
