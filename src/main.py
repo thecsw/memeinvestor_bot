@@ -1,3 +1,17 @@
+"""
+json is used to unload user's badges list
+logging is the general way we stdout
+re is for regexes (commands and commentns parsing)
+time makes us sleepy
+
+sqlalchemy works with our MySQL database
+
+praw is the Python Reddit API Wrapper. Must have
+
+config has all of the constants
+utils has helper functions
+message has message constants
+"""
 import json
 import logging
 import re
@@ -9,9 +23,9 @@ from sqlalchemy import create_engine, func, desc, and_
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 import praw
-import prawcore
 
 import config
+import utils
 import message
 from kill_handler import KillHandler
 from models import Base, Investment, Investor
@@ -21,7 +35,7 @@ logging.basicConfig(level=logging.INFO)
 
 # Decorator to mark a commands that require a user
 # Adds the investor after the comment when it calls the method (see broke)
-def req_user(fn):
+def req_user(wrapped_function):
     """
     This is a wrapper function that ensures user exists
     """
@@ -37,7 +51,7 @@ def req_user(fn):
                 filter(Investor.name == comment.author.name).\
                 first()
 
-        return fn(self, sess, comment, investor, *args)
+        return wrapped_function(self, sess, comment, investor, *args)
     return wrapper
 
 
@@ -127,7 +141,7 @@ class CommentWorker():
             if not hasattr(self, attrname):
                 continue
 
-            logging.info(f" -- {comment.author.name}: {cmd}")
+            logging.info(" -- %s: %s", comment.author.name, cmd)
 
             try:
                 sess = self.Session()
@@ -143,12 +157,21 @@ class CommentWorker():
             break
 
     def ignore(self, sess, comment):
+        """
+        Just ignore function
+        """
         pass
 
     def help(self, sess, comment):
+        """
+        Returns help information
+        """
         comment.reply_wrap(message.HELP_ORG)
 
     def market(self, sess, comment):
+        """
+        Return the meme market's current state
+        """
         total = sess.query(
             func.coalesce(func.sum(Investor.balance), 0)
         ).scalar()
@@ -161,6 +184,9 @@ class CommentWorker():
         comment.reply_wrap(message.modify_market(active, total, invested))
 
     def top(self, sess, comment):
+        """
+        Returns the top users in the meme market
+        """
         leaders = sess.query(
             Investor.name,
             func.coalesce(Investor.balance+func.sum(Investment.amount), Investor.balance).label('networth')).\
@@ -173,20 +199,27 @@ class CommentWorker():
         comment.reply_wrap(message.modify_top(leaders))
 
     def create(self, sess, comment):
+        """
+        This one is responsible for creating a new user
+        """
         author = comment.author.name
-        q = sess.query(Investor).filter(Investor.name == author).exists()
+        user_exists = sess.query(Investor).filter(Investor.name == author).exists()
 
         # Let user know they already have an account
-        if sess.query(q).scalar():
+        if sess.query(user_exists).scalar():
             comment.reply_wrap(message.CREATE_EXISTS_ORG)
             return
 
         # Create new investor account
         sess.add(Investor(name=author))
+        # TODO: Make the initial balance a constant
         comment.reply_wrap(message.modify_create(comment.author, 1000))
 
     @req_user
     def invest(self, sess, comment, investor, amount, suffix):
+        """
+        This function invests
+        """
         if not isinstance(comment, praw.models.Comment):
             return
 
@@ -233,10 +266,16 @@ class CommentWorker():
 
     @req_user
     def balance(self, sess, comment, investor):
+        """
+        Returns user's balance
+        """
         comment.reply_wrap(message.modify_balance(investor.balance))
 
     @req_user
     def broke(self, sess, comment, investor):
+        """
+        Checks if the user is broke. If he is, resets his/her balance to 100 MemeCoins
+        """
         if investor.balance >= 100:
             return comment.reply_wrap(message.modify_broke_money(investor.balance))
 
@@ -256,6 +295,9 @@ class CommentWorker():
 
     @req_user
     def active(self, sess, comment, investor):
+        """
+        Returns a list of all active investments made by the user
+        """
         active_investments = sess.query(Investment).\
             filter(Investment.done == 0).\
             filter(Investment.name == investor.name).\
@@ -265,6 +307,9 @@ class CommentWorker():
         comment.reply_wrap(message.modify_active(active_investments))
 
     def grant(self, sess, comment, grantee, badge):
+        """
+        This is how admins can grant badges manually
+        """
         author = comment.author.name
         badge = badge.lower().replace('\\','')
         grantee_unescaped = grantee.replace('\\','')
@@ -286,6 +331,11 @@ class CommentWorker():
             return comment.reply_wrap(message.modify_grant_success(grantee, badge))
 
 def main():
+    """
+    This is where the magic happens. This function listens
+    to all new messages in the inbox and passes them to worker
+    object that decides on what to do with them.
+    """
     logging.info("Starting main")
 
     if config.POST_TO_REDDIT:
@@ -314,65 +364,56 @@ def main():
                          password=config.PASSWORD,
                          user_agent=config.USER_AGENT)
 
+    # We will test our reddit connection here
+    if not utils.test_reddit_connection(reddit):
+        exit()
+
     stopwatch = Stopwatch()
 
     logging.info("Listening for inbox replies...")
 
     while not killhandler.killed:
-        try:
-            # Iterate over the latest comment replies in inbox
-            reply_function = reddit.inbox.comment_replies
+        # Iterate over the latest comment replies in inbox
+        reply_function = reddit.inbox.comment_replies
 
-            if (config.MAINTENANCE):
-                logging.info("ENTERING MAINTENANCE MODE. NO OPERATIONS WILL BE PROCESSED.")
-                for comment in praw.models.util.stream_generator(reply_function):
-                    logging.info(f"New comment {comment}:")
-                    if comment.new:
-                        comment.reply_wrap(message.MAINTENANCE_ORG)
-                        comment.mark_read()
-              
+        if config.MAINTENANCE:
+            logging.info("ENTERING MAINTENANCE MODE. NO OPERATIONS WILL BE PROCESSED.")
             for comment in praw.models.util.stream_generator(reply_function):
-                # Measure how long since we finished the last loop iteration
-                duration = stopwatch.measure()
-                logging.info(f"New comment {comment}:")
-                logging.info(f" -- retrieved in {duration:5.2f}s")
-
+                logging.info("New comment %s:", comment)
                 if comment.new:
-                    # Process the comment
-                    worker(comment)
-
-                    # Mark the comment as processed
+                    comment.reply_wrap(message.MAINTENANCE_ORG)
                     comment.mark_read()
-                else:
-                    logging.info(" -- skipping (already processed)")
 
-                # Measure how long processing took
-                duration = stopwatch.measure()
-                logging.info(f" -- processed in {duration:5.2f}s")
+        for comment in praw.models.util.stream_generator(reply_function):
+            # Measure how long since we finished the last loop iteration
+            duration = stopwatch.measure()
+            logging.info("New comment %s:", comment)
+            logging.info(" -- retrieved in %ss", duration)
 
-                # Report the Reddit API call stats
-                rem = int(reddit.auth.limits['remaining'])
-                res = int(reddit.auth.limits['reset_timestamp'] - time.time())
-                logging.info(f" -- API calls remaining: {rem:3d}, resetting in {res:3d}s")
+            if comment.new:
+                # Process the comment
+                worker(comment)
 
-                # Check for termination requests
-                if killhandler.killed:
-                    logging.info("Termination signal received - exiting")
-                    break
+                # Mark the comment as processed
+                comment.mark_read()
+            else:
+                logging.info(" -- skipping (already processed)")
 
-                stopwatch.reset()
+            # Measure how long processing took
+            duration = stopwatch.measure()
+            logging.info(" -- processed in %ss", duration)
 
-        except prawcore.exceptions.OAuthException as e_creds:
-            traceback.print_exc()
-            logging.error(e_creds)
-            logging.critical("Invalid login credentials. Check your .env!")
-            logging.critical("Fatal error. Cannot continue or fix the problem. Bailing out...")
-            exit()
+            # Report the Reddit API call stats
+            rem = int(reddit.auth.limits['remaining'])
+            res = int(reddit.auth.limits['reset_timestamp'] - time.time())
+            logging.info(" -- API calls remaining: %s, resetting in %ss", rem, res)
 
-        except Exception as e:
-            logging.error(e)
-            traceback.print_exc()
-            time.sleep(10)
+            # Check for termination requests
+            if killhandler.killed:
+                logging.info("Termination signal received - exiting")
+                break
+
+            stopwatch.reset()
 
 if __name__ == "__main__":
     main()

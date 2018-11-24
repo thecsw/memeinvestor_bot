@@ -1,14 +1,13 @@
 import time
-import datetime
 import logging
 import traceback
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import praw
-import prawcore
 
 import config
+import utils
 import formula
 import message
 from kill_handler import KillHandler
@@ -19,7 +18,7 @@ logging.basicConfig(level=logging.INFO)
 
 BALANCE_CAP = 1000*1000*1000*1000*1000*1000 # One quintillion MemeCoins
 
-class EmptyResponse(object):
+class EmptyResponse():
     def __init__(self):
         self.body = "[fake response body]"
 
@@ -30,7 +29,7 @@ class EmptyResponse(object):
 def edit_wrap(self, body):
     logging.info(" -- editing response")
 
-    if config.post_to_reddit:
+    if config.POST_TO_REDDIT:
         try:
             return self.edit(body)
         except Exception as e:
@@ -46,15 +45,19 @@ def main():
 
     killhandler = KillHandler()
 
-    engine = create_engine(config.db, pool_recycle=60)
+    engine = create_engine(config.DB, pool_recycle=60)
     session_maker = sessionmaker(bind=engine)
 
-    reddit = praw.Reddit(client_id=config.client_id,
-                         client_secret=config.client_secret,
-                         username=config.username,
-                         password=config.password,
-                         user_agent=config.user_agent)
+    reddit = praw.Reddit(client_id=config.CLIENT_ID,
+                         client_secret=config.CLIENT_SECRET,
+                         username=config.USERNAME,
+                         password=config.PASSWORD,
+                         user_agent=config.USER_AGENT)
 
+    # We will test our reddit connection here
+    if not utils.test_reddit_connection(reddit):
+        exit()
+    
     praw.models.Comment.edit_wrap = edit_wrap
 
     stopwatch = Stopwatch()
@@ -65,7 +68,7 @@ def main():
         try:
             sess = session_maker()
 
-            then = int(time.time()) - config.investment_duration
+            then = int(time.time()) - config.INVESTMENT_DURATION
             investment = sess.query(Investment).\
                 filter(Investment.done == 0).\
                 filter(Investment.time < then).\
@@ -125,10 +128,10 @@ def main():
                                                                 percent_str, investor.balance))
             else:
                 # This investment pushed the investor's balance over the cap
-                investor.balance = BalANCE_CAP
+                investor.balance = BALANCE_CAP
 
                 # Edit the bot's response (triggers an API call)
-                logging.info(f" -- profited {profit} but got capped")
+                logging.info(" -- profited %s but got capped", profit)
                 response.edit_wrap(message.modify_invest_capped(investment.amount, investment.upvotes,
                                                                 upvotes_now, change, profit,
                                                                 percent_str, investor.balance))
@@ -147,13 +150,6 @@ def main():
             rem = int(reddit.auth.limits['remaining'])
             res = int(reddit.auth.limits['reset_timestamp'] - time.time())
             logging.info(" -- API calls remaining: %s, resetting in %ss", rem, res)
-
-        except prawcore.exceptions.OAuthException as e_creds:
-            traceback.print_exc()
-            logging.error(e_creds)
-            logging.critical("Invalid login credentials. Check your .env!")
-            logging.critical("Fatal error. Cannot continue or fix the problem. Bailing out...")
-            exit()
 
         except Exception as e:
             logging.error(e)
