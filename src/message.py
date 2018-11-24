@@ -4,7 +4,7 @@ import time
 import config
 import utils
 
-INVESTMENT_DURATION_VAR = utils.investment_duration_string(config.investment_duration)
+INVESTMENT_DURATION_VAR = utils.investment_duration_string(config.INVESTMENT_DURATION)
 
 # This message will be sent if an account has been
 # successfully created
@@ -226,7 +226,7 @@ def modify_active(active_investments):
     investments_strings = []
     i = 1
     for inv in active_investments:
-        seconds_remaining = inv.time + config.investment_duration - time.time()
+        seconds_remaining = inv.time + config.INVESTMENT_DURATION - time.time()
         if seconds_remaining > 0:
             td = datetime.timedelta(seconds=seconds_remaining)
             remaining_string = str(td).split(".")[0] + " remaining"

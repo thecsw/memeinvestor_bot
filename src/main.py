@@ -394,7 +394,7 @@ def main():
             # Measure how long since we finished the last loop iteration
             duration = stopwatch.measure()
             logging.info("New comment %s:", comment)
-            logging.info(" -- retrieved in %ss", duration)
+            logging.info(" -- retrieved in %.2fs", duration)
 
             if comment.new:
                 # Process the comment
@@ -407,12 +407,12 @@ def main():
 
             # Measure how long processing took
             duration = stopwatch.measure()
-            logging.info(" -- processed in %ss", duration)
+            logging.info(" -- processed in %.2fs", duration)
 
             # Report the Reddit API call stats
             rem = int(reddit.auth.limits['remaining'])
             res = int(reddit.auth.limits['reset_timestamp'] - time.time())
-            logging.info(" -- API calls remaining: %s, resetting in %ss", rem, res)
+            logging.info(" -- API calls remaining: %.2f, resetting in %.2fs", rem, res)
 
             # Check for termination requests
             if killhandler.killed:

@@ -1,3 +1,4 @@
+# TODO: add docstrin here
 import time
 import logging
 import traceback
@@ -18,6 +19,7 @@ logging.basicConfig(level=logging.INFO)
 
 BALANCE_CAP = 1000*1000*1000*1000*1000*1000 # One quintillion MemeCoins
 
+# TODO: add classes docstring
 class EmptyResponse():
     def __init__(self):
         self.body = "[fake response body]"
@@ -32,6 +34,7 @@ def edit_wrap(self, body):
     if config.POST_TO_REDDIT:
         try:
             return self.edit(body)
+        # TODO: get rid of this broad except
         except Exception as e:
             logging.error(e)
             traceback.print_exc()
@@ -40,6 +43,8 @@ def edit_wrap(self, body):
         logging.info(body)
         return False
 
+# TODO: rethink how to structure this main
+# TODO: add docstring
 def main():
     logging.info("Starting calculator")
 
@@ -80,9 +85,9 @@ def main():
             continue
 
         duration = stopwatch.measure()
-        
+
         investor = sess.query(Investor).filter(Investor.name == investment.name).one()
-        
+
         logging.info("New mature investment: %s", investment.comment)
         logging.info(" -- by %s", investor.name)
 
@@ -143,12 +148,12 @@ def main():
 
         # Measure how long processing took
         duration = stopwatch.measure()
-        logging.info(" -- processed in %ss", duration)
+        logging.info(" -- processed in %.2fs", duration)
 
         # Report the Reddit API call stats
         rem = int(reddit.auth.limits['remaining'])
         res = int(reddit.auth.limits['reset_timestamp'] - time.time())
-        logging.info(" -- API calls remaining: %s, resetting in %ss", rem, res)
+        logging.info(" -- API calls remaining: %s, resetting in %.2fs", rem, res)
 
         sess.close()
 
