@@ -1,3 +1,6 @@
+"""
+sqlalchemy is the way we connect to our MySQL database
+"""
 from sqlalchemy import BigInteger, Boolean, Column, DateTime, Integer, String, func
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -14,6 +17,9 @@ def compile(element, compiler, **kw):
 Base = declarative_base()
 
 class Investment(Base):
+    """
+    Our mighty investments have these columns
+    """
     __tablename__ = "Investments"
 
     id = Column(Integer, primary_key=True)
@@ -30,6 +36,9 @@ class Investment(Base):
     profit = Column(BigInteger, default=0)
 
 class Investor(Base):
+    """
+    Our dear investors have these columns    
+    """
     __tablename__ = "Investors"
 
     id = Column(Integer, primary_key=True)

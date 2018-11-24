@@ -77,6 +77,11 @@ praw.models.Comment.reply_wrap = reply_wrap
 
 
 class CommentWorker():
+    """
+    This class is responsible for everything that happens
+    in the comment. With some regex rules, it sees all of
+    the commands and it has methods to execute on demand
+    """
     multipliers = {
         'k': 1e3,
         'm': 1e6,
@@ -146,6 +151,7 @@ class CommentWorker():
             try:
                 sess = self.Session()
                 getattr(self, attrname)(sess, comment, *matches.groups())
+                # TODO: make this except more narrow
             except Exception as e:
                 logging.error(e)
                 traceback.print_exc()
