@@ -38,6 +38,9 @@ def main():
     This is the main function that listens to new submissions
     and then posts the ATTENTION sticky comment.
     """
+    logging.info("Starting submitter...")
+    logging.info("Sleeping for 8 seconds. Waiting for the database to turn on...")
+    time.sleep(8)
 
     killhandler = KillHandler()
 

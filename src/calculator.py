@@ -46,7 +46,9 @@ def edit_wrap(self, body):
 # TODO: rethink how to structure this main
 # TODO: add docstring
 def main():
-    logging.info("Starting calculator")
+    logging.info("Starting calculator...")
+    logging.info("Sleeping for 8 seconds. Waiting for the database to turn on...")
+    time.sleep(8)
 
     killhandler = KillHandler()
 
