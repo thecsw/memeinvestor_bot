@@ -28,17 +28,17 @@ def investment_duration_string(duration):
     if hours:
         inv_string += f"{hours} hour"
         if hours > 1:
-            inv_string += "s "
+            inv_string += "s"
         inv_string += " "
     if minutes:
         inv_string += f"{minutes} minute"
         if minutes > 1:
-            inv_string += "s "
+            inv_string += "s"
         inv_string += " "
     if duration:
         inv_string += f"{duration} second"
         if duration > 1:
-            inv_string += "s "
+            inv_string += "s"
         inv_string += " "
 
     return inv_string
