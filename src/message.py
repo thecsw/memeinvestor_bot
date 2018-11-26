@@ -428,3 +428,37 @@ If you really want to leave, you will need to first demote yourself by promoting
 leavefirm_org = """
 You have left your firm.
 """
+
+not_ceo_org = """
+Only the CEO can do that.
+"""
+
+not_ceo_or_exec_org = """
+Only the CEO and executives can do that.
+"""
+
+promote_failure_org = """
+Couldn't promote user, make sure you used the correct username.
+"""
+
+def modify_promote(user):
+    rank_str = rank_strs[user.firm_role]
+    return promote_org.\
+        replace("%NAME%", user.name).\
+        replace("%RANK%", rank_str)
+
+promote_org = """
+Successfully promoted **/u/%NAME%** to **%RANK%**.
+"""
+
+def modify_fire(user):
+    return fire_org.\
+        replace("%NAME%", user.name)
+
+fire_org = """
+Successfully fired **/u/%NAME%** from the firm.
+"""
+
+fire_failure_org = """
+Couldn't fire user, make sure you used the correct username.
+"""

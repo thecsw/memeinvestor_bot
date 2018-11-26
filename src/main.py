@@ -79,7 +79,9 @@ class CommentWorker():
         r"!grant\s+(\S+)\s+(\S+)",
         r"!firm",
         r"!createfirm\s+(.+)",
-        r"!leavefirm"
+        r"!leavefirm",
+        r"!promote\s+(.+)",
+        r"!fire\s+(.+)"
     ]
 
     # allowed: alphanumeric, spaces, dashes
@@ -362,6 +364,50 @@ class CommentWorker():
 
         investor.firm = 0
         return comment.reply_wrap(message.leavefirm_org)
+
+    @req_user
+    def promote(self, sess, comment, investor, to_promote):
+        if investor.firm == 0:
+            return comment.reply_wrap(message.firm_none_org)
+
+        if investor.firm_role != "ceo":
+            return comment.reply_wrap(message.not_ceo_org)
+
+        user = sess.query(Investor).\
+            filter(Investor.name == to_promote).\
+            first()
+        if (user == None) | (user.firm != investor.firm):
+            return comment.reply_wrap(message.promote_failure_org)
+
+        if user.firm_role == "":
+            user.firm_role = "exec"
+        elif user.firm_role == "exec":
+            investor.firm_role == "exec"
+            user.firm_role = "ceo"
+
+        return comment.reply_wrap(message.modify_promote(user))
+
+    @req_user
+    def fire(self, sess, comment, investor, to_fire):
+        if investor.firm == 0:
+            return comment.reply_wrap(message.firm_none_org)
+
+        if investor.firm_role == "":
+            return comment.reply_wrap(message.not_ceo_or_exec_org)
+
+        user = sess.query(Investor).\
+            filter(Investor.name == to_fire).\
+            first()
+        if (user == None) | (user.name == investor.name) | (user.firm != investor.firm):
+            return comment.reply_wrap(message.fire_failure_org)
+
+        if (investor.firm_role != "ceo") & (user.firm_role != ""):
+            return comment.reply_wrap(message.not_ceo_org)
+
+        user.firm_role = ""
+        user.firm = 0
+
+        return comment.reply_wrap(message.modify_fire(user))
 
 def main():
     logging.info("Starting main")
