@@ -356,7 +356,22 @@ You can create a new one with the **!createfirm <FIRM NAME>** command, or reques
 firm_org = """
 Firm: **%FIRM_NAME%**
 
-Rank: **%RANK%**
+Your Rank: **%RANK%**
+
+----
+
+## Members:
+
+*CEO:*
+%CEO%
+
+*Executives:*
+%EXECS%
+
+*Floor Traders:*
+%TRADERS%
+
+----
 
 You can leave this firm with the **!leavefirm** command.
 """
@@ -367,11 +382,14 @@ rank_strs = {
     "": "Floor Trader"
 }
 
-def modify_firm(rank, firm):
+def modify_firm(rank, firm, ceo, execs, traders):
     rank_str = rank_strs[rank]
     return firm_org.\
         replace("%RANK%", rank_str).\
-        replace("%FIRM_NAME%", firm.name)
+        replace("%FIRM_NAME%", firm.name).\
+        replace("%CEO%", ceo).\
+        replace("%EXECS%", execs).\
+        replace("%TRADERS%", traders)
 
 createfirm_exists_failure_org = """
 You are already in a firm: **%FIRM_NAME%**

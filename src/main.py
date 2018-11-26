@@ -293,7 +293,29 @@ class CommentWorker():
             filter(Firm.id == investor.firm).\
             first()
 
-        return comment.reply_wrap(message.modify_firm(investor.firm_role, firm))
+        ceo = "/u/" + sess.query(Investor).\
+            filter(Investor.firm == firm.id).\
+            filter(Investor.firm_role == "ceo").\
+            first().\
+            name
+        execs = concat_names(
+            sess.query(Investor).\
+                filter(Investor.firm == firm.id).\
+                filter(Investor.firm_role == "exec").\
+                all())
+        traders = concat_names(
+            sess.query(Investor).\
+                filter(Investor.firm == firm.id).\
+                filter(Investor.firm_role == "").\
+                all())
+
+        return comment.reply_wrap(
+            message.modify_firm(
+                investor.firm_role,
+                firm,
+                ceo,
+                execs,
+                traders))
 
     @req_user
     def createfirm(self, sess, comment, investor, firm_name):
@@ -429,6 +451,10 @@ def main():
             logging.error(e)
             traceback.print_exc()
             time.sleep(10)
+
+def concat_names(investors):
+    names = list(map(lambda i: "/u/" + i.name, investors))
+    return ", ".join(names)
 
 if __name__ == "__main__":
     main()
