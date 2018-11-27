@@ -462,3 +462,19 @@ Successfully fired **/u/%NAME%** from the firm.
 fire_failure_org = """
 Couldn't fire user, make sure you used the correct username.
 """
+
+joinfirm_exists_failure_org = """
+Can't join a firm because you are already in one. Use the *!leavefirm* command to leave your firm before joining a new one.
+"""
+
+joinfirm_failure_org = """
+Could not join firm, are you sure you got the name right?
+"""
+
+joinfirm_org = """
+You are now a floor trader of the firm **%NAME%**. If you'd like to leave, use the *!leavefirm* command.
+"""
+
+def modify_joinfirm(firm):
+    return joinfirm_org.\
+        replace("%NAME%", firm.name)

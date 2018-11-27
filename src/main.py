@@ -79,6 +79,7 @@ class CommentWorker():
         r"!grant\s+(\S+)\s+(\S+)",
         r"!firm",
         r"!createfirm\s+(.+)",
+        r"!joinfirm\s+(.+)",
         r"!leavefirm",
         r"!promote\s+(.+)",
         r"!fire\s+(.+)"
@@ -408,6 +409,22 @@ class CommentWorker():
         user.firm = 0
 
         return comment.reply_wrap(message.modify_fire(user))
+
+    @req_user
+    def joinfirm(self, sess, comment, investor, firm_name):
+        if investor.firm != 0:
+            return comment.reply_wrap(message.joinfirm_exists_failure_org)
+
+        firm = sess.query(Firm).\
+            filter(Firm.name == firm_name).\
+            first()
+        if firm == None:
+            return comment.reply_wrap(message.joinfirm_failure_org)
+
+        investor.firm = firm.id
+        investor.firm_role = ""
+
+        return comment.reply_wrap(message.modify_joinfirm(firm))
 
 def main():
     logging.info("Starting main")
