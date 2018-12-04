@@ -37,7 +37,7 @@ class Investment(Base):
 
 class Investor(Base):
     """
-    Our dear investors have these columns    
+    Our dear investors have these columns
     """
     __tablename__ = "Investors"
 

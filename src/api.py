@@ -237,7 +237,7 @@ def investors_last24():
         func.sum(Investment.profit).label('total_profit')
     ).\
     outerjoin(Investment, and_(
-        Investor.name == Investment.name, 
+        Investor.name == Investment.name,
         Investment.done == 1,
         Investment.time > (time.time() - 86400),
         Investment.profit > 0)).\
