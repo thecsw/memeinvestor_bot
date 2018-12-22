@@ -32,7 +32,7 @@ def main():
         if i <= args.u_final:
             x2.append(i)
             y2.append(result)
-  
+
     #Generate performance plot
     fig = plt.figure(figsize=(7,7))
     plt.grid(color='k', alpha=0.15, which='major')
@@ -52,6 +52,6 @@ def main():
         out_filename = 'investment_performance.png'
         print ("Saving image to: '",out_filename,"'")
         fig.savefig(out_filename)
-  
+
 if __name__ == "__main__":
     main()
