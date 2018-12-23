@@ -63,6 +63,9 @@ def main():
 
     sess = sess_maker()
     submission_time = int(time.time())
+
+    minimum_fee = config.SUBMISSION_MIN_FEE
+    
     for submission in reddit.subreddit('+'.join(config.SUBREDDITS)).\
         stream.submissions(skip_existing=True):
 
@@ -105,15 +108,15 @@ def main():
                 bot_reply = submission.reply_wrap(message.NO_ACCOUNT_POST_ORG)
                 delete_post = True
                 logging.info(" -- Not a registered investor!")
-            elif investor.balance < 250:
+            elif investor.balance < minimum_fee:
                 bot_reply = submission.reply_wrap(message.modify_pay_to_post(investor.balance))
                 delete_post = True
                 logging.info(" -- Not enough funds!")
             else:
                 # We will make it 6%
-                required_fee = int(investor.balance * 0.06)
-                if required_fee < 250:
-                    required_fee = 250
+                required_fee = int(investor.balance * (config.SUBMISSION_FEE_PERCENT / 100))
+                if required_fee < minimum_fee:
+                    required_fee = minimum_fee
                 new_balance = investor.balance - required_fee
                 investor.balance = new_balance
                 bot_reply = submission.\

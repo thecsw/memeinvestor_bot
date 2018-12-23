@@ -7,6 +7,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import expression
 from sqlalchemy.ext.compiler import compiles
 
+import config
+
 class unix_timestamp(expression.FunctionElement):
     type = Integer()
 
@@ -43,7 +45,7 @@ class Investor(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(20), nullable=False, unique=True)
-    balance = Column(BigInteger, default=1000)
+    balance = Column(BigInteger, default=config.STARTING_BALANCE)
     completed = Column(Integer, default=0)
     broke = Column(Integer, default=0)
     badges = Column(String(1024), default="[]")
