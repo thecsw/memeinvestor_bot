@@ -65,7 +65,7 @@ def main():
     submission_time = int(time.time())
 
     minimum_fee = config.SUBMISSION_MIN_FEE
-    
+
     for submission in reddit.subreddit('+'.join(config.SUBREDDITS)).\
         stream.submissions(skip_existing=True):
 
