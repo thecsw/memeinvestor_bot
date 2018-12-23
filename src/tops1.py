@@ -1,5 +1,5 @@
 """
-This script just automatically grants badges to all 
+This script just automatically grants badges to all
 users from an input file
 """
 
