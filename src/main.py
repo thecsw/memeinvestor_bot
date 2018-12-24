@@ -396,7 +396,7 @@ def main():
             logging.info("New comment %s:", comment)
             logging.info(" -- retrieved in %.2fs", duration)
 
-            if comment.new and comment.subreddit.display_name in config.SUBREDDITS:
+            if comment.new and comment.subreddit.display_name.lower() in config.SUBREDDITS:
                 # Process the comment only in allowed subreddits
                 worker(comment)
 
