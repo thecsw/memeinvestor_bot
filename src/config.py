@@ -18,7 +18,7 @@ PASSWORD      = os.environ['BOT_PASSWORD']
 
 MAINTENANCE = int(os.environ['BOT_MAINTENANCE'])
 
-SUBREDDITS = [os.environ['BOT_SUBREDDIT']]
+SUBREDDITS = os.environ['BOT_SUBREDDIT'].split(',')
 
 MYSQL_USER     = os.environ['MYSQL_USER']
 MYSQL_PASSWORD = os.environ['MYSQL_PASSWORD']

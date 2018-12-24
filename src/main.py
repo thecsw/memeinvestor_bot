@@ -317,8 +317,8 @@ class CommentWorker():
         This is how admins can grant badges manually
         """
         author = comment.author.name
-        badge = badge.lower().replace('\\','')
-        grantee_unescaped = grantee.replace('\\','')
+        badge = badge.lower().replace('\\', '')
+        grantee_unescaped = grantee.replace('\\', '')
 
         if author in config.ADMIN_ACCOUNTS:
             investor = sess.query(Investor).\
@@ -396,8 +396,8 @@ def main():
             logging.info("New comment %s:", comment)
             logging.info(" -- retrieved in %.2fs", duration)
 
-            if comment.new:
-                # Process the comment
+            if comment.new and comment.subreddit.display_name.lower() in config.SUBREDDITS:
+                # Process the comment only in allowed subreddits
                 worker(comment)
 
                 # Mark the comment as processed
