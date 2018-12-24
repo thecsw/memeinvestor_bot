@@ -219,7 +219,7 @@ class CommentWorker():
         # Create new investor account
         sess.add(Investor(name=author))
         # TODO: Make the initial balance a constant
-        comment.reply_wrap(message.modify_create(comment.author, 1000))
+        comment.reply_wrap(message.modify_create(comment.author, config.STARTING_BALANCE))
 
     @req_user
     def invest(self, sess, comment, investor, amount, suffix):
