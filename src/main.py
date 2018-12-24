@@ -396,9 +396,12 @@ def main():
             logging.info("New comment %s:", comment)
             logging.info(" -- retrieved in %.2fs", duration)
 
-            if comment.new and comment.subreddit.display_name.lower() in config.SUBREDDITS:
-                # Process the comment only in allowed subreddits
-                worker(comment)
+            if comment.new:
+                if comment.subreddit.display_name.lower() in config.SUBREDDITS:
+                    # Process the comment only in allowed subreddits
+                    worker(comment)
+                else:
+                    logging.info(" -- skipping (wrong subreddit)")
 
                 # Mark the comment as processed
                 comment.mark_read()
