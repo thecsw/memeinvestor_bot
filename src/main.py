@@ -350,7 +350,7 @@ def main():
     logging.info("Setting up database")
 
     killhandler = KillHandler()
-    engine = create_engine(config.DB, pool_recycle=60)
+    engine = create_engine(config.DB, pool_recycle=60, pool_pre_ping=True)
     session_maker = scoped_session(sessionmaker(bind=engine))
     worker = CommentWorker(session_maker)
 

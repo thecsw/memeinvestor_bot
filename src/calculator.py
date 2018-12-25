@@ -52,7 +52,7 @@ def main():
 
     killhandler = KillHandler()
 
-    engine = create_engine(config.DB, pool_recycle=60)
+    engine = create_engine(config.DB, pool_recycle=60, pool_pre_ping=True)
     session_maker = sessionmaker(bind=engine)
 
     reddit = praw.Reddit(client_id=config.CLIENT_ID,
