@@ -1,26 +1,33 @@
+"""
+os allows us to access the environment variables list
+"""
 import os
 
-post_to_reddit      = int(os.environ['BOT_POST_TO_REDDIT'])
-is_moderator        = int(os.environ['BOT_IS_MODERATOR'])
-prevent_insiders    = int(os.environ['BOT_PREVENT_INSIDERS'])
-investment_duration = int(os.environ['BOT_INVESTMENT_DURATION'])
-submission_fee      = int(os.environ['BOT_SUBMISSION_FEE'])
-admin_accounts      = os.environ['BOT_ADMIN_REDDIT_ACCOUNTS'].split(',')
+POST_TO_REDDIT = int(os.environ['BOT_POST_TO_REDDIT'])
+IS_MODERATOR = int(os.environ['BOT_IS_MODERATOR'])
+PREVENT_INSIDERS = int(os.environ['BOT_PREVENT_INSIDERS'])
+INVESTMENT_DURATION = int(os.environ['BOT_INVESTMENT_DURATION'])
+SUBMISSION_FEE = int(os.environ['BOT_SUBMISSION_FEE'])
+ADMIN_ACCOUNTS = os.environ['BOT_ADMIN_REDDIT_ACCOUNTS'].split(',')
 
-client_id     = os.environ['BOT_CLIENT_ID']
-client_secret = os.environ['BOT_CLIENT_SECRET']
-user_agent    = os.environ['BOT_USER_AGENT']
-username      = os.environ['BOT_USERNAME']
-password      = os.environ['BOT_PASSWORD']
+STARTING_BALANCE = int(os.environ['BOT_STARTING_BALANCE'])
+SUBMISSION_FEE_PERCENT = int(os.environ['BOT_SUBMISSION_FEE_PERCENT'])
+SUBMISSION_MIN_FEE = int(os.environ['BOT_SUBMISSION_MIN_FEE'])
 
-maintenance = int(os.environ['BOT_MAINTENANCE'])
+CLIENT_ID = os.environ['BOT_CLIENT_ID']
+CLIENT_SECRET = os.environ['BOT_CLIENT_SECRET']
+USER_AGENT = os.environ['BOT_USER_AGENT']
+USERNAME = os.environ['BOT_USERNAME']
+PASSWORD = os.environ['BOT_PASSWORD']
 
-subreddits = [os.environ['BOT_SUBREDDIT']]
+MAINTENANCE = int(os.environ['BOT_MAINTENANCE'])
 
-mysql_user     = os.environ['MYSQL_USER']
-mysql_password = os.environ['MYSQL_PASSWORD']
-mysql_host     = os.environ['MYSQL_HOST']
-mysql_port     = os.environ['MYSQL_PORT']
-mysql_database = os.environ['MYSQL_DATABASE']
+SUBREDDITS = os.environ['BOT_SUBREDDIT'].split(',')
 
-db = f"mysql://{mysql_user}:{mysql_password}@{mysql_host}:{mysql_port}/{mysql_database}"
+MYSQL_USER = os.environ['MYSQL_USER']
+MYSQL_PASSWORD = os.environ['MYSQL_PASSWORD']
+MYSQL_HOST = os.environ['MYSQL_HOST']
+MYSQL_PORT = os.environ['MYSQL_PORT']
+MYSQL_DATABASE = os.environ['MYSQL_DATABASE']
+
+DB = f"mysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"

@@ -1,8 +1,13 @@
+"""
+sqlalchemy is the way we connect to our MySQL database
+"""
 from sqlalchemy import BigInteger, Boolean, Column, DateTime, Integer, String, func
 from sqlalchemy.ext.declarative import declarative_base
 
 from sqlalchemy.sql import expression
 from sqlalchemy.ext.compiler import compiles
+
+import config
 
 class unix_timestamp(expression.FunctionElement):
     type = Integer()
@@ -14,6 +19,9 @@ def compile(element, compiler, **kw):
 Base = declarative_base()
 
 class Investment(Base):
+    """
+    Our mighty investments have these columns
+    """
     __tablename__ = "Investments"
 
     id = Column(Integer, primary_key=True)
@@ -30,11 +38,14 @@ class Investment(Base):
     profit = Column(BigInteger, default=0)
 
 class Investor(Base):
+    """
+    Our dear investors have these columns
+    """
     __tablename__ = "Investors"
 
     id = Column(Integer, primary_key=True)
     name = Column(String(20), nullable=False, unique=True)
-    balance = Column(BigInteger, default=1000)
+    balance = Column(BigInteger, default=config.STARTING_BALANCE)
     completed = Column(Integer, default=0)
     broke = Column(Integer, default=0)
     badges = Column(String(1024), default="[]")

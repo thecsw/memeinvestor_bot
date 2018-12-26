@@ -1,3 +1,12 @@
+"""
+json allows us to wrap database return into a json format
+time allows us to compare times with the current time
+
+flask is the basic way of webbing, haha
+
+config has all our environmental configs
+models has our db models
+"""
 import json
 import time
 
@@ -11,19 +20,21 @@ import config
 from models import Investor, Investment
 from formula import calculate
 
-app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = config.db
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SQLALCHEMY_POOL_RECYCLE"] = 60
+APP = Flask(__name__)
+APP.config["SQLALCHEMY_DATABASE_URI"] = config.DB
+APP.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+APP.config["SQLALCHEMY_POOL_RECYCLE"] = 60
 
 # Create a simple cache to store the results of some of our API calls
-cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+CACHE = Cache(APP, config={'CACHE_TYPE': 'simple'})
 
-db = SQLAlchemy(app)
-CORS(app)
-
+DB = SQLAlchemy(APP)
+CORS(APP)
 
 def get_pagination():
+    """
+    Wraps pages
+    """
     try:
         page = int(request.args.get("page"))
     except TypeError:
@@ -41,7 +52,6 @@ def get_pagination():
 
     return (page, per_page)
 
-
 def get_timeframes():
     try:
         time_from = int(float(request.args.get("from")))
@@ -55,26 +65,32 @@ def get_timeframes():
 
     return (time_from, time_to)
 
-
-@app.route("/coins/invested")
+@APP.route("/coins/invested")
 def coins_invested():
-    res = db.session.query(func.coalesce(func.sum(Investment.amount), 0)).\
+    """
+    Returns all invested memecoins in the market
+    """
+    res = DB.session.query(func.coalesce(func.sum(Investment.amount), 0)).\
           filter(Investment.done == 0).scalar()
     return jsonify({"coins": str(res)})
 
-
-@app.route("/coins/total")
+@APP.route("/coins/total")
 def coins_total():
-    res = db.session.query(func.coalesce(func.sum(Investor.balance), 0)).\
-          scalar()
+    """
+    Returns all active memecoins in the market
+    """
+    res = DB.session.query(func.coalesce(func.sum(Investor.balance), 0)).\
+        scalar()
     return jsonify({"coins": str(res)})
 
-
-@app.route("/investments")
+@APP.route("/investments")
 def investments():
+    """
+    Returns all investments
+    """
     time_from, time_to = get_timeframes()
     page, per_page = get_pagination()
-    sql = db.session.query(Investment)
+    sql = DB.session.query(Investment)
 
     if time_from > 0:
         sql = sql.filter(Investment.time > time_from)
@@ -100,17 +116,21 @@ def investments():
 
     return jsonify(res)
 
-
-@app.route("/investments/active")
+@APP.route("/investments/active")
 def investments_active():
-    res = db.session.query(func.count(Investment.id)).\
+    """
+    Returns all active investments
+    """
+    res = DB.session.query(func.count(Investment.id)).\
           filter(Investment.done == 0).scalar()
     return jsonify({"investments": str(res)})
 
-
-@app.route("/investments/amount")
+@APP.route("/investments/amount")
 def investments_amount():
-    res = db.session.query(func.coalesce(func.sum(Investment.amount), 0))
+    """
+    Returns investments coins
+    """
+    res = DB.session.query(func.coalesce(func.sum(Investment.amount), 0))
     time_from, time_to = get_timeframes()
 
     if time_from > 0:
@@ -120,10 +140,12 @@ def investments_amount():
 
     return jsonify({"coins": str(res.scalar())})
 
-
-@app.route("/investments/total")
+@APP.route("/investments/total")
 def investments_total():
-    res = db.session.query(func.count(Investment.id))
+    """
+    Returns number of investments
+    """
+    res = DB.session.query(func.count(Investment.id))
     time_from, time_to = get_timeframes()
 
     if time_from > 0:
@@ -134,12 +156,16 @@ def investments_total():
     return jsonify({"investments": str(res.scalar())})
 
 
-@app.route("/investments/post/<string:id>")
+@APP.route("/investments/post/<string:id>")
 def investments_post(id):
+    """
+    Returns all investments of a specific submission
+    Takes a submission.id from praw
+    """
     time_from, time_to = get_timeframes()
     page, per_page = get_pagination()
 
-    sql = db.session.query(Investment).\
+    sql = DB.session.query(Investment).\
         filter(Investment.post == id)
 
     if time_from > 0:
@@ -167,12 +193,15 @@ def investments_post(id):
     return jsonify(res)
 
 
-@app.route("/investors/top")
-@cache.cached(timeout=10, query_string=True)
+@APP.route("/investors/top")
+@CACHE.cached(timeout=10, query_string=True)
 def investors_top():
+    """
+    Returns a list of tap investors (all-time)
+    """
     page, per_page = get_pagination()
 
-    sql = db.session.query(
+    sql = DB.session.query(
         Investor.name,
         Investor.balance,
         func.coalesce(Investor.balance+func.sum(Investment.amount), Investor.balance).label('networth'),
@@ -197,15 +226,18 @@ def investors_top():
 
     return jsonify(res)
 
-@app.route("/investors/last24")
-@cache.cached(timeout=3600)
+@APP.route("/investors/last24")
+@CACHE.cached(timeout=3600)
 def investors_last24():
-    sql = db.session.query(
+    """
+    Returns top 5 investors in 24h
+    """
+    sql = DB.session.query(
         Investor.name,
         func.sum(Investment.profit).label('total_profit')
     ).\
     outerjoin(Investment, and_(
-        Investor.name == Investment.name, 
+        Investor.name == Investment.name,
         Investment.done == 1,
         Investment.time > (time.time() - 86400),
         Investment.profit > 0)).\
@@ -221,16 +253,19 @@ def investors_last24():
 
     return jsonify(res)
 
-@app.route("/investor/<string:name>")
+@APP.route("/investor/<string:name>")
 def investor(name):
-    sql = db.session.query(Investor).\
+    """
+    Returns basic info of a user
+    """
+    sql = DB.session.query(Investor).\
         filter(Investor.name == name).\
         first()
 
     if not sql:
         return not_found("User not found")
 
-    actives_value = db.session.query(func.coalesce(func.sum(Investment.amount), 0)).\
+    actives_value = DB.session.query(func.coalesce(func.sum(Investment.amount), 0)).\
         filter(Investment.name == name).\
         filter(Investment.done == 0).\
         scalar()
@@ -246,12 +281,14 @@ def investor(name):
 
     return jsonify(res)
 
-
-@app.route("/investor/<string:name>/investments")
+@APP.route("/investor/<string:name>/investments")
 def investor_investments(name):
+    """
+    Returns all investments of a user
+    """
     page, per_page = get_pagination()
     time_from, time_to = get_timeframes()
-    sql = db.session.query(Investment).\
+    sql = DB.session.query(Investment).\
         filter(Investment.name == name)
 
     if time_from > 0:
@@ -278,13 +315,14 @@ def investor_investments(name):
 
     return jsonify(res)
 
-
-
-@app.route("/investor/<string:name>/active")
+@APP.route("/investor/<string:name>/active")
 def investor_active(name):
+    """
+    Returns active investments of a user
+    """
     page, per_page = get_pagination()
     time_from, time_to = get_timeframes()
-    sql = db.session.query(Investment).\
+    sql = DB.session.query(Investment).\
         filter(Investment.name == name).\
         filter(Investment.done == 0)
 
@@ -312,9 +350,11 @@ def investor_active(name):
 
     return jsonify(res)
 
-
-@app.route("/summary")
+@APP.route("/summary")
 def index():
+    """
+    Just a summary
+    """
     data = {
         "coins": {
             "invested": json.loads(coins_invested().get_data()),
@@ -331,8 +371,12 @@ def index():
 
     return jsonify(data)
 
-@app.route("/calculate")
+@APP.route("/calculate")
 def calculate_investment():
+    """
+    !!! DEPRECATED !!!
+    Calculate investment
+    """
     new = int(request.args.get('new'))
     old = int(request.args.get('old'))
 
@@ -344,10 +388,10 @@ def calculate_investment():
 
     return jsonify(res)
 
-@app.errorhandler(404)
+@APP.errorhandler(404)
 def not_found(e):
     return jsonify(error=404, text=str(e)), 404
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0")
+    APP.run(host="192.168.0.1")

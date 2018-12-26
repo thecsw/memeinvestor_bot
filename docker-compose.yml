@@ -25,12 +25,11 @@ services:
         depends_on:
           - mysql
 
-
     api:
         build: .
         env_file: .env
         restart: unless-stopped
-        command: [".local/bin/gunicorn", "--bind", "0.0.0.0:5000", "--access-logfile", "-", "--error-logfile", "-", "api:app"]
+        command: [".local/bin/gunicorn", "--bind", "0.0.0.0:5000", "--access-logfile", "-", "--error-logfile", "-", "api:APP"]
         depends_on:
           - mysql
 
