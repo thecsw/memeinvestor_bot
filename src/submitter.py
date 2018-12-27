@@ -27,7 +27,7 @@ import message
 import utils
 from kill_handler import KillHandler
 from models import Investor
-from main import reply_wrap
+from comment_worker import reply_wrap
 from stopwatch import Stopwatch
 
 praw.models.Submission.reply_wrap = reply_wrap
