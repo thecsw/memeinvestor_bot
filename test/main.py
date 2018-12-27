@@ -1,6 +1,7 @@
 import sys
 sys.path.append('src')
 
+import os
 import unittest
 
 from sqlalchemy import create_engine
@@ -19,8 +20,12 @@ class Test(unittest.TestCase):
 
         self.worker = CommentWorker(session_maker)
 
+    def tearDown(self):
+        # reset db
+        os.remove('.testenv/test.db')
+
 class TestUserInit(Test):
-    def test_0000_create(self):
+    def test_create(self):
         comment = Comment('testuser', '!create')
         self.worker(comment)
         self.assertEqual(len(comment.replies), 1)
@@ -29,7 +34,10 @@ class TestUserInit(Test):
             '*Account created!*\n\nThank you testuser for creating a bank account in r/MemeEconomy!\n\nYour starting balance is **1,000 MemeCoins**.'
         )
 
-    def test_0010_already_created(self):
+    def test_already_created(self):
+        comment = Comment('testuser', '!create')
+        self.worker(comment)
+
         comment = Comment('testuser', '!create')
         self.worker(comment)
         self.assertEqual(len(comment.replies), 1)
@@ -38,7 +46,7 @@ class TestUserInit(Test):
             'I love the enthusiasm, but you\'ve already got an account!'
         )
 
-    def test_0020_autocreate(self):
+    def test_autocreate(self):
         comment = Comment('testuser2', '!balance')
         self.worker(comment)
         self.assertEqual(len(comment.replies), 2)

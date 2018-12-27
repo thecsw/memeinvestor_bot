@@ -12,9 +12,6 @@ if [ ! -d $TEST_ENV ]; then
 else
   # just activate virtual environment
   source $TEST_ENV/bin/activate
-
-  # delete existing test db
-  rm -rf $TEST_ENV/test.db
 fi
 
 # load envvars
