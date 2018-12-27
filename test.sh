@@ -20,4 +20,5 @@ source .env
 set +a
 
 # run tests
-TEST=1 python test/main.py
+# TEST=1 python test/main.py
+TEST=1 python -m unittest discover --start=test --pattern=*.py
