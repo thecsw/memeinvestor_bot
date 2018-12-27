@@ -2,6 +2,9 @@
 # Ignore the backups folder that ./backup.sh generates
 backups/
 
+# Ignore the test virtual environment
+.testenv
+
 # Old SQLite3 database file
 data.db
 
