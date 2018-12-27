@@ -3,6 +3,7 @@ import logging
 import re
 import time
 import traceback
+import os
 
 import praw
 
@@ -102,7 +103,8 @@ class CommentWorker():
 
     def __call__(self, comment):
         # Ignore items that aren't Comments (i.e. Submissions)
-        if not isinstance(comment, praw.models.Comment):
+        # (And skip this check in the tests since we use a mock)
+        if not isinstance(comment, praw.models.Comment) | (os.getenv("TEST") != ""):
             return
 
         # Ignore comments at the root of a Submission
@@ -215,9 +217,6 @@ class CommentWorker():
         """
         This function invests
         """
-        if not isinstance(comment, praw.models.Comment):
-            return
-
         if config.PREVENT_INSIDERS:
             if comment.submission.author.name == comment.author.name:
                 comment.reply_wrap(message.INSIDE_TRADING_ORG)
