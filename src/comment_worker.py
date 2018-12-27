@@ -5,6 +5,8 @@ import time
 import traceback
 import os
 
+from sqlalchemy import func
+
 import praw
 
 import config

@@ -26,9 +26,17 @@ class Test(unittest.TestCase):
         os.remove('.testenv/test.db')
 
     def command(self, command, username='testuser', post='testpost'):
-        comment = Comment(username, command, submission=Submission(post))
+        comment = Comment('id', username, command, Submission(post))
         self.worker(comment)
         return comment.replies
+
+    def set_balance(self, balance, user='testuser'):
+        sess = self.Session()
+        investor = sess.query(Investor)\
+            .filter(Investor.name == user)\
+            .first()
+        investor.balance = balance
+        sess.commit()
 
 class TestUserInit(Test):
     def test_create(self):
@@ -81,12 +89,7 @@ class TestBalance(Test):
         replies = self.command('!balance')
         self.assertEqual(replies[0], message.modify_balance(1000))
 
-        sess = self.Session()
-        investor = sess.query(Investor)\
-            .filter(Investor.name == 'testuser')\
-            .first()
-        investor.balance = 1234
-        sess.commit()
+        self.set_balance(1234)
 
         replies = self.command('!balance')
         self.assertEqual(replies[0], message.modify_balance(1234))
@@ -94,18 +97,29 @@ class TestBalance(Test):
 class TestBroke(Test):
     def test_too_much_money(self):
         self.command('!create')
-
         replies = self.command('!broke')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_broke_money(1000))
 
-    # def test_active(self):
-    #     self.command('!create')
-    #     self.command('!invest 1000')
-    #
-    #     replies = self.command('!broke')
-    #     self.assertEqual(len(replies), 1)
-    #     self.assertEqual(replies[0], message.modify_broke_money(1000))
+    def test_active(self):
+        self.command('!create')
+        self.command('!invest 1000')
+        replies = self.command('!broke')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_broke_active(1))
+
+    def test_broke(self):
+        self.command('!create')
+
+        self.set_balance(0)
+        replies = self.command('!broke')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_broke(1))
+
+        self.set_balance(0)
+        replies = self.command('!broke')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_broke(2))
 
 if __name__ == '__main__':
     unittest.main()
