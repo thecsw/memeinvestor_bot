@@ -10,9 +10,11 @@ if [ ! -d $TEST_ENV ]; then
   # install deps
   pip install -r requirements.txt
 else
-
   # just activate virtual environment
   source $TEST_ENV/bin/activate
+
+  # delete existing test db
+  rm -rf $TEST_ENV/test.db
 fi
 
 # load envvars
@@ -21,4 +23,4 @@ source .env
 set +a
 
 # run tests
-python test/main.py
+TEST=1 python test/main.py

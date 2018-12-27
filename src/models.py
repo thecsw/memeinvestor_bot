@@ -1,6 +1,8 @@
 """
 sqlalchemy is the way we connect to our MySQL database
 """
+import os
+
 from sqlalchemy import BigInteger, Boolean, Column, DateTime, Integer, String, func
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -14,6 +16,10 @@ class unix_timestamp(expression.FunctionElement):
 
 @compiles(unix_timestamp)
 def compile(element, compiler, **kw):
+    if os.getenv("TEST"):
+        # sqlite db (used in tests)
+        return "CURRENT_TIMESTAMP"
+    # mariadb
     return "unix_timestamp()"
 
 Base = declarative_base()
