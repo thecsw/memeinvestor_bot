@@ -4,6 +4,9 @@ class Redditor():
     def __init__(self, name):
         self.name = name
 
+    def __str__(self):
+        return self.name
+
 class Comment():
     def __init__(self, author_name, body):
         self.is_root = False

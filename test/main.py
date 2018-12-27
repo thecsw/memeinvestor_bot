@@ -20,10 +20,36 @@ class Test(unittest.TestCase):
         self.worker = CommentWorker(session_maker)
 
 class TestUserInit(Test):
-    def test_create(self):
-        comment = Comment('testuser2', '!create')
+    def test_0000_create(self):
+        comment = Comment('testuser', '!create')
         self.worker(comment)
-        print(comment.replies)
+        self.assertEqual(len(comment.replies), 1)
+        self.assertEqual(
+            comment.replies[0].strip(),
+            '*Account created!*\n\nThank you testuser for creating a bank account in r/MemeEconomy!\n\nYour starting balance is **1,000 MemeCoins**.'
+        )
+
+    def test_0010_already_created(self):
+        comment = Comment('testuser', '!create')
+        self.worker(comment)
+        self.assertEqual(len(comment.replies), 1)
+        self.assertEqual(
+            comment.replies[0].strip(),
+            'I love the enthusiasm, but you\'ve already got an account!'
+        )
+
+    def test_0020_autocreate(self):
+        comment = Comment('testuser2', '!balance')
+        self.worker(comment)
+        self.assertEqual(len(comment.replies), 2)
+        self.assertEqual(
+            comment.replies[0].strip(),
+            '*Account created!*\n\nThank you testuser2 for creating a bank account in r/MemeEconomy!\n\nYour starting balance is **1,000 MemeCoins**.'
+        )
+        self.assertEqual(
+            comment.replies[1].strip(),
+            'Currently, your account balance is **1,000 MemeCoins**.'
+        )
 
 if __name__ == '__main__':
     unittest.main()
