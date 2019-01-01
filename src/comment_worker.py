@@ -10,11 +10,8 @@ from sqlalchemy import func
 import praw
 
 import config
-import utils
 import message
-from kill_handler import KillHandler
-from models import Base, Investment, Investor, Firm
-from stopwatch import Stopwatch
+from models import Investment, Investor, Firm
 
 # Decorator to mark a commands that require a user
 # Adds the investor after the comment when it calls the method (see broke)

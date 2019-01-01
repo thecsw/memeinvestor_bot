@@ -12,14 +12,11 @@ config has all of the constants
 utils has helper functions
 message has message constants
 """
-import json
 import logging
-import re
 import time
-import traceback
 
 import sqlalchemy
-from sqlalchemy import create_engine, func, desc, and_
+from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 import praw
@@ -28,7 +25,7 @@ import config
 import utils
 import message
 from kill_handler import KillHandler
-from models import Base, Investment, Investor, Firm
+from models import Base
 from stopwatch import Stopwatch
 from comment_worker import CommentWorker
 

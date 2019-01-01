@@ -10,13 +10,12 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from comment_worker import CommentWorker
 from models import Base, Investor
 from mock_praw import Comment, Submission
-import message
 
 class Test(unittest.TestCase):
     def setUp(self):
         # create sqlite db
         engine = create_engine('sqlite:///.testenv/test.db')
-        self.Session = session_maker = sessionmaker(bind=engine)
+        self.Session = session_maker = scoped_session(sessionmaker(bind=engine))
         Base.metadata.create_all(engine)
 
         self.worker = CommentWorker(session_maker)
