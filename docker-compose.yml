@@ -48,6 +48,3 @@ services:
         image: mariadb:10.2.15
         env_file: .env
         restart: unless-stopped
-        command: ["mysqld", "--default-authentication-plugin=mysql_native_password"]
-        ports:
-            - 3306:3306
