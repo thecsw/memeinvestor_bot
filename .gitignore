@@ -4,6 +4,7 @@ backups/
 
 # Ignore the test virtual environment
 .testenv
+htmlcov/
 
 # Old SQLite3 database file
 data.db

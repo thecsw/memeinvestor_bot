@@ -9,6 +9,7 @@ if [ ! -d $TEST_ENV ]; then
 
   # install deps
   pip install -r requirements.txt
+  pip install coverage
 else
   # just activate virtual environment
   source $TEST_ENV/bin/activate
@@ -20,5 +21,6 @@ source .env
 set +a
 
 # run tests
-# TEST=1 python test/main.py
-TEST=1 python -m unittest discover --start=test --pattern=*.py
+TEST=1 coverage run --branch --source=src -m unittest discover --start=test --pattern=*.py
+coverage report
+coverage html
