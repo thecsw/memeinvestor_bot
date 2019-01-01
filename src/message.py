@@ -139,7 +139,7 @@ If you have less than 100 MemeCoins and no active investments, try running `!bro
 """
 
 def modify_insuff(balance_t):
-    return insuff_org.\
+    return INSUFF_ORG.\
         replace("%BALANCE%", format(balance_t, ",d"))
 
 # Message if you are broke
