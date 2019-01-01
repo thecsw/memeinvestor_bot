@@ -21,6 +21,6 @@ source .env
 set +a
 
 # run tests
-TEST=1 coverage run --branch --source=src -m unittest discover --start=test --pattern=*.py
-coverage report
-coverage html
+TEST=1 coverage run --branch --source=src -m unittest discover --start=test --pattern=*.py && \
+  coverage report && \
+  coverage html
