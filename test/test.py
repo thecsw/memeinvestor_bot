@@ -25,7 +25,7 @@ class Test(unittest.TestCase):
         os.remove('.testenv/test.db')
 
     def command(self, command, username='testuser', post='testpost'):
-        comment = Comment('id', username, command, Submission(post))
+        comment = Comment(post + '/id', username, command, Submission(post))
         self.worker(comment)
         return comment.replies
 

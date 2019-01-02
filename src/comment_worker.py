@@ -5,7 +5,7 @@ import time
 import traceback
 import os
 
-from sqlalchemy import func
+from sqlalchemy import func, desc, and_
 
 import praw
 

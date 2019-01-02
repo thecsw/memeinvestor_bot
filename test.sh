@@ -19,8 +19,10 @@ fi
 set -a
 source .env
 set +a
+export TEST=1
+export BOT_ADMIN_REDDIT_ACCOUNTS=admin
 
 # run tests
-TEST=1 coverage run --branch --source=src -m unittest discover --start=test --pattern=*.py && \
+coverage run --branch --source=src -m unittest discover --start=test --pattern=*.py && \
   coverage report && \
   coverage html
