@@ -18,7 +18,7 @@ class unix_timestamp(expression.FunctionElement):
 def compile(element, compiler, **kw):
     if os.getenv("TEST"):
         # sqlite db (used in tests)
-        return "CURRENT_TIMESTAMP"
+        return "(strftime('%s', 'now'))"
     # mariadb
     return "unix_timestamp()"
 
