@@ -1,4 +1,3 @@
-
 # Welcome to meme investments!
 
 Welcome to the source code repository of [/u/MemeInvestor_bot](https://www.reddit.com/user/MemeInvestor_bot). 
@@ -6,7 +5,7 @@ This bot has been developed exclusively for [/r/MemeEconomy](https://reddit.com/
 to create investment accounts with fictional MemeCoins, invest those MemeCoins in specific memes, and automatically
 evaluate meme performance resulting in positive or negative returns.
 
-# Contributing
+# 1 Contributing
 
 We welcome contributions from the public! If you'd like to help improve the bot, please fork
 our project and feel free to tackle any [Issues](https://github.com/MemeInvestor/memeinvestor_bot/issues).
@@ -14,27 +13,27 @@ We also welcome feedback in the form of new issues, so feel free to create new o
 
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/MemeInvestor/memeinvestor_bot.svg?columns=all)](https://waffle.io/MemeInvestor/memeinvestor_bot)
 
-# Overview
+# 2 Overview
 
 The bot is implemented as a set of loosely-connected microservices written in Python and
 deployed with Docker. Each component handles a single job, such as:
 
-- Monitoring /r/MemeEconomy for new meme submissions
-- Monitoring /r/MemeEconomy for new commands to the bot
-- Running the database of investor and investment data
-- Monitoring the database for matured investments
-- Serving the website
-- Serving the REST API that provides data to the website
+  - Monitoring /r/MemeEconomy for new meme submissions
+  - Monitoring /r/MemeEconomy for new commands to the bot
+  - Running the database of investor and investment data
+  - Monitoring the database for matured investments
+  - Serving the website
+  - Serving the REST API that provides data to the website
 
 The following instructions will get a copy of the project up and running on your local
 machine for development and testing purposes.
 
-# Prerequisites
+# 3 Prerequisites
 
 In order to run the bot, you'll need to install [Docker](https://www.docker.com/community-edition).
 You may also need to generate Reddit API credentials for the bot (see below).
 
-# Configuration
+# 4 Configuration
 
 After installing the prerequisites and cloning the project, you'll need to configure
 the bot. To do so, copy the `.env.example` file to `.env` and open it in the editor
@@ -53,7 +52,7 @@ to fully access the Reddit API.
 
 Once you've finished, save `.env` and exit. You're now ready to deploy the bot locally.
 
-# Deployment
+# 5 Deployment
 
 From the root of the project directory, use `docker-compose build` to build all the
 microservices described above. Then use `docker-compose up -d` to launch them. This
@@ -65,7 +64,7 @@ boring (no investors and no investments) but you can interact with your test bot
 populate the database. Alternatively you can manually set up investor accounts by modifying the
 database with Python or a database manager like `adminer`.
 
-# Maintenance
+# 6 Maintenance
 
 ## Backing up the database
 
@@ -119,16 +118,16 @@ goaccess -f ./http.log -p ~/.goaccess.caddy.conf -o html > /tmp/report.html
 
 Feel free to open the produced html file with any compatible browser. Even Netscape.
 
-# Built with
+# 7 Built with
 
- - [praw](https://github.com/praw-dev/praw), a Python package that allows for simple access to Reddit's API.
- - [fastnumbers](https://pypi.org/project/fastnumbers/), super-fast and clean conversions to numbers.
- - [Flask](http://flask.pocoo.org/), a microframework for Python based on Werkzeug, Jinja 2 and good intentions.
- - [gunicorn](http://gunicorn.org/), a Python WSGI HTTP Server for UNIX.
- - [mysqlclient](https://github.com/PyMySQL/mysqlclient-python), a MySQL database connector for Python (with Python 3 support).
- - [SQLAlchemy](http://www.sqlalchemy.org/), a Python SQL toolkit and Object Relational Mapper. 
+  - [praw](https://github.com/praw-dev/praw), a Python package that allows for simple access to Reddit's API.
+  - [fastnumbers](https://pypi.org/project/fastnumbers/), super-fast and clean conversions to numbers.
+  - [Flask](http://flask.pocoo.org/), a microframework for Python based on Werkzeug, Jinja 2 and good intentions.
+  - [gunicorn](http://gunicorn.org/), a Python WSGI HTTP Server for UNIX.
+  - [mysqlclient](https://github.com/PyMySQL/mysqlclient-python), a MySQL database connector for Python (with Python 3 support).
+  - [SQLAlchemy](http://www.sqlalchemy.org/), a Python SQL toolkit and Object Relational Mapper. 
 
-# Contributions
+# 8 Contributions
 
 MemeInvestor_bot is a community-driven and community-supported project. We need *you* to keep it live and well. Thank you for all your support!
 
@@ -136,24 +135,24 @@ Here is a graph of some recent contributions:
 
 [![Throughput Graph](https://graphs.waffle.io/MemeInvestor/memeinvestor_bot/throughput.svg)](https://waffle.io/MemeInvestor/memeinvestor_bot/metrics/throughput)
 
-# Authors
+# 9 Authors
 
 ## Active contributors
 
- - *Sagindyk Urazayev* - Core developer. Founder. Server, database, and system maintainer. - [thecsw](https://github.com/thecsw)
- - *Alberto Ventafridda* - Main front-end and web developer. Made our beautiful website. - [robalb](https://github.com/robalb)
+  - *Sagindyk Urazayev* - Core developer. Founder. Server, database, and system maintainer. - [thecsw](https://github.com/thecsw)
+  - *Alberto Ventafridda* - Main front-end and web developer. Made our beautiful website. - [robalb](https://github.com/robalb)
 
 ## Past contributors
 
- - *Dimitris Zervas* - Main back-end developer. Wrote our API module and introduced Docker. - [dzervas](https://github.com/dzervas)
- - *jimbobur* - Our maths guy. Can make really pretty graphs. - [jimbobur](https://github.com/jimbobur)
- - *rickles42* - Back-end and infrastructure developer. Heavy new features and debugging. - [rickles42](https://github.com/rickles42)
- - *TwinProduction* - Heavy outside contributor. - [TwinProduction](https://github.com/TwinProduction)
- - *Leo Wilson* - Ported our calculator to locally executed javascript.- [leomwilson](https://github.com/leomwilson)
- - *tcmal* - Added the daily profit ticker to our website.- [tcmal](https://github.com/tcmal)
- - *Matthew Sanetra* - Added suffixes support to the invest commands.- [matthewsanetra](https://github.com/matthewsanetra)
- - *Dylan Hanson* - Various contributions to the API module.- [jovialis](https://github.com/jovialis)
+  - *Dimitris Zervas* - Main back-end developer. Wrote our API module and introduced Docker. - [dzervas](https://github.com/dzervas)
+  - *jimbobur* - Our maths guy. Can make really pretty graphs. - [jimbobur](https://github.com/jimbobur)
+  - *rickles42* - Back-end and infrastructure developer. Heavy new features and debugging. - [rickles42](https://github.com/rickles42)
+  - *TwinProduction* - Heavy outside contributor. - [TwinProduction](https://github.com/TwinProduction)
+  - *Leo Wilson* - Ported our calculator to locally executed javascript.- [leomwilson](https://github.com/leomwilson)
+  - *tcmal* - Added the daily profit ticker to our website.- [tcmal](https://github.com/tcmal)
+  - *Matthew Sanetra* - Added suffixes support to the invest commands.- [matthewsanetra](https://github.com/matthewsanetra)
+  - *Dylan Hanson* - Various contributions to the API module.- [jovialis](https://github.com/jovialis)
 
-# License
+# 10 License
 
 This project is licensed under the The GNU General Public License (see the [LICENSE](./LICENSE) file for details), it explains everything pretty well.
