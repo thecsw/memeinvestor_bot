@@ -94,15 +94,15 @@ docker-compose up -d
 
 It pulls the git repository, please make sure that you have the `origin` remote pointing to `https://github.com/MemeInvestor/memeinvestor_bot`
 After that it rebuilds all images and replaces the currently running ones with the freshly built. All the database
-data and other running containters' data will be safe in docker volumes. Do not forget to get rid of orphan images by `docker image prune`
+data and other running containers' data will be safe in docker volumes. Do not forget to get rid of orphan images by `docker image prune`
 
 And after that you can start tailing logs to see if everything is working smoothly with `docker-compose logs -f --tail 10`
 Also, you can build individual modules by appending their alias to the `docker-compose` commands.
 
 ## Working with the website container
 
-**Warning!** When you rebuild your containers all the logs are lost. If you want to save them and especially the http logs to track the
-website's stats, please follow the steps below to update http separately and you can just append all other containers' names to the
+**Warning!** When you rebuild your containers all the logs are lost. If you want to save them and especially the HTTP logs to track the
+website's stats, please follow the steps below to update HTTP separately and you can just append all other containers' names to the
 build procedure above
 
 ``` bash
@@ -152,9 +152,8 @@ Here is a graph of some recent contributions:
  - *Leo Wilson* - Ported our calculator to locally executed javascript.- [leomwilson](https://github.com/leomwilson)
  - *tcmal* - Added the daily profit ticker to our website.- [tcmal](https://github.com/tcmal)
  - *Matthew Sanetra* - Added suffixes support to the invest commands.- [matthewsanetra](https://github.com/matthewsanetra)
- - *Dylan Hanson* - Variuos contributions to the API module.- [jovialis](https://github.com/jovialis)
+ - *Dylan Hanson* - Various contributions to the API module.- [jovialis](https://github.com/jovialis)
 
 # License
 
-This project is licensed under the The GNU General Public License (see the
-[LICENSE](./LICENSE) file for details), it explains everything pretty well.
+This project is licensed under the The GNU General Public License (see the [LICENSE](./LICENSE) file for details), it explains everything pretty well.
