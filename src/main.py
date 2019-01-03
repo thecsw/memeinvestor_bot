@@ -119,9 +119,5 @@ def main():
 
             stopwatch.reset()
 
-def concat_names(investors):
-    names = [ "/u/" + i.name for i in investors ]
-    return ", ".join(names)
-
 if __name__ == "__main__":
     main()

@@ -366,7 +366,7 @@ class CommentWorker():
 
         firm_name = firm_name.strip()
 
-        if (len(firm_name) < 4) | (len(firm_name) > 32):
+        if (len(firm_name) < 4) or (len(firm_name) > 32):
             return comment.reply_wrap(message.createfirm_format_failure_org)
 
         if self.firm_name_regex.search(firm_name):
@@ -413,7 +413,7 @@ class CommentWorker():
         user = sess.query(Investor).\
             filter(Investor.name == to_promote).\
             first()
-        if (user == None) | (user.firm != investor.firm):
+        if (user is None) or (user.firm != investor.firm):
             return comment.reply_wrap(message.promote_failure_org)
 
         if user.firm_role == "":
@@ -435,10 +435,10 @@ class CommentWorker():
         user = sess.query(Investor).\
             filter(Investor.name == to_fire).\
             first()
-        if (user == None) | (user.name == investor.name) | (user.firm != investor.firm):
+        if (user == None) or (user.name == investor.name) or (user.firm != investor.firm):
             return comment.reply_wrap(message.fire_failure_org)
 
-        if (investor.firm_role != "ceo") & (user.firm_role != ""):
+        if (investor.firm_role != "ceo") and (user.firm_role != ""):
             return comment.reply_wrap(message.not_ceo_org)
 
         user.firm_role = ""
@@ -461,3 +461,7 @@ class CommentWorker():
         investor.firm_role = ""
 
         return comment.reply_wrap(message.modify_joinfirm(firm))
+
+def concat_names(investors):
+    names = [ "/u/" + i.name for i in investors ]
+    return ", ".join(names)
