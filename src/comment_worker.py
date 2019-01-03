@@ -366,7 +366,7 @@ class CommentWorker():
 
         firm_name = firm_name.strip()
 
-        if 4 > len(firm_name) > 32:
+        if (len(firm_name) < 4) | (len(firm_name) > 32):
             return comment.reply_wrap(message.createfirm_format_failure_org)
 
         if self.firm_name_regex.search(firm_name):
