@@ -31,3 +31,5 @@ MYSQL_PORT = os.environ['MYSQL_PORT']
 MYSQL_DATABASE = os.environ['MYSQL_DATABASE']
 
 DB = f"mysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
+
+TEST = int(os.environ['TEST'])
