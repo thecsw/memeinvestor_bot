@@ -394,9 +394,10 @@ class CommentWorker():
         investor.firm_role = "ceo"
 
         # Setting up the flair in subreddits
+        # Hardcoded CEO string because createfirm makes a user CEO
         if not config.TEST:
             for subreddit in config.SUBREDDITS:
-                REDDIT.subreddit(subreddit).flair.set(investor.name, f"{firm_name} | {investor.firm_role}")
+                REDDIT.subreddit(subreddit).flair.set(investor.name, f"{firm_name} | CEO")
 
         return comment.reply_wrap(message.createfirm_org)
 
@@ -438,7 +439,7 @@ class CommentWorker():
         firm = sess.query(Firm).\
             filter(Firm.id == user.firm).\
             first()
-        
+
         if user.firm_role == "":
             user.firm_role = "exec"
         elif user.firm_role == "exec":
@@ -446,9 +447,14 @@ class CommentWorker():
             user.firm_role = "ceo"
 
         # Updating the flair in subreddits
+        flair_role = ''
+        if user.firm_role == "ceo":
+            flair_role = "CEO"
+        else:
+            flair_role = "Executive"
         if not config.TEST:
             for subreddit in config.SUBREDDITS:
-                REDDIT.subreddit(subreddit).flair.set(user.name, f"{firm.name} | {user.firm_role}")
+                REDDIT.subreddit(subreddit).flair.set(user.name, f"{firm.name} | {flair_role}")
 
         return comment.reply_wrap(message.modify_promote(user))
 
@@ -496,7 +502,7 @@ class CommentWorker():
         # Updating the flair in subreddits
         if not config.TEST:
             for subreddit in config.SUBREDDITS:
-                REDDIT.subreddit(subreddit).flair.set(investor.name, f"{firm_name} | {investor.firm_role}")
+                REDDIT.subreddit(subreddit).flair.set(investor.name, f"{firm_name} | {Floor Trader}")
 
         return comment.reply_wrap(message.modify_joinfirm(firm))
 
