@@ -39,7 +39,7 @@ def sigmoid(x, maxvalue, midpoint, steepness):
     return y
 
 def sigmoid_max(old):
-    return 1 + 1.4 / ((old / 10) + 1)
+    return 1 + 0.8 / ((old / 10) + 1)
 
 def sigmoid_midpoint(old):
     sig_mp_0 = 80
