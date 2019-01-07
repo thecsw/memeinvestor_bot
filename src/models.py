@@ -64,3 +64,6 @@ class Firm(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(32), nullable=False, unique=True)
     balance = Column(BigInteger, default=1000)
+    members = Column(Integer, default=0)
+    tax = Column(Integer, default=15)
+    rank = Column(Integer, default=0)
