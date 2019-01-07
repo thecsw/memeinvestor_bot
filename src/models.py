@@ -16,6 +16,10 @@ class unix_timestamp(expression.FunctionElement):
 
 @compiles(unix_timestamp)
 def compile(element, compiler, **kw):
+    if config.TEST:
+￼        # sqlite db (used in tests)
+￼        return "(strftime('%s', 'now'))"
+    # mariadb
     return "unix_timestamp()"
 
 Base = declarative_base()
