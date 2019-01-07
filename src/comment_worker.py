@@ -256,7 +256,7 @@ class CommentWorker():
         ))
 
         investor.balance = new_balance
-
+        
     @req_user
     def balance(self, sess, comment, investor):
         """
@@ -385,6 +385,7 @@ class CommentWorker():
             first()
         investor.firm = firm.id
         investor.firm_role = "ceo"
+        firm.members += 1
         return comment.reply_wrap(message.createfirm_org)
 
     @req_user
@@ -398,8 +399,12 @@ class CommentWorker():
                 count()
             if members > 1:
                 return comment.reply_wrap(message.leavefirm_ceo_failure_org)
-
+        firm = sess.query(Firm).\
+            filter(Firm.id == investor.firm).\
+            first()
+        
         investor.firm = 0
+        firm.members -= 1
         return comment.reply_wrap(message.leavefirm_org)
 
     @req_user
@@ -441,9 +446,14 @@ class CommentWorker():
         if (investor.firm_role != "ceo") and (user.firm_role != ""):
             return comment.reply_wrap(message.not_ceo_org)
 
+        firm = sess.query(Firm).\
+            filter(Firm.id == investor.firm).\
+            first()
+
         user.firm_role = ""
         user.firm = 0
-
+        firm.members -= 1
+        
         return comment.reply_wrap(message.modify_fire(user))
 
     @req_user
@@ -459,9 +469,10 @@ class CommentWorker():
 
         investor.firm = firm.id
         investor.firm_role = ""
+        firm.members += 1
 
         return comment.reply_wrap(message.modify_joinfirm(firm))
 
 def concat_names(investors):
-    names = [ "/u/" + i.name for i in investors ]
+    names = ["/u/" + i.name for i in investors]
     return ", ".join(names)
