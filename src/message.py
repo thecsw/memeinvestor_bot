@@ -293,6 +293,8 @@ To prevent thread spam and other natural disasters, I only respond to direct rep
 - Visit [memes.market](https://memes.market) for help, market statistics, and investor profiles.
 
 - Visit /r/MemeInvestor_bot for questions or suggestions about me.
+
+- Support the project via our [patreon](https://www.patreon.com/memeinvestor_bot)
 """
 
 INVEST_PLACE_HERE = """
