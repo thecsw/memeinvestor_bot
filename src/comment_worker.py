@@ -13,6 +13,13 @@ import config
 import message
 from models import Investment, Investor, Firm
 
+if not config.TEST:
+    REDDIT = praw.Reddit(client_id=config.CLIENT_ID,
+                         client_secret=config.CLIENT_SECRET,
+                         username=config.USERNAME,
+                         password=config.PASSWORD,
+                         user_agent=config.USER_AGENT)
+
 # Decorator to mark a commands that require a user
 # Adds the investor after the comment when it calls the method (see broke)
 def req_user(wrapped_function):
@@ -386,6 +393,12 @@ class CommentWorker():
         investor.firm = firm.id
         investor.firm_role = "ceo"
         firm.members += 1
+
+        # Setting up the flair in subreddits
+        # Hardcoded CEO string because createfirm makes a user CEO
+        if not config.TEST:
+            for subreddit in config.SUBREDDITS:
+                REDDIT.subreddit(subreddit).flair.set(investor.name, f"{firm_name} | CEO")
         return comment.reply_wrap(message.createfirm_org)
 
     @req_user
@@ -405,6 +418,11 @@ class CommentWorker():
         
         investor.firm = 0
         firm.members -= 1
+
+        # Removing the flair in subreddits
+        if not config.TEST:
+            for subreddit in config.SUBREDDITS:
+                REDDIT.subreddit(subreddit).flair.set(investor.name, "")
         return comment.reply_wrap(message.leavefirm_org)
 
     @req_user
@@ -421,11 +439,25 @@ class CommentWorker():
         if (user is None) or (user.firm != investor.firm):
             return comment.reply_wrap(message.promote_failure_org)
 
+        firm = sess.query(Firm).\
+            filter(Firm.id == user.firm).\
+            first()
+
         if user.firm_role == "":
             user.firm_role = "exec"
         elif user.firm_role == "exec":
             investor.firm_role = "exec"
             user.firm_role = "ceo"
+
+        # Updating the flair in subreddits
+        flair_role = ''
+        if user.firm_role == "ceo":
+            flair_role = "CEO"
+        else:
+            flair_role = "Executive"
+        if not config.TEST:
+            for subreddit in config.SUBREDDITS:
+                REDDIT.subreddit(subreddit).flair.set(user.name, f"{firm.name} | {flair_role}")
 
         return comment.reply_wrap(message.modify_promote(user))
 
@@ -453,7 +485,11 @@ class CommentWorker():
         user.firm_role = ""
         user.firm = 0
         firm.members -= 1
-        
+
+        # Clear the firm flair
+        if not config.TEST:
+            for subreddit in config.SUBREDDITS:
+                REDDIT.subreddit(subreddit).flair.set(user.name, '')
         return comment.reply_wrap(message.modify_fire(user))
 
     @req_user
@@ -470,6 +506,11 @@ class CommentWorker():
         investor.firm = firm.id
         investor.firm_role = ""
         firm.members += 1
+
+        # Updating the flair in subreddits
+        if not config.TEST:
+            for subreddit in config.SUBREDDITS:
+                REDDIT.subreddit(subreddit).flair.set(investor.name, f"{firm_name} | Floor Trader")
 
         return comment.reply_wrap(message.modify_joinfirm(firm))
 

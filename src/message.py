@@ -293,6 +293,8 @@ To prevent thread spam and other natural disasters, I only respond to direct rep
 - Visit [memes.market](https://memes.market) for help, market statistics, and investor profiles.
 
 - Visit /r/MemeInvestor_bot for questions or suggestions about me.
+
+- Support the project via our [patreon](https://www.patreon.com/memeinvestor_bot)
 """
 
 INVEST_PLACE_HERE = """
@@ -482,3 +484,15 @@ You are now a floor trader of the firm **%NAME%**. If you'd like to leave, use t
 def modify_joinfirm(firm):
     return joinfirm_org.\
         replace("%NAME%", firm.name)
+
+FIRM_TAX_ORG = """
+
+--
+
+%AMOUNT% MemeCoins were sent to the firm - %NAME%.
+"""
+
+def modify_firm_tax(tax_amount, firm_name):
+    return FIRM_TAX_ORG.\
+        replace("%AMOUNT%", tax_amount).\
+        replace("%NAME%", firm_name)
