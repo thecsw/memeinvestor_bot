@@ -392,7 +392,7 @@ class CommentWorker():
             first()
         investor.firm = firm.id
         investor.firm_role = "ceo"
-        firm.members += 1
+        firm.size += 1
 
         # Setting up the flair in subreddits
         # Hardcoded CEO string because createfirm makes a user CEO
@@ -415,9 +415,12 @@ class CommentWorker():
         firm = sess.query(Firm).\
             filter(Firm.id == investor.firm).\
             first()
-        
+
         investor.firm = 0
-        firm.members -= 1
+        firm.size -= 1
+
+        if investor.firm_role == 'exec':
+            firm.execs -= 1
 
         # Removing the flair in subreddits
         if not config.TEST:
@@ -445,7 +448,9 @@ class CommentWorker():
 
         if user.firm_role == "":
             user.firm_role = "exec"
+            firm.execs += 1
         elif user.firm_role == "exec":
+            # Swapping roles
             investor.firm_role = "exec"
             user.firm_role = "ceo"
 
@@ -484,7 +489,10 @@ class CommentWorker():
 
         user.firm_role = ""
         user.firm = 0
-        firm.members -= 1
+        firm.size -= 1
+
+        if investor.firm_role == 'exec':
+            firm.execs -= 1
 
         # Clear the firm flair
         if not config.TEST:
@@ -505,7 +513,7 @@ class CommentWorker():
 
         investor.firm = firm.id
         investor.firm_role = ""
-        firm.members += 1
+        firm.size += 1
 
         # Updating the flair in subreddits
         if not config.TEST:
