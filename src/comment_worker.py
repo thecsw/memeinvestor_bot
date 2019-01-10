@@ -11,7 +11,7 @@ import praw
 
 import config
 import message
-from models import Investment, Investor, Firm
+from models import Investment, Investor, Firm, Invite
 
 if not config.TEST:
     REDDIT = praw.Reddit(client_id=config.CLIENT_ID,
@@ -95,7 +95,10 @@ class CommentWorker():
         r"!joinfirm\s+(.+)",
         r"!leavefirm",
         r"!promote\s+(.+)",
-        r"!fire\s+(.+)"
+        r"!fire\s+(.+)",
+        r"!invite\s+(.+)",
+        r"!setprivate",
+        r"!setpublic"
     ]
 
     # allowed: alphanumeric, spaces, dashes
@@ -496,6 +499,14 @@ class CommentWorker():
         if firm == None:
             return comment.reply_wrap(message.joinfirm_failure_org)
 
+        if firm.private:
+            invite = sess.query(Invite).\
+                filter(Invite.investor == investor.id).\
+                filter(Invite.firm == firm.id).\
+                first()
+            if invite == None:
+                return comment.reply_wrap(message.joinfirm_private_failure_org)
+
         investor.firm = firm.id
         investor.firm_role = ""
 
@@ -505,6 +516,65 @@ class CommentWorker():
                 REDDIT.subreddit(subreddit).flair.set(investor.name, f"{firm_name} | Floor Trader")
 
         return comment.reply_wrap(message.modify_joinfirm(firm))
+
+    @req_user
+    def invite(self, sess, comment, investor, invitee_name):
+        if investor.firm == 0:
+            return comment.reply_wrap(message.no_firm_failure_org)
+
+        if investor.firm_role == "":
+            return comment.reply_wrap(message.not_ceo_or_exec_org)
+
+        firm = sess.query(Firm).\
+            filter(Firm.id == investor.firm).\
+            first()
+
+        if not firm.private:
+            return comment.reply_wrap(message.invite_not_private_failure_org)
+
+        invitee = sess.query(Investor).\
+            filter(Investor.name == invitee_name).\
+            first()
+        if invitee == None:
+            return comment.reply_wrap(message.invite_no_user_failure_org)
+        if invitee.firm != 0:
+            return comment.reply_wrap(message.invite_in_firm_failure_org)
+
+        sess.add(Invite(firm=firm.id, investor=invitee.id))
+
+        return comment.reply_wrap(message.modify_invite(invitee, firm))
+
+    @req_user
+    def setprivate(self, sess, comment, investor):
+        if investor.firm == 0:
+            return comment.reply_wrap(message.no_firm_failure_org)
+
+        if investor.firm_role != "ceo":
+            return comment.reply_wrap(message.not_ceo_org)
+
+        firm = sess.query(Firm).\
+            filter(Firm.id == investor.firm).\
+            first()
+
+        firm.private = True
+
+        return comment.reply_wrap(message.setprivate_org)
+
+    @req_user
+    def setpublic(self, sess, comment, investor):
+        if investor.firm == 0:
+            return comment.reply_wrap(message.no_firm_failure_org)
+
+        if investor.firm_role != "ceo":
+            return comment.reply_wrap(message.not_ceo_org)
+
+        firm = sess.query(Firm).\
+            filter(Firm.id == investor.firm).\
+            first()
+
+        firm.private = False
+
+        return comment.reply_wrap(message.setpublic_org)
 
 def concat_names(investors):
     names = [ "/u/" + i.name for i in investors ]

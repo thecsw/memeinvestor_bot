@@ -424,6 +424,7 @@ You are the firm's CEO and you have the ability to
 leavefirm_none_failure_org = """
 You are not in a firm.
 """
+no_firm_failure_org = leavefirm_none_failure_org
 
 leavefirm_ceo_failure_org = """
 You are currently the CEO of your firm, so you are not allowed to leave.
@@ -473,6 +474,12 @@ joinfirm_exists_failure_org = """
 Can't join a firm because you are already in one. Use the *!leavefirm* command to leave your firm before joining a new one.
 """
 
+joinfirm_private_failure_org = """
+Can't join this firm because it is set to private and you have not been invited.
+
+The CEO or Executives must first invite you with the `!invite <username>` command.
+"""
+
 joinfirm_failure_org = """
 Could not join firm, are you sure you got the name right?
 """
@@ -496,3 +503,42 @@ def modify_firm_tax(tax_amount, firm_name):
     return FIRM_TAX_ORG.\
         replace("%AMOUNT%", tax_amount).\
         replace("%NAME%", firm_name)
+
+invite_not_private_failure_org = """
+You don't need to invite anyone since your firm is not private.
+
+That investor can join with the `!joinfirm <firm_name>` command.
+
+If you're the CEO and you would like the firm to be invite-only, use the `!setprivate` command.
+"""
+
+invite_no_user_failure_org = """
+Couldn't invite user, make sure you used the right username.
+"""
+
+invite_in_firm_failure_org = """
+This user is already in a firm. They will need to leave before you can invite them.
+"""
+
+invite_org = """
+You have invited /u/%NAME% to the firm.
+
+They can accept this request using the `!joinfirm %FIRM%` command.
+"""
+
+def modify_invite(invitee, firm):
+    return invite_org.\
+        replace("%NAME%", invitee.name).\
+        replace("%FIRM%", firm.name)
+
+setprivate_org = """
+The firm is now private. Users can only join after you or an Executive sends an invite with the `!invite <user>` command.
+
+If you'd like to reverse this, use the `!setpublic` command.
+"""
+
+setpublic_org = """
+The firm is now public. Users can join your command without being invited, using the `!joinfirm <firm_name>` command.
+
+If you'd like to reverse this, use the `!setprivate` command.
+"""
