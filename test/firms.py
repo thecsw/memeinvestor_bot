@@ -366,3 +366,88 @@ class TestJoinFirm(Test):
         user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
         self.assertEqual(user.firm, 1)
         self.assertEqual(user.firm_role, '')
+
+    def test_join_private_fail(self):
+        self.command('!create')
+        self.command('!createfirm Foobar')
+        self.command('!setprivate')
+
+        self.command('!create', username='testuser2')
+        replies = self.command('!joinfirm Foobar', username='testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.joinfirm_private_failure_org)
+
+    def test_join_private(self):
+        self.command('!create')
+        self.command('!createfirm Foobar')
+        self.command('!setprivate')
+
+        self.command('!create', username='testuser2')
+        self.command('!invite testuser2')
+
+        replies = self.command('!joinfirm Foobar', username='testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_joinfirm(MockFirm('Foobar')))
+
+        sess = self.Session()
+        user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
+        self.assertEqual(user.firm, 1)
+        self.assertEqual(user.firm_role, '')
+
+class TestInvite(Test):
+    def test_not_in_firm(self):
+        self.command('!create')
+        replies = self.command('!invite noerdy')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.no_firm_failure_org)
+
+    def test_not_ceo_or_exec(self):
+        self.command('!create')
+        self.command('!createfirm foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm foobar', username='testuser2')
+        replies = self.command('!invite thecsw', username='testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.not_ceo_or_exec_org)
+
+    def test_not_private(self):
+        self.command('!create')
+        self.command('!createfirm foobar')
+
+        self.command('!create', username='testuser2')
+        replies = self.command('!invite testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.invite_not_private_failure_org)
+
+    def test_no_user(self):
+        self.command('!create')
+        self.command('!createfirm foobar')
+        self.command('!setprivate')
+
+        replies = self.command('!invite testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.invite_no_user_failure_org)
+
+    def test_user_in_firm(self):
+        self.command('!create')
+        self.command('!createfirm foobar')
+        self.command('!setprivate')
+
+        self.command('!create', username='testuser2')
+        self.command('!createfirm foobar2', username='testuser2')
+
+        replies = self.command('!invite testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.invite_in_firm_failure_org)
+
+    def test_invite(self):
+        self.command('!create')
+        self.command('!createfirm foobar')
+        self.command('!setprivate')
+
+        self.command('!create', username='testuser2')
+
+        replies = self.command('!invite testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_invite(MockInvestor('testuser2', ''), MockFirm('foobar')))
