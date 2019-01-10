@@ -283,6 +283,12 @@ Where did he go?
 Whatever, investment is lost.
 """
 
+TEMPLATE_HINT_ORG = """
+---
+
+Psst, OP, you can invoke `!template https://example.org` command to publicly post your template!
+"""
+
 INVEST_PLACE_HERE_NO_FEE = """
 **INVESTMENTS GO HERE - ONLY DIRECT REPLIES TO ME WILL BE PROCESSED**
 
@@ -295,7 +301,7 @@ To prevent thread spam and other natural disasters, I only respond to direct rep
 - Visit /r/MemeInvestor_bot for questions or suggestions about me.
 
 - Support the project via our [patreon](https://www.patreon.com/memeinvestor_bot)
-"""
+""" + TEMPLATE_HINT_ORG
 
 INVEST_PLACE_HERE = """
 **INVESTMENTS GO HERE - ONLY DIRECT REPLIES TO ME WILL BE PROCESSED**
@@ -309,7 +315,7 @@ The author of this post paid **%MEMECOIN% MemeCoins** to post this.
 - Visit [memes.market](https://memes.market) for help, market statistics, and investor profiles.
 
 - Visit /r/MemeInvestor_bot for questions or suggestions about me.
-"""
+""" + TEMPLATE_HINT_ORG
 
 def modify_invest_place_here(amount):
     return INVEST_PLACE_HERE.\
@@ -496,3 +502,19 @@ def modify_firm_tax(tax_amount, firm_name):
     return FIRM_TAX_ORG.\
         replace("%AMOUNT%", tax_amount).\
         replace("%NAME%", firm_name)
+
+TEMPLATE_NOT_OP = """
+Sorry, but you are not the submission's Original Poster.
+
+Action failed.
+"""
+
+TEMPLATE_OP = """
+---
+
+OP has posted the [link to the template](https://%LINK%), Hurray!
+"""
+
+def modify_template_op(link):
+    return TEMPLATE_OP.\
+        replace("%LINK%", link)

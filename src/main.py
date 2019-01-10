@@ -88,7 +88,7 @@ def main():
         for comment in praw.models.util.stream_generator(reply_function):
             # Measure how long since we finished the last loop iteration
             duration = stopwatch.measure()
-            logging.info("New comment %s:", comment)
+            logging.info("New comment %s (%s):", comment, type(comment))
             logging.info(" -- retrieved in %.2fs", duration)
 
             if comment.new:

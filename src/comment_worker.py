@@ -13,6 +13,8 @@ import config
 import message
 from models import Investment, Investor, Firm
 
+REDDIT = None
+
 if not config.TEST:
     REDDIT = praw.Reddit(client_id=config.CLIENT_ID,
                          client_secret=config.CLIENT_SECRET,
@@ -60,7 +62,23 @@ def reply_wrap(self, body):
         logging.info(body)
         return "0"
 
+def edit_wrap(self, body):
+    logging.info(" -- editing response")
+
+    if config.POST_TO_REDDIT:
+        try:
+            return self.edit(body)
+        # TODO: get rid of this broad except
+        except Exception as e:
+            logging.error(e)
+            traceback.print_exc()
+            return False
+    else:
+        logging.info(body)
+        return False
+
 praw.models.Comment.reply_wrap = reply_wrap
+praw.models.Comment.edit_wrap = edit_wrap
 
 class CommentWorker():
     """
@@ -90,6 +108,7 @@ class CommentWorker():
         r"!market",
         r"!top",
         r"!grant\s+(\S+)\s+(\S+)",
+        r"!template\s+https?://(.+)",
         r"!firm",
         r"!createfirm\s+(.+)",
         r"!joinfirm\s+(.+)",
@@ -329,6 +348,36 @@ class CommentWorker():
             badge_list.append(badge)
             investor.badges = json.dumps(badge_list)
             return comment.reply_wrap(message.modify_grant_success(grantee, badge))
+
+    def template(self, sess, comment, link):
+        """
+        OP can submit the template link to the bot's sticky
+        """
+        # Type of comment is praw.models.reddit.comment.Comment, which
+        # does not have a lot of documentation in the docs, for more
+        # informationg go to
+        # github.com/praw-dev/praw/blob/master/praw/models/reddit/comment.py
+
+        # Checking if the comment's author is
+        # the submission's author
+        # For some reason, `comment.is_submitter` doesn't work
+        comment.refresh()
+        if not comment.is_submitter:
+            return comment.reply_wrap(message.TEMPLATE_NOT_OP)
+
+        # Checking if the upper comment is the bot's sticky
+        if not comment.parent().stickied:
+            return
+
+        # What if user spams !template commands?
+        if comment.parent().edited:
+            return
+
+        # If OP posted a template, replace the hint
+        edited_response = comment.parent().body.replace(message.TEMPLATE_HINT_ORG, '')
+        edited_response += message.modify_template_op(link)
+
+        return comment.parent().edit_wrap(edited_response)
 
     @req_user
     def firm(self, sess, comment, investor):
