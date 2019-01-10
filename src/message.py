@@ -286,7 +286,7 @@ Whatever, investment is lost.
 TEMPLATE_HINT_ORG = """
 ---
 
-Psst, OP, you can invoke `!template https://example.org` command to publicly post your template!
+Psst, %NAME%, you can invoke `!template https://example.org` command to publicly post your template!
 """
 
 INVEST_PLACE_HERE_NO_FEE = """
@@ -301,7 +301,11 @@ To prevent thread spam and other natural disasters, I only respond to direct rep
 - Visit /r/MemeInvestor_bot for questions or suggestions about me.
 
 - Support the project via our [patreon](https://www.patreon.com/memeinvestor_bot)
-""" + TEMPLATE_HINT_ORG
+"""
+
+def invest_no_fee(name):
+    return INVEST_PLACE_HERE_NO_FEE + TEMPLATE_HINT_ORG.\
+        replace("%NAME%", name)
 
 INVEST_PLACE_HERE = """
 **INVESTMENTS GO HERE - ONLY DIRECT REPLIES TO ME WILL BE PROCESSED**
@@ -317,9 +321,10 @@ The author of this post paid **%MEMECOIN% MemeCoins** to post this.
 - Visit /r/MemeInvestor_bot for questions or suggestions about me.
 """ + TEMPLATE_HINT_ORG
 
-def modify_invest_place_here(amount):
+def modify_invest_place_here(amount, name):
     return INVEST_PLACE_HERE.\
-        replace("%MEMECOIN%", format(int(amount), ",d"))
+        replace("%MEMECOIN%", format(int(amount), ",d")) + TEMPLATE_HINT_ORG.\
+        replace("%NAME%", name)
 
 INSIDE_TRADING_ORG = """
 You can't invest in your own memes, insider trading is not allowed!
@@ -512,9 +517,10 @@ Action failed.
 TEMPLATE_OP = """
 ---
 
-OP has posted the [link to the template](https://%LINK%), Hurray!
+%NAME% has posted the [link to the template](https://%LINK%), Hurray!
 """
 
-def modify_template_op(link):
+def modify_template_op(link, name):
     return TEMPLATE_OP.\
-        replace("%LINK%", link)
+        replace("%LINK%", link).\
+        replace("%NAME%", name)

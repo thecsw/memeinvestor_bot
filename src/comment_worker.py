@@ -374,8 +374,9 @@ class CommentWorker():
             return
 
         # If OP posted a template, replace the hint
-        edited_response = comment.parent().body.replace(message.TEMPLATE_HINT_ORG, '')
-        edited_response += message.modify_template_op(link)
+        edited_response = comment.parent().body.replace(message.TEMPLATE_HINT_ORG.
+                                                        replace("%NAME%", f'u/{comment.author.name}'), '')
+        edited_response += message.modify_template_op(link, 'u/' + comment.author.name)
 
         return comment.parent().edit_wrap(edited_response)
 
