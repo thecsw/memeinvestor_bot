@@ -510,8 +510,14 @@ def modify_firm_tax(tax_amount, firm_name):
 
 TEMPLATE_NOT_OP = """
 Sorry, but you are not the submission's Original Poster.
+"""
 
-Action failed.
+TEMPLATE_ALREADY_DONE = """
+Sorry, but you already submitted the template link.
+"""
+
+TEMPLATE_NOT_STICKY = """
+Sorry, you have to *directly* reply to the bot's sticky.
 """
 
 TEMPLATE_OP = """

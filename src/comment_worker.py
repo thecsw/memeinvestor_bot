@@ -353,25 +353,22 @@ class CommentWorker():
         """
         OP can submit the template link to the bot's sticky
         """
+        
         # Type of comment is praw.models.reddit.comment.Comment, which
         # does not have a lot of documentation in the docs, for more
         # informationg go to
         # github.com/praw-dev/praw/blob/master/praw/models/reddit/comment.py
-
-        # Checking if the comment's author is
-        # the submission's author
-        # For some reason, `comment.is_submitter` doesn't work
         comment.refresh()
         if not comment.is_submitter:
             return comment.reply_wrap(message.TEMPLATE_NOT_OP)
 
         # Checking if the upper comment is the bot's sticky
         if not comment.parent().stickied:
-            return
+            return comment.reply_wrap(message.TEMPLATE_NOT_STICKY)
 
         # What if user spams !template commands?
         if comment.parent().edited:
-            return
+            return comment.reply_wrap(message.TEMPLATE_ALREADY_DONE)
 
         # If OP posted a template, replace the hint
         edited_response = comment.parent().body.replace(message.TEMPLATE_HINT_ORG.
