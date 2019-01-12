@@ -517,7 +517,7 @@ Action failed.
 TEMPLATE_OP = """
 ---
 
-%NAME% has posted the [link to the template](https://%LINK%), Hurray!
+OP %NAME% has posted *[THE LINK TO THE TEMPLATE](https://%LINK%)*, Hurray!
 """
 
 def modify_template_op(link, name):
