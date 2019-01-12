@@ -89,6 +89,7 @@ class CommentWorker():
         r"!invest\s+([\d,.]+)\s*(%s)?(?:\s|$)" % "|".join(multipliers),
         r"!market",
         r"!top",
+        r"!version",
         r"!grant\s+(\S+)\s+(\S+)",
         r"!firm",
         r"!createfirm\s+(.+)",
@@ -329,6 +330,12 @@ class CommentWorker():
             badge_list.append(badge)
             investor.badges = json.dumps(badge_list)
             return comment.reply_wrap(message.modify_grant_success(grantee, badge))
+
+    def version(self, sess, comment):
+        """
+        Return the date when the bot was deployed
+        """
+        return comment.reply_wrap(message.modify_deploy_version(utils.DEPLOY_DATE))
 
     @req_user
     def firm(self, sess, comment, investor):

@@ -496,3 +496,11 @@ def modify_firm_tax(tax_amount, firm_name):
     return FIRM_TAX_ORG.\
         replace("%AMOUNT%", tax_amount).\
         replace("%NAME%", firm_name)
+
+DEPLOY_VERSION = """
+Current version of the bot is deployed since %DATE%
+"""
+
+def modify_deploy_version(date):
+    return DEPLOY_VERSION.\
+        replace("%DATE%", date)
