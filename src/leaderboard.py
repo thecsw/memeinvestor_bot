@@ -71,21 +71,20 @@ def main():
 
         # TODO: format as table
         top_users_text = ""
-        i = 0
-        for user in top_users:
+        for i, user in enumerate(top_users):
             top_users_text += str(i + 1) + ". " + user.name + " (" + str(user.balance) + " Memecoins)\n"
 
         # TODO: format as table
         top_firms_text = ""
-        i = 0
-        for firm in top_firms:
+        for i, firm in enumerate(top_firms):
             top_firms_text += str(i + 1) + ". " + firm.name + " (" + str(firm.balance) + " Memecoins)\n"
 
         sidebar_text = sidebar_text_org.\
             replace("%TOP_USERS%", top_users_text).\
             replace("%TOP_FIRMS%", top_firms_text)
 
-        print(sidebar_text)
+        logging.info(" -- Updating sidebar text to:")
+        logging.info(sidebar_text)
         for subreddit in config.SUBREDDITS:
             settings = reddit.update_settings(
                 reddit.get_subreddit(subreddit),
