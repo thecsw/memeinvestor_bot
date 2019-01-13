@@ -108,7 +108,7 @@ class CommentWorker():
         r"!market",
         r"!top",
         r"!grant\s+(\S+)\s+(\S+)",
-        r"!template\s+https?://(.+)",
+        r"!template\s+(https://imgur.com/.+)",
         r"!firm",
         r"!createfirm\s+(.+)",
         r"!joinfirm\s+(.+)",
@@ -353,7 +353,7 @@ class CommentWorker():
         """
         OP can submit the template link to the bot's sticky
         """
-        
+
         # Type of comment is praw.models.reddit.comment.Comment, which
         # does not have a lot of documentation in the docs, for more
         # informationg go to

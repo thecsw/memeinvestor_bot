@@ -286,7 +286,7 @@ Whatever, investment is lost.
 TEMPLATE_HINT_ORG = """
 ---
 
-Psst, %NAME%, you can invoke `!template https://example.org` command to publicly post your template!
+Psst, %NAME%, you can invoke `!template https://imgur.com/...` command to publicly post your template!
 """
 
 INVEST_PLACE_HERE_NO_FEE = """
@@ -523,7 +523,7 @@ Sorry, you have to *directly* reply to the bot's sticky.
 TEMPLATE_OP = """
 ---
 
-OP %NAME% has posted *[THE LINK TO THE TEMPLATE](https://%LINK%)*, Hurray!
+OP %NAME% has posted *[THE LINK TO THE TEMPLATE](%LINK%)*, Hurray!
 """
 
 def modify_template_op(link, name):
