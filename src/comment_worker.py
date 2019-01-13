@@ -263,7 +263,7 @@ class CommentWorker():
         ))
 
         investor.balance = new_balance
-        
+
     @req_user
     def balance(self, sess, comment, investor):
         """
@@ -370,6 +370,10 @@ class CommentWorker():
                 filter(Firm.id == investor.firm).\
                 first()
             return comment.reply_wrap(message.modify_createfirm_exists_failure(existing_firm.name))
+
+        if investor.balance < 1000000:
+            return comment.reply_wrap(message.createfirm_cost_failure_org)
+        investor.balance -= 1000000
 
         firm_name = firm_name.strip()
 

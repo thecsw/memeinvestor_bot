@@ -403,6 +403,10 @@ You are already in a firm: **%FIRM_NAME%**
 Please leave this firm using the *!leavefirm* command before creating a new one.
 """
 
+createfirm_cost_failure_org = """
+Creating a firm costs 1,000,000 Memecoins, you don't have enough. Earn some more first!
+"""
+
 def modify_createfirm_exists_failure(firm_name):
     return createfirm_exists_failure_org.\
         replace("%FIRM_NAME%", firm_name)

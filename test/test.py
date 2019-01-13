@@ -29,10 +29,10 @@ class Test(unittest.TestCase):
         self.worker(comment)
         return comment.replies
 
-    def set_balance(self, balance, user='testuser'):
+    def set_balance(self, balance, username='testuser'):
         sess = self.Session()
         investor = sess.query(Investor)\
-            .filter(Investor.name == user)\
+            .filter(Investor.name == username)\
             .first()
         investor.balance = balance
         sess.commit()

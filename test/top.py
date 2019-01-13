@@ -36,7 +36,7 @@ class TestTop(Test):
             Leader('testuser5', 1000)
         ]))
 
-        self.set_balance(1234, user='testuser6')
+        self.set_balance(1234, username='testuser6')
         replies = self.command('!top')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_top([
