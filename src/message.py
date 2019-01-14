@@ -283,6 +283,12 @@ Where did he go?
 Whatever, investment is lost.
 """
 
+TEMPLATE_HINT_ORG = """
+---
+
+Psst, %NAME%, you can invoke `!template https://imgur.com/...` command to publicly post your template!
+"""
+
 INVEST_PLACE_HERE_NO_FEE = """
 **INVESTMENTS GO HERE - ONLY DIRECT REPLIES TO ME WILL BE PROCESSED**
 
@@ -297,6 +303,10 @@ To prevent thread spam and other natural disasters, I only respond to direct rep
 - Support the project via our [patreon](https://www.patreon.com/memeinvestor_bot)
 """
 
+def invest_no_fee(name):
+    return INVEST_PLACE_HERE_NO_FEE + TEMPLATE_HINT_ORG.\
+        replace("%NAME%", name)
+
 INVEST_PLACE_HERE = """
 **INVESTMENTS GO HERE - ONLY DIRECT REPLIES TO ME WILL BE PROCESSED**
 
@@ -309,11 +319,12 @@ The author of this post paid **%MEMECOIN% MemeCoins** to post this.
 - Visit [memes.market](https://memes.market) for help, market statistics, and investor profiles.
 
 - Visit /r/MemeInvestor_bot for questions or suggestions about me.
-"""
+""" + TEMPLATE_HINT_ORG
 
-def modify_invest_place_here(amount):
+def modify_invest_place_here(amount, name):
     return INVEST_PLACE_HERE.\
-        replace("%MEMECOIN%", format(int(amount), ",d"))
+        replace("%MEMECOIN%", format(int(amount), ",d")) + TEMPLATE_HINT_ORG.\
+        replace("%NAME%", name)
 
 INSIDE_TRADING_ORG = """
 You can't invest in your own memes, insider trading is not allowed!
@@ -540,6 +551,28 @@ def modify_firm_tax(tax_amount, firm_name):
         replace("%AMOUNT%", tax_amount).\
         replace("%NAME%", firm_name)
 
+TEMPLATE_NOT_OP = """
+Sorry, but you are not the submission's Original Poster.
+"""
+
+TEMPLATE_ALREADY_DONE = """
+Sorry, but you already submitted the template link.
+"""
+
+TEMPLATE_NOT_STICKY = """
+Sorry, you have to *directly* reply to the bot's sticky.
+"""
+
+TEMPLATE_OP = """
+---
+
+OP %NAME% has posted *[THE LINK TO THE TEMPLATE](%LINK%)*, Hurray!
+"""
+
+def modify_template_op(link, name):
+    return TEMPLATE_OP.\
+        replace("%LINK%", link).\
+        replace("%NAME%", name)
 invite_not_private_failure_org = """
 You don't need to invite anyone since your firm is not private.
 
