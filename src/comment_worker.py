@@ -547,11 +547,11 @@ class CommentWorker():
             filter(Firm.id == investor.firm).\
             first()
 
-        # level 1 = 3,000,000
-        # level 2 = 9,000,000
-        # level 3 = 27,000,000
+        # level 1 = 4,000,000
+        # level 2 = 16,000,000
+        # level 3 = 64,000,000
         # etc.
-        upgrade_cost = 3 ** (firm.rank + 1) * 1000000
+        upgrade_cost = 4 ** (firm.rank + 1) * 1000000
         if firm.balance < upgrade_cost:
             return comment.reply_wrap(message.modify_upgrade_insufficient_funds_org(firm, upgrade_cost))
 
