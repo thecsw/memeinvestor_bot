@@ -506,7 +506,7 @@ class TestUpgrade(Test):
         self.command('!createfirm Foobar')
         replies = self.command('!upgrade')
         self.assertEqual(len(replies), 1)
-        self.assertEqual(replies[0], message.modify_upgrade_insufficient_funds_org(MockFirm('Foobar', balance=1000), 3000000))
+        self.assertEqual(replies[0], message.modify_upgrade_insufficient_funds_org(MockFirm('Foobar', balance=1000), 4000000))
 
     def test_upgrade(self):
         self.command('!create')
@@ -516,3 +516,7 @@ class TestUpgrade(Test):
         replies = self.command('!upgrade')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_upgrade(MockFirm('Foobar', balance=1000, rank=1), 16, 4))
+
+        sess = self.Session()
+        firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
+        self.assertEqual(firm.balance, 1000000)

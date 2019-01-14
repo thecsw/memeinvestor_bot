@@ -556,6 +556,7 @@ class CommentWorker():
             return comment.reply_wrap(message.modify_upgrade_insufficient_funds_org(firm, upgrade_cost))
 
         firm.rank += 1
+        firm.balance -= upgrade_cost
 
         max_members = max_members_for_rank(firm.rank)
         max_execs = max_execs_for_rank(firm.rank)
