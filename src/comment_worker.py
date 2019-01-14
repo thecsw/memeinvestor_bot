@@ -96,7 +96,8 @@ class CommentWorker():
         r"!joinfirm\s+(.+)",
         r"!leavefirm",
         r"!promote\s+(.+)",
-        r"!fire\s+(.+)"
+        r"!fire\s+(.+)",
+        r"!upgrade"
     ]
 
     # allowed: alphanumeric, spaces, dashes
@@ -378,6 +379,10 @@ class CommentWorker():
                 first()
             return comment.reply_wrap(message.modify_createfirm_exists_failure(existing_firm.name))
 
+        if investor.balance < 1000000:
+            return comment.reply_wrap(message.createfirm_cost_failure_org)
+        investor.balance -= 1000000
+
         firm_name = firm_name.strip()
 
         if (len(firm_name) < 4) or (len(firm_name) > 32):
@@ -399,13 +404,13 @@ class CommentWorker():
             first()
         investor.firm = firm.id
         investor.firm_role = "ceo"
+        firm.size += 1
 
         # Setting up the flair in subreddits
         # Hardcoded CEO string because createfirm makes a user CEO
         if not config.TEST:
             for subreddit in config.SUBREDDITS:
                 REDDIT.subreddit(subreddit).flair.set(investor.name, f"{firm_name} | CEO")
-
         return comment.reply_wrap(message.createfirm_org)
 
     @req_user
@@ -419,14 +424,20 @@ class CommentWorker():
                 count()
             if members > 1:
                 return comment.reply_wrap(message.leavefirm_ceo_failure_org)
+        firm = sess.query(Firm).\
+            filter(Firm.id == investor.firm).\
+            first()
 
         investor.firm = 0
+        firm.size -= 1
+
+        if investor.firm_role == 'exec':
+            firm.execs -= 1
 
         # Removing the flair in subreddits
         if not config.TEST:
             for subreddit in config.SUBREDDITS:
                 REDDIT.subreddit(subreddit).flair.set(investor.name, "")
-
         return comment.reply_wrap(message.leavefirm_org)
 
     @req_user
@@ -448,8 +459,14 @@ class CommentWorker():
             first()
 
         if user.firm_role == "":
+            max_execs = max_execs_for_rank(firm.rank)
+            if firm.execs >= max_execs:
+                return comment.reply_wrap(message.modify_promote_full(firm))
+
             user.firm_role = "exec"
+            firm.execs += 1
         elif user.firm_role == "exec":
+            # Swapping roles
             investor.firm_role = "exec"
             user.firm_role = "ceo"
 
@@ -482,14 +499,21 @@ class CommentWorker():
         if (investor.firm_role != "ceo") and (user.firm_role != ""):
             return comment.reply_wrap(message.not_ceo_org)
 
+        firm = sess.query(Firm).\
+            filter(Firm.id == investor.firm).\
+            first()
+
         user.firm_role = ""
         user.firm = 0
+        firm.size -= 1
+
+        if investor.firm_role == 'exec':
+            firm.execs -= 1
 
         # Clear the firm flair
         if not config.TEST:
             for subreddit in config.SUBREDDITS:
                 REDDIT.subreddit(subreddit).flair.set(user.name, '')
-
         return comment.reply_wrap(message.modify_fire(user))
 
     @req_user
@@ -503,8 +527,13 @@ class CommentWorker():
         if firm == None:
             return comment.reply_wrap(message.joinfirm_failure_org)
 
+        max_members = max_members_for_rank(firm.rank)
+        if firm.size >= max_members:
+            return comment.reply_wrap(message.modify_joinfirm_full(firm))
+
         investor.firm = firm.id
         investor.firm_role = ""
+        firm.size += 1
 
         # Updating the flair in subreddits
         if not config.TEST:
@@ -513,6 +542,48 @@ class CommentWorker():
 
         return comment.reply_wrap(message.modify_joinfirm(firm))
 
+    @req_user
+    def upgrade(self, sess, comment, investor):
+        if investor.firm == 0:
+            return comment.reply_wrap(message.nofirm_failure_org)
+
+        if investor.firm_role != "ceo":
+            return comment.reply_wrap(message.not_ceo_org)
+
+        firm = sess.query(Firm).\
+            filter(Firm.id == investor.firm).\
+            first()
+
+        # level 1 = 4,000,000
+        # level 2 = 16,000,000
+        # level 3 = 64,000,000
+        # etc.
+        upgrade_cost = 4 ** (firm.rank + 1) * 1000000
+        if firm.balance < upgrade_cost:
+            return comment.reply_wrap(message.modify_upgrade_insufficient_funds_org(firm, upgrade_cost))
+
+        firm.rank += 1
+        firm.balance -= upgrade_cost
+
+        max_members = max_members_for_rank(firm.rank)
+        max_execs = max_execs_for_rank(firm.rank)
+
+        return comment.reply_wrap(message.modify_upgrade(firm, max_members, max_execs))
+
 def concat_names(investors):
-    names = [ "/u/" + i.name for i in investors ]
+    names = ["/u/" + i.name for i in investors]
     return ", ".join(names)
+
+def max_members_for_rank(rank):
+    # level 1 = 8
+    # level 2 = 16
+    # level 3 = 32
+    # etc.
+    return 2 ** (rank + 3)
+
+def max_execs_for_rank(rank):
+    # level 1 = 2
+    # level 2 = 4
+    # level 3 = 8
+    # etc.
+    return 2 ** (rank + 1)

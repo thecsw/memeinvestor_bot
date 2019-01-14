@@ -8,7 +8,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from comment_worker import CommentWorker
-from models import Base, Investor
+from models import Base, Investor, Firm
 from mock_praw import Comment, Submission
 
 class Test(unittest.TestCase):
@@ -29,10 +29,18 @@ class Test(unittest.TestCase):
         self.worker(comment)
         return comment.replies
 
-    def set_balance(self, balance, user='testuser'):
+    def set_balance(self, balance, username='testuser'):
         sess = self.Session()
         investor = sess.query(Investor)\
-            .filter(Investor.name == user)\
+            .filter(Investor.name == username)\
             .first()
         investor.balance = balance
+        sess.commit()
+
+    def set_firm_balance(self, firm_name, balance):
+        sess = self.Session()
+        firm = sess.query(Firm)\
+            .filter(Firm.name == firm_name)\
+            .first()
+        firm.balance = balance
         sess.commit()

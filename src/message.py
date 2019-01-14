@@ -362,6 +362,10 @@ You can create a new one with the **!createfirm <FIRM NAME>** command, or reques
 firm_org = """
 Firm: **%FIRM_NAME%**
 
+Firm balance: **%BALANCE%** Memecoins
+
+Firm level: **%LEVEL%**
+
 Your Rank: **%RANK%**
 
 ----
@@ -395,12 +399,18 @@ def modify_firm(rank, firm, ceo, execs, traders):
         replace("%FIRM_NAME%", firm.name).\
         replace("%CEO%", ceo).\
         replace("%EXECS%", execs).\
-        replace("%TRADERS%", traders)
+        replace("%TRADERS%", traders).\
+        replace("%BALANCE%", str(firm.balance)).\
+        replace("%LEVEL%", str(firm.rank + 1))
 
 createfirm_exists_failure_org = """
 You are already in a firm: **%FIRM_NAME%**
 
 Please leave this firm using the *!leavefirm* command before creating a new one.
+"""
+
+createfirm_cost_failure_org = """
+Creating a firm costs 1,000,000 Memecoins, you don't have enough. Earn some more first!
 """
 
 def modify_createfirm_exists_failure(firm_name):
@@ -421,7 +431,7 @@ The new firm has been created successfully.
 You are the firm's CEO and you have the ability to
 """
 
-leavefirm_none_failure_org = """
+nofirm_failure_org = leavefirm_none_failure_org = """
 You are not in a firm.
 """
 
@@ -446,6 +456,19 @@ Only the CEO and executives can do that.
 promote_failure_org = """
 Couldn't promote user, make sure you used the correct username.
 """
+
+promote_full_org = """
+Could not promote this employee, since the firm is at its maximum executive limit.
+**Number of execs:** %EXECS%
+**Firm level:** %LEVEL%
+
+The CEO of the firm can raise this limit by upgrading with `!upgrade`.
+"""
+
+def modify_promote_full(firm):
+    return promote_full_org.\
+        replace("%EXECS%", str(firm.execs)).\
+        replace("%LEVEL%", str(firm.rank + 1))
 
 def modify_promote(user):
     rank_str = rank_strs[user.firm_role]
@@ -477,6 +500,19 @@ joinfirm_failure_org = """
 Could not join firm, are you sure you got the name right?
 """
 
+joinfirm_full_org = """
+Could not join the firm, since it is at its maximum member limit.
+**Number of employees:** %MEMBERS%
+**Firm level:** %LEVEL%
+
+The CEO of the firm can raise this limit by upgrading with `!upgrade`.
+"""
+
+def modify_joinfirm_full(firm):
+    return joinfirm_full_org.\
+        replace("%MEMBERS%", str(firm.size)).\
+        replace("%LEVEL%", str(firm.rank + 1))
+
 joinfirm_org = """
 You are now a floor trader of the firm **%NAME%**. If you'd like to leave, use the *!leavefirm* command.
 """
@@ -497,6 +533,30 @@ def modify_firm_tax(tax_amount, firm_name):
         replace("%AMOUNT%", tax_amount).\
         replace("%NAME%", firm_name)
 
+upgrade_insufficient_funds_org = """
+The firm does not have enough funds to upgrade.
+
+**Firm balance:** %BALANCE%
+**Cost to upgrade to level %LEVEL%:** %COST%
+"""
+
+def modify_upgrade_insufficient_funds_org(firm, cost):
+    return upgrade_insufficient_funds_org.\
+        replace("%BALANCE%", str(firm.balance)).\
+        replace("%LEVEL%", str(firm.rank + 2)).\
+        replace("%COST%", str(cost))
+
+upgrade_org = """
+You have succesfully upgraded the firm to **level %LEVEL%**!
+
+The firm may now have up to **%MAX_MEMBERS% employees**, including up to **%MAX_EXECS% executives**.
+"""
+
+def modify_upgrade(firm, max_members, max_execs):
+    return upgrade_org.\
+        replace("%LEVEL%", str(firm.rank + 1)).\
+        replace("%MAX_MEMBERS%", str(max_members)).\
+        replace("%MAX_EXECS%", str(max_execs))
 DEPLOY_VERSION = """
 Current version of the bot is deployed since `%DATE%`
 """
