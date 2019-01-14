@@ -451,6 +451,14 @@ class CommentWorker():
             first()
 
         if user.firm_role == "":
+            # level 1 = 2
+            # level 2 = 4
+            # level 3 = 8
+            # etc.
+            max_execs = 2 ** (firm.rank + 1)
+            if firm.execs >= max_execs:
+                return comment.reply_wrap(message.modify_promote_full(firm))
+
             user.firm_role = "exec"
             firm.execs += 1
         elif user.firm_role == "exec":

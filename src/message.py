@@ -451,6 +451,19 @@ promote_failure_org = """
 Couldn't promote user, make sure you used the correct username.
 """
 
+promote_full_org = """
+Could not promote this employee, since the firm is at its maximum executive limit.
+**Number of execs:** %EXECS%
+**Firm level:** %LEVEL%
+
+The CEO of the firm can raise this limit by upgrading with `!upgrade`.
+"""
+
+def modify_promote_full(firm):
+    return promote_full_org.\
+        replace("%EXECS%", str(firm.execs)).\
+        replace("%LEVEL%", str(firm.rank + 1))
+
 def modify_promote(user):
     rank_str = rank_strs[user.firm_role]
     return promote_org.\

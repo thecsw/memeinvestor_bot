@@ -3,10 +3,11 @@ from models import Investor, Firm
 import message
 
 class MockFirm():
-    def __init__(self, name, size=1, rank=0):
+    def __init__(self, name, size=1, execs=0, rank=0):
         self.name = name
         self.size = size
         self.rank = rank
+        self.execs = execs
 
 class MockInvestor():
     def __init__(self, name, firm_role):
@@ -232,6 +233,31 @@ class TestPromote(Test):
         replies = self.command('!promote testuser2')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_promote(MockInvestor('testuser2', 'exec')))
+
+        sess = self.Session()
+        user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
+        self.assertEqual(user.firm, 1)
+        self.assertEqual(user.firm_role, 'exec')
+
+    def test_promote_full(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+        self.command('!promote testuser2')
+
+        self.command('!create', username='testuser3')
+        self.command('!joinfirm Foobar', username='testuser3')
+        self.command('!promote testuser3')
+
+        self.command('!create', username='testuser4')
+        self.command('!joinfirm Foobar', username='testuser4')
+
+        replies = self.command('!promote testuser4')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_promote_full(MockFirm('Foobar', size=2, execs=2)))
 
         sess = self.Session()
         user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
