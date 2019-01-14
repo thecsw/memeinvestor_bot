@@ -3,8 +3,10 @@ from models import Investor, Firm
 import message
 
 class MockFirm():
-    def __init__(self, name):
+    def __init__(self, name, size=1, rank=0):
         self.name = name
+        self.size = size
+        self.rank = rank
 
 class MockInvestor():
     def __init__(self, name, firm_role):
@@ -399,6 +401,42 @@ class TestJoinFirm(Test):
         replies = self.command('!joinfirm Foobar')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.joinfirm_failure_org)
+
+    def test_full(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        replies = self.command('!joinfirm Foobar', username='testuser2')
+
+        self.command('!create', username='testuser3')
+        replies = self.command('!joinfirm Foobar', username='testuser3')
+
+        self.command('!create', username='testuser4')
+        replies = self.command('!joinfirm Foobar', username='testuser4')
+
+        self.command('!create', username='testuser5')
+        replies = self.command('!joinfirm Foobar', username='testuser5')
+
+        self.command('!create', username='testuser6')
+        replies = self.command('!joinfirm Foobar', username='testuser6')
+
+        self.command('!create', username='testuser7')
+        replies = self.command('!joinfirm Foobar', username='testuser7')
+
+        self.command('!create', username='testuser8')
+        replies = self.command('!joinfirm Foobar', username='testuser8')
+
+        self.command('!create', username='testuser9')
+        replies = self.command('!joinfirm Foobar', username='testuser9')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_joinfirm_full(MockFirm('Foobar', size=8)))
+
+        sess = self.Session()
+        user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
+        self.assertEqual(user.firm, 1)
+        self.assertEqual(user.firm_role, '')
 
     def test_joinfirm(self):
         self.command('!create')

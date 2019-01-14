@@ -515,6 +515,14 @@ class CommentWorker():
         if firm == None:
             return comment.reply_wrap(message.joinfirm_failure_org)
 
+        # level 1 = 8
+        # level 2 = 16
+        # level 3 = 32
+        # etc.
+        max_members = 2 ** (firm.rank + 3)
+        if firm.size >= max_members:
+            return comment.reply_wrap(message.modify_joinfirm_full(firm))
+
         investor.firm = firm.id
         investor.firm_role = ""
         firm.size += 1

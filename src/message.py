@@ -481,6 +481,19 @@ joinfirm_failure_org = """
 Could not join firm, are you sure you got the name right?
 """
 
+joinfirm_full_org = """
+Could not join the firm, since it is at its maximum member limit.
+**Number of employees:** %MEMBERS%
+**Firm level:** %LEVEL%
+
+The CEO of the firm can raise this limit by upgrading with `!upgrade`.
+"""
+
+def modify_joinfirm_full(firm):
+    return joinfirm_full_org.\
+        replace("%MEMBERS%", str(firm.size)).\
+        replace("%LEVEL%", str(firm.rank + 1))
+
 joinfirm_org = """
 You are now a floor trader of the firm **%NAME%**. If you'd like to leave, use the *!leavefirm* command.
 """
