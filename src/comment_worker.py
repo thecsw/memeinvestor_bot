@@ -95,7 +95,8 @@ class CommentWorker():
         r"!joinfirm\s+(.+)",
         r"!leavefirm",
         r"!promote\s+(.+)",
-        r"!fire\s+(.+)"
+        r"!fire\s+(.+)",
+        r"!upgrade"
     ]
 
     # allowed: alphanumeric, spaces, dashes
@@ -451,11 +452,7 @@ class CommentWorker():
             first()
 
         if user.firm_role == "":
-            # level 1 = 2
-            # level 2 = 4
-            # level 3 = 8
-            # etc.
-            max_execs = 2 ** (firm.rank + 1)
+            max_execs = max_execs_for_rank(firm.rank)
             if firm.execs >= max_execs:
                 return comment.reply_wrap(message.modify_promote_full(firm))
 
@@ -523,11 +520,7 @@ class CommentWorker():
         if firm == None:
             return comment.reply_wrap(message.joinfirm_failure_org)
 
-        # level 1 = 8
-        # level 2 = 16
-        # level 3 = 32
-        # etc.
-        max_members = 2 ** (firm.rank + 3)
+        max_members = max_members_for_rank(firm.rank)
         if firm.size >= max_members:
             return comment.reply_wrap(message.modify_joinfirm_full(firm))
 
@@ -542,6 +535,47 @@ class CommentWorker():
 
         return comment.reply_wrap(message.modify_joinfirm(firm))
 
+    @req_user
+    def upgrade(self, sess, comment, investor):
+        if investor.firm == 0:
+            return comment.reply_wrap(message.nofirm_failure_org)
+
+        if investor.firm_role != "ceo":
+            return comment.reply_wrap(message.not_ceo_org)
+
+        firm = sess.query(Firm).\
+            filter(Firm.id == investor.firm).\
+            first()
+
+        # level 1 = 3,000,000
+        # level 2 = 9,000,000
+        # level 3 = 27,000,000
+        # etc.
+        upgrade_cost = 3 ** (firm.rank + 1) * 1000000
+        if firm.balance < upgrade_cost:
+            return comment.reply_wrap(message.modify_upgrade_insufficient_funds_org(firm, upgrade_cost))
+
+        firm.rank += 1
+
+        max_members = max_members_for_rank(firm.rank)
+        max_execs = max_execs_for_rank(firm.rank)
+
+        return comment.reply_wrap(message.modify_upgrade(firm, max_members, max_execs))
+
 def concat_names(investors):
     names = ["/u/" + i.name for i in investors]
     return ", ".join(names)
+
+def max_members_for_rank(rank):
+    # level 1 = 8
+    # level 2 = 16
+    # level 3 = 32
+    # etc.
+    return 2 ** (rank + 3)
+
+def max_execs_for_rank(rank):
+    # level 1 = 2
+    # level 2 = 4
+    # level 3 = 8
+    # etc.
+    return 2 ** (rank + 1)

@@ -3,11 +3,12 @@ from models import Investor, Firm
 import message
 
 class MockFirm():
-    def __init__(self, name, size=1, execs=0, rank=0):
+    def __init__(self, name, size=1, execs=0, rank=0, balance=1234):
         self.name = name
         self.size = size
         self.rank = rank
         self.execs = execs
+        self.balance = balance
 
 class MockInvestor():
     def __init__(self, name, firm_role):
@@ -101,7 +102,7 @@ class TestFirm(Test):
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_firm(
             'ceo',
-            MockFirm('Foobar'),
+            MockFirm('Foobar', balance=1000),
             '/u/testuser',
             '',
             ''))
@@ -125,7 +126,7 @@ class TestFirm(Test):
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_firm(
             'exec',
-            MockFirm('Foobar'),
+            MockFirm('Foobar', balance=1000),
             '/u/testuser',
             '/u/testuser2',
             '/u/testuser3, /u/testuser4'))
@@ -478,3 +479,40 @@ class TestJoinFirm(Test):
         user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
         self.assertEqual(user.firm, 1)
         self.assertEqual(user.firm_role, '')
+
+class TestUpgrade(Test):
+    def test_not_in_firm(self):
+        self.command('!create')
+
+        replies = self.command('!upgrade')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.nofirm_failure_org)
+
+    def test_not_ceo(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+
+        replies = self.command('!upgrade', username='testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.not_ceo_org)
+
+    def test_insufficient_funds(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+        replies = self.command('!upgrade')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_upgrade_insufficient_funds_org(MockFirm('Foobar', balance=1000), 3000000))
+
+    def test_upgrade(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+        self.set_firm_balance('Foobar', 5000000)
+        replies = self.command('!upgrade')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_upgrade(MockFirm('Foobar', balance=1000, rank=1), 16, 4))

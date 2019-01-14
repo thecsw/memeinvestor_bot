@@ -362,6 +362,10 @@ You can create a new one with the **!createfirm <FIRM NAME>** command, or reques
 firm_org = """
 Firm: **%FIRM_NAME%**
 
+Firm balance: **%BALANCE%** Memecoins
+
+Firm level: **%LEVEL%**
+
 Your Rank: **%RANK%**
 
 ----
@@ -395,7 +399,9 @@ def modify_firm(rank, firm, ceo, execs, traders):
         replace("%FIRM_NAME%", firm.name).\
         replace("%CEO%", ceo).\
         replace("%EXECS%", execs).\
-        replace("%TRADERS%", traders)
+        replace("%TRADERS%", traders).\
+        replace("%BALANCE%", str(firm.balance)).\
+        replace("%LEVEL%", str(firm.rank + 1))
 
 createfirm_exists_failure_org = """
 You are already in a firm: **%FIRM_NAME%**
@@ -425,7 +431,7 @@ The new firm has been created successfully.
 You are the firm's CEO and you have the ability to
 """
 
-leavefirm_none_failure_org = """
+nofirm_failure_org = leavefirm_none_failure_org = """
 You are not in a firm.
 """
 
@@ -526,3 +532,28 @@ def modify_firm_tax(tax_amount, firm_name):
     return FIRM_TAX_ORG.\
         replace("%AMOUNT%", tax_amount).\
         replace("%NAME%", firm_name)
+
+upgrade_insufficient_funds_org = """
+The firm does not have enough funds to upgrade.
+
+**Firm balance:** %BALANCE%
+**Cost to upgrade to level %LEVEL%:** %COST%
+"""
+
+def modify_upgrade_insufficient_funds_org(firm, cost):
+    return upgrade_insufficient_funds_org.\
+        replace("%BALANCE%", str(firm.balance)).\
+        replace("%LEVEL%", str(firm.rank + 2)).\
+        replace("%COST%", str(cost))
+
+upgrade_org = """
+You have succesfully upgraded the firm to **level %LEVEL%**!
+
+The firm may now have up to **%MAX_MEMBERS% employees**, including up to **%MAX_EXECS% executives**.
+"""
+
+def modify_upgrade(firm, max_members, max_execs):
+    return upgrade_org.\
+        replace("%LEVEL%", str(firm.rank + 1)).\
+        replace("%MAX_MEMBERS%", str(max_members)).\
+        replace("%MAX_EXECS%", str(max_execs))
