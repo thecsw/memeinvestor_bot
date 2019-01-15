@@ -12,6 +12,7 @@ import praw
 import config
 import message
 from models import Investment, Investor, Firm, Invite
+import utils
 
 REDDIT = None
 
@@ -381,7 +382,7 @@ class CommentWorker():
         edited_response += message.modify_template_op(link, f"u/{comment.author.name}")
 
         return comment.parent().edit_wrap(edited_response)
-        
+
     def version(self, sess, comment):
         """
         Return the date when the bot was deployed
