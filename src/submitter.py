@@ -96,7 +96,7 @@ def main():
         # agile to switch between different modes
         if not config.SUBMISSION_FEE:
             # Post a comment to let people know where to invest
-            bot_reply = submission.reply_wrap(message.INVEST_PLACE_HERE_NO_FEE)
+            bot_reply = submission.reply_wrap(message.invest_no_fee(f"u/{submission.author.name}"))
         else:
             # If a poster doesn't have an account, delete the post
             # if he has, take 1000 MemeCoins and invest them
@@ -120,7 +120,7 @@ def main():
                 new_balance = investor.balance - required_fee
                 investor.balance = new_balance
                 bot_reply = submission.\
-                    reply_wrap(message.modify_invest_place_here(required_fee))
+                    reply_wrap(message.modify_invest_place_here(required_fee, f"u/{submission.author.name}"))
                 sess.commit()
 
         # Sticky the comment

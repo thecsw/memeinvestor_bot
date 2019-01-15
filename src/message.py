@@ -283,6 +283,12 @@ Where did he go?
 Whatever, investment is lost.
 """
 
+TEMPLATE_HINT_ORG = """
+---
+
+Psst, %NAME%, you can invoke `!template https://imgur.com/...` command to publicly post your template!
+"""
+
 INVEST_PLACE_HERE_NO_FEE = """
 **INVESTMENTS GO HERE - ONLY DIRECT REPLIES TO ME WILL BE PROCESSED**
 
@@ -297,6 +303,10 @@ To prevent thread spam and other natural disasters, I only respond to direct rep
 - Support the project via our [patreon](https://www.patreon.com/memeinvestor_bot)
 """
 
+def invest_no_fee(name):
+    return INVEST_PLACE_HERE_NO_FEE + TEMPLATE_HINT_ORG.\
+        replace("%NAME%", name)
+
 INVEST_PLACE_HERE = """
 **INVESTMENTS GO HERE - ONLY DIRECT REPLIES TO ME WILL BE PROCESSED**
 
@@ -309,11 +319,12 @@ The author of this post paid **%MEMECOIN% MemeCoins** to post this.
 - Visit [memes.market](https://memes.market) for help, market statistics, and investor profiles.
 
 - Visit /r/MemeInvestor_bot for questions or suggestions about me.
-"""
+""" + TEMPLATE_HINT_ORG
 
-def modify_invest_place_here(amount):
+def modify_invest_place_here(amount, name):
     return INVEST_PLACE_HERE.\
-        replace("%MEMECOIN%", format(int(amount), ",d"))
+        replace("%MEMECOIN%", format(int(amount), ",d")) + TEMPLATE_HINT_ORG.\
+        replace("%NAME%", name)
 
 INSIDE_TRADING_ORG = """
 You can't invest in your own memes, insider trading is not allowed!
@@ -362,6 +373,10 @@ You can create a new one with the **!createfirm <FIRM NAME>** command, or reques
 firm_org = """
 Firm: **%FIRM_NAME%**
 
+Firm balance: **%BALANCE%** Memecoins
+
+Firm level: **%LEVEL%**
+
 Your Rank: **%RANK%**
 
 ----
@@ -395,12 +410,18 @@ def modify_firm(rank, firm, ceo, execs, traders):
         replace("%FIRM_NAME%", firm.name).\
         replace("%CEO%", ceo).\
         replace("%EXECS%", execs).\
-        replace("%TRADERS%", traders)
+        replace("%TRADERS%", traders).\
+        replace("%BALANCE%", str(firm.balance)).\
+        replace("%LEVEL%", str(firm.rank + 1))
 
 createfirm_exists_failure_org = """
 You are already in a firm: **%FIRM_NAME%**
 
 Please leave this firm using the *!leavefirm* command before creating a new one.
+"""
+
+createfirm_cost_failure_org = """
+Creating a firm costs 1,000,000 Memecoins, you don't have enough. Earn some more first!
 """
 
 def modify_createfirm_exists_failure(firm_name):
@@ -421,9 +442,10 @@ The new firm has been created successfully.
 You are the firm's CEO and you have the ability to
 """
 
-leavefirm_none_failure_org = """
+nofirm_failure_org = leavefirm_none_failure_org = """
 You are not in a firm.
 """
+no_firm_failure_org = leavefirm_none_failure_org
 
 leavefirm_ceo_failure_org = """
 You are currently the CEO of your firm, so you are not allowed to leave.
@@ -446,6 +468,19 @@ Only the CEO and executives can do that.
 promote_failure_org = """
 Couldn't promote user, make sure you used the correct username.
 """
+
+promote_full_org = """
+Could not promote this employee, since the firm is at its maximum executive limit.
+**Number of execs:** %EXECS%
+**Firm level:** %LEVEL%
+
+The CEO of the firm can raise this limit by upgrading with `!upgrade`.
+"""
+
+def modify_promote_full(firm):
+    return promote_full_org.\
+        replace("%EXECS%", str(firm.execs)).\
+        replace("%LEVEL%", str(firm.rank + 1))
 
 def modify_promote(user):
     rank_str = rank_strs[user.firm_role]
@@ -473,9 +508,28 @@ joinfirm_exists_failure_org = """
 Can't join a firm because you are already in one. Use the *!leavefirm* command to leave your firm before joining a new one.
 """
 
+joinfirm_private_failure_org = """
+Can't join this firm because it is set to private and you have not been invited.
+
+The CEO or Executives must first invite you with the `!invite <username>` command.
+"""
+
 joinfirm_failure_org = """
 Could not join firm, are you sure you got the name right?
 """
+
+joinfirm_full_org = """
+Could not join the firm, since it is at its maximum member limit.
+**Number of employees:** %MEMBERS%
+**Firm level:** %LEVEL%
+
+The CEO of the firm can raise this limit by upgrading with `!upgrade`.
+"""
+
+def modify_joinfirm_full(firm):
+    return joinfirm_full_org.\
+        replace("%MEMBERS%", str(firm.size)).\
+        replace("%LEVEL%", str(firm.rank + 1))
 
 joinfirm_org = """
 You are now a floor trader of the firm **%NAME%**. If you'd like to leave, use the *!leavefirm* command.
@@ -496,3 +550,95 @@ def modify_firm_tax(tax_amount, firm_name):
     return FIRM_TAX_ORG.\
         replace("%AMOUNT%", tax_amount).\
         replace("%NAME%", firm_name)
+
+TEMPLATE_NOT_OP = """
+Sorry, but you are not the submission's Original Poster.
+"""
+
+TEMPLATE_ALREADY_DONE = """
+Sorry, but you already submitted the template link.
+"""
+
+TEMPLATE_NOT_STICKY = """
+Sorry, you have to *directly* reply to the bot's sticky.
+"""
+
+TEMPLATE_OP = """
+---
+
+OP %NAME% has posted *[THE LINK TO THE TEMPLATE](%LINK%)*, Hurray!
+"""
+
+def modify_template_op(link, name):
+    return TEMPLATE_OP.\
+        replace("%LINK%", link).\
+        replace("%NAME%", name)
+invite_not_private_failure_org = """
+You don't need to invite anyone since your firm is not private.
+
+That investor can join with the `!joinfirm <firm_name>` command.
+
+If you're the CEO and you would like the firm to be invite-only, use the `!setprivate` command.
+"""
+
+invite_no_user_failure_org = """
+Couldn't invite user, make sure you used the right username.
+"""
+
+invite_in_firm_failure_org = """
+This user is already in a firm. They will need to leave before you can invite them.
+"""
+
+invite_org = """
+You have invited /u/%NAME% to the firm.
+
+They can accept this request using the `!joinfirm %FIRM%` command.
+"""
+
+def modify_invite(invitee, firm):
+    return invite_org.\
+        replace("%NAME%", invitee.name).\
+        replace("%FIRM%", firm.name)
+
+setprivate_org = """
+The firm is now private. Users can only join after you or an Executive sends an invite with the `!invite <user>` command.
+
+If you'd like to reverse this, use the `!setpublic` command.
+"""
+
+setpublic_org = """
+The firm is now public. Users can join your command without being invited, using the `!joinfirm <firm_name>` command.
+
+If you'd like to reverse this, use the `!setprivate` command.
+"""
+upgrade_insufficient_funds_org = """
+The firm does not have enough funds to upgrade.
+
+**Firm balance:** %BALANCE%
+**Cost to upgrade to level %LEVEL%:** %COST%
+"""
+
+def modify_upgrade_insufficient_funds_org(firm, cost):
+    return upgrade_insufficient_funds_org.\
+        replace("%BALANCE%", str(firm.balance)).\
+        replace("%LEVEL%", str(firm.rank + 2)).\
+        replace("%COST%", str(cost))
+
+upgrade_org = """
+You have succesfully upgraded the firm to **level %LEVEL%**!
+
+The firm may now have up to **%MAX_MEMBERS% employees**, including up to **%MAX_EXECS% executives**.
+"""
+
+def modify_upgrade(firm, max_members, max_execs):
+    return upgrade_org.\
+        replace("%LEVEL%", str(firm.rank + 1)).\
+        replace("%MAX_MEMBERS%", str(max_members)).\
+        replace("%MAX_EXECS%", str(max_execs))
+DEPLOY_VERSION = """
+Current version of the bot is deployed since `%DATE%`
+"""
+
+def modify_deploy_version(date):
+    return DEPLOY_VERSION.\
+        replace("%DATE%", date)

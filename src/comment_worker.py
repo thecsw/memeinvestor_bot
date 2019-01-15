@@ -11,7 +11,10 @@ import praw
 
 import config
 import message
-from models import Investment, Investor, Firm
+from models import Investment, Investor, Firm, Invite
+import utils
+
+REDDIT = None
 
 if not config.TEST:
     REDDIT = praw.Reddit(client_id=config.CLIENT_ID,
@@ -60,7 +63,23 @@ def reply_wrap(self, body):
         logging.info(body)
         return "0"
 
+def edit_wrap(self, body):
+    logging.info(" -- editing response")
+
+    if config.POST_TO_REDDIT:
+        try:
+            return self.edit(body)
+        # TODO: get rid of this broad except
+        except Exception as e:
+            logging.error(e)
+            traceback.print_exc()
+            return False
+    else:
+        logging.info(body)
+        return False
+
 praw.models.Comment.reply_wrap = reply_wrap
+praw.models.Comment.edit_wrap = edit_wrap
 
 class CommentWorker():
     """
@@ -89,13 +108,19 @@ class CommentWorker():
         r"!invest\s+([\d,.]+)\s*(%s)?(?:\s|$)" % "|".join(multipliers),
         r"!market",
         r"!top",
+        r"!version",
         r"!grant\s+(\S+)\s+(\S+)",
+        r"!template\s+(https://imgur.com/.+)",
         r"!firm",
         r"!createfirm\s+(.+)",
         r"!joinfirm\s+(.+)",
         r"!leavefirm",
         r"!promote\s+(.+)",
-        r"!fire\s+(.+)"
+        r"!fire\s+(.+)",
+        r"!upgrade",
+        r"!invite\s+(.+)",
+        r"!setprivate",
+        r"!setpublic"
     ]
 
     # allowed: alphanumeric, spaces, dashes
@@ -330,6 +355,40 @@ class CommentWorker():
             investor.badges = json.dumps(badge_list)
             return comment.reply_wrap(message.modify_grant_success(grantee, badge))
 
+    def template(self, sess, comment, link):
+        """
+        OP can submit the template link to the bot's sticky
+        """
+
+        # Type of comment is praw.models.reddit.comment.Comment, which
+        # does not have a lot of documentation in the docs, for more
+        # informationg go to
+        # github.com/praw-dev/praw/blob/master/praw/models/reddit/comment.py
+        comment.refresh()
+        if not comment.is_submitter:
+            return comment.reply_wrap(message.TEMPLATE_NOT_OP)
+
+        # Checking if the upper comment is the bot's sticky
+        if not comment.parent().stickied:
+            return comment.reply_wrap(message.TEMPLATE_NOT_STICKY)
+
+        # What if user spams !template commands?
+        if comment.parent().edited:
+            return comment.reply_wrap(message.TEMPLATE_ALREADY_DONE)
+
+        # If OP posted a template, replace the hint
+        edited_response = comment.parent().body.replace(message.TEMPLATE_HINT_ORG.
+                                                        replace("%NAME%", f"u/{comment.author.name}"), '')
+        edited_response += message.modify_template_op(link, f"u/{comment.author.name}")
+
+        return comment.parent().edit_wrap(edited_response)
+
+    def version(self, sess, comment):
+        """
+        Return the date when the bot was deployed
+        """
+        return comment.reply_wrap(message.modify_deploy_version(utils.DEPLOY_DATE))
+
     @req_user
     def firm(self, sess, comment, investor):
         if investor.firm == 0:
@@ -371,6 +430,10 @@ class CommentWorker():
                 first()
             return comment.reply_wrap(message.modify_createfirm_exists_failure(existing_firm.name))
 
+        if investor.balance < 1000000:
+            return comment.reply_wrap(message.createfirm_cost_failure_org)
+        investor.balance -= 1000000
+
         firm_name = firm_name.strip()
 
         if (len(firm_name) < 4) or (len(firm_name) > 32):
@@ -392,13 +455,13 @@ class CommentWorker():
             first()
         investor.firm = firm.id
         investor.firm_role = "ceo"
+        firm.size += 1
 
         # Setting up the flair in subreddits
         # Hardcoded CEO string because createfirm makes a user CEO
         if not config.TEST:
             for subreddit in config.SUBREDDITS:
                 REDDIT.subreddit(subreddit).flair.set(investor.name, f"{firm_name} | CEO")
-
         return comment.reply_wrap(message.createfirm_org)
 
     @req_user
@@ -412,14 +475,20 @@ class CommentWorker():
                 count()
             if members > 1:
                 return comment.reply_wrap(message.leavefirm_ceo_failure_org)
+        firm = sess.query(Firm).\
+            filter(Firm.id == investor.firm).\
+            first()
 
         investor.firm = 0
+        firm.size -= 1
+
+        if investor.firm_role == 'exec':
+            firm.execs -= 1
 
         # Removing the flair in subreddits
         if not config.TEST:
             for subreddit in config.SUBREDDITS:
                 REDDIT.subreddit(subreddit).flair.set(investor.name, "")
-
         return comment.reply_wrap(message.leavefirm_org)
 
     @req_user
@@ -441,8 +510,14 @@ class CommentWorker():
             first()
 
         if user.firm_role == "":
+            max_execs = max_execs_for_rank(firm.rank)
+            if firm.execs >= max_execs:
+                return comment.reply_wrap(message.modify_promote_full(firm))
+
             user.firm_role = "exec"
+            firm.execs += 1
         elif user.firm_role == "exec":
+            # Swapping roles
             investor.firm_role = "exec"
             user.firm_role = "ceo"
 
@@ -475,14 +550,21 @@ class CommentWorker():
         if (investor.firm_role != "ceo") and (user.firm_role != ""):
             return comment.reply_wrap(message.not_ceo_org)
 
+        firm = sess.query(Firm).\
+            filter(Firm.id == investor.firm).\
+            first()
+
         user.firm_role = ""
         user.firm = 0
+        firm.size -= 1
+
+        if investor.firm_role == 'exec':
+            firm.execs -= 1
 
         # Clear the firm flair
         if not config.TEST:
             for subreddit in config.SUBREDDITS:
                 REDDIT.subreddit(subreddit).flair.set(user.name, '')
-
         return comment.reply_wrap(message.modify_fire(user))
 
     @req_user
@@ -496,8 +578,21 @@ class CommentWorker():
         if firm == None:
             return comment.reply_wrap(message.joinfirm_failure_org)
 
+        max_members = max_members_for_rank(firm.rank)
+        if firm.size >= max_members:
+            return comment.reply_wrap(message.modify_joinfirm_full(firm))
+
+        if firm.private:
+            invite = sess.query(Invite).\
+                filter(Invite.investor == investor.id).\
+                filter(Invite.firm == firm.id).\
+                first()
+            if invite == None:
+                return comment.reply_wrap(message.joinfirm_private_failure_org)
+
         investor.firm = firm.id
         investor.firm_role = ""
+        firm.size += 1
 
         # Updating the flair in subreddits
         if not config.TEST:
@@ -506,6 +601,107 @@ class CommentWorker():
 
         return comment.reply_wrap(message.modify_joinfirm(firm))
 
+    @req_user
+    def invite(self, sess, comment, investor, invitee_name):
+        if investor.firm == 0:
+            return comment.reply_wrap(message.no_firm_failure_org)
+
+        if investor.firm_role == "":
+            return comment.reply_wrap(message.not_ceo_or_exec_org)
+
+        firm = sess.query(Firm).\
+            filter(Firm.id == investor.firm).\
+            first()
+
+        if not firm.private:
+            return comment.reply_wrap(message.invite_not_private_failure_org)
+
+        invitee = sess.query(Investor).\
+            filter(Investor.name == invitee_name).\
+            first()
+        if invitee == None:
+            return comment.reply_wrap(message.invite_no_user_failure_org)
+        if invitee.firm != 0:
+            return comment.reply_wrap(message.invite_in_firm_failure_org)
+
+        sess.add(Invite(firm=firm.id, investor=invitee.id))
+
+        return comment.reply_wrap(message.modify_invite(invitee, firm))
+
+    @req_user
+    def setprivate(self, sess, comment, investor):
+        if investor.firm == 0:
+            return comment.reply_wrap(message.no_firm_failure_org)
+
+        if investor.firm_role != "ceo":
+            return comment.reply_wrap(message.not_ceo_org)
+
+        firm = sess.query(Firm).\
+            filter(Firm.id == investor.firm).\
+            first()
+
+        firm.private = True
+
+        return comment.reply_wrap(message.setprivate_org)
+
+    @req_user
+    def setpublic(self, sess, comment, investor):
+        if investor.firm == 0:
+            return comment.reply_wrap(message.no_firm_failure_org)
+
+        if investor.firm_role != "ceo":
+            return comment.reply_wrap(message.not_ceo_org)
+
+        firm = sess.query(Firm).\
+            filter(Firm.id == investor.firm).\
+            first()
+
+        firm.private = False
+
+        return comment.reply_wrap(message.setprivate_org)
+
+    @req_user
+    def upgrade(self, sess, comment, investor):
+        if investor.firm == 0:
+            return comment.reply_wrap(message.nofirm_failure_org)
+
+        if investor.firm_role != "ceo":
+            return comment.reply_wrap(message.not_ceo_org)
+
+        firm = sess.query(Firm).\
+            filter(Firm.id == investor.firm).\
+            first()
+
+        # level 1 = 4,000,000
+        # level 2 = 16,000,000
+        # level 3 = 64,000,000
+        # etc.
+        upgrade_cost = 4 ** (firm.rank + 1) * 1000000
+        if firm.balance < upgrade_cost:
+            return comment.reply_wrap(message.modify_upgrade_insufficient_funds_org(firm, upgrade_cost))
+
+        firm.rank += 1
+        firm.balance -= upgrade_cost
+
+        max_members = max_members_for_rank(firm.rank)
+        max_execs = max_execs_for_rank(firm.rank)
+
+        return comment.reply_wrap(message.modify_upgrade(firm, max_members, max_execs))
+
 def concat_names(investors):
-    names = [ "/u/" + i.name for i in investors ]
+    names = ["/u/" + i.name for i in investors]
     return ", ".join(names)
+
+def max_members_for_rank(rank):
+    # level 1 = 8
+    # level 2 = 16
+    # level 3 = 32
+    # etc.
+    return 2 ** (rank + 3)
+
+def max_execs_for_rank(rank):
+    # level 1 = 2
+    # level 2 = 4
+    # level 3 = 8
+    # etc.
+    return 2 ** (rank + 1)
