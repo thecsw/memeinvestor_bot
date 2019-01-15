@@ -25,13 +25,14 @@ noerdy should put stuff here
 
 TODO
 
-===================
-(^ is that how you make horizontal rules?)
+*****
 
-Top Users:
+**Top Users:**
+
 %TOP_USERS%
 
-Top Firms:
+**Top Firms:**
+
 %TOP_FIRMS%
 """
 
@@ -72,15 +73,15 @@ def main():
             limit(5).\
             all()
 
-        # TODO: format as table
-        top_users_text = ""
+        top_users_text = "Rank|User|Net Worth\n"
+        top_users_text += ":-:|:-:|:-:\n"
         for i, user in enumerate(top_users):
-            top_users_text += str(i + 1) + ". " + user.name + " (" + str(user.balance) + " Memecoins)\n"
+            top_users_text += str(i + 1) + "|/u/" + user.name + "|" + str(user.networth) + " MC\n"
 
-        # TODO: format as table
-        top_firms_text = ""
+        top_firms_text = "Rank|Firm|Total Assets|Level\n"
+        top_firms_text += ":-:|:-:|:-:|:-:\n"
         for i, firm in enumerate(top_firms):
-            top_firms_text += str(i + 1) + ". " + firm.name + " (" + str(firm.balance) + " Memecoins)\n"
+            top_firms_text += str(i + 1) + "|" + firm.name + "|" + str(firm.balance) + " MC|" + str(firm.rank + 1) + "\n"
 
         sidebar_text = sidebar_text_org.\
             replace("%TOP_USERS%", top_users_text).\
@@ -89,9 +90,7 @@ def main():
         logging.info(" -- Updating sidebar text to:")
         logging.info(sidebar_text)
         for subreddit in config.SUBREDDITS:
-            settings = reddit.update_settings(
-                reddit.get_subreddit(subreddit),
-                description=sidebar_text)
+            reddit.subreddit(subreddit).mod.update(description=sidebar_text)
 
         sess.commit()
 
