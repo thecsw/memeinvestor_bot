@@ -3,7 +3,7 @@ import time
 import logging
 import traceback
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, func, desc, and_
 from sqlalchemy.orm import sessionmaker
 import praw
 
@@ -12,7 +12,7 @@ import utils
 import formula
 import message
 from kill_handler import KillHandler
-from models import Investor, Firm
+from models import Investor, Investment, Firm
 from stopwatch import Stopwatch
 
 logging.basicConfig(level=logging.INFO)
@@ -59,9 +59,12 @@ def main():
     while not killhandler.killed:
         sess = session_maker()
 
-        top_users = sess.query(Investor).\
-            order_by(Investor.balance.desc()).\
-            limit(5).\
+        top_users = sess.query(
+                Investor.name,
+                func.coalesce(Investor.balance+func.sum(Investment.amount), Investor.balance).label('networth')).\
+                outerjoin(Investment, and_(Investor.name == Investment.name, Investment.done == 0)).\
+            group_by(Investor.name).\
+            order_by(desc('networth')).\
             all()
 
         top_firms = sess.query(Firm).\
