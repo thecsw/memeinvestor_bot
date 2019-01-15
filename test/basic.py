@@ -1,5 +1,6 @@
 from test import Test
 import message
+import utils
 
 class TestBasic(Test):
     def test_non_command(self):
@@ -14,3 +15,8 @@ class TestBasic(Test):
         replies = self.command('!help')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.HELP_ORG)
+
+    def test_version(self):
+        replies = self.command('!version')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_deploy_version(utils.DEPLOY_DATE))
