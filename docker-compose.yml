@@ -25,12 +25,19 @@ services:
         depends_on:
           - mysql
 
-
     leaderboard:
         build: .
         env_file: .env
         restart: unless-stopped
         command: ["python", "leaderboard.py"]
+        depends_on:
+          - mysql
+
+    payroll:
+        build: .
+        env_file: .env
+        restart: unless-stopped
+        command: ["python", "payroll.py"]
         depends_on:
           - mysql
 
