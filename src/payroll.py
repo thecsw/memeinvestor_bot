@@ -5,7 +5,6 @@ import traceback
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-import praw
 
 import config
 import utils
@@ -28,62 +27,53 @@ def main():
     engine = create_engine(config.DB, pool_recycle=60, pool_pre_ping=True)
     session_maker = sessionmaker(bind=engine)
 
-    reddit = praw.Reddit(client_id=config.CLIENT_ID,
-                         client_secret=config.CLIENT_SECRET,
-                         username=config.USERNAME,
-                         password=config.PASSWORD,
-                         user_agent=config.USER_AGENT)
-
-    # We will test our reddit connection here
-    if not utils.test_reddit_connection(reddit):
-        exit()
-
     while not killhandler.killed:
         sess = session_maker()
+        now = time.time()
 
-        top_users = sess.query(Investor).\
-            order_by(Investor.balance.desc()).\
-            limit(5).\
+        firms = sess.query(Firm).\
+            filter(now - Firm.last_payout >= config.PAYROLL_INTERVAL).\
             all()
 
-        top_firms = sess.query(Firm).\
-            order_by(Firm.balance.desc()).\
-            limit(5).\
-            all()
+        for firm in firms:
+            # payouts is more than 1 if some amount of previous payouts never
+            # got processed for some reason
+            payouts = int((now - firm.last_payout) / config.PAYROLL_INTERVAL)
+            payout_ratio = 1 - (0.6 ** payouts)
+            payout_amount = int(payout_ratio * firm.balance)
+            if payout_amount == 0:
+                # handle broke firms
+                firm.last_payout = now
+                continue
 
-        # TODO: format as table
-        top_users_text = ""
-        i = 0
-        for user in top_users:
-            top_users_text += str(i + 1) + ". " + user.name + " (" + str(user.balance) + " Memecoins)\n"
+            exec_amount = 0
+            exec_total = 0
+            if firm.execs > 0:
+                exec_total = payout_amount * 0.4
+                exec_amount = int(exec_total / firm.execs)
 
-        # TODO: format as table
-        top_firms_text = ""
-        i = 0
-        for firm in top_firms:
-            top_firms_text += str(i + 1) + ". " + firm.name + " (" + str(firm.balance) + " Memecoins)\n"
+            trader_total = payout_amount - exec_total
+            trader_amount = int(trader_total / (firm.size - firm.execs))
 
-        sidebar_text = sidebar_text_org.\
-            replace("%TOP_USERS%", top_users_text).\
-            replace("%TOP_FIRMS%", top_firms_text)
+            logging.info(" -- firm '%s': paying out %s each to %s traders, and %s each to %s execs",\
+                firm.name, trader_amount, firm.size - firm.execs, exec_amount, firm.execs)
 
-        logging.info(" -- Updating sidebar text to:")
-        logging.info(sidebar_text)
-        for subreddit in config.SUBREDDITS:
-            settings = reddit.update_settings(
-                reddit.get_subreddit(subreddit),
-                description=sidebar_text)
+            employees = sess.query(Investor).\
+                filter(Investor.firm == firm.id).\
+                all()
+            for employee in employees:
+                if employee.firm_role == "":
+                    employee.balance += trader_amount
+                elif employee.firm_role == "exec":
+                    employee.balance += exec_amount
+
+            firm.balance -= payout_amount
+            firm.last_payout = now
 
         sess.commit()
-
-        # Report the Reddit API call stats
-        rem = int(reddit.auth.limits['remaining'])
-        res = int(reddit.auth.limits['reset_timestamp'] - time.time())
-        logging.info(" -- API calls remaining: %s, resetting in %.2fs", rem, res)
-
         sess.close()
 
-        time.sleep(config.LEADERBOARD_INTERVAL)
+        time.sleep(config.PAYROLL_INTERVAL / 2)
 
 if __name__ == "__main__":
     main()

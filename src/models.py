@@ -76,6 +76,7 @@ class Firm(Base):
     rank = Column(Integer, default=0)
     boost = Column(Integer, default=1)
     private = Column(Boolean, default=False)
+    last_payout = Column(Integer, server_default=unix_timestamp())
 
 
 class Invite(Base):
