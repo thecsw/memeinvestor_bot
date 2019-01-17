@@ -8,10 +8,13 @@ prawcore has the list of praw exceptions
 import datetime
 import traceback
 import logging
+import time
 
 import prawcore
 
 logging.basicConfig(level=logging.INFO)
+
+DEPLOY_DATE = time.strftime("%c")
 
 def investment_duration_string(duration):
     """

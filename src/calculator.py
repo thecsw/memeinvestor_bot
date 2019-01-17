@@ -12,7 +12,7 @@ import utils
 import formula
 import message
 from kill_handler import KillHandler
-from models import Investment, Investor
+from models import Investment, Investor, Firm
 from stopwatch import Stopwatch
 
 logging.basicConfig(level=logging.INFO)
@@ -120,7 +120,22 @@ def main():
             response = EmptyResponse()
 
         if new_balance < BALANCE_CAP:
-            investor.balance = new_balance
+            # If investor is in a firm and he profits,
+            # 15% goes to the firm
+            firm_name = ''
+            if investor.firm != 0 and profit >= 0:
+                firm = sess.query(Firm).\
+                    filter(Firm.id == investor.firm).\
+                    first()
+                firm_name = firm.name
+
+                user_profit = profit * ((1 - firm.tax) / 100)
+                investor.balance += user_profit
+
+                firm_profit = profit * (firm.tax / 100)
+                firm.balance += firm_profit
+            else:
+                investor.balance = new_balance
 
             # Edit the bot's response (triggers an API call)
             if profit > 0:
@@ -129,9 +144,14 @@ def main():
                 logging.info(" -- broke even")
             else:
                 logging.info(" -- lost %s", profit)
-            response.edit_wrap(message.modify_invest_return(investment.amount, investment.upvotes,
-                                                            upvotes_now, change, profit,
-                                                            percent_str, investor.balance))
+
+            edited_response = message.modify_invest_return(investment.amount, investment.upvotes,
+                                                           upvotes_now, change, profit,
+                                                           percent_str, investor.balance)
+            if investor.firm != 0:
+                edited_response += message.modify_firm_tax(firm_profit, firm_name)
+
+            response.edit_wrap(edited_response)
         else:
             # This investment pushed the investor's balance over the cap
             investor.balance = BALANCE_CAP
