@@ -1,4 +1,4 @@
-https://github.com/praw-dev/praw/archive/master.zip
+praw
 fastnumbers
 flask
 flask-caching
