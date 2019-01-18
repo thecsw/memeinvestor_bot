@@ -432,7 +432,6 @@ class CommentWorker():
 
         if investor.balance < 1000000:
             return comment.reply_wrap(message.createfirm_cost_failure_org)
-        investor.balance -= 1000000
 
         firm_name = firm_name.strip()
 
@@ -453,6 +452,8 @@ class CommentWorker():
         firm = sess.query(Firm).\
             filter(Firm.name == firm_name).\
             first()
+        
+        investor.balance -= 1000000
         investor.firm = firm.id
         investor.firm_role = "ceo"
         firm.size += 1
