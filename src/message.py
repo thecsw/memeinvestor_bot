@@ -182,27 +182,9 @@ I am a bot that will help you invest in memes and make a fortune out of it!
 
 Here is a list of commands that summon me:
 
-1. `!create` - creates a bank account for you with a new balance of 1000 MemeCoins.
+`!active`, `!balance`, `!broke`, `!create`, `!createfirm`, `!fire`, `!firm`, `!grant`, `!help`, `!ignore`, `!invest`, `!invite`, `!joinfirm`, `!leavefirm`, `!market`, `!promote`, `!setprivate`, `!setpublic`, `!template`, `!top`, `!upgrade`, `!version`
 
-2. `!invest AMOUNT` - invests AMOUNT in the meme (post). 4 hours after the investment, the meme growth will be evaluated and your investment can profit you or make you bankrupt. Minimum possible investment is 100 MemeCoins.
-
-3. `!balance` - returns your current balance.
-
-4. `!active` - returns a list of your active investments.
-
-5. `!broke` - only if your balance is less than 100 MemeCoins and you do not have any active investments, declares bankruptcy on your account and sets your balance to 100 MemeCoins (minimum possible investment).
-
-6. `!market` - gives an overview for the whole Meme market.
-
-7. `!top` - gives a list of the users with the largest account balances.
-
-8. `!ignore` - ignores the whole message.
-
-9. `!help` - returns this help message.
-
-For market stats and more information, visit [memes.market](https://memes.market).
-
-You can help improve me by contributing to my source code on [GitHub](https://github.com/MemeInvestor/memeinvestor_bot).
+To get help on a specific command, simply invoke `!help command`
 """
 
 BALANCE_ORG = """
