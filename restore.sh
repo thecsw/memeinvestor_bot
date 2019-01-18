@@ -5,8 +5,12 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-echo "!!! This script will completely replace the live database with the backup file !!!"
-echo "You sure you want to do this (Y/n)"
+if [ ! -e $1 ]; then
+    echo "File does not exist"
+    exit 1
+fi
+
+echo "Do you want to proceed? (Y/n)"
 read choice
 if [ "$choice" == "n" ]; then
     echo "Bye."
@@ -18,5 +22,5 @@ docker cp $1 memeinvestor_bot_mysql_1:/tmp/
 echo "Done."
 
 echo "Restoring the database... (This may take several minutes)"
-docker exec memeinvestor_bot_mysql_1 mysql mysql -u mysql -p'strongpass!word' < /tmp/$1
+echo "mysql mysql -u mysql -p'strongpass!word' < /tmp/$1" | docker exec -i memeinvestor_bot_mysql_1 bash
 echo "Done."
