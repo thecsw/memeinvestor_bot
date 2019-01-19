@@ -642,3 +642,15 @@ Current version of the bot is deployed since `%DATE%`
 def modify_deploy_version(date):
     return DEPLOY_VERSION.\
         replace("%DATE%", date)
+
+TAX_TOO_HIGH = """
+The tax rate is too high. The tax should be between 5% and 75%.
+"""
+
+TAX_TOO_LOW = """
+The tax rate is too low. The tax should be between 5% and 75%.
+"""
+
+TAX_SUCCESS = """
+The new tax rate has been set successfully.
+"""
