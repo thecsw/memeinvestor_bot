@@ -182,7 +182,29 @@ I am a bot that will help you invest in memes and make a fortune out of it!
 
 Here is a list of commands that summon me:
 
-`!active`, `!balance`, `!broke`, `!create`, `!createfirm`, `!fire`, `!firm`, `!grant`, `!help`, `!ignore`, `!invest`, `!invite`, `!joinfirm`, `!leavefirm`, `!market`, `!promote`, `!setprivate`, `!setpublic`, `!template`, `!top`, `!upgrade`, `!version`
+### GENERAL COMMANDS
+- `!active`
+- `!balance`
+- `!broke`
+- `!create`
+- `!help`
+- `!invest <amount>`
+- `!market`
+- `!top`
+- `!version`
+- `!template https://imgur.com/...` **(OP Only)**
+
+### FIRM COMMANDS
+- `!firm`
+- `!createfirm <name>`
+- `!joinfirm <name>`
+- `!leavefirm`
+- `!promote <username>` **(CEO and Exec Only)**
+- `!fire <username>` **(CEO and Exec Only)**
+- `!upgrade` **(CEO Only)**
+- `!setprivate` **(CEO Only)**
+- `!setpublic` **(CEO Only)**
+- `!invite <username>` **(CEO and Exec Only)**
 
 To get help on a specific command, simply invoke `!help command`
 """

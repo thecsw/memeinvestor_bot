@@ -104,7 +104,7 @@ class CommentWorker():
         r"!balance",
         r"!broke",
         r"!create",
-        r"!help\s+?!?(.+)?",
+        r"!help\s*!?(.+)?",
         r"!ignore",
         r"!invest\s+([\d,.]+)\s*(%s)?(?:\s|$)" % "|".join(multipliers),
         r"!market",
