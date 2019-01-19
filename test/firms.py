@@ -613,3 +613,72 @@ class TestUpgrade(Test):
         sess = self.Session()
         firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
         self.assertEqual(firm.balance, 1000000)
+
+class TestTax(Test):
+    def test_not_in_firm(self):
+        self.command('!create')
+
+        replies = self.command('!tax 50')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.nofirm_failure_org)
+
+    def test_not_ceo(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+
+        replies = self.command('!tax 50', username='testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.not_ceo_org)
+
+    def test_tax_too_high(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foohigh')
+        replies = self.command('!tax 100')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.TAX_TOO_HIGH)
+
+    def test_tax_too_low(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foolow')
+        replies = self.command('!tax 0')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.TAX_TOO_LOW)
+
+    def test_tax_neg_value(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Fooneg')
+        replies = self.command('!tax -99')
+        self.assertEqual(len(replies), 0)
+
+    def test_tax_no_value(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foonoval')
+        replies = self.command('!tax')
+        self.assertEqual(len(replies), 0)
+
+    def test_tax_not_numerical(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foononum')
+        replies = self.command('!tax garbage_value')
+        self.assertEqual(len(replies), 0)
+
+    def test_tax_success(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Footaxsucc')
+        replies = self.command('!tax 37')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.TAX_SUCCESS)
+
+        sess = self.Session()
+        firm = sess.query(Firm).filter(Firm.name == 'Footaxsucc').first()
+        self.assertEqual(firm.tax, 37)
