@@ -649,7 +649,7 @@ class TestTax(Test):
         replies = self.command('!tax 0')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.TAX_TOO_LOW)
-        
+
     def test_tax_neg_value(self):
         self.command('!create')
         self.set_balance(5000000)
@@ -662,7 +662,7 @@ class TestTax(Test):
         self.set_balance(5000000)
         self.command('!createfirm Foonoval')
         replies = self.command('!tax')
-        self.assertEqual(len(replies), 0)        
+        self.assertEqual(len(replies), 0)
 
     def test_tax_not_numerical(self):
         self.command('!create')
