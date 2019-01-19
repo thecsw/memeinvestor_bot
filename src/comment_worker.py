@@ -13,6 +13,7 @@ import config
 import message
 from models import Investment, Investor, Firm, Invite
 import utils
+import help_info
 
 REDDIT = None
 
@@ -103,7 +104,7 @@ class CommentWorker():
         r"!balance",
         r"!broke",
         r"!create",
-        r"!help",
+        r"!help\s*!?(.+)?",
         r"!ignore",
         r"!invest\s+([\d,.]+)\s*(%s)?(?:\s|$)" % "|".join(multipliers),
         r"!market",
@@ -190,11 +191,16 @@ class CommentWorker():
         """
         pass
 
-    def help(self, sess, comment):
+    def help(self, sess, comment, command_name=None):
         """
         Returns help information
         """
-        comment.reply_wrap(message.HELP_ORG)
+        if command_name is None:
+            return comment.reply_wrap(message.HELP_ORG)
+
+        help_msg = f"COMMAND `!{command_name}`"
+        help_msg += help_info.help_dict.get(command_name, "Command not found. Check the spelling.")
+        return comment.reply_wrap(help_msg)
 
     def market(self, sess, comment):
         """
