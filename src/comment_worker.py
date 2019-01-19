@@ -120,7 +120,8 @@ class CommentWorker():
         r"!upgrade",
         r"!invite\s+(.+)",
         r"!setprivate",
-        r"!setpublic"
+        r"!setpublic",
+        r"!tax\s+(\d+)"
     ]
 
     # allowed: alphanumeric, spaces, dashes
@@ -659,6 +660,35 @@ class CommentWorker():
         firm.private = False
 
         return comment.reply_wrap(message.setprivate_org)
+
+    @req_user
+    def tax(self, sess, comment, investor, tax_temp):
+
+        if investor.firm == 0:
+            return comment.reply_wrap(message.no_firm_failure_org)
+
+        if investor.firm_role != "ceo":
+            return comment.reply_wrap(message.not_ceo_org)
+
+        firm = sess.query(Firm).\
+            filter(Firm.id == investor.firm).\
+            first()
+
+        # Defining some tax limits, so
+        # 5 <= firm.tax <= 75
+        lower = 5
+        upper = 75
+
+        new_tax = int(tax_temp)
+
+        # Checking the boundaries
+        if new_tax > upper:
+            return comment.reply_wrap(message.TAX_TOO_HIGH)
+        if new_tax < lower:
+            return comment.reply_wrap(message.TAX_TOO_LOW)
+
+        firm.tax = new_tax
+        return comment.reply_wrap(message.TAX_SUCCESS)
 
     @req_user
     def upgrade(self, sess, comment, investor):
