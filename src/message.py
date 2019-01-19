@@ -53,8 +53,6 @@ UPDATE: Your investment has matured. It was successful! You profited %PROFIT% Me
 *%RETURNED% MemeCoins returned @ %FINAL_UPVOTES% %UPVOTES_WORD%*
 
 Your new balance is **%BALANCE% MemeCoins**.
-
-^(formula v3)
 """.replace("%UPVOTES_WORD%", utils.upvote_string())
 
 INVEST_LOSE_ORG = """
@@ -65,8 +63,6 @@ UPDATE: Your investment has matured. It was unsuccessful! You lost %PROFIT% Meme
 *%RETURNED% MemeCoins returned @ %FINAL_UPVOTES% %UPVOTES_WORD%*
 
 Your new balance is **%BALANCE% MemeCoins**.
-
-^(formula v3)
 """.replace("%UPVOTES_WORD%", utils.upvote_string())
 
 INVEST_BREAK_EVEN_ORG = """
@@ -77,8 +73,6 @@ UPDATE: Your investment has matured. It broke even! You profited %PROFIT% MemeCo
 *%RETURNED% MemeCoins returned @ %FINAL_UPVOTES% %UPVOTES_WORD%*
 
 Your new balance is **%BALANCE% MemeCoins**.
-
-^(formula v3)
 """.replace("%UPVOTES_WORD%", utils.upvote_string())
 
 def modify_invest_return(amount, initial_upvotes,
@@ -113,8 +107,6 @@ of meme industry.
 *"And Alexander wept, for there were no more worlds to conquer."* (...yet)
 
 Your current balance is **%BALANCE% MemeCoins** (the maximum balance).
-
-^(formula v3)
 """.replace("%UPVOTES_WORD%", utils.upvote_string())
 
 def modify_invest_capped(amount, initial_upvotes,
