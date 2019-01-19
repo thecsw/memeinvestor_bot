@@ -198,7 +198,8 @@ class CommentWorker():
         if command_name is None:
             return comment.reply_wrap(message.HELP_ORG)
 
-        help_msg = help_info.help_dict.get(command_name, "No such command.")
+        help_msg = f"COMMAND `!{command_name}`"
+        help_msg += help_info.help_dict.get(command_name, "Command not found. Check the spelling.")
         return comment.reply_wrap(help_msg)
 
     def market(self, sess, comment):
