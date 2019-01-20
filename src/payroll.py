@@ -36,6 +36,9 @@ def main():
             all()
 
         for firm in firms:
+            # 10% of firm coins are burned as a tax
+            firm.balance -= int(0.1 * firm.balance)
+
             # payouts is more than 1 if some amount of previous payouts never
             # got processed for some reason
             payouts = int((now - firm.last_payout) / config.PAYROLL_INTERVAL)
