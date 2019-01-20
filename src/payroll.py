@@ -80,5 +80,7 @@ def main():
         sess.commit()
         sess.close()
 
+        time.sleep(10 * 60)
+
 if __name__ == "__main__":
     main()
