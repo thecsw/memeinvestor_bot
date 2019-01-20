@@ -13,7 +13,8 @@ def main():
     a = CreateTable(models.Investment.__table__).compile(engine)
     b = CreateTable(models.Investor.__table__).compile(engine)
     c = CreateTable(models.Firm.__table__).compile(engine)
-    print(a,b,c)
+    d = CreateTable(models.Invite.__table__).compile(engine)
+    print(a,b,c,d)
 
 if __name__ == '__main__':
     main()
