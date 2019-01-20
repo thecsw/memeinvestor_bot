@@ -1,5 +1,6 @@
 # TODO: add docstrin here
 import time
+import datetime
 import logging
 import traceback
 
@@ -28,19 +29,25 @@ def main():
     session_maker = sessionmaker(bind=engine)
 
     while not killhandler.killed:
+        # only process payouts 5pm - 6pm on Fridays EST (10pm - 11pm UTC)
+        now_dt = datetime.datetime.now()
+        if now_dt.hour != 22 or now_dt.weekday() != 4:
+            time.sleep(10 * 60)
+            continue
+
         sess = session_maker()
         now = time.time()
 
+        # get firms which were not paid out to or created recently (last 3 days)
         firms = sess.query(Firm).\
-            filter(now - Firm.last_payout >= config.PAYROLL_INTERVAL).\
+            filter(now - Firm.last_payout >= (3 * 24 * 60 * 60)).\
             all()
 
         for firm in firms:
-            # payouts is more than 1 if some amount of previous payouts never
-            # got processed for some reason
-            payouts = int((now - firm.last_payout) / config.PAYROLL_INTERVAL)
-            payout_ratio = 1 - (0.6 ** payouts)
-            payout_amount = int(payout_ratio * firm.balance)
+            # 10% of firm coins are burned as a tax
+            firm.balance -= int(0.1 * firm.balance)
+
+            payout_amount = int(0.4 * firm.balance)
             if payout_amount == 0:
                 # handle broke firms
                 firm.last_payout = now
@@ -73,7 +80,7 @@ def main():
         sess.commit()
         sess.close()
 
-        time.sleep(config.PAYROLL_INTERVAL / 2)
+        time.sleep(10 * 60)
 
 if __name__ == "__main__":
     main()
