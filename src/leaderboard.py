@@ -139,6 +139,7 @@ def main():
                 outerjoin(Investment, and_(Investor.name == Investment.name, Investment.done == 0)).\
             group_by(Investor.name).\
             order_by(desc('networth')).\
+            limit(5).\
             all()
 
         top_firms = sess.query(Firm).\
