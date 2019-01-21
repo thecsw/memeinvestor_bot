@@ -120,12 +120,14 @@ def main():
                 new_balance = investor.balance - required_fee
                 investor.balance = new_balance
                 bot_reply = submission.\
-                    reply_wrap(message.modify_invest_place_here(required_fee, f"u/{submission.author.name}"))
+                    reply_wrap(message.modify_invest_place_here(required_fee,
+                                                                f"u/{submission.author.name}"))
                 sess.commit()
 
         # Sticky the comment
         if config.IS_MODERATOR:
             bot_reply.mod.distinguish(how='yes', sticky=True)
+            bot_reply.mod.approve()
             if delete_post:
                 logging.info(" -- Deleting the post...")
                 #Should we hide or just delete the post?
