@@ -111,7 +111,7 @@ class CommentWorker():
         r"!top",
         r"!version",
         r"!grant\s+(\S+)\s+(\S+)",
-        r"!template\s+(https://imgur.com/.+)",
+        r"!template\s+(.+)",
         r"!firm",
         r"!createfirm\s+(.+)",
         r"!joinfirm\s+(.+)",
