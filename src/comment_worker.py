@@ -111,7 +111,7 @@ class CommentWorker():
         r"!top",
         r"!version",
         r"!grant\s+(\S+)\s+(\S+)",
-        r"!template\s+(.+)",
+        r"!template\s+(\S+)",
         r"!firm",
         r"!createfirm\s+(.+)",
         r"!joinfirm\s+(.+)",
