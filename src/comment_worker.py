@@ -99,6 +99,16 @@ class CommentWorker():
         'q': 1e15
     }
 
+    # Allowed websites for !template command
+    websites = [
+        "imgur.com",
+        "i.imgur.com",
+        "reddit.com",
+        "i.reddit.com",
+        "v.reddit.com"
+    ]
+    template_sources = [f"https://{website}\S+" for website in websites]
+
     commands = [
         r"!active",
         r"!balance",
@@ -111,7 +121,7 @@ class CommentWorker():
         r"!top",
         r"!version",
         r"!grant\s+(\S+)\s+(\S+)",
-        r"!template\s+(\S+)",
+        r"!template\s+(%s)" % "|".join(template_sources),
         r"!firm",
         r"!createfirm\s+(.+)",
         r"!joinfirm\s+(.+)",
@@ -388,7 +398,8 @@ class CommentWorker():
                                                         replace("%NAME%", f"u/{comment.author.name}"), '')
         edited_response += message.modify_template_op(link, f"u/{comment.author.name}")
 
-        return comment.parent().edit_wrap(edited_response)
+        comment.parent().edit_wrap(edited_response)
+        return comment.reply_wrap(message.TEMPLATE_SUCCESS)
 
     def version(self, sess, comment):
         """
