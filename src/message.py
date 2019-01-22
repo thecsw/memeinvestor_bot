@@ -297,6 +297,8 @@ To prevent thread spam and other natural disasters, I only respond to direct rep
 - Visit /r/MemeInvestor_bot for questions or suggestions about me.
 
 - Support the project via our [patreon](https://www.patreon.com/memeinvestor_bot)
+
+- New user? Lost or confused? Reply `!help` to this message, or visit the [Wiki](https://www.reddit.com/r/MemeEconomy/wiki/index) for a more in depth explanation.
 """
 
 def invest_no_fee(name):
@@ -315,6 +317,10 @@ The author of this post paid **%MEMECOIN% MemeCoins** to post this.
 - Visit [memes.market](https://memes.market) for help, market statistics, and investor profiles.
 
 - Visit /r/MemeInvestor_bot for questions or suggestions about me.
+
+- Support the project via our [patreon](https://www.patreon.com/memeinvestor_bot)
+
+- New user? Lost or confused? Reply `!help` to this message, or visit the [Wiki](https://www.reddit.com/r/MemeEconomy/wiki/index) for a more in depth explanation.
 """ + TEMPLATE_HINT_ORG
 
 def modify_invest_place_here(amount, name):
