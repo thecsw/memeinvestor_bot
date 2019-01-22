@@ -650,3 +650,7 @@ The tax rate is too low. The tax should be between 5% and 75%.
 TAX_SUCCESS = """
 The new tax rate has been set successfully.
 """
+
+TEMPLATE_SUCCESS = """
+Template posted successfully! Thank you for making r/MemeEconomy a better place! 
+"""
