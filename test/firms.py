@@ -37,7 +37,7 @@ class TestCreateFirm(Test):
 
         sess = self.Session()
         investor = sess.query(Investor).filter(Investor.name == 'testuser').first()
-        self.assertEqual(investor.balance, 4000000)
+        self.assertEqual(investor.balance, 4900000)
 
     def test_short_name(self):
         self.command('!create')
