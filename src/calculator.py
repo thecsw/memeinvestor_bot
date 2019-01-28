@@ -129,7 +129,7 @@ def main():
                     first()
                 firm_name = firm.name
 
-                user_profit = profit * ((1 - firm.tax) / 100)
+                user_profit = profit * ((100 - firm.tax) / 100)
                 investor.balance += user_profit
 
                 firm_profit = profit * (firm.tax / 100)
