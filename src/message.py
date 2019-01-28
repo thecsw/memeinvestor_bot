@@ -93,7 +93,7 @@ def modify_invest_return(amount, initial_upvotes,
         replace("%RETURNED%", format(returned, ",d")).\
         replace("%PROFIT%", format(profit, ",d")).\
         replace("%PERCENT%", format(percent_str)).\
-        replace("%BALANCE%", format(new_balance, ",d"))
+        replace("%BALANCE%", format(int(new_balance), ",d"))
 
 INVEST_CAPPED_ORG = """
 *%AMOUNT% MemeCoins invested @ %INITIAL_UPVOTES% %UPVOTES_WORD%*
@@ -658,5 +658,5 @@ The new tax rate has been set successfully.
 """
 
 TEMPLATE_SUCCESS = """
-Template posted successfully! Thank you for making r/MemeEconomy a better place! 
+Template posted successfully! Thank you for making r/MemeEconomy a better place!
 """
