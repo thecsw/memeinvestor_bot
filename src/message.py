@@ -550,7 +550,7 @@ FIRM_TAX_ORG = """
 
 def modify_firm_tax(tax_amount, firm_name):
     return FIRM_TAX_ORG.\
-        replace("%AMOUNT%", tax_amount).\
+        replace("%AMOUNT%", str(tax_amount)).\
         replace("%NAME%", firm_name)
 
 TEMPLATE_NOT_OP = """
