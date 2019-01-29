@@ -1,37 +1,37 @@
 """
 os allows us to access the environment variables list
 """
+import json
 import os
 
-POST_TO_REDDIT = int(os.environ['BOT_POST_TO_REDDIT'])
-IS_MODERATOR = int(os.environ['BOT_IS_MODERATOR'])
-PREVENT_INSIDERS = int(os.environ['BOT_PREVENT_INSIDERS'])
-INVESTMENT_DURATION = int(os.environ['BOT_INVESTMENT_DURATION'])
-SUBMISSION_FEE = int(os.environ['BOT_SUBMISSION_FEE'])
-ADMIN_ACCOUNTS = os.environ['BOT_ADMIN_REDDIT_ACCOUNTS'].split(',')
+with open(os.path.join('..', 'cfg.json'), 'r', encoding='utf-8') as config_file:
+    config_data = json.load(config_file)
 
-STARTING_BALANCE = int(os.environ['BOT_STARTING_BALANCE'])
-SUBMISSION_FEE_PERCENT = int(os.environ['BOT_SUBMISSION_FEE_PERCENT'])
-SUBMISSION_MIN_FEE = int(os.environ['BOT_SUBMISSION_MIN_FEE'])
+POST_TO_REDDIT = int(config_data['BOT_POST_TO_REDDIT'])
+IS_MODERATOR = int(config_data['BOT_IS_MODERATOR'])
+PREVENT_INSIDERS = int(config_data['BOT_PREVENT_INSIDERS'])
+INVESTMENT_DURATION = int(config_data['BOT_INVESTMENT_DURATION'])
+SUBMISSION_FEE = int(config_data['BOT_SUBMISSION_FEE'])
+ADMIN_ACCOUNTS = config_data['BOT_ADMIN_REDDIT_ACCOUNTS']
 
-LEADERBOARD_INTERVAL = int(os.environ['BOT_LEADERBOARD_INTERVAL'])
+STARTING_BALANCE = int(config_data['BOT_STARTING_BALANCE'])
+SUBMISSION_FEE_PERCENT = int(config_data['BOT_SUBMISSION_FEE_PERCENT'])
+SUBMISSION_MIN_FEE = int(config_data['BOT_SUBMISSION_MIN_FEE'])
 
-CLIENT_ID = os.environ['BOT_CLIENT_ID']
-CLIENT_SECRET = os.environ['BOT_CLIENT_SECRET']
-USER_AGENT = os.environ['BOT_USER_AGENT']
-USERNAME = os.environ['BOT_USERNAME']
-PASSWORD = os.environ['BOT_PASSWORD']
+LEADERBOARD_INTERVAL = int(config_data['BOT_LEADERBOARD_INTERVAL'])
 
-MAINTENANCE = int(os.environ['BOT_MAINTENANCE'])
+CLIENT_ID = config_data['BOT_CLIENT_ID']
+CLIENT_SECRET = config_data['BOT_CLIENT_SECRET']
+USER_AGENT = config_data['BOT_USER_AGENT']
+USERNAME = config_data['BOT_USERNAME']
+PASSWORD = config_data['BOT_PASSWORD']
 
-SUBREDDITS = os.environ['BOT_SUBREDDIT'].split(',')
+MAINTENANCE = int(config_data['BOT_MAINTENANCE'])
 
-MYSQL_USER = os.environ['MYSQL_USER']
-MYSQL_PASSWORD = os.environ['MYSQL_PASSWORD']
-MYSQL_HOST = os.environ['MYSQL_HOST']
-MYSQL_PORT = os.environ['MYSQL_PORT']
-MYSQL_DATABASE = os.environ['MYSQL_DATABASE']
+SUBREDDITS = config_data['BOT_SUBREDDITS']
 
-DB = f"mysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
+DBFILE = config_data['DBFILE']
 
-TEST = int(os.environ['TEST'])
+TEST = 0
+
+DB = "sqlite:///{db}".format(db=DBFILE)

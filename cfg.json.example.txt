@@ -1,0 +1,24 @@
+{
+    "BOT_POST_TO_REDDIT": 0,
+    "BOT_SUBREDDITS": [
+        "BancaDelMeme_test"
+    ],
+    "BOT_IS_MODERATOR": 1,
+    "BOT_PREVENT_INSIDERS": 0,
+    "BOT_SUBMISSION_FEE": 0,
+    "BOT_SUBMISSION_FEE_PERCENT": 6,
+    "BOT_SUBMISSION_MIN_FEE": 250,
+    "BOT_INVESTMENT_DURATION": 60,
+    "BOT_MAINTENANCE": 0,
+    "BOT_STARTING_BALANCE": 1000,
+    "BOT_LEADERBOARD_INTERVAL": 1200,
+    "BOT_ADMIN_REDDIT_ACCOUNTS": [
+        "username"
+    ],
+    "BOT_CLIENT_ID": "client_id",
+    "BOT_CLIENT_SECRET": "client_secred",
+    "BOT_USER_AGENT": "UserAgent",
+    "BOT_USERNAME": "BotUsername",
+    "BOT_PASSWORD": "BotPassword",
+    "DBFILE": "path/to/db.sqlite3"
+}c
