@@ -8,7 +8,7 @@ def main():
     parser = argparse.ArgumentParser(description='Interactive command line tool for performing test calculations for investment return.')
     parser.add_argument('u_init', metavar='u_init', type=int, help='Post upvotes at time of investment.')
     parser.add_argument('u_final', metavar='u_final', type=int, help='Post upvotes at maturation of investment.')
-    parser.add_argument('invested', metavar='invested', type=int, help='MemeCoins Invested in post.')
+    parser.add_argument('invested', metavar='invested', type=int, help='MemeCoins investite in post.')
     parser.add_argument("-s", "--save-img", help="Save generated plot to file 'investment_performance.png'", action="store_true")
     args = parser.parse_args()
 

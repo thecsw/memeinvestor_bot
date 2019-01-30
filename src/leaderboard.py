@@ -38,7 +38,7 @@ sidebar_text_org = """
 
 ^(This sub is not ***only*** for templates. It is for memes in general, themed in an economic perspective. )
 
-###***[Please send us your suggestions!](https://www.reddit.com/message/compose?to=%2Fr%2FMemeEconomy)***
+###***[Please send us il tuo suggestions!](https://www.reddit.com/message/compose?to=%2Fr%2FMemeEconomy)***
 
 ***
 
@@ -52,7 +52,7 @@ sidebar_text_org = """
 
 1b. Titles should explain why users should invest in the meme. 
 
-2. Please invest effort in submissions and post a template for your meme. Posts with low-effort, commonly used titles, and barely-relevant content are strongly frowned upon and are subject to removal.
+2. Please invest effort in submissions and post a template for il tuo meme. Posts with low-effort, commonly used titles, and barely-relevant content are strongly frowned upon and are subject to removal.
 
 3. Please be respectful. No personal attacking. Be civil in the comments. ***This does not mean that you should report someone every time they call you a rude name or because they have a differing opinion.***
 
@@ -64,9 +64,9 @@ sidebar_text_org = """
 
 7. No spamming or advertising.
 
-8. Please keep NSFW, offensive material, and controversial topics to a minimum. Read [rule #8](https://www.reddit.com/r/MemeEconomy/about/rules/) and send a modmail if you have any questions.
+8. Please keep NSFW, offensive material, and controversial topics to a minimum. Read [rule #8](https://www.reddit.com/r/BancaDelMemeabout/rules/) and send a modmail if you have any questions.
 
-9. This is a forum for reputable investors only. Your account must be older than 7 days and have at least 50 comment karma to post.
+9. This is a forum for reputable investors only. Il tuo account must be older than 7 days and have at least 50 comment karma to post.
 
 10. Standard [site-wide rules](https://www.reddit.com/help/contentpolicy) apply.
 
@@ -100,7 +100,7 @@ sidebar_text_org = """
 
 ***
 
-*Please don't send modmail asking how to buy memes. We have plenty of great users willing to help you in that regard. See [**this explanatory post**](https://www.reddit.com/r/MemeEconomy/comments/5lk964/a_beginners_guide_to_the_memeeconomy_and_meme/?ref=share&ref_source=link) for a small bit of assistance.*
+*Please don't send modmail asking how to buy memes. We have plenty of great users willing to help you in that regard. See [**this explanatory post**](https://www.reddit.com/r/BancaDelMemecomments/5lk964/a_beginners_guide_to_the_memeeconomy_and_meme/?ref=share&ref_source=link) for a small bit of assistance.*
 
 ***
 

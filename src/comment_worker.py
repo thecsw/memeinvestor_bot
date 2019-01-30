@@ -338,7 +338,7 @@ class CommentWorker():
     @req_user
     def active(self, sess, comment, investor):
         """
-        Returns a list of all active investments made by the user
+        Returns a list of all investimenti attivi made by the user
         """
         active_investments = sess.query(Investment).\
             filter(Investment.done == 0).\
