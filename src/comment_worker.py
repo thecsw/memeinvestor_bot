@@ -295,12 +295,12 @@ class CommentWorker():
         ))
 
         sess.add(Investment(
-            post=comment.submission,
+            post=comment.submission.id,
             upvotes=comment.submission.ups,
-            comment=comment,
+            comment=comment.id,
             name=author,
             amount=amount,
-            response=response,
+            response=response.id,
             done=False,
         ))
 
