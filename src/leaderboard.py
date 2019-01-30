@@ -26,7 +26,7 @@ sidebar_text_org = """
 
 %TOP_USERS%
 
-**Migliori società:**
+**Migliori societa:**
 
 %TOP_FIRMS%
 

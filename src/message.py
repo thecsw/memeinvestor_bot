@@ -185,11 +185,11 @@ Here is a list of commands that summon me:
 - `!versione`
 - `!template https://imgur.com/...` **(solo per OP, utile per linkare i template)**
 
-### COMANDI PER LE SOCIETÀ (BETA)
-- `!società`
-- `!creasocietà <name>`
-- `!entrainsocietà <name>`
-- `!lasciasocietà`
+### COMANDI PER LE societa (BETA)
+- `!societa`
+- `!creasocieta <name>`
+- `!entrainsocieta <name>`
+- `!lasciasocieta`
 - `!promuovi <username>` **(Solo per i CEO e Exec)**
 - `!licenzia <username>` **(Solo per i CEO and Exec)**
 - `!upgrade` **(Solo per i CEO)**
@@ -362,17 +362,17 @@ MAINTENANCE_ORG = """
 """
 
 firm_none_org = """
-Non ti trovi in una società.
+Non ti trovi in una societa.
 
-Puoi crearne una con il comando **!creasocietà <NOME società>**, oppure richiedere di accedere ad una esistente con il comando **!entrainsocietà <NOME società ESISTENTE>**.
+Puoi crearne una con il comando **!creasocieta <NOME societa>**, oppure richiedere di accedere ad una esistente con il comando **!entrainsocieta <NOME societa ESISTENTE>**.
 """
 
 firm_org = """
-SOCIETÀ: **%FIRM_NAME%**
+societa: **%FIRM_NAME%**
 
-BILANCIO SOCIETÀ: **%BALANCE%** Memecoins
+BILANCIO societa: **%BALANCE%** Memecoins
 
-LIVELLO SOCIETÀ: **%LEVEL%**
+LIVELLO societa: **%LEVEL%**
 
 Il tuo Rank: **%RANK%**
 
@@ -391,7 +391,7 @@ Il tuo Rank: **%RANK%**
 
 ----
 
-Puoi lasciare questa società con il comando **!escidallasocietà**.
+Puoi lasciare questa societa con il comando **!escidallasocieta**.
 """
 
 rank_strs = {
@@ -412,13 +412,13 @@ def modify_firm(rank, firm, ceo, execs, traders):
         replace("%LEVEL%", str(firm.rank + 1))
 
 createfirm_exists_failure_org = """
-Sei già all'interno di questa società: **%FIRM_NAME%**
+Sei già all'interno di questa societa: **%FIRM_NAME%**
 
-Per favore, esci usando il comando *!escidallasocietà*, prima di accedere in una nuova società.
+Per favore, esci usando il comando *!escidallasocieta*, prima di accedere in una nuova societa.
 """
 
 createfirm_cost_failure_org = """
-Creare una società costa 1,000,000 Memecoins, e tu sei un poveraccio. Vai a fare della grana, e fatti rivedere solo quando ne avrai abbastanza.
+Creare una societa costa 1,000,000 Memecoins, e tu sei un poveraccio. Vai a fare della grana, e fatti rivedere solo quando ne avrai abbastanza.
 """
 
 def modify_createfirm_exists_failure(firm_name):
@@ -426,32 +426,32 @@ def modify_createfirm_exists_failure(firm_name):
         replace("%FIRM_NAME%", firm_name)
 
 createfirm_format_failure_org = """
-I nomi delle società devono avere tra 4 e 32 caratteri. Sono consentiti solo caratteri alfanumerici, spazi, trattini medi e bassi (- e _)
+I nomi delle societa devono avere tra 4 e 32 caratteri. Sono consentiti solo caratteri alfanumerici, spazi, trattini medi e bassi (- e _)
 """
 
 createfirm_nametaken_failure_org = """
-Il nome scelto per la società è già in uso. Se non stai tentando di organizzare una truffa finanziaria, per favore riprova.
+Il nome scelto per la societa è già in uso. Se non stai tentando di organizzare una truffa finanziaria, per favore riprova.
 """
 
 createfirm_org = """
-La nuova società è stata creata correttamente, sto chiamando il notaio.
+La nuova societa è stata creata correttamente, sto chiamando il notaio.
 
-Tu sei il CEO della società e hai il potere di
+Tu sei il CEO della societa e hai il potere di
 """
 
 nofirm_failure_org = leavefirm_none_failure_org = """
-Non sei in una società.
+Non sei in una societa.
 """
 no_firm_failure_org = leavefirm_none_failure_org
 
 leavefirm_ceo_failure_org = """
-Al momento sei il CEO della tua società, quindi non ti è permesso andartene. Non fare lo schettino della finanza.
+Al momento sei il CEO della tua societa, quindi non ti è permesso andartene. Non fare lo schettino della finanza.
 
 Se davvero vuoi andartene, dovrai prima rinunciare al tuo ruolo. Per farlo dovrai promuovere un executive al ruolo di CEO col comando **!promuovi <username>**.
 """
 
 leavefirm_org = """
-Sei uscito dalla società.
+Sei uscito dalla societa.
 """
 
 not_ceo_org = """
@@ -467,11 +467,11 @@ Non sono riuscito a promuovere l'utente, assicurati che sia corretto (o che non 
 """
 
 promote_full_org = """
-Non ho potuto promuovere questo impiegato, poiché la società è alla sua capacità massima. 
+Non ho potuto promuovere questo impiegato, poiché la societa è alla sua capacità massima. 
 **Numero di execs:** %EXECS%
-**Livello società:** %LEVEL%
+**Livello societa:** %LEVEL%
 
-Il CEO della società può aumentare il livello col comando `!upgrade`.
+Il CEO della societa può aumentare il livello col comando `!upgrade`.
 """
 
 def modify_promote_full(firm):
@@ -495,7 +495,7 @@ def modify_fire(user):
 
 fire_org = """
 Vattene via, barbone, ci hai fatto perdere un sacco di soldi!
-**/u/%NAME%** licenziato dalla società.
+**/u/%NAME%** licenziato dalla societa.
 """
 
 fire_failure_org = """
@@ -503,26 +503,26 @@ Non sono riuscito a cacciare l'utente, assicurati di aver scritto il nome corret
 """
 
 joinfirm_exists_failure_org = """
-Non puoi unirti ad una società perché sei già all'interno di un'altra.  
-Utilizza il comando *!escidallasocietà* per lasciare la società prima di unirti ad una nuova.
+Non puoi unirti ad una societa perché sei già all'interno di un'altra.  
+Utilizza il comando *!escidallasocieta* per lasciare la societa prima di unirti ad una nuova.
 """
 
 joinfirm_private_failure_org = """
-Impossibile unirsi a questa società perché è privata e non sei stato invitato alla festa.
+Impossibile unirsi a questa societa perché è privata e non sei stato invitato alla festa.
 
 Il CEO o gli Executives devono prima invitarti col comando `!invita <username>`.
 """
 
 joinfirm_failure_org = """
-Non riesco a trovare la società che hai inserito. Che cazzo di truffa stai organizzando? Scrivi meglio il nome e riprova
+Non riesco a trovare la societa che hai inserito. Che cazzo di truffa stai organizzando? Scrivi meglio il nome e riprova
 """
 
 joinfirm_full_org = """
-Non puoi unirti alla società poiché ha raggiunto il numero massimo di membri.
+Non puoi unirti alla societa poiché ha raggiunto il numero massimo di membri.
 **Numero di impiegati:** %MEMBERS%
-**Livello società:** %LEVEL%
+**Livello societa:** %LEVEL%
 
-Il CEO della società può aumentare il livello col comando `!upgrade`
+Il CEO della societa può aumentare il livello col comando `!upgrade`
 """
 
 def modify_joinfirm_full(firm):
@@ -531,7 +531,7 @@ def modify_joinfirm_full(firm):
         replace("%LEVEL%", str(firm.rank + 1))
 
 joinfirm_org = """
-Adesso sei un trader semplice della società **%NAME%**. Se vuoi uscire dalla società scrivi *!escidallasocietà*.
+Adesso sei un trader semplice della societa **%NAME%**. Se vuoi uscire dalla societa scrivi *!escidallasocieta*.
 """
 
 def modify_joinfirm(firm):
@@ -542,7 +542,7 @@ FIRM_TAX_ORG = """
 
 --
 
-%AMOUNT% MemeCoins sono stati inviati alla società - %NAME%.
+%AMOUNT% MemeCoins sono stati inviati alla societa - %NAME%.
 """
 
 def modify_firm_tax(tax_amount, firm_name):
@@ -573,11 +573,11 @@ def modify_template_op(link, name):
         replace("%LINK%", link).\
         replace("%NAME%", name)
 invite_not_private_failure_org = """
-Non hai bisogno di invitare qualcuno poiché la tua società non è privata.
+Non hai bisogno di invitare qualcuno poiché la tua societa non è privata.
 
-Gli investitori possono unirsi col comando `!entrainsocietà <firm_name>`.
+Gli investitori possono unirsi col comando `!entrainsocieta <firm_name>`.
 
-Se sei il CEO e vuoi impostare la società come privata, usa il comando `!impostaprivato`.
+Se sei il CEO e vuoi impostare la societa come privata, usa il comando `!impostaprivato`.
 """
 
 invite_no_user_failure_org = """
@@ -585,13 +585,13 @@ Impossibile invitare l'utente, assicurati di aver scritto il nome correttamente.
 """
 
 invite_in_firm_failure_org = """
-Questo utente fa già parte di un'altra società. Assicurati che esca prima di invitarlo nuovamente.
+Questo utente fa già parte di un'altra societa. Assicurati che esca prima di invitarlo nuovamente.
 """
 
 invite_org = """
-Hai invitato /u/%NAME% nella società.
+Hai invitato /u/%NAME% nella societa.
 
-Possono accettare questa richiesta usando il comando `!entrainsocietà %FIRM%`.
+Possono accettare questa richiesta usando il comando `!entrainsocieta %FIRM%`.
 """
 
 def modify_invite(invitee, firm):
@@ -600,22 +600,22 @@ def modify_invite(invitee, firm):
         replace("%FIRM%", firm.name)
 
 setprivate_org = """
-La società è ora privata. I nuovi investitori potranno accedere solo se tu o uno degli Executives invia loro un invito col comando `!invita <user>`.
+La societa è ora privata. I nuovi investitori potranno accedere solo se tu o uno degli Executives invia loro un invito col comando `!invita <user>`.
 
-Se vuoi annullare tutto e tornare con una società pubblica, scrivi `!impostapubblico`.
+Se vuoi annullare tutto e tornare con una societa pubblica, scrivi `!impostapubblico`.
 """
 
 setpublic_org = """
-La tua società è ora pubblica. I nuovi investitori potranno accedere senza essere invitati utilizzando il comando `!entrainsocietà <firm_name>`.
+La tua societa è ora pubblica. I nuovi investitori potranno accedere senza essere invitati utilizzando il comando `!entrainsocieta <firm_name>`.
 
-Se vuoi annullare tutto e tornare con una società privata, scrivi `!impostaprivato`.
+Se vuoi annullare tutto e tornare con una societa privata, scrivi `!impostaprivato`.
 
 """
 upgrade_insufficient_funds_org = """
-La società non ha abbastanza fondi per aumentare il proprio livello.
+La societa non ha abbastanza fondi per aumentare il proprio livello.
 
 
-**Saldo società:** %BALANCE%
+**Saldo societa:** %BALANCE%
 **Costo per passare al livello %LEVEL%:** %COST%
 """
 
@@ -626,9 +626,9 @@ def modify_upgrade_insufficient_funds_org(firm, cost):
         replace("%COST%", str(cost))
 
 upgrade_org = """
-Hai migliorato con successo il livello della società:  **Livello %LEVEL%**!
+Hai migliorato con successo il livello della societa:  **Livello %LEVEL%**!
 
-La società adesso supporta un massimo di **%MAX_MEMBERS% impiegati**, incluso un massimo di **%MAX_EXECS% executives**.
+La societa adesso supporta un massimo di **%MAX_MEMBERS% impiegati**, incluso un massimo di **%MAX_EXECS% executives**.
 """
 
 def modify_upgrade(firm, max_members, max_execs):
