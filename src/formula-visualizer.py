@@ -48,7 +48,7 @@ def main():
     # Bottom left subplot
     ax = plt.subplot2grid((6, 2), (3, 0), rowspan=3, colspan=1)
 
-    olds = [0, 1, 5, 10, 25, 50, 100, 200]
+    olds = [0, 1, 5, 10, 25, 50, 100, 200, 300]
     news = range(0, 500)
 
     xy = []
