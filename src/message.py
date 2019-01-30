@@ -125,7 +125,7 @@ Non hai abbastanza MemeCoins per fare questo investimento.
 
 Il tuo saldo attuale è **%BALANCE% MemeCoins**.
 
-Se hai meno di 100 MemeCoins e nessun investimento in corso, prova ad inviare `!broke`!
+Se hai meno di 100 MemeCoins e nessun investimento in corso, prova ad inviare `!bancarotta`!
 """
 
 def modify_insuff(balance_t):
@@ -174,30 +174,30 @@ Ecco una lista di tutti i comandi che funzionano con me:
 Here is a list of commands that summon me:
 
 ### COMANDI GENERALI
-- `!active`
-- `!balance`
-- `!broke`
-- `!create`
-- `!help`
-- `!invest <amount>`
-- `!market`
+- `!attivi`
+- `!saldo`
+- `!bancarotta`
+- `!crea`
+- `!aiuto`
+- `!investi <amount>`
+- `!mercato`
 - `!top`
-- `!version`
+- `!versione`
 - `!template https://imgur.com/...` **(solo per OP, utile per linkare i template)**
 
-### FIRM COMMANDS
-- `!firm`
-- `!createfirm <name>`
-- `!joinfirm <name>`
-- `!leavefirm`
-- `!promote <username>` **(CEO and Exec Only)**
-- `!fire <username>` **(CEO and Exec Only)**
-- `!upgrade` **(CEO Only)**
-- `!setprivate` **(CEO Only)**
-- `!setpublic` **(CEO Only)**
-- `!invite <username>` **(CEO and Exec Only)**
+### COMANDI PER LE SOCIETÀ (BETA)
+- `!società`
+- `!creasocietà <name>`
+- `!entrainsocietà <name>`
+- `!lasciasocietà`
+- `!promuovi <username>` **(Solo per i CEO e Exec)**
+- `!licenzia <username>` **(Solo per i CEO and Exec)**
+- `!upgrade` **(Solo per i CEO)**
+- `!impostaprivato` **(Solo per i CEO)**
+- `!impostapubblico` **(Solo per i CEO)**
+- `!invita <username>` **(Solo per i CEO e Exec)**
 
-Per avere aiuto su un singolo comando, semplicemente scrivi `!help command`
+Per avere aiuto su un singolo comando, semplicemente scrivi `!aiuto`
 """
 
 BALANCE_ORG = """
@@ -295,7 +295,7 @@ Per prevenire spam e altri catastrofi naturali, rispondo solamente a risposte di
 
 - Visit /r/MemeInvestor_bot per domande o suggerimenti riguardo la versione originale di questo bot in uso su /r/meme_economy o supportali tramite il loro patreon: [patreon](https://www.patreon.com/memeinvestor_bot)
 
-- Nuovo utente? Ti senti perso e confuso? Rispondi `!help` a questo messaggio, o visita la pagina [Wiki](https://www.reddit.com/r/BancaDelMeme/wiki/index) per una spiegazione più dettagliata.
+- Nuovo utente? Ti senti perso e confuso? Rispondi `!aiuto` a questo messaggio, o visita la pagina [Wiki](https://www.reddit.com/r/BancaDelMeme/wiki/index) per una spiegazione più dettagliata.
 """
 
 def invest_no_fee(name):
@@ -315,7 +315,7 @@ L'autore di questo post ha pagato **%MEMECOIN% MemeCoins** per postare.
 
 - Visit /r/MemeInvestor_bot per domande o suggerimenti riguardo la versione originale di questo bot in uso su /r/meme_economy o supportali tramite il loro patreon: [patreon](https://www.patreon.com/memeinvestor_bot)
 
-- Nuovo utente? Ti senti perso e confuso? Rispondi `!help` a questo messaggio, o visita la pagina [Wiki](https://www.reddit.com/r/BancaDelMeme/wiki/index) per una spiegazione più dettagliata.
+- Nuovo utente? Ti senti perso e confuso? Rispondi `!aiuto` a questo messaggio, o visita la pagina [Wiki](https://www.reddit.com/r/BancaDelMeme/wiki/index) per una spiegazione più dettagliata.
 """ + TEMPLATE_HINT_ORG
 
 def modify_invest_place_here(amount, name):
@@ -334,9 +334,9 @@ def modify_grant_failure(failure_message):
     return f"Oops, Non ho potuto assegnare il badge ({failure_message})"
 
 NO_ACCOUNT_POST_ORG = """
-Hai bisogno di creare un account per postare un meme. Per favore, rispondi ad uno dei miei commenti con `!create`.
+Hai bisogno di creare un account per postare un meme. Per favore, rispondi ad uno dei miei commenti con `!crea`.
 
-Per avere più informazioni, scrivi `!help`
+Per avere più informazioni, scrivi `!aiuto`
 """
 
 PAY_TO_POST_ORG = """
@@ -364,7 +364,7 @@ MAINTENANCE_ORG = """
 firm_none_org = """
 Non ti trovi in una società.
 
-Puoi crearne una con il comando **!createfirm <NOME SOCIETA>**, oppure richiedere di accedere ad una esistente con il comando **!joinfirm <NOME SOCIETA ESISTENTE>**.
+Puoi crearne una con il comando **!creasocietà <NOME società>**, oppure richiedere di accedere ad una esistente con il comando **!entrainsocietà <NOME società ESISTENTE>**.
 """
 
 firm_org = """
@@ -391,7 +391,7 @@ Il tuo Rank: **%RANK%**
 
 ----
 
-Puoi lasciare questa società con il comando **!leavefirm**.
+Puoi lasciare questa società con il comando **!escidallasocietà**.
 """
 
 rank_strs = {
@@ -414,7 +414,7 @@ def modify_firm(rank, firm, ceo, execs, traders):
 createfirm_exists_failure_org = """
 Sei già all'interno di questa società: **%FIRM_NAME%**
 
-Per favore, esci usando il comando *!leavefirm*, prima di accedere in una nuova società.
+Per favore, esci usando il comando *!escidallasocietà*, prima di accedere in una nuova società.
 """
 
 createfirm_cost_failure_org = """
@@ -447,7 +447,7 @@ no_firm_failure_org = leavefirm_none_failure_org
 leavefirm_ceo_failure_org = """
 Al momento sei il CEO della tua società, quindi non ti è permesso andartene. Non fare lo schettino della finanza.
 
-Se davvero vuoi andartene, dovrai prima rinunciare al tuo ruolo. Per farlo dovrai promuovere un executive al ruolo di CEO col comando **!promote <username>**.
+Se davvero vuoi andartene, dovrai prima rinunciare al tuo ruolo. Per farlo dovrai promuovere un executive al ruolo di CEO col comando **!promuovi <username>**.
 """
 
 leavefirm_org = """
@@ -504,13 +504,13 @@ Non sono riuscito a cacciare l'utente, assicurati di aver scritto il nome corret
 
 joinfirm_exists_failure_org = """
 Non puoi unirti ad una società perché sei già all'interno di un'altra.  
-Utilizza il comando *!leavefirm* per lasciare la società prima di unirti ad una nuova.
+Utilizza il comando *!escidallasocietà* per lasciare la società prima di unirti ad una nuova.
 """
 
 joinfirm_private_failure_org = """
 Impossibile unirsi a questa società perché è privata e non sei stato invitato alla festa.
 
-Il CEO o gli Executives devono prima invitarti col comando `!invite <username>`.
+Il CEO o gli Executives devono prima invitarti col comando `!invita <username>`.
 """
 
 joinfirm_failure_org = """
@@ -531,7 +531,7 @@ def modify_joinfirm_full(firm):
         replace("%LEVEL%", str(firm.rank + 1))
 
 joinfirm_org = """
-Adesso sei un trader semplice della società **%NAME%**. Se vuoi uscire dalla società scrivi *!leavefirm*.
+Adesso sei un trader semplice della società **%NAME%**. Se vuoi uscire dalla società scrivi *!escidallasocietà*.
 """
 
 def modify_joinfirm(firm):
@@ -575,9 +575,9 @@ def modify_template_op(link, name):
 invite_not_private_failure_org = """
 Non hai bisogno di invitare qualcuno poiché la tua società non è privata.
 
-Gli investitori possono unirsi col comando `!joinfirm <firm_name>`.
+Gli investitori possono unirsi col comando `!entrainsocietà <firm_name>`.
 
-Se sei il CEO e vuoi impostare la società come privata, usa il comando `!setprivate`.
+Se sei il CEO e vuoi impostare la società come privata, usa il comando `!impostaprivato`.
 """
 
 invite_no_user_failure_org = """
@@ -591,7 +591,7 @@ Questo utente fa già parte di un'altra società. Assicurati che esca prima di i
 invite_org = """
 Hai invitato /u/%NAME% nella società.
 
-Possono accettare questa richiesta usando il comando `!joinfirm %FIRM%`.
+Possono accettare questa richiesta usando il comando `!entrainsocietà %FIRM%`.
 """
 
 def modify_invite(invitee, firm):
@@ -600,15 +600,15 @@ def modify_invite(invitee, firm):
         replace("%FIRM%", firm.name)
 
 setprivate_org = """
-La società è ora privata. I nuovi investitori potranno accedere solo se tu o uno degli Executives invia loro un invito col comando `!invite <user>`.
+La società è ora privata. I nuovi investitori potranno accedere solo se tu o uno degli Executives invia loro un invito col comando `!invita <user>`.
 
-Se vuoi annullare tutto e tornare con una società pubblica, scrivi `!setpublic`.
+Se vuoi annullare tutto e tornare con una società pubblica, scrivi `!impostapubblico`.
 """
 
 setpublic_org = """
-La tua società è ora pubblica. I nuovi investitori potranno accedere senza essere invitati utilizzando il comando `!joinfirm <firm_name>`.
+La tua società è ora pubblica. I nuovi investitori potranno accedere senza essere invitati utilizzando il comando `!entrainsocietà <firm_name>`.
 
-Se vuoi annullare tutto e tornare con una società privata, scrivi `!setprivate`.
+Se vuoi annullare tutto e tornare con una società privata, scrivi `!impostaprivato`.
 
 """
 upgrade_insufficient_funds_org = """
