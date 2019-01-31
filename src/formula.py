@@ -38,16 +38,25 @@ def sigmoid(x, maxvalue, midpoint, steepness):
     y = fast_float(maxvalue) / ( 1 + math.exp(arg) )
     return y
 
+MAX_A = 1.2
+MAX_B = 1.4
+MAX_C = 7
+
 def sigmoid_max(old):
-    return 1.2 + 1.4 / ((old / 10) + 1)
+    return MAX_A + MAX_B / ((old / MAX_C) + 1)
+
+MID_A = 7
+MID_B = 500
+MID_M = 25000
 
 def sigmoid_midpoint(old):
-    sig_mp_0 = 10
-    sig_mp_1 = 500
-    return linear_interpolate(old, 0, 25000, sig_mp_0, sig_mp_1)
+    return linear_interpolate(old, 0, MID_M, MID_A, MID_B)
+
+STEEP_A = 0.1
+STEEP_C = 100
 
 def sigmoid_steepness(old):
-    return 0.04 / ((old / 100) + 1)
+    return STEEP_A / ((old / STEEP_C) + 1)
 
 def linear_interpolate(x, x_0, x_1, y_0, y_1):
     m = (y_1 - y_0) / fast_float(x_1 - x_0)
