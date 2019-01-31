@@ -110,29 +110,30 @@ class CommentWorker():
     template_sources = [f"https://{website}\S+" for website in websites]
 
     commands = [
-        r"!active",
-        r"!balance",
-        r"!broke",
-        r"!create",
-        r"!help\s*!?(.+)?",
-        r"!ignore",
+        r"!attivi",
+        r"!saldo",
+        r"!bancarotta",
+        r"!crea",
+        r"!aiuto\s*!?(.+)?",
+        r"!ignora",
         r"!invest\s+([\d,.]+)\s*(%s)?(?:\s|$)" % "|".join(multipliers),
-        r"!market",
+		r"!investi\s+([\d,.]+)\s*(%s)?(?:\s|$)" % "|".join(multipliers),
+        r"!mercato",
         r"!top",
-        r"!version",
-        r"!grant\s+(\S+)\s+(\S+)",
+        r"!versione",
+        r"!assegna\s+(\S+)\s+(\S+)",
         r"!template\s+(%s)" % "|".join(template_sources),
-        r"!firm",
-        r"!createfirm\s+(.+)",
-        r"!joinfirm\s+(.+)",
-        r"!leavefirm",
-        r"!promote\s+(.+)",
-        r"!fire\s+(.+)",
+        r"!societa",
+        r"!creasocieta\s+(.+)",
+        r"!entrainsocieta\s+(.+)",
+        r"!lasciasocieta",
+        r"!promuovi\s+(.+)",
+        r"!licenzia\s+(.+)",
         r"!upgrade",
-        r"!invite\s+(.+)",
-        r"!setprivate",
-        r"!setpublic",
-        r"!tax\s+(\d+)"
+        r"!invita\s+(.+)",
+        r"!impostaprivato",
+        r"!impostapubblico",
+        r"!tassa\s+(\d+)"
     ]
 
     # allowed: alphanumeric, spaces, dashes
@@ -196,13 +197,13 @@ class CommentWorker():
             sess.close()
             break
 
-    def ignore(self, sess, comment):
+    def ignora(self, sess, comment):
         """
         Just ignore function
         """
         pass
 
-    def help(self, sess, comment, command_name=None):
+    def aiuto(self, sess, comment, command_name=None):
         """
         Returns help information
         """
@@ -213,7 +214,8 @@ class CommentWorker():
         help_msg += help_info.help_dict.get(command_name, "Command not found. Check the spelling.")
         return comment.reply_wrap(help_msg)
 
-    def market(self, sess, comment):
+
+    def mercato(self, sess, comment):
         """
         Return the meme market's current state
         """
@@ -243,7 +245,7 @@ class CommentWorker():
 
         comment.reply_wrap(message.modify_top(leaders))
 
-    def create(self, sess, comment):
+    def crea(self, sess, comment):
         """
         This one is responsible for creating a new user
         """
@@ -261,7 +263,7 @@ class CommentWorker():
         comment.reply_wrap(message.modify_create(comment.author, config.STARTING_BALANCE))
 
     @req_user
-    def invest(self, sess, comment, investor, amount, suffix):
+    def investi(self, sess, comment, investor, amount, suffix):
         """
         This function invests
         """
@@ -307,14 +309,21 @@ class CommentWorker():
         investor.balance = new_balance
 
     @req_user
-    def balance(self, sess, comment, investor):
+    def invest(self, sess, comment, investor, amount, suffix):
+        """
+        This function invests
+        """
+        self.investi(sess, comment, investor, amount, suffix)
+
+    @req_user
+    def saldo(self, sess, comment, investor):
         """
         Returns user's balance
         """
         comment.reply_wrap(message.modify_balance(investor.balance))
 
     @req_user
-    def broke(self, sess, comment, investor):
+    def bancarotta(self, sess, comment, investor):
         """
         Checks if the user is broke. If he is, resets his/her balance to 100 MemeCoins
         """
@@ -336,9 +345,9 @@ class CommentWorker():
         comment.reply_wrap(message.modify_broke(investor.broke))
 
     @req_user
-    def active(self, sess, comment, investor):
+    def attivi(self, sess, comment, investor):
         """
-        Returns a list of all active investments made by the user
+        Returns a list of all investimenti attivi made by the user
         """
         active_investments = sess.query(Investment).\
             filter(Investment.done == 0).\
@@ -348,7 +357,7 @@ class CommentWorker():
 
         comment.reply_wrap(message.modify_active(active_investments))
 
-    def grant(self, sess, comment, grantee, badge):
+    def assegna(self, sess, comment, grantee, badge):
         """
         This is how admins can grant badges manually
         """
@@ -401,14 +410,14 @@ class CommentWorker():
         comment.parent().edit_wrap(edited_response)
         return comment.reply_wrap(message.TEMPLATE_SUCCESS)
 
-    def version(self, sess, comment):
+    def versione(self, sess, comment):
         """
         Return the date when the bot was deployed
         """
         return comment.reply_wrap(message.modify_deploy_version(utils.DEPLOY_DATE))
 
     @req_user
-    def firm(self, sess, comment, investor):
+    def societa(self, sess, comment, investor):
         if investor.firm == 0:
             return comment.reply_wrap(message.firm_none_org)
 
@@ -441,7 +450,7 @@ class CommentWorker():
                 traders))
 
     @req_user
-    def createfirm(self, sess, comment, investor, firm_name):
+    def creasocieta(self, sess, comment, investor, firm_name):
         if investor.firm != 0:
             existing_firm = sess.query(Firm).\
                 filter(Firm.id == investor.firm).\
@@ -484,7 +493,7 @@ class CommentWorker():
         return comment.reply_wrap(message.createfirm_org)
 
     @req_user
-    def leavefirm(self, sess, comment, investor):
+    def lasciasocieta(self, sess, comment, investor):
         if investor.firm == 0:
             return comment.reply_wrap(message.leavefirm_none_failure_org)
 
@@ -511,7 +520,7 @@ class CommentWorker():
         return comment.reply_wrap(message.leavefirm_org)
 
     @req_user
-    def promote(self, sess, comment, investor, to_promote):
+    def promuovi(self, sess, comment, investor, to_promote):
         if investor.firm == 0:
             return comment.reply_wrap(message.firm_none_org)
 
@@ -553,7 +562,7 @@ class CommentWorker():
         return comment.reply_wrap(message.modify_promote(user))
 
     @req_user
-    def fire(self, sess, comment, investor, to_fire):
+    def licenzia(self, sess, comment, investor, to_fire):
         if investor.firm == 0:
             return comment.reply_wrap(message.firm_none_org)
 
@@ -587,7 +596,7 @@ class CommentWorker():
         return comment.reply_wrap(message.modify_fire(user))
 
     @req_user
-    def joinfirm(self, sess, comment, investor, firm_name):
+    def entrainsocieta(self, sess, comment, investor, firm_name):
         if investor.firm != 0:
             return comment.reply_wrap(message.joinfirm_exists_failure_org)
 
@@ -621,7 +630,7 @@ class CommentWorker():
         return comment.reply_wrap(message.modify_joinfirm(firm))
 
     @req_user
-    def invite(self, sess, comment, investor, invitee_name):
+    def invita(self, sess, comment, investor, invitee_name):
         if investor.firm == 0:
             return comment.reply_wrap(message.no_firm_failure_org)
 
@@ -648,7 +657,7 @@ class CommentWorker():
         return comment.reply_wrap(message.modify_invite(invitee, firm))
 
     @req_user
-    def setprivate(self, sess, comment, investor):
+    def impostaprivata(self, sess, comment, investor):
         if investor.firm == 0:
             return comment.reply_wrap(message.no_firm_failure_org)
 
@@ -664,7 +673,7 @@ class CommentWorker():
         return comment.reply_wrap(message.setprivate_org)
 
     @req_user
-    def setpublic(self, sess, comment, investor):
+    def impostapubblica(self, sess, comment, investor):
         if investor.firm == 0:
             return comment.reply_wrap(message.no_firm_failure_org)
 
@@ -680,7 +689,7 @@ class CommentWorker():
         return comment.reply_wrap(message.setprivate_org)
 
     @req_user
-    def tax(self, sess, comment, investor, tax_temp):
+    def tassa(self, sess, comment, investor, tax_temp):
 
         if investor.firm == 0:
             return comment.reply_wrap(message.no_firm_failure_org)

@@ -18,94 +18,67 @@ from stopwatch import Stopwatch
 logging.basicConfig(level=logging.INFO)
 
 sidebar_text_org = """
-
-/r/MemeEconomy is a place where individuals can buy, sell, share, make, and invest in memes freely. You'll also get updates on the market and be able to collaborate with other fellow meme traders.
+/r/BancaDelMeme è un posto dove si puoi comprare, vendere, condividere, fare e investire sui meme liberamente.
 
 *****
 
-**Top Users:**
+**Migliori utenti:**
 
 %TOP_USERS%
 
-**Top Firms:**
+**Migliori societa:**
 
 %TOP_FIRMS%
 
 
-###[Join the **official** Discord!](https://discord.gg/zVgD2M7)
+&nbsp;
+
+^(Questo sub non è ***solo*** per templates. È rivolto a tutti i meme (in italiano), il tutto arricchito con un po' di sano gioco dei mercati)
+
+###***[Inviaci dei suggerimenti!](https://www.reddit.com/message/compose?to=%2Fr%2FBancaDelMeme)***
+
+***
+
+**La nostra sidebar e le nostre regole sono aggiornate frequentemente, per tenere il passo dei sempre mutabili mercati. Per favore, ogni tanto dai un'occhiata alla sidebar per eventuali aggiornamenti che potresti aver perso.**
+
+***
+
+**Regole:** 
+
+1a. Post e titoli devono essere legati alla meme economy.
+**Per esempio:** "Ho trovato questa pic" non è OK. "Ho trovato questa pic, che faccio compro o vendo?" è già meglio. "Questo meme sarà il top trend nel terzo trimestre 2019, comprate" è l'ideale. Ingegnatevi! 
+Potete prendere spunto dal dizionario del Sole24Ore [Investopedia Financial Dictionary](https://finanza-mercati.ilsole24ore.com/strumenti/glossario/glossario.php) se hai bisogno di ispirazione.
+
+1b. I titoli dovrebbero spiegare perché gli utenti dovrebbero investire su quel meme.
+
+2. Per favore, non fare post low effort. E soprattutto, cerca di postare i teplate dei tuoi meme. Post low effort con titoli identici ad altri, contenuti poco rilevanti sono genericamente sconsigliati e soggetti a rimozione.
+
+3. Per favore, porta rispetto agli altri utenti. Non si tollerano attacchi personali. Rimani civile nei commenti. Alla fine siamo qui per divertirci.
+***Questo non vuol dire che dovete inviare report ogni volta che qualcuno vi chiama in modo rude oppure ha un opinione differente dalla vostra.***
+
+4. Non si tollerano post, messaggi o nomi utente che rivelano informazioni personali senza il consenso dell'interessato.
+
+
+5. No repost. I crosspost sono permessi se seguono la regola 1. 
+
+6. Rispetta l'economia. Non inviare false informazioni di mercato (come falsi screenshot), è un crimine ed è soggetto a controlli da parte delle fiamme gialle. 
+
+7. No spam e no autopromozione o pubblicità di ogni tipo.
+
+
+8. Per favore filtra il materiale NSFW, non adatto a minori o controverso col filtro NSFW.
+
+9. Le regole standard di reddit valgono comunque: [site-wide rules](https://www.reddit.com/help/contentpolicy).
 
 &nbsp;
 
-^(This sub is not ***only*** for templates. It is for memes in general, themed in an economic perspective. )
-
-###***[Please send us your suggestions!](https://www.reddit.com/message/compose?to=%2Fr%2FMemeEconomy)***
-
 ***
 
-**Our sidebar and rules are updated frequently to stay up-to-date with the current market. Please check our sidebar often for any edits or additions you might have missed.**
+**Subreddit ai quali potresti essere interessato:**
+
+/r/italy
 
 ***
-
-**Rules:** 
-
-1a. Submissions and submission titles must be related to the meme economy. **For Example:** "I found this meme," is not OK. "I found this meme, should I buy or sell," is OK. All post titles should reference buying or selling at a minimum, and you can browse the [Investopedia Financial Dictionary](https://www.investopedia.com/dictionary/) if you need some inspiration.
-
-1b. Titles should explain why users should invest in the meme. 
-
-2. Please invest effort in submissions and post a template for your meme. Posts with low-effort, commonly used titles, and barely-relevant content are strongly frowned upon and are subject to removal.
-
-3. Please be respectful. No personal attacking. Be civil in the comments. ***This does not mean that you should report someone every time they call you a rude name or because they have a differing opinion.***
-
-4. Standard anonymity is required. Posting personal information without consent is not allowed.
-
-5. No reposting (*Within reason*). If a post is clearly shown to be a repost, it will be removed. Crossposting is allowed as long as Rule 1 is followed and the meme is presented in an economic context. If you report a repost please include a link to an earlier post with the same content to make it easier for moderators to verify and remove the repost.
-
-6. Please respect the economy. Sharing false market information (such as sharing fake screenshots) is a crime that is subject to possible punishments based on the severity of the submission.
-
-7. No spamming or advertising.
-
-8. Please keep NSFW, offensive material, and controversial topics to a minimum. Read [rule #8](https://www.reddit.com/r/MemeEconomy/about/rules/) and send a modmail if you have any questions.
-
-9. This is a forum for reputable investors only. Your account must be older than 7 days and have at least 50 comment karma to post.
-
-10. Standard [site-wide rules](https://www.reddit.com/help/contentpolicy) apply.
-
-&nbsp;
-
-*Failure to comply with any of the rules in place may result in post/comment removal or an account ban. All title-related infractions will result in a 3 day ban for the first offense, subsequent offenses will have progressively longer bans. If you need to speak with the moderators directly, please don't be afraid to [message us](https://www.reddit.com/message/compose?to=%2Fr%2FMemeEconomy).*
-
-***
-
-**Subs you might be interested in:**
-
-/r/MemeInvestor_bot 
-
-/r/grandayy
-
-/r/WholesomeMemes
-
-/r/hmmm
-
-/r/DankChristianMemes
-
-/r/2meirl4meirl
-
-/r/IncrediblesMemes
-
-/r/Bootleg_Memes
-
-/r/MemeCalendar
-
-[Meme Multireddit](https://www.reddit.com/user/loimprevisto/m/memes/)
-
-***
-
-*Please don't send modmail asking how to buy memes. We have plenty of great users willing to help you in that regard. See [**this explanatory post**](https://www.reddit.com/r/MemeEconomy/comments/5lk964/a_beginners_guide_to_the_memeeconomy_and_meme/?ref=share&ref_source=link) for a small bit of assistance.*
-
-***
-
-*We support community projects such as the [**Meme Insider**](https://memeinsider.co/) and [**Danqex**](https://www.reddit.com/r/danqex/). You might see us occasionally promote posts about them.*
-
 ***
 """
 
