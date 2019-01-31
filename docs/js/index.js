@@ -259,15 +259,15 @@ let investmentsCalculator = (function() {
       }
    }
    function max(start) {
-      return 1.2 + 1.9 / ((start / 10) + 1);
+      return 1.2 + 1.4 / ((start / 7) + 1);
    }
    function mid(start) {
-      let sig_mp_0 = 50;
+      let sig_mp_0 = 7;
       let sig_mp_1 = 500;
       return linear_interpolate(start, 0, 25000, sig_mp_0, sig_mp_1);
    }
    function stp(start){
-      return 0.04 / ((start / 100) + 1);
+      return 0.1 / ((start / 100) + 1);
    }
    function C(start, end) {
      return S(gain(start, end), max(start), mid(start), stp(start));
@@ -315,41 +315,41 @@ let investmentsCalculator = (function() {
 (function(){
    document.addEventListener('DOMContentLoaded', function(){
       //init local modules
-      overview.init()
-      overviewChart.init()
+      // overview.init()
+      // overviewChart.init()
       investmentsCalculator.init()
-      ticker.init()
+      // ticker.init()
       //init short polling update schedulers
-      let dataUpdater = new Scheduler(
-         function(){
-            console.log('updating data..')
-            jsonApi.getAll()
-            .then(function (data) {
-               overview.update(data.coins, data.investments);
-               leaderboard.update(data.investors.top);
-            })
-            .catch(function (err) {
-               console.error('error while retrieving apis data', err.statusText);
-               connectionErrorToast(err)
-            }); 
-         },
-         //every 10 seconds
-         10000
-      )
+      // let dataUpdater = new Scheduler(
+      //    function(){
+      //       console.log('updating data..')
+      //       jsonApi.getAll()
+      //       .then(function (data) {
+      //          overview.update(data.coins, data.investments);
+      //          leaderboard.update(data.investors.top);
+      //       })
+      //       .catch(function (err) {
+      //          console.error('error while retrieving apis data', err.statusText);
+      //          connectionErrorToast(err)
+      //       }); 
+      //    },
+      //    //every 10 seconds
+      //    10000
+      // )
 
-      iterateDays(7, function(index, dateFrom, to){
-         console.log("updating chart---")
-         let ufrom = dateFrom.valueOf() / 1000;
-         let uto = to.valueOf() / 1000;
-         jsonApi.get('/investments/total?from='+ufrom+'&to='+uto)
-         .then(function (data) {
-            overviewChart.update(1, index, parseInt(data.investments));
-         })
-         jsonApi.get('/investments/amount?from='+ufrom+'&to='+uto)
-         .then(function (data) {
-            overviewChart.update(0, index, parseInt(data.coins));
-         })
-      })
+      // iterateDays(7, function(index, dateFrom, to){
+      //    console.log("updating chart---")
+      //    let ufrom = dateFrom.valueOf() / 1000;
+      //    let uto = to.valueOf() / 1000;
+      //    jsonApi.get('/investments/total?from='+ufrom+'&to='+uto)
+      //    .then(function (data) {
+      //       overviewChart.update(1, index, parseInt(data.investments));
+      //    })
+      //    jsonApi.get('/investments/amount?from='+ufrom+'&to='+uto)
+      //    .then(function (data) {
+      //       overviewChart.update(0, index, parseInt(data.coins));
+      //    })
+      // })
 
       
    });
