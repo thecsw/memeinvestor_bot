@@ -432,6 +432,21 @@ class CommentWorker():
                 filter(Investor.firm_role == "").\
                 all())
 
+        # Sometimes flairs can get broken, !firm should reinitiate
+        # the flair on the user
+        # Updating the flair in subreddits
+        flair_role = ''
+        if investor.firm_role == "ceo":
+            flair_role = "CEO"
+        elif investor.firm_role == "exec":
+            flair_role = "Executive"
+        else:
+            flair_role = "Floor Trader"
+
+        if not config.TEST:
+            for subreddit in config.SUBREDDITS:
+                REDDIT.subreddit(subreddit).flair.set(investor.name, f"{firm.name} | {flair_role}")
+
         return comment.reply_wrap(
             message.modify_firm(
                 investor.firm_role,
@@ -541,14 +556,21 @@ class CommentWorker():
             user.firm_role = "ceo"
 
         # Updating the flair in subreddits
-        flair_role = ''
+        flair_role_user = ''
         if user.firm_role == "ceo":
-            flair_role = "CEO"
+            flair_role_user = "CEO"
         else:
-            flair_role = "Executive"
+            flair_role_user = "Executive"
+        flair_role_investor = ''
+        if investor.firm_role == "ceo":
+            flair_role_investor = "CEO"
+        else:
+            flair_role_investor = "Executive"
+
         if not config.TEST:
             for subreddit in config.SUBREDDITS:
-                REDDIT.subreddit(subreddit).flair.set(user.name, f"{firm.name} | {flair_role}")
+                REDDIT.subreddit(subreddit).flair.set(user.name, f"{firm.name} | {flair_role_user}")
+                REDDIT.subreddit(subreddit).flair.set(investor.name, f"{firm.name} | {flair_role_investor}")
 
         return comment.reply_wrap(message.modify_promote(user))
 
