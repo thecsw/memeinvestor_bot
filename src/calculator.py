@@ -69,7 +69,7 @@ def main():
 
     stopwatch = Stopwatch()
 
-    logging.info("Monitoring active investments...")
+    logging.info("Monitoring investimenti attivi...")
 
     while not killhandler.killed:
         sess = session_maker()

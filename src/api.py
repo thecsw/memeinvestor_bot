@@ -119,7 +119,7 @@ def investments():
 @APP.route("/investments/active")
 def investments_active():
     """
-    Returns all active investments
+    Returns all investimenti attivi
     """
     res = DB.session.query(func.count(Investment.id)).\
           filter(Investment.done == 0).scalar()
@@ -318,7 +318,7 @@ def investor_investments(name):
 @APP.route("/investor/<string:name>/active")
 def investor_active(name):
     """
-    Returns active investments of a user
+    Returns investimenti attivi of a user
     """
     page, per_page = get_pagination()
     time_from, time_to = get_timeframes()

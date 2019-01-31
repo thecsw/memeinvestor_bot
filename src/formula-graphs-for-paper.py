@@ -31,7 +31,7 @@ def render_graph(old, deltas, filename):
     ax.grid(color='k', alpha=0.15, which='major')
     ax.set_ylim([0, 3])
 
-    plt.xlabel('Upvotes gained')
+    plt.xlabel('Upvotes guadagnati')
     plt.ylabel('Investment return factor')
     plt.tight_layout()
 

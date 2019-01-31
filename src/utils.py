@@ -71,13 +71,13 @@ def test_reddit_connection(reddit):
     except prawcore.exceptions.OAuthException as e_creds:
         traceback.print_exc()
         logging.error(e_creds)
-        logging.critical("Invalid login credentials. Check your .env!")
+        logging.critical("Invalid login credentials. Check il tuo .env!")
         logging.critical("Fatal error. Cannot continue or fix the problem. Bailing out...")
         return False
     except prawcore.exceptions.ResponseException as http_error:
         traceback.print_exc()
         logging.error(http_error)
-        logging.critical("Received 401 HTTP response. Try checking your .env!")
+        logging.critical("Received 401 HTTP response. Try checking il tuo .env!")
         logging.critical("Fatal error. Cannot continue or fix the problem. Bailing out...")
         return False
     return True
