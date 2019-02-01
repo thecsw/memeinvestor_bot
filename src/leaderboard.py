@@ -144,7 +144,7 @@ def main():
 
         top_firms = sess.query(Firm).\
             order_by(Firm.balance.desc()).\
-            limit(5).\
+            limit(10).\
             all()
 
         top_users_text = "Rank|User|Net Worth\n"
