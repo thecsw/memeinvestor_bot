@@ -418,7 +418,7 @@ class CommentWorker():
                 first()
         else:
             firm = sess.query(Firm).\
-                filter(Firm.name == firm_name).\
+                filter(func.lower(Firm.name) == func.lower(firm_name)).\
                 first()
 
             if firm is None:
