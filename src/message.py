@@ -436,7 +436,7 @@ def modify_firm_other(firm, ceo, execs, traders):
         replace("%CEO%", ceo).\
         replace("%EXECS%", execs).\
         replace("%TRADERS%", traders).\
-        replace("%BALANCE%", str(firm.balance)).\
+        replace("%BALANCE%", "{:,}".format(firm.balance)).\
         replace("%LEVEL%", str(firm.rank + 1))
 
 def modify_firm_self(rank, firm, ceo, execs, traders):
@@ -447,7 +447,7 @@ def modify_firm_self(rank, firm, ceo, execs, traders):
         replace("%CEO%", ceo).\
         replace("%EXECS%", execs).\
         replace("%TRADERS%", traders).\
-        replace("%BALANCE%", str(firm.balance)).\
+        replace("%BALANCE%", "{:,}".format(firm.balance)).\
         replace("%LEVEL%", str(firm.rank + 1))
 
 createfirm_exists_failure_org = """
