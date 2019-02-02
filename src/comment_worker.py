@@ -122,7 +122,7 @@ class CommentWorker():
         r"!version",
         r"!grant\s+(\S+)\s+(\S+)",
         r"!template\s+(%s)" % "|".join(template_sources),
-        r"!firm",
+        r"!firm\s*(.+)?",
         r"!createfirm\s+(.+)",
         r"!joinfirm\s+(.+)",
         r"!leavefirm",
@@ -408,13 +408,21 @@ class CommentWorker():
         return comment.reply_wrap(message.modify_deploy_version(utils.DEPLOY_DATE))
 
     @req_user
-    def firm(self, sess, comment, investor):
-        if investor.firm == 0:
-            return comment.reply_wrap(message.firm_none_org)
+    def firm(self, sess, comment, investor, firm_name=None):
+        if firm_name is None:
+            if investor.firm == 0:
+                return comment.reply_wrap(message.firm_none_org)
 
-        firm = sess.query(Firm).\
-            filter(Firm.id == investor.firm).\
-            first()
+            firm = sess.query(Firm).\
+                filter(Firm.id == investor.firm).\
+                first()
+        else:
+            firm = sess.query(Firm).\
+                filter(Firm.name == firm_name).\
+                first()
+
+            if firm is None:
+                return comment.reply_wrap(message.firm_notfound_org)
 
         ceo = "/u/" + sess.query(Investor).\
             filter(Investor.firm == firm.id).\
@@ -432,13 +440,21 @@ class CommentWorker():
                 filter(Investor.firm_role == "").\
                 all())
 
-        return comment.reply_wrap(
-            message.modify_firm(
-                investor.firm_role,
-                firm,
-                ceo,
-                execs,
-                traders))
+        if firm_name is None:
+            return comment.reply_wrap(
+                message.modify_firm_self(
+                    investor.firm_role,
+                    firm,
+                    ceo,
+                    execs,
+                    traders))
+        else:
+            return comment.reply_wrap(
+                message.modify_firm_other(
+                    firm,
+                    ceo,
+                    execs,
+                    traders))
 
     @req_user
     def createfirm(self, sess, comment, investor, firm_name):
