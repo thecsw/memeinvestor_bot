@@ -535,7 +535,7 @@ class CommentWorker():
             return comment.reply_wrap(message.not_ceo_org)
 
         user = sess.query(Investor).\
-            filter(Investor.name == to_promote).\
+            filter(func.lower(Investor.name) == func.lower(to_promote)).\
             first()
         if (user is None) or (user.firm != investor.firm):
             return comment.reply_wrap(message.promote_failure_org)
@@ -577,7 +577,7 @@ class CommentWorker():
             return comment.reply_wrap(message.not_ceo_or_exec_org)
 
         user = sess.query(Investor).\
-            filter(Investor.name == to_fire).\
+            filter(func.lower(Investor.name) == func.lower(to_fire)).\
             first()
         if (user == None) or (user.name == investor.name) or (user.firm != investor.firm):
             return comment.reply_wrap(message.fire_failure_org)
@@ -608,7 +608,7 @@ class CommentWorker():
             return comment.reply_wrap(message.joinfirm_exists_failure_org)
 
         firm = sess.query(Firm).\
-            filter(Firm.name == firm_name).\
+            filter(func.lower(Firm.name) == func.lower(firm_name)).\
             first()
         if firm == None:
             return comment.reply_wrap(message.joinfirm_failure_org)
@@ -652,7 +652,7 @@ class CommentWorker():
             return comment.reply_wrap(message.invite_not_private_failure_org)
 
         invitee = sess.query(Investor).\
-            filter(Investor.name == invitee_name).\
+            filter(func.lower(Investor.name) == func.lower(invitee_name)).\
             first()
         if invitee == None:
             return comment.reply_wrap(message.invite_no_user_failure_org)
