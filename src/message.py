@@ -431,7 +431,7 @@ rank_strs = {
 }
 
 def modify_firm_other(firm, ceo, execs, traders):
-    return firm_self_org.\
+    return firm_other_org.\
         replace("%FIRM_NAME%", firm.name).\
         replace("%CEO%", ceo).\
         replace("%EXECS%", execs).\
