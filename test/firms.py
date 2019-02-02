@@ -145,6 +145,20 @@ class TestFirm(Test):
             '',
             ''))
 
+    def test_lookup_different_case(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        replies = self.command('!firm foobar', username='testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_firm_other(
+            MockFirm('Foobar', balance=1000),
+            '/u/testuser',
+            '',
+            ''))
+
     def test_lookup_invalid(self):
         self.command('!create')
         replies = self.command('!firm Foobar')
