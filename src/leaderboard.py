@@ -46,11 +46,11 @@ sidebar_text_org = """
 
 ***
 
-**Rules:** 
+**Rules:**
 
 1a. Submissions and submission titles must be related to the meme economy. **For Example:** "I found this meme," is not OK. "I found this meme, should I buy or sell," is OK. All post titles should reference buying or selling at a minimum, and you can browse the [Investopedia Financial Dictionary](https://www.investopedia.com/dictionary/) if you need some inspiration.
 
-1b. Titles should explain why users should invest in the meme. 
+1b. Titles should explain why users should invest in the meme.
 
 2. Please invest effort in submissions and post a template for your meme. Posts with low-effort, commonly used titles, and barely-relevant content are strongly frowned upon and are subject to removal.
 
@@ -78,7 +78,7 @@ sidebar_text_org = """
 
 **Subs you might be interested in:**
 
-/r/MemeInvestor_bot 
+/r/MemeInvestor_bot
 
 /r/grandayy
 
@@ -139,25 +139,25 @@ def main():
                 outerjoin(Investment, and_(Investor.name == Investment.name, Investment.done == 0)).\
             group_by(Investor.name).\
             order_by(desc('networth')).\
-            limit(5).\
+            limit(10).\
             all()
 
         top_firms = sess.query(Firm).\
             order_by(Firm.balance.desc()).\
-            limit(5).\
+            limit(10).\
             all()
 
         top_users_text = "Rank|User|Net Worth\n"
         top_users_text += ":-:|:-:|:-:\n"
         for i, user in enumerate(top_users):
-            top_users_text += f"{i + 1}|/u/{user.name}|{user.networth} MC\n"
+            top_users_text += f"{i + 1}|/u/{user.name}|{formatNumber(user.networth)} MC\n"
 
         top_firms_text = "Rank|Firm|Total Assets|Level|Tax Rate\n"
         top_firms_text += ":-:|:-:|:-:|:-:|:-:\n"
         for i, firm in enumerate(top_firms):
             is_private = '(**P**) ' if firm.private else ''
-            top_firms_text += f"{i + 1}|{is_private}{firm.name}|{firm.balance} MC|{firm.rank + 1}|{firm.tax}%\n"
-            
+            top_firms_text += f"{i + 1}|{is_private}{firm.name}|{formatNumber(firm.balance)} MC|{firm.rank + 1}|{firm.tax}%\n"
+
         sidebar_text = sidebar_text_org.\
             replace("%TOP_USERS%", top_users_text).\
             replace("%TOP_FIRMS%", top_firms_text)
@@ -177,6 +177,21 @@ def main():
         sess.close()
 
         time.sleep(config.LEADERBOARD_INTERVAL)
+
+def formatNumber(n):
+    suffixes = {
+        6: 'M',
+        9: 'B',
+        12: 'T',
+        15: 'Q'
+    }
+    digits = len(str(n))
+    if digits <= 6:
+        return '{:,}'.format(n)
+    exponent = (digits - 1) - ((digits - 1) % 3)
+    mantissa = n / (10 ** exponent)
+    suffix = suffixes.get(exponent)
+    return '{:.2f}{}'.format(mantissa, suffix)
 
 if __name__ == "__main__":
     main()

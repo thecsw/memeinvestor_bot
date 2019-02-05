@@ -122,7 +122,7 @@ class CommentWorker():
         r"!version",
         r"!grant\s+(\S+)\s+(\S+)",
         r"!template\s+(%s)" % "|".join(template_sources),
-        r"!firm",
+        r"!firm\s*(.+)?",
         r"!createfirm\s+(.+)",
         r"!joinfirm\s+(.+)",
         r"!leavefirm",
@@ -408,13 +408,21 @@ class CommentWorker():
         return comment.reply_wrap(message.modify_deploy_version(utils.DEPLOY_DATE))
 
     @req_user
-    def firm(self, sess, comment, investor):
-        if investor.firm == 0:
-            return comment.reply_wrap(message.firm_none_org)
+    def firm(self, sess, comment, investor, firm_name=None):
+        if firm_name is None:
+            if investor.firm == 0:
+                return comment.reply_wrap(message.firm_none_org)
 
-        firm = sess.query(Firm).\
-            filter(Firm.id == investor.firm).\
-            first()
+            firm = sess.query(Firm).\
+                filter(Firm.id == investor.firm).\
+                first()
+        else:
+            firm = sess.query(Firm).\
+                filter(func.lower(Firm.name) == func.lower(firm_name)).\
+                first()
+
+            if firm is None:
+                return comment.reply_wrap(message.firm_notfound_org)
 
         ceo = "/u/" + sess.query(Investor).\
             filter(Investor.firm == firm.id).\
@@ -446,14 +454,22 @@ class CommentWorker():
         if not config.TEST:
             for subreddit in config.SUBREDDITS:
                 REDDIT.subreddit(subreddit).flair.set(investor.name, f"{firm.name} | {flair_role}")
-
-        return comment.reply_wrap(
-            message.modify_firm(
-                investor.firm_role,
-                firm,
-                ceo,
-                execs,
-                traders))
+ 
+        if firm_name is None:
+            return comment.reply_wrap(
+                message.modify_firm_self(
+                    investor.firm_role,
+                    firm,
+                    ceo,
+                    execs,
+                    traders))
+        else:
+            return comment.reply_wrap(
+                message.modify_firm_other(
+                    firm,
+                    ceo,
+                    execs,
+                    traders))
 
     @req_user
     def createfirm(self, sess, comment, investor, firm_name):
@@ -513,11 +529,12 @@ class CommentWorker():
             filter(Firm.id == investor.firm).\
             first()
 
-        investor.firm = 0
         firm.size -= 1
-
         if investor.firm_role == 'exec':
             firm.execs -= 1
+
+        investor.firm = 0
+        investor.firm_role = ""
 
         # Removing the flair in subreddits
         if not config.TEST:
@@ -534,7 +551,7 @@ class CommentWorker():
             return comment.reply_wrap(message.not_ceo_org)
 
         user = sess.query(Investor).\
-            filter(Investor.name == to_promote).\
+            filter(func.lower(Investor.name) == func.lower(to_promote)).\
             first()
         if (user is None) or (user.firm != investor.firm):
             return comment.reply_wrap(message.promote_failure_org)
@@ -583,7 +600,7 @@ class CommentWorker():
             return comment.reply_wrap(message.not_ceo_or_exec_org)
 
         user = sess.query(Investor).\
-            filter(Investor.name == to_fire).\
+            filter(func.lower(Investor.name) == func.lower(to_fire)).\
             first()
         if (user == None) or (user.name == investor.name) or (user.firm != investor.firm):
             return comment.reply_wrap(message.fire_failure_org)
@@ -595,12 +612,12 @@ class CommentWorker():
             filter(Firm.id == investor.firm).\
             first()
 
+        firm.size -= 1
+        if user.firm_role == 'exec':
+            firm.execs -= 1
+
         user.firm_role = ""
         user.firm = 0
-        firm.size -= 1
-
-        if investor.firm_role == 'exec':
-            firm.execs -= 1
 
         # Clear the firm flair
         if not config.TEST:
@@ -614,7 +631,7 @@ class CommentWorker():
             return comment.reply_wrap(message.joinfirm_exists_failure_org)
 
         firm = sess.query(Firm).\
-            filter(Firm.name == firm_name).\
+            filter(func.lower(Firm.name) == func.lower(firm_name)).\
             first()
         if firm == None:
             return comment.reply_wrap(message.joinfirm_failure_org)
@@ -638,7 +655,7 @@ class CommentWorker():
         # Updating the flair in subreddits
         if not config.TEST:
             for subreddit in config.SUBREDDITS:
-                REDDIT.subreddit(subreddit).flair.set(investor.name, f"{firm_name} | Floor Trader")
+                REDDIT.subreddit(subreddit).flair.set(investor.name, f"{firm.name} | Floor Trader")
 
         return comment.reply_wrap(message.modify_joinfirm(firm))
 
@@ -658,7 +675,7 @@ class CommentWorker():
             return comment.reply_wrap(message.invite_not_private_failure_org)
 
         invitee = sess.query(Investor).\
-            filter(Investor.name == invitee_name).\
+            filter(func.lower(Investor.name) == func.lower(invitee_name)).\
             first()
         if invitee == None:
             return comment.reply_wrap(message.invite_no_user_failure_org)

@@ -372,7 +372,28 @@ You are not in a firm.
 You can create a new one with the **!createfirm <FIRM NAME>** command, or request to join one with **!joinfirm <FIRM NAME>**.
 """
 
-firm_org = """
+firm_other_org = """
+Firm: **%FIRM_NAME%**
+
+Firm balance: **%BALANCE%** Memecoins
+
+Firm level: **%LEVEL%**
+
+----
+
+## Members:
+
+*CEO:*
+%CEO%
+
+*Executives:*
+%EXECS%
+
+*Floor Traders:*
+%TRADERS%
+"""
+
+firm_self_org = """
 Firm: **%FIRM_NAME%**
 
 Firm balance: **%BALANCE%** Memecoins
@@ -399,21 +420,34 @@ Your Rank: **%RANK%**
 You can leave this firm with the **!leavefirm** command.
 """
 
+firm_notfound_org = """
+No firm was found with this name.
+"""
+
 rank_strs = {
     "ceo": "CEO",
     "exec": "Executive",
     "": "Floor Trader"
 }
 
-def modify_firm(rank, firm, ceo, execs, traders):
+def modify_firm_other(firm, ceo, execs, traders):
+    return firm_other_org.\
+        replace("%FIRM_NAME%", firm.name).\
+        replace("%CEO%", ceo).\
+        replace("%EXECS%", execs).\
+        replace("%TRADERS%", traders).\
+        replace("%BALANCE%", "{:,}".format(firm.balance)).\
+        replace("%LEVEL%", str(firm.rank + 1))
+
+def modify_firm_self(rank, firm, ceo, execs, traders):
     rank_str = rank_strs[rank]
-    return firm_org.\
+    return firm_self_org.\
         replace("%RANK%", rank_str).\
         replace("%FIRM_NAME%", firm.name).\
         replace("%CEO%", ceo).\
         replace("%EXECS%", execs).\
         replace("%TRADERS%", traders).\
-        replace("%BALANCE%", str(firm.balance)).\
+        replace("%BALANCE%", "{:,}".format(firm.balance)).\
         replace("%LEVEL%", str(firm.rank + 1))
 
 createfirm_exists_failure_org = """
