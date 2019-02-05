@@ -514,11 +514,12 @@ class CommentWorker():
             filter(Firm.id == investor.firm).\
             first()
 
-        investor.firm = 0
         firm.size -= 1
-
         if investor.firm_role == 'exec':
             firm.execs -= 1
+
+        investor.firm = 0
+        investor.firm_role = ""
 
         # Removing the flair in subreddits
         if not config.TEST:
@@ -589,12 +590,12 @@ class CommentWorker():
             filter(Firm.id == investor.firm).\
             first()
 
+        firm.size -= 1
+        if user.firm_role == 'exec':
+            firm.execs -= 1
+
         user.firm_role = ""
         user.firm = 0
-        firm.size -= 1
-
-        if investor.firm_role == 'exec':
-            firm.execs -= 1
 
         # Clear the firm flair
         if not config.TEST:
