@@ -422,6 +422,10 @@ class TestFire(Test):
         self.assertEqual(user.firm, 0)
         self.assertEqual(user.firm_role, '')
 
+        firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
+        self.assertEqual(firm.size, 1)
+        self.assertEqual(firm.execs, 0)
+
     def test_fire_trader_as_exec(self):
         self.command('!create')
         self.set_balance(5000000)
