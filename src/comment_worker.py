@@ -633,7 +633,7 @@ class CommentWorker():
         # Updating the flair in subreddits
         if not config.TEST:
             for subreddit in config.SUBREDDITS:
-                REDDIT.subreddit(subreddit).flair.set(investor.name, f"{firm_name} | Floor Trader")
+                REDDIT.subreddit(subreddit).flair.set(investor.name, f"{firm.name} | Floor Trader")
 
         return comment.reply_wrap(message.modify_joinfirm(firm))
 
