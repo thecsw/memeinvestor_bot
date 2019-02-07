@@ -1,3 +1,8 @@
+"""
+A "database" of all the messages the bot returns in any given point.
+This ensures not only consistancy, but that if the mods request that
+an edit be made to a message, there's a central location to make those changes.
+"""
 import datetime
 import time
 
