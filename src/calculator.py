@@ -1,4 +1,4 @@
-# TODO: add docstrin here
+""" This module allows the bot to calculate the earnings of the individual investor or firm and then updates their balance. """
 import time
 import logging
 import traceback
@@ -44,7 +44,10 @@ def edit_wrap(self, body):
         return False
 
 # TODO: rethink how to structure this main
-# TODO: add docstring
+""" 
+Does the actual handling of calculating the earnings and then adding it to the investors balance.
+Also deducts for firms if applicable.
+"""
 def main():
     logging.info("Starting calculator...")
     logging.info("Sleeping for 8 seconds. Waiting for the database to turn on...")
