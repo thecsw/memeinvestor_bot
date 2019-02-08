@@ -294,9 +294,14 @@ class CommentWorker():
             new_balance
         ))
 
+        # 0 upvotes is too strong, so what we do is make around 5 minumum
+        upvotes_now = int(comment.submission.ups)
+        if upvotes_now < 5:
+            upvotes_now = 5
+
         sess.add(Investment(
             post=comment.submission,
-            upvotes=comment.submission.ups,
+            upvotes=upvotes_now,
             comment=comment,
             name=author,
             amount=amount,
