@@ -42,10 +42,10 @@ services:
           - mysql
 
     api:
-        build: .
+        image: golang
         env_file: .env
         restart: unless-stopped
-        command: [".local/bin/gunicorn", "--bind", "0.0.0.0:5000", "--access-logfile", "-", "--error-logfile", "-", "api:APP"]
+        command: ["go", "run", "main.go"]
         depends_on:
           - mysql
 
@@ -64,5 +64,3 @@ services:
         image: mariadb:10.2.15
         env_file: .env
         restart: unless-stopped
-        ports:
-          - 127.0.0.1:3306:3306
