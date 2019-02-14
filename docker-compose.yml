@@ -42,13 +42,12 @@ services:
           - mysql
 
     api:
-        image: golang
+        build: .
         env_file: .env
         restart: unless-stopped
-        command: ["go", "run", "main.go"]
+        command: [".local/bin/gunicorn", "--bind", "0.0.0.0:5000", "--access-logfile", "-", "--error-logfile", "-", "api:app"]
         depends_on:
           - mysql
-
     http:
         build:
             context: .
