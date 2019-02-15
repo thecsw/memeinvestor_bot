@@ -2,9 +2,10 @@ import math
 
 from fastnumbers import fast_float
 
-def calculate(new, old):
+def calculate(new, old, net_worth):
     new = fast_float(new)
     old = fast_float(old)
+    net_worth = fast_float(net_worth)
 
     # Treat anything below 0 upvotes as 0 upvotes
     if old < 0:
@@ -31,7 +32,14 @@ def calculate(new, old):
     # Calculate return
     factor = sigmoid(delta, sig_max, sig_mp, sig_stp)
 
-    return factor
+    # Normalize between -1 and 1
+    factor = factor - 1
+
+    # Adjust based on net worth
+    factor = factor * net_worth_coefficient(net_worth)
+
+    # Return investment amount multiplier (change + 1)
+    return factor + 1
 
 def sigmoid(x, maxvalue, midpoint, steepness):
     arg = -(steepness * (x - midpoint))
@@ -54,3 +62,6 @@ def linear_interpolate(x, x_0, x_1, y_0, y_1):
     c = y_0
     y = (m * x) + c
     return y
+
+def net_worth_coefficient(net_worth):
+    return net_worth ** -0.2 * 8

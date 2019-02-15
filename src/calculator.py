@@ -3,7 +3,7 @@ import time
 import logging
 import traceback
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, func, and_
 from sqlalchemy.orm import sessionmaker
 import praw
 
@@ -89,6 +89,11 @@ def main():
         duration = stopwatch.measure()
 
         investor = sess.query(Investor).filter(Investor.name == investment.name).one()
+        net_worth = sess.\
+            query(func.sum(Investment.amount)).\
+            filter(and_(Investment.name == investor.name, Investment.done == 0)).\
+            scalar()\
+            + investor.balance
 
         logging.info("New mature investment: %s", investment.comment)
         logging.info(" -- by %s", investor.name)
@@ -101,7 +106,7 @@ def main():
         investment.final_upvotes = upvotes_now
 
         # Updating the investor's balance
-        factor = formula.calculate(upvotes_now, investment.upvotes)
+        factor = formula.calculate(upvotes_now, investment.upvotes, net_worth)
         amount = investment.amount
         balance = investor.balance
 
