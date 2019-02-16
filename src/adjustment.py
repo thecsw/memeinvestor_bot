@@ -52,7 +52,10 @@ def main():
     sess.close()
 
 def adjust_amount(n):
-    adjusted = n ** 0.61
+    return n ** 0.61
+
+def adjust_balance(n):
+    adjusted = adjust_amount(n)
     if adjusted < 1000000:
         adjusted = min(n, 1000000)
     return adjusted
