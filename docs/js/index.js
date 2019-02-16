@@ -259,7 +259,7 @@ let investmentsCalculator = (function() {
       }
    }
    function max(start) {
-      return 1.2 + 1.9 / ((start / 10) + 1);
+      return 1.2 + 0.6 / ((start / 10) + 1);
    }
    function mid(start) {
       let sig_mp_0 = 50;
@@ -267,7 +267,7 @@ let investmentsCalculator = (function() {
       return linear_interpolate(start, 0, 25000, sig_mp_0, sig_mp_1);
    }
    function stp(start){
-      return 0.04 / ((start / 100) + 1);
+      return 0.06 / ((start / 100) + 1);
    }
    function C(start, end) {
      return S(gain(start, end), max(start), mid(start), stp(start));
