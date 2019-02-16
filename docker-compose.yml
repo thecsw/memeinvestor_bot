@@ -63,3 +63,6 @@ services:
         image: mariadb:10.2.15
         env_file: .env
         restart: unless-stopped
+        ports:
+          - 127.0.0.1:3306:3306
+
