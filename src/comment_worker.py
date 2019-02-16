@@ -105,7 +105,9 @@ class CommentWorker():
         "i.imgur.com",
         "reddit.com",
         "i.reddit.com",
-        "v.reddit.com"
+        "v.reddit.com",
+        "i.redd.it",
+        "v.redd.it"
     ]
     template_sources = [f"https://{website}\S+" for website in websites]
 
