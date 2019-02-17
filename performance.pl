@@ -1,4 +1,4 @@
-#!/bin/env perl
+#!/usr/bin/env perl
 
 # MemeInvestor script for checking containers'
 # performance base on processing time
