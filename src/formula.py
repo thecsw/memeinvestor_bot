@@ -64,4 +64,4 @@ def linear_interpolate(x, x_0, x_1, y_0, y_1):
     return y
 
 def net_worth_coefficient(net_worth):
-    return net_worth ** -0.2 * 8
+    return net_worth ** -0.155 * 6
