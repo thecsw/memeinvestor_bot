@@ -60,7 +60,7 @@ def main():
                 exec_amount = int(exec_total / firm.execs)
 
             trader_total = payout_amount - exec_total
-            trader_amount = int(trader_total / (firm.size - firm.execs))
+            trader_amount = int(trader_total / max(firm.size - firm.execs, 1))
 
             logging.info(" -- firm '%s': paying out %s each to %s traders, and %s each to %s execs",\
                 firm.name, trader_amount, firm.size - firm.execs, exec_amount, firm.execs)
