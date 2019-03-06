@@ -465,19 +465,23 @@ class CommentWorker():
         # Sometimes flairs can get broken, !firm should reinitiate
         # the flair on the user
         # Updating the flair in subreddits
-        flair_role = ''
-        if investor.firm_role == "ceo":
-            flair_role = "CEO"
-        elif investor.firm_role == "coo":
-            flair_role = "COO"
-        elif investor.firm_role == "cfo":
-            flair_role = "CFO"
-        elif investor.firm_role == "exec":
-            flair_role = "Executive"
-        elif investor.firm_role == "assoc":
-            flair_role = "Associate"
-        else:
-            flair_role = "Floor Trader"
+        if investor.firm != 0:
+            firm = sess.query(Firm).\
+                filter(Firm.id == investor.firm).\
+                first()
+            flair_role = ''
+            if investor.firm_role == "ceo":
+                flair_role = "CEO"
+            elif investor.firm_role == "coo":
+                flair_role = "COO"
+            elif investor.firm_role == "cfo":
+                flair_role = "CFO"
+            elif investor.firm_role == "exec":
+                flair_role = "Executive"
+            elif investor.firm_role == "assoc":
+                flair_role = "Associate"
+            else:
+                flair_role = "Floor Trader"
 
         if not config.TEST:
             for subreddit in config.SUBREDDITS:
