@@ -386,12 +386,33 @@ Firm level: **%LEVEL%**
 *CEO:*
 %CEO%
 
+*COO:*
+%COO%
+
+*CFO:*
+%CFO%
+
 *Executives:*
 %EXECS%
+
+*Associates:*
+%ASSOCS%
 
 *Floor Traders:*
 %TRADERS%
 """
+
+def modify_firm_other(firm, ceo, coo, cfo, execs, assocs, traders):
+    return firm_other_org.\
+        replace("%FIRM_NAME%", firm.name).\
+        replace("%CEO%", ceo).\
+        replace("%COO%", coo).\
+        replace("%CFO%", cfo).\
+        replace("%EXECS%", execs).\
+        replace("%ASSOCS%", assocs).\
+        replace("%TRADERS%", traders).\
+        replace("%BALANCE%", "{:,}".format(firm.balance)).\
+        replace("%LEVEL%", str(firm.rank + 1))
 
 firm_self_org = """
 Firm: **%FIRM_NAME%**
@@ -409,8 +430,17 @@ Your Rank: **%RANK%**
 *CEO:*
 %CEO%
 
+*COO:*
+%COO%
+
+*CFO:*
+%CFO%
+
 *Executives:*
 %EXECS%
+
+*Associates:*
+%ASSOCS%
 
 *Floor Traders:*
 %TRADERS%
@@ -420,35 +450,32 @@ Your Rank: **%RANK%**
 You can leave this firm with the **!leavefirm** command.
 """
 
+def modify_firm_self(rank, firm, ceo, coo, cfo, execs, assocs, traders):
+    rank_str = rank_strs[rank]
+    return firm_self_org.\
+        replace("%RANK%", rank_str).\
+        replace("%FIRM_NAME%", firm.name).\
+        replace("%CEO%", ceo).\
+        replace("%COO%", coo).\
+        replace("%CFO%", cfo).\
+        replace("%EXECS%", execs).\
+        replace("%ASSOCS%", assocs).\
+        replace("%TRADERS%", traders).\
+        replace("%BALANCE%", "{:,}".format(firm.balance)).\
+        replace("%LEVEL%", str(firm.rank + 1))
+
 firm_notfound_org = """
 No firm was found with this name.
 """
 
 rank_strs = {
     "ceo": "CEO",
+    "coo": "COO",
+    "cfo": "CFO",
     "exec": "Executive",
+    "assoc": "Associate",
     "": "Floor Trader"
 }
-
-def modify_firm_other(firm, ceo, execs, traders):
-    return firm_other_org.\
-        replace("%FIRM_NAME%", firm.name).\
-        replace("%CEO%", ceo).\
-        replace("%EXECS%", execs).\
-        replace("%TRADERS%", traders).\
-        replace("%BALANCE%", "{:,}".format(firm.balance)).\
-        replace("%LEVEL%", str(firm.rank + 1))
-
-def modify_firm_self(rank, firm, ceo, execs, traders):
-    rank_str = rank_strs[rank]
-    return firm_self_org.\
-        replace("%RANK%", rank_str).\
-        replace("%FIRM_NAME%", firm.name).\
-        replace("%CEO%", ceo).\
-        replace("%EXECS%", execs).\
-        replace("%TRADERS%", traders).\
-        replace("%BALANCE%", "{:,}".format(firm.balance)).\
-        replace("%LEVEL%", str(firm.rank + 1))
 
 createfirm_exists_failure_org = """
 You are already in a firm: **%FIRM_NAME%**
@@ -486,7 +513,7 @@ no_firm_failure_org = leavefirm_none_failure_org
 leavefirm_ceo_failure_org = """
 You are currently the CEO of your firm, so you are not allowed to leave.
 
-If you really want to leave, you will need to first demote yourself by promoting an executive member to CEO with the **!promote <username>** command.
+If you really want to leave, you will need to first demote yourself by promoting a COO or CFO member to CEO with the **!promote <username>** command.
 """
 
 leavefirm_org = """
@@ -497,26 +524,59 @@ not_ceo_org = """
 Only the CEO can do that.
 """
 
+not_ceo_or_coo_org = """
+Only the CEO or COO can do that.
+"""
+
 not_ceo_or_exec_org = """
-Only the CEO and executives can do that.
+Only a member of the board or an executive can do that.
+"""
+
+not_assoc_org = """
+Floor Traders cannot send invites.
 """
 
 promote_failure_org = """
 Couldn't promote user, make sure you used the correct username.
 """
 
-promote_full_org = """
-Could not promote this employee, since the firm is at its maximum executive limit.
-**Number of execs:** %EXECS%
-**Firm level:** %LEVEL%
-
-The CEO of the firm can raise this limit by upgrading with `!upgrade`.
+promote_coo_full_org = """
+Could not promote this employee since the firm already has a COO.
 """
 
-def modify_promote_full(firm):
-    return promote_full_org.\
+promote_cfo_full_org = """
+Could not promote this employee since the firm already has a CFO.
+"""
+
+promote_execs_full_org = """
+Could not promote this employee since the firm is at its maximum executive limit.
+**Number of executives:** %EXECS%
+**Firm level:** %LEVEL%
+
+The CEO or CFO of the firm can raise this limit by upgrading with `!upgrade`.
+"""
+
+def modify_promote_execs_full(firm):
+    return promote_execs_full_org.\
         replace("%EXECS%", str(firm.execs)).\
         replace("%LEVEL%", str(firm.rank + 1))
+
+promote_assocs_full_org = """
+Could not promote this employee since the firm is at its maximum associate limit.
+**Number of associates:** %ASSOCS%
+**Firm level:** %LEVEL%
+
+The CEO or CFO of the firm can raise this limit by upgrading with `!upgrade`.
+"""
+
+def modify_promote_assocs_full(firm):
+    return promote_assocs_full_org.\
+        replace("%ASSOCS%", str(firm.assocs)).\
+        replace("%LEVEL%", str(firm.rank + 1))
+
+promote_org = """
+Successfully promoted **/u/%NAME%** to **%RANK%**.
+"""
 
 def modify_promote(user):
     rank_str = rank_strs[user.firm_role]
@@ -524,17 +584,13 @@ def modify_promote(user):
         replace("%NAME%", user.name).\
         replace("%RANK%", rank_str)
 
-promote_org = """
-Successfully promoted **/u/%NAME%** to **%RANK%**.
+fire_org = """
+Successfully fired **/u/%NAME%** from the firm.
 """
 
 def modify_fire(user):
     return fire_org.\
         replace("%NAME%", user.name)
-
-fire_org = """
-Successfully fired **/u/%NAME%** from the firm.
-"""
 
 fire_failure_org = """
 Couldn't fire user, make sure you used the correct username.
@@ -547,7 +603,7 @@ Can't join a firm because you are already in one. Use the *!leavefirm* command t
 joinfirm_private_failure_org = """
 Can't join this firm because it is set to private and you have not been invited.
 
-The CEO or Executives must first invite you with the `!invite <username>` command.
+A member of the firm must first invite you with the `!invite <username>` command.
 """
 
 joinfirm_failure_org = """
@@ -559,7 +615,7 @@ Could not join the firm, since it is at its maximum member limit.
 **Number of employees:** %MEMBERS%
 **Firm level:** %LEVEL%
 
-The CEO of the firm can raise this limit by upgrading with `!upgrade`.
+The CEO or CFO of the firm can raise this limit by upgrading with `!upgrade`.
 """
 
 def modify_joinfirm_full(firm):
@@ -614,7 +670,7 @@ You don't need to invite anyone since your firm is not private.
 
 That investor can join with the `!joinfirm <firm_name>` command.
 
-If you're the CEO and you would like the firm to be invite-only, use the `!setprivate` command.
+If you're the CEO or COO and you would like the firm to be invite-only, use the `!setprivate` command.
 """
 
 invite_no_user_failure_org = """
@@ -637,7 +693,7 @@ def modify_invite(invitee, firm):
         replace("%FIRM%", firm.name)
 
 setprivate_org = """
-The firm is now private. Users can only join after you or an Executive sends an invite with the `!invite <user>` command.
+The firm is now private. Users can only join after a member of the firm sends an invite with the `!invite <user>` command.
 
 If you'd like to reverse this, use the `!setpublic` command.
 """
@@ -663,14 +719,15 @@ def modify_upgrade_insufficient_funds_org(firm, cost):
 upgrade_org = """
 You have succesfully upgraded the firm to **level %LEVEL%**!
 
-The firm may now have up to **%MAX_MEMBERS% employees**, including up to **%MAX_EXECS% executives**.
+The firm may now have up to **%MAX_MEMBERS% employees**, including up to **%MAX_EXECS% executives** and **%MAX_ASSOCS% associates**.
 """
 
-def modify_upgrade(firm, max_members, max_execs):
+def modify_upgrade(firm, max_members, max_execs, max_assocs):
     return upgrade_org.\
         replace("%LEVEL%", str(firm.rank + 1)).\
         replace("%MAX_MEMBERS%", str(max_members)).\
         replace("%MAX_EXECS%", str(max_execs))
+        replace("%MAX_ASSOCS%", str(max_assocs))
 DEPLOY_VERSION = """
 Current version of the bot is deployed since `%DATE%`
 """
