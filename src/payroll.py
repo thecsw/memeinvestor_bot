@@ -47,23 +47,42 @@ def main():
             # 10% of firm coins are burned as a tax
             firm.balance -= int(0.1 * firm.balance)
 
-            payout_amount = int(0.4 * firm.balance)
+            # 50% of remaining firm coins are paid out
+            payout_amount = int(0.5 * firm.balance)
             if payout_amount == 0:
                 # handle broke firms
                 firm.last_payout = now
                 continue
 
+            # 30% paid to board members (CEO, COO, CFO) (30% of total payroll)
+            board_total = payout_amount * 0.3
+            board_members = 1 + firm.coo + firm.cfo
+            board_amount = int(board_total / board_members)
+
+            remaining_amount = payout_amount - board_total
+
+            # 40% of remaining paid to executives (28% of total payroll)
             exec_amount = 0
             exec_total = 0
             if firm.execs > 0:
-                exec_total = payout_amount * 0.4
+                exec_total = remaining_amount * 0.4
                 exec_amount = int(exec_total / firm.execs)
+                remaining_amount -= exec_total
 
-            trader_total = payout_amount - exec_total
+            # 50% of remaining paid to associates (21% of total payroll)
+            assoc_amount = 0
+            assoc_total = 0
+            if firm.assocs > 0:
+                assoc_total = remaining_amount * 0.5
+                assoc_amount = int(assoc_total / firm.assocs)
+                remaining_amount -= assoc_total
+
+            # 100% of remaining paid to associates (21% of total payroll)
+            trader_total = remaining_amount
             trader_amount = int(trader_total / max(firm.size - firm.execs, 1))
 
-            logging.info(" -- firm '%s': paying out %s each to %s traders, and %s each to %s execs",\
-                firm.name, trader_amount, firm.size - firm.execs, exec_amount, firm.execs)
+            logging.info(" -- firm '%s': paying out %s each to %s trader(s), %s each to %s associate(s), %s each to %s executive(s), and %s each to %s board member(s)",\
+                firm.name, trader_amount, firm.size - firm.execs, assoc_amount, firm.assocs, exec_amount, firm.execs, board_amount, board_members)
 
             employees = sess.query(Investor).\
                 filter(Investor.firm == firm.id).\
@@ -71,8 +90,16 @@ def main():
             for employee in employees:
                 if employee.firm_role == "":
                     employee.balance += trader_amount
+                elif employee.firm_role == "assoc":
+                    employee.balance += assoc_amount
                 elif employee.firm_role == "exec":
                     employee.balance += exec_amount
+                elif employee.firm_role == "cfo":
+                    employee.balance += board_amount
+                elif employee.firm_role == "coo":
+                    employee.balance += board_amount
+                elif employee.firm_role == "ceo":
+                    employee.balance += board_amount
 
             firm.balance -= payout_amount
             firm.last_payout = now
