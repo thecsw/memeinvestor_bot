@@ -528,6 +528,10 @@ not_ceo_or_coo_org = """
 Only the CEO or COO can do that.
 """
 
+not_ceo_or_cfo_org = """
+Only the CEO or CFO can do that.
+"""
+
 not_ceo_or_exec_org = """
 Only a member of the board or an executive can do that.
 """
@@ -726,7 +730,7 @@ def modify_upgrade(firm, max_members, max_execs, max_assocs):
     return upgrade_org.\
         replace("%LEVEL%", str(firm.rank + 1)).\
         replace("%MAX_MEMBERS%", str(max_members)).\
-        replace("%MAX_EXECS%", str(max_execs))
+        replace("%MAX_EXECS%", str(max_execs)).\
         replace("%MAX_ASSOCS%", str(max_assocs))
 DEPLOY_VERSION = """
 Current version of the bot is deployed since `%DATE%`

@@ -465,23 +465,19 @@ class CommentWorker():
         # Sometimes flairs can get broken, !firm should reinitiate
         # the flair on the user
         # Updating the flair in subreddits
-        if investor.firm != 0:
-            firm = sess.query(Firm).\
-                filter(Firm.id == investor.firm).\
-                first()
-            flair_role = ''
-            if investor.firm_role == "ceo":
-                flair_role = "CEO"
-            elif investor.firm_role == "coo":
-                flair_role = "COO"
-            elif investor.firm_role == "cfo":
-                flair_role = "CFO"
-            elif investor.firm_role == "exec":
-                flair_role = "Executive"
-            elif investor.firm_role == "assoc":
-                flair_role = "Associate"
-            else:
-                flair_role = "Floor Trader"
+        flair_role = ''
+        if investor.firm_role == "ceo":
+            flair_role = "CEO"
+        elif investor.firm_role == "coo":
+            flair_role = "COO"
+        elif investor.firm_role == "cfo":
+            flair_role = "CFO"
+        elif investor.firm_role == "exec":
+            flair_role = "Executive"
+        elif investor.firm_role == "assoc":
+            flair_role = "Associate"
+        else:
+            flair_role = "Floor Trader"
 
         if not config.TEST:
             for subreddit in config.SUBREDDITS:
@@ -614,7 +610,7 @@ class CommentWorker():
             firm.assocs += 1
 
         elif user.firm_role == "assoc":
-            if (investor.firm_role != "ceo") or (investor.firm_role != "coo"):
+            if investor.firm_role != "ceo" and investor.firm_role != "coo":
                 return comment.reply_wrap(message.not_ceo_or_coo_org)
 
             max_execs = max_execs_for_rank(firm.rank)
@@ -629,25 +625,25 @@ class CommentWorker():
             if investor.firm_role != "ceo":
                 return comment.reply_wrap(message.not_ceo_org)
 
-            if firm.cfo >= 1
+            if firm.cfo >= 1:
                 return comment.reply_wrap(message.promote_cfo_full_org)
 
             user.firm_role = "cfo"
             firm.execs -= 1
             firm.cfo += 1
 
-        elif user.firm_role == "cfo"
+        elif user.firm_role == "cfo":
             if investor.firm_role != "ceo":
                 return comment.reply_wrap(message.not_ceo_org)
 
-            if firm.coo >= 1
+            if firm.coo >= 1:
                 return comment.reply_wrap(message.promote_coo_full_org)
 
             user.firm_role = "coo"
             firm.cfo -= 1
             firm.coo += 1
 
-        elif user.firm_role == "coo"
+        elif user.firm_role == "coo":
             if investor.firm_role != "ceo":
                 return comment.reply_wrap(message.not_ceo_org)
 
@@ -810,7 +806,7 @@ class CommentWorker():
         if investor.firm == 0:
             return comment.reply_wrap(message.no_firm_failure_org)
 
-        if (investor.firm_role != "ceo") or (investor.firm_role != "coo"):
+        if investor.firm_role != "ceo" and investor.firm_role != "coo":
             return comment.reply_wrap(message.not_ceo_or_coo_org)
 
         firm = sess.query(Firm).\
@@ -839,11 +835,10 @@ class CommentWorker():
 
     @req_user
     def tax(self, sess, comment, investor, tax_temp):
-
         if investor.firm == 0:
             return comment.reply_wrap(message.no_firm_failure_org)
 
-        if (investor.firm_role != "ceo") or (investor.firm_role != "cfo"):
+        if (investor.firm_role != "ceo") and (investor.firm_role != "cfo"):
             return comment.reply_wrap(message.not_ceo_or_cfo_org)
 
         firm = sess.query(Firm).\
@@ -871,7 +866,7 @@ class CommentWorker():
         if investor.firm == 0:
             return comment.reply_wrap(message.nofirm_failure_org)
 
-        if (investor.firm_role != "ceo") or (investor.firm_role != "cfo"):
+        if (investor.firm_role != "ceo") and (investor.firm_role != "cfo"):
             return comment.reply_wrap(message.not_ceo_or_cfo_org)
 
         firm = sess.query(Firm).\
@@ -904,18 +899,18 @@ def max_members_for_rank(rank):
     # level 2 = 16
     # level 3 = 32
     # etc.
-    return 2 ** (rank + 3)
+    return int(2 ** (rank + 3))
 
 def max_assocs_for_rank(rank):
     # level 1 = 2
     # level 2 = 6
     # level 3 = 14
     # etc.
-    return ((2 ** (rank + 3)) / 2) - 2
+    return int(((2 ** (rank + 3)) / 2) - 2)
 
 def max_execs_for_rank(rank):
     # level 1 = 2
     # level 2 = 4
     # level 3 = 8
     # etc.
-    return 2 ** (rank + 1)
+    return int(2 ** (rank + 1))
