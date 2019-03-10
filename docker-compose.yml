@@ -41,11 +41,11 @@ services:
         depends_on:
           - mysql
 
-    tester:
+    dummy:
         build: .
         env_file: .env
         restart: on-failure
-        command: ["python", "tester.py"]
+        command: ["python", "dummy.py"]
         depends_on:
           - mysql
 
