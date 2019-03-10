@@ -41,6 +41,14 @@ services:
         depends_on:
           - mysql
 
+    tester:
+        build: .
+        env_file: .env
+        restart: on-failure
+        command: ["python", "tester.py"]
+        depends_on:
+          - mysql
+
     api:
         build: .
         env_file: .env
