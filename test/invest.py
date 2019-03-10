@@ -7,7 +7,7 @@ class TestInvest(Test):
 
         replies = self.command('!invest 50')
         self.assertEqual(len(replies), 1)
-        self.assertEqual(replies[0], message.MIN_INVEST_ORG)
+        self.assertEqual(replies[0], message.modify_min_invest(100))
 
     def test_negative(self):
         self.command('!create')
@@ -40,3 +40,17 @@ class TestInvest(Test):
         replies = self.command('!invest 100')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_invest(100, 100, 900))
+
+    def test_invest_100_percent(self):
+        self.command('!create')
+
+        replies = self.command('!invest 100%')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_invest(1000, 100, 0))
+
+    def test_invest_50_percent(self):
+        self.command('!create')
+
+        replies = self.command('!invest 50%')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_invest(500, 100, 500))
