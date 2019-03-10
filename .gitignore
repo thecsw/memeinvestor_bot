@@ -1,3 +1,11 @@
+# Ignore test directory
+.virtualenv/
+
+# ignore override docker compose
+docker-compose.override.yml
+
+# ignore all sql files
+*.sql
 
 # Ignore the backups folder that ./backup.sh generates
 backups/
