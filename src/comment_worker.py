@@ -96,7 +96,8 @@ class CommentWorker():
         'quad': 1e15,
         # Has to be above q, or regex will stop at q instead of searching for quin/quad
         'quin': 1e18,
-        'q': 1e15
+        'q': 1e15,
+        '%': '%'
     }
 
     # Allowed websites for !template command
@@ -228,7 +229,7 @@ class CommentWorker():
             func.count(Investment.id)
         ).filter(Investment.done == 0).first()
 
-        comment.reply_wrap(message.modify_market(active, total, invested))
+        return comment.reply_wrap(message.modify_market(active, total, invested))
 
     def top(self, sess, comment):
         """
@@ -243,7 +244,7 @@ class CommentWorker():
         limit(5).\
         all()
 
-        comment.reply_wrap(message.modify_top(leaders))
+        return comment.reply_wrap(message.modify_top(leaders))
 
     def create(self, sess, comment):
         """
@@ -254,13 +255,12 @@ class CommentWorker():
 
         # Let user know they already have an account
         if sess.query(user_exists).scalar():
-            comment.reply_wrap(message.CREATE_EXISTS_ORG)
-            return
+            return comment.reply_wrap(message.CREATE_EXISTS_ORG)
 
         # Create new investor account
         sess.add(Investor(name=author))
         # TODO: Make the initial balance a constant
-        comment.reply_wrap(message.modify_create(comment.author, config.STARTING_BALANCE))
+        return comment.reply_wrap(message.modify_create(comment.author, config.STARTING_BALANCE))
 
     @req_user
     def invest(self, sess, comment, investor, amount, suffix):
@@ -269,25 +269,28 @@ class CommentWorker():
         """
         if config.PREVENT_INSIDERS:
             if comment.submission.author.name == comment.author.name:
-                comment.reply_wrap(message.INSIDE_TRADING_ORG)
+                return comment.reply_wrap(message.INSIDE_TRADING_ORG)
+
+        # Allows input such as '!invest 100%' and '!invest 50%'
+        if suffix == '%':
+            amount = int((investor.balance / 100) * int(amount))
+        else:
+            try:
+                amount = float(amount.replace(',', ''))
+                amount = int(amount * CommentWorker.multipliers.get(suffix, 1))
+            except ValueError:
                 return
 
-        try:
-            amount = float(amount.replace(',', ''))
-            amount = int(amount * CommentWorker.multipliers.get(suffix, 1))
-        except ValueError:
-            return
-
-        if amount < 100:
-            comment.reply_wrap(message.MIN_INVEST_ORG)
-            return
+        # Sets the minimum investment to 10% of an investor's balance
+        minim = int(investor.balance / 10)
+        if amount < minim:
+            return comment.reply_wrap(message.modify_min_invest(minim))
 
         author = comment.author.name
         new_balance = investor.balance - amount
 
         if new_balance < 0:
-            comment.reply_wrap(message.modify_insuff(investor.balance))
-            return
+            return comment.reply_wrap(message.modify_insuff(investor.balance))
 
         # Sending a confirmation
         response = comment.reply_wrap(message.modify_invest(
@@ -318,7 +321,7 @@ class CommentWorker():
         """
         Returns user's balance
         """
-        comment.reply_wrap(message.modify_balance(investor.balance))
+        return comment.reply_wrap(message.modify_balance(investor.balance))
 
     @req_user
     def broke(self, sess, comment, investor):
@@ -340,7 +343,7 @@ class CommentWorker():
         investor.balance = 100
         investor.broke += 1
 
-        comment.reply_wrap(message.modify_broke(investor.broke))
+        return comment.reply_wrap(message.modify_broke(investor.broke))
 
     @req_user
     def active(self, sess, comment, investor):
@@ -353,7 +356,7 @@ class CommentWorker():
             order_by(Investment.time).\
             all()
 
-        comment.reply_wrap(message.modify_active(active_investments))
+        return comment.reply_wrap(message.modify_active(active_investments))
 
     def grant(self, sess, comment, grantee, badge):
         """
@@ -479,9 +482,14 @@ class CommentWorker():
         else:
             flair_role = "Floor Trader"
 
+        # Assigns the correct firm for the flair update below
+        flair_firm = sess.query(Firm).\
+            filter(Firm.id == investor.firm).\
+            first()
+
         if not config.TEST:
             for subreddit in config.SUBREDDITS:
-                REDDIT.subreddit(subreddit).flair.set(investor.name, f"{firm.name} | {flair_role}")
+                REDDIT.subreddit(subreddit).flair.set(investor.name, f"{flair_firm.name} | {flair_role}")
  
         if firm_name is None:
             return comment.reply_wrap(
@@ -693,9 +701,6 @@ class CommentWorker():
             first()
         if (user == None) or (user.name == investor.name) or (user.firm != investor.firm):
             return comment.reply_wrap(message.fire_failure_org)
-
-        #if (investor.firm_role != "ceo") and (user.firm_role != ""):
-        #    return comment.reply_wrap(message.not_ceo_org)
 
         firm = sess.query(Firm).\
             filter(Firm.id == investor.firm).\
