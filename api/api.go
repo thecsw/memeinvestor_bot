@@ -3,6 +3,7 @@ package main
 import (
 	"./coins"
 	"./investments"
+	"./investor"
 	"fmt"
 	"github.com/gorilla/mux"
 	"log"
@@ -24,5 +25,6 @@ func main() {
 	r.HandleFunc("/investments/total", investments.InvestmentsTotal).Methods("GET")
 	r.HandleFunc("/investments/amount", investments.InvestmentsAmount).Methods("GET")
 	r.HandleFunc("/investments/post/{post}", investments.InvestmentsPost).Methods("GET")
+	r.HandleFunc("/investor/{name}", investor.Investor).Methods("GET")
 	log.Fatal(http.ListenAndServe(":5000", r))
 }
