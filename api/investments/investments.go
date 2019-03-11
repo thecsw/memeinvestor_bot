@@ -148,7 +148,7 @@ func InvestmentsAmount(w http.ResponseWriter, r *http.Request) {
 // Post
 func InvestmentsPost(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	post, ok := params["post"];
+	post, ok := params["post"]
 	if !ok {
 		log.Print("No post provided.")
 		return

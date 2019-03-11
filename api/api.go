@@ -4,9 +4,9 @@ import (
 	"./coins"
 	"./investments"
 	"fmt"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"github.com/gorilla/mux"
 )
 
 func HelloThere(w http.ResponseWriter, r *http.Request) {

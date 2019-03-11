@@ -1,10 +1,10 @@
 package utils
 
 import (
+	"errors"
+	"net/url"
 	"os"
 	"strconv"
-	"net/url"
-	"errors"
 )
 
 func GetDB() string {
@@ -22,13 +22,13 @@ func GetTimeframes(path string) (string, string, error) {
 	if val, ok := queries["from"]; ok {
 		from_int, err = strconv.Atoi(val[0])
 		if err != nil {
-			return "", "", errors.New("Failed converting 'from' argument.")			
+			return "", "", errors.New("Failed converting 'from' argument.")
 		}
 	}
 	if val, ok := queries["to"]; ok {
 		to_int, err = strconv.Atoi(val[0])
 		if err != nil {
-			return "", "", errors.New("Failed converting 'to' argument.")			
+			return "", "", errors.New("Failed converting 'to' argument.")
 		}
 	}
 	err = nil
