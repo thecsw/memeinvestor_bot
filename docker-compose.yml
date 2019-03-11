@@ -50,12 +50,15 @@ services:
           - mysql
 
     api:
-        build: .
+        build:
+          context: .
+          dockerfile: docker/Dockerfile-golang
         env_file: .env
         restart: unless-stopped
-        command: [".local/bin/gunicorn", "--bind", "0.0.0.0:5000", "--access-logfile", "-", "--error-logfile", "-", "api:app"]
+        command: ["./api"]
         depends_on:
           - mysql
+
     http:
         build:
             context: .
