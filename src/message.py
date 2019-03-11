@@ -191,12 +191,12 @@ Here is a list of commands that summon me:
 - `!createfirm <name>`
 - `!joinfirm <name>`
 - `!leavefirm`
-- `!promote <username>` **(CEO and Exec Only)**
-- `!fire <username>` **(CEO and Exec Only)**
-- `!upgrade` **(CEO Only)**
-- `!setprivate` **(CEO Only)**
-- `!setpublic` **(CEO Only)**
-- `!invite <username>` **(CEO and Exec Only)**
+- `!promote <username>` **(Executive and up)**
+- `!fire <username>` **(Executive and up)**
+- `!upgrade` **(CEO and CFO only)**
+- `!setprivate` **(CEO and COO only)**
+- `!setpublic` **(CEO and COO only)**
+- `!invite <username>` **(Associate and up)**
 
 To get help on a specific command, simply invoke `!help command`
 """
@@ -240,15 +240,19 @@ def modify_active(active_investments):
         replace("%INVESTMENTS_LIST%", investments_list)
 
 MIN_INVEST_ORG = """
-The minimum possible investment is 100 MemeCoins.
+The minimum possible investment is %MIN% MemeCoins (10% of your balance).
 """
+
+def modify_min_invest(minim):
+    return MIN_INVEST_ORG.\
+        replace("%MIN%", format(int(minim), ",d"))
 
 MARKET_ORG = """
 The market has **%NUMBER%** active investments.
 
 All investors currently possess **%MONEY% MemeCoins**.
 
-There are %HODL% MemeCoins** detained in investments.
+There are **%HODL% MemeCoins** detained in investments.
 """
 
 def modify_market(inves, cap, invs_cap):
@@ -703,7 +707,7 @@ If you'd like to reverse this, use the `!setpublic` command.
 """
 
 setpublic_org = """
-The firm is now public. Users can join your command without being invited, using the `!joinfirm <firm_name>` command.
+The firm is now public. Users can join your command without being invited using the `!joinfirm <firm_name>` command.
 
 If you'd like to reverse this, use the `!setprivate` command.
 """
