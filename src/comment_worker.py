@@ -160,10 +160,6 @@ class CommentWorker():
         if not comment.author:
             return
 
-        # Ignore comments by other bots
-        if comment.author.name.lower().endswith("_bot"):
-            return
-
         # Ignore comments older than a threshold
         max_age = 60*15 # fifteen minutes
         comment_age = time.time() - int(comment.created_utc)
