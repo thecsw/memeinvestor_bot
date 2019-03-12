@@ -4,6 +4,7 @@ import (
 	"./coins"
 	"./investments"
 	"./investor"
+//	"./summary"
 	"fmt"
 	"github.com/gorilla/mux"
 	"log"
@@ -18,6 +19,7 @@ func main() {
 	log.SetPrefix("Exception caught: ")
 	r := mux.NewRouter()
 	r.HandleFunc("/", HelloThere).Methods("GET")
+//	r.HandleFunc("/summary", summary.Summary).Methods("GET")
 	r.HandleFunc("/coins/invested", coins.CoinsInvested).Methods("GET")
 	r.HandleFunc("/coins/total", coins.CoinsTotal).Methods("GET")
 	r.HandleFunc("/investments", investments.Investments).Methods("GET")
@@ -26,5 +28,7 @@ func main() {
 	r.HandleFunc("/investments/amount", investments.InvestmentsAmount).Methods("GET")
 	r.HandleFunc("/investments/post/{post}", investments.InvestmentsPost).Methods("GET")
 	r.HandleFunc("/investor/{name}", investor.Investor).Methods("GET")
+	r.HandleFunc("/investor/{name}/investments", investor.InvestorInvestments).Methods("GET")
+	r.HandleFunc("/investor/{name}/active", investor.InvestorInvestmentsActive).Methods("GET")
 	log.Fatal(http.ListenAndServe(":5000", r))
 }

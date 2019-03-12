@@ -23,7 +23,23 @@ type investor struct {
 	Firm_role string `json:"firm_role,omitempty"`
 }
 
+type investment struct {
+	Id            string `json:"id,omitempty"`
+	Post          string `json:"post,omitempty"`
+	Upvotes       int    `json:"upvotes,omitempty"`
+	Comment       string `json:"comment,omitempty"`
+	Name          string `json:"name,omitempty"`
+	Amount        int64  `json:"amount,omitempty"`
+	Time          int    `json:"time,omitempty"`
+	Done          bool   `json:"done,omitempty"`
+	Response      string `json:"response,omitempty"`
+	Final_upvotes int    `json:"final_upvotes,omitempty"`
+	Success       bool   `json:"success,omitempty"`
+	Profit        int64  `json:"profit,omitempty"`
+}
+
 func Investor(w http.ResponseWriter, r *http.Request) {
+	log.Print(r.RequestURI)
 	params := mux.Vars(r)
 	name, ok := params["name"]
 	if !ok {
@@ -41,14 +57,13 @@ func Investor(w http.ResponseWriter, r *http.Request) {
 		log.Print(err)
 	}
 	defer conn.Close()
-	query := "SELECT * FROM Investors WHERE name = '" + name + "'"
+	query := fmt.Sprintf("SELECT * FROM Investors WHERE name = '%s'", name)
 	rows, err := conn.Query(query)
 	if err != nil {
 		log.Print(err)
 		return
 	}
 	defer rows.Close()
-	wrapper := make([]investor, 0, 100)
 	temp := investor{}
 	for rows.Next() {
 		err := rows.Scan(
@@ -64,14 +79,142 @@ func Investor(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Print(err)
 		}
-		wrapper = append(wrapper, temp)
 	}
 	// Making it networth
-	query_net := "select sum(amount) from Investments where name = '" + name + "' AND done = 0"
+	query_net := fmt.Sprintf("SELECT COALESCE(SUM(amount),0) FROM Investments WHERE name = '%s' AND done = 0", name)
 	var active_coins int64	
 	err = conn.QueryRow(query_net).Scan(&active_coins)
-	wrapper[0].Balance += active_coins
-	result, _ := json.Marshal(wrapper[0])
+	temp.Balance += active_coins
+	result, _ := json.Marshal(temp)
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "%s", string(result))
+}
+
+func InvestorInvestments(w http.ResponseWriter, r *http.Request) {
+	log.Print(r.RequestURI)
+	from, to, err := utils.GetTimeframes(r.RequestURI)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	page, per_page, err := utils.GetPagination(r.RequestURI)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	params := mux.Vars(r)
+	name, ok := params["name"]
+	if !ok {
+		log.Print("No name provided.")
+		return
+	}
+	// Check regexp
+	re := regexp.MustCompile(`^[-_a-zA-Z0-9]+$`)
+	if !re.Match([]byte(name)) {
+		log.Print("Provided name does not pass regex.")
+		return
+	}
+	conn, err := sql.Open("mysql", utils.GetDB())
+	if err != nil {
+		log.Print(err)
+	}
+	defer conn.Close()
+	// Making it networth
+	query := fmt.Sprintf("SELECT * FROM Investments WHERE name = '%s' AND time > %d AND time < %d LIMIT %d OFFSET %d", name, from, to, per_page, per_page * page)
+	rows, err := conn.Query(query)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	defer rows.Close()
+	wrapper := make([]investment, 0, 100)
+	temp := investment{}
+	for rows.Next() {
+		err := rows.Scan(
+			&temp.Id,
+			&temp.Post,
+			&temp.Upvotes,
+			&temp.Comment,
+			&temp.Name,
+			&temp.Amount,
+			&temp.Time,
+			&temp.Done,
+			&temp.Response,
+			&temp.Final_upvotes,
+			&temp.Success,
+			&temp.Profit,
+		)
+		if err != nil {
+			log.Print(err)
+			return
+		}
+		wrapper = append(wrapper, temp)
+	}
+	result, _ := json.Marshal(wrapper)
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "%s", string(result))
+}
+
+func InvestorInvestmentsActive(w http.ResponseWriter, r *http.Request) {
+	log.Print(r.RequestURI)
+	from, to, err := utils.GetTimeframes(r.RequestURI)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	page, per_page, err := utils.GetPagination(r.RequestURI)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	params := mux.Vars(r)
+	name, ok := params["name"]
+	if !ok {
+		log.Print("No name provided.")
+		return
+	}
+	// Check regexp
+	re := regexp.MustCompile(`^[-_a-zA-Z0-9]+$`)
+	if !re.Match([]byte(name)) {
+		log.Print("Provided name does not pass regex.")
+		return
+	}
+	conn, err := sql.Open("mysql", utils.GetDB())
+	if err != nil {
+		log.Print(err)
+	}
+	defer conn.Close()
+	query := fmt.Sprintf("SELECT * FROM Investments WHERE name = '%s' AND done = 0 AND time > %d AND time < %d LIMIT %d OFFSET %d", name, from, to, per_page, per_page * page)
+	rows, err := conn.Query(query)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	defer rows.Close()
+	wrapper := make([]investment, 0, 100)
+	temp := investment{}
+	for rows.Next() {
+		err := rows.Scan(
+			&temp.Id,
+			&temp.Post,
+			&temp.Upvotes,
+			&temp.Comment,
+			&temp.Name,
+			&temp.Amount,
+			&temp.Time,
+			&temp.Done,
+			&temp.Response,
+			&temp.Final_upvotes,
+			&temp.Success,
+			&temp.Profit,
+		)
+		if err != nil {
+			log.Print(err)
+			return
+		}
+		wrapper = append(wrapper, temp)
+	}
+	result, _ := json.Marshal(wrapper)
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "%s", string(result))
 }

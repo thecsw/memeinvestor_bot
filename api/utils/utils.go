@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"os"
 	"strconv"
+//	"fmt"
 )
 
 func GetDB() string {
@@ -12,28 +13,43 @@ func GetDB() string {
 	return database
 }
 
-func GetTimeframes(path string) (string, string, error) {
-	from_int, to_int := 0, 0
+func GetTimeframes(path string) (int, int, error) {
+	from_int, to_int := 0, 4294967295
 	u, err := url.Parse(path)
 	if err != nil {
-		return "", "", errors.New("Failed parsing the URL.")
+		return -1, -1, errors.New("Failed parsing the URL.")
 	}
 	queries := u.Query()
 	if val, ok := queries["from"]; ok {
-		from_int, err = strconv.Atoi(val[0])
-		if err != nil {
-			return "", "", errors.New("Failed converting 'from' argument.")
-		}
+		from_int, _ = strconv.Atoi(val[0])
 	}
 	if val, ok := queries["to"]; ok {
 		to_int, err = strconv.Atoi(val[0])
 		if err != nil {
-			return "", "", errors.New("Failed converting 'to' argument.")
+			to_int = 4294967295
 		}
 	}
-	err = nil
-	if from_int == 0 || to_int == 0 {
-		return "", "", errors.New("Some arguments were not provided.")
+	return from_int, to_int, nil
+}
+
+func GetPagination(path string) (int, int, error) {
+	page_int, per_page_int := -1, -1
+	u, err := url.Parse(path)
+	if err != nil {
+		return -1, -1, errors.New("Failed parsing the URL.")
 	}
-	return strconv.Itoa(from_int), strconv.Itoa(to_int), nil
+	queries := u.Query()
+	if val, ok := queries["page"]; ok {
+		page_int, _ = strconv.Atoi(val[0])
+		if page_int < 0 {
+			page_int = 0
+		}
+	}
+	if val, ok := queries["per_page"]; ok {
+		per_page_int, err = strconv.Atoi(val[0])
+		if err != nil || per_page_int > 100 || per_page_int < 0 {
+			per_page_int = 100;
+		}
+	}
+	return page_int, per_page_int, nil
 }
