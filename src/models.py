@@ -18,11 +18,11 @@ class unix_timestamp(expression.FunctionElement):
 
 @compiles(unix_timestamp)
 def compile(element, compiler, **kw):
-	if config.TEST:
-		# sqlite (used in tests)
-		return "(strftime('%s', 'now'))"
-	# mariadb
-	return "unix_timestamp()"
+    if config.TEST:
+        # sqlite (used in tests)
+        return "(strftime('%s', 'now'))"
+    # mariadb
+    return "unix_timestamp()"
 
 
 Base = declarative_base()
@@ -71,7 +71,10 @@ class Firm(Base):
     name = Column(String(32), nullable=False, unique=True)
     balance = Column(BigInteger, default=1000)
     size = Column(Integer, default=0)
+    coo = Column(Integer, default=0)
+    cfo = Column(Integer, default=0)
     execs = Column(Integer, default=0)
+    assocs = Column(Integer, default=0)
     tax = Column(Integer, default=15)
     rank = Column(Integer, default=0)
     private = Column(Boolean, default=False)

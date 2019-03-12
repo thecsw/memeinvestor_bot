@@ -3,11 +3,14 @@ from models import Investor, Firm
 import message
 
 class MockFirm():
-    def __init__(self, name, size=1, execs=0, rank=0, balance=1234):
+    def __init__(self, name, size=1, assocs=0, execs=0, cfo=0, coo=0, rank=0, balance=1234):
         self.name = name
         self.size = size
         self.rank = rank
+        self.assocs = assocs
         self.execs = execs
+        self.cfo = cfo
+        self.coo = coo
         self.balance = balance
 
 class MockInvestor():
@@ -105,9 +108,12 @@ class TestFirm(Test):
             MockFirm('Foobar', balance=1000),
             '/u/testuser',
             '',
+            '',
+            '',
+            '',
             ''))
 
-    def test_full(self):
+    def test_firm_assoc(self):
         self.command('!create')
         self.set_balance(5000000)
         self.command('!createfirm Foobar')
@@ -125,10 +131,42 @@ class TestFirm(Test):
         replies = self.command('!firm', username='testuser2')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_firm_self(
-            'exec',
+            'assoc',
             MockFirm('Foobar', balance=1000),
             '/u/testuser',
+            '',
+            '',
+            '',
             '/u/testuser2',
+            '/u/testuser3, /u/testuser4'))
+
+    def test_firm_cfo(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!create', username='testuser3')
+        self.command('!create', username='testuser4')
+
+        self.command('!joinfirm Foobar', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser3')
+        self.command('!joinfirm Foobar', username='testuser4')
+
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+
+        replies = self.command('!firm', username='testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_firm_self(
+            'cfo',
+            MockFirm('Foobar', balance=1000),
+            '/u/testuser',
+            '',
+            '/u/testuser2',
+            '',
+            '',
             '/u/testuser3, /u/testuser4'))
 
     def test_lookup(self):
@@ -142,6 +180,9 @@ class TestFirm(Test):
         self.assertEqual(replies[0], message.modify_firm_other(
             MockFirm('Foobar', balance=1000),
             '/u/testuser',
+            '',
+            '',
+            '',
             '',
             ''))
 
@@ -157,6 +198,9 @@ class TestFirm(Test):
             MockFirm('Foobar', balance=1000),
             '/u/testuser',
             '',
+            '',
+            '',
+            '',
             ''))
 
     def test_lookup_invalid(self):
@@ -166,14 +210,14 @@ class TestFirm(Test):
         self.assertEqual(replies[0], message.firm_notfound_org)
 
 class TestLeaveFirm(Test):
-    def test_none(self):
+    def test_leave_none(self):
         self.command('!create')
         self.set_balance(5000000)
         replies = self.command('!leavefirm')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.leavefirm_none_failure_org)
 
-    def test_ceo_empty(self):
+    def test_leave_ceo_empty(self):
         self.command('!create')
         self.set_balance(5000000)
         self.command('!createfirm Foobar')
@@ -185,7 +229,7 @@ class TestLeaveFirm(Test):
         user = sess.query(Investor).filter(Investor.name == 'testuser').first()
         self.assertEqual(user.firm, 0)
 
-    def test_ceo_full(self):
+    def test_leave_ceo_full(self):
         self.command('!create')
         self.set_balance(5000000)
         self.command('!createfirm Foobar')
@@ -201,7 +245,7 @@ class TestLeaveFirm(Test):
         user = sess.query(Investor).filter(Investor.name == 'testuser').first()
         self.assertEqual(user.firm, 1)
 
-    def test_trader(self):
+    def test_leave_trader(self):
         self.command('!create')
         self.set_balance(5000000)
         self.command('!createfirm Foobar')
@@ -217,6 +261,51 @@ class TestLeaveFirm(Test):
         user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
         self.assertEqual(user.firm, 0)
 
+    def test_leave_assoc(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+        self.command('!promote testuser2')
+
+        replies = self.command('!leavefirm', username='testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.leavefirm_org)
+
+        sess = self.Session()
+        user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
+        self.assertEqual(user.firm, 0)
+        self.assertEqual(user.firm_role, '')
+
+        firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
+        self.assertEqual(firm.size, 1)
+        self.assertEqual(firm.assocs, 0)
+
+    def test_leave_exec(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+
+        replies = self.command('!leavefirm', username='testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.leavefirm_org)
+
+        sess = self.Session()
+        user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
+        self.assertEqual(user.firm, 0)
+        self.assertEqual(user.firm_role, '')
+
+        firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
+        self.assertEqual(firm.size, 1)
+        self.assertEqual(firm.execs, 0)
+
 class TestPromote(Test):
     def test_none(self):
         self.command('!create')
@@ -225,16 +314,20 @@ class TestPromote(Test):
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.firm_none_org)
 
-    def test_not_ceo(self):
+    def test_not_ceo_or_exec(self):
         self.command('!create')
         self.set_balance(5000000)
         self.command('!createfirm Foobar')
 
         self.command('!create', username='testuser2')
         self.command('!joinfirm Foobar', username='testuser2')
-        replies = self.command('!promote foo', username='testuser2')
+
+        self.command('!create', username='testuser3')
+        self.command('!joinfirm Foobar', username='testuser3')
+
+        replies = self.command('!promote testuser3', username='testuser2')
         self.assertEqual(len(replies), 1)
-        self.assertEqual(replies[0], message.not_ceo_org)
+        self.assertEqual(replies[0], message.not_ceo_or_exec_org)
 
     def test_non_existent(self):
         self.command('!create')
@@ -257,7 +350,7 @@ class TestPromote(Test):
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.promote_failure_org)
 
-    def test_promote_trader(self):
+    def test_promote_to_assoc(self):
         self.command('!create')
         self.set_balance(5000000)
         self.command('!createfirm Foobar')
@@ -267,14 +360,42 @@ class TestPromote(Test):
 
         replies = self.command('!promote testuser2')
         self.assertEqual(len(replies), 1)
-        self.assertEqual(replies[0], message.modify_promote(MockInvestor('testuser2', 'exec')))
+        self.assertEqual(replies[0], message.modify_promote(MockInvestor('testuser2', 'assoc')))
+
+        sess = self.Session()
+        user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
+        self.assertEqual(user.firm, 1)
+        self.assertEqual(user.firm_role, 'assoc')
+
+    def test_promote_execs_full(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+
+        self.command('!create', username='testuser3')
+        self.command('!joinfirm Foobar', username='testuser3')
+        self.command('!promote testuser3')
+        self.command('!promote testuser3')
+
+        self.command('!create', username='testuser4')
+        self.command('!joinfirm Foobar', username='testuser4')
+        self.command('!promote testuser4')
+
+        replies = self.command('!promote testuser4')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_promote_execs_full(MockFirm('Foobar', execs=2)))
 
         sess = self.Session()
         user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
         self.assertEqual(user.firm, 1)
         self.assertEqual(user.firm_role, 'exec')
 
-    def test_promote_full(self):
+    def test_promote_to_assoc_and_exec(self):
         self.command('!create')
         self.set_balance(5000000)
         self.command('!createfirm Foobar')
@@ -286,40 +407,36 @@ class TestPromote(Test):
         self.command('!create', username='testuser3')
         self.command('!joinfirm Foobar', username='testuser3')
         self.command('!promote testuser3')
+        self.command('!promote testuser3')
 
         self.command('!create', username='testuser4')
         self.command('!joinfirm Foobar', username='testuser4')
 
         replies = self.command('!promote testuser4')
         self.assertEqual(len(replies), 1)
-        self.assertEqual(replies[0], message.modify_promote_full(MockFirm('Foobar', size=2, execs=2)))
+        self.assertEqual(replies[0], message.modify_promote(MockInvestor('testuser4', 'assoc')))
 
         sess = self.Session()
-        user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
+        user = sess.query(Investor).filter(Investor.name == 'testuser3').first()
         self.assertEqual(user.firm, 1)
         self.assertEqual(user.firm_role, 'exec')
 
-    def test_promote_exec(self):
+        user = sess.query(Investor).filter(Investor.name == 'testuser4').first()
+        self.assertEqual(user.firm, 1)
+        self.assertEqual(user.firm_role, 'assoc')
+
+    def test_promote_to_cfo(self):
         self.command('!create')
         self.set_balance(5000000)
         self.command('!createfirm Foobar')
 
         self.command('!create', username='testuser2')
         self.command('!joinfirm Foobar', username='testuser2')
-
         self.command('!promote testuser2')
-        replies = self.command('!promote testuser2')
+        self.command('!promote testuser2')
+        replies = self.command('!promote testuser2', username='testuser')
         self.assertEqual(len(replies), 1)
-        self.assertEqual(replies[0], message.modify_promote(MockInvestor('testuser2', 'ceo')))
-
-        sess = self.Session()
-        user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
-        self.assertEqual(user.firm, 1)
-        self.assertEqual(user.firm_role, 'ceo')
-
-        me = sess.query(Investor).filter(Investor.name == 'testuser').first()
-        self.assertEqual(me.firm, 1)
-        self.assertEqual(me.firm_role, 'exec')
+        self.assertEqual(replies[0], message.modify_promote(MockInvestor('testuser2', 'cfo')))
 
 class TestFire(Test):
     def test_none(self):
@@ -336,9 +453,48 @@ class TestFire(Test):
 
         self.command('!create', username='testuser2')
         self.command('!joinfirm Foobar', username='testuser2')
-        replies = self.command('!fire foo', username='testuser2')
+
+        self.command('!create', username='testuser3')
+        self.command('!joinfirm Foobar', username='testuser3')
+
+        replies = self.command('!fire testuser2', username='testuser3')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.not_ceo_or_exec_org)
+
+    def test_not_ceo_or_coo(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+
+        self.command('!create', username='testuser3')
+        self.command('!joinfirm Foobar', username='testuser3')
+        self.command('!promote testuser3')
+        self.command('!promote testuser3')
+
+        replies = self.command('!fire testuser3', username='testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.not_ceo_or_coo_org)
+
+    def test_not_ceo(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+
+        self.command('!create', username='testuser3')
+        self.command('!joinfirm Foobar', username='testuser3')
+        self.command('!promote testuser3')
+        self.command('!promote testuser3')
+        self.command('!promote testuser3')
+
+        replies = self.command('!fire testuser3', username='testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.not_ceo_org)
 
     def test_non_existent(self):
         self.command('!create')
@@ -370,13 +526,36 @@ class TestFire(Test):
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.fire_failure_org)
 
-    def test_fire_exec_as_exec(self):
+    def test_fire_trader_as_exec(self):
         self.command('!create')
         self.set_balance(5000000)
         self.command('!createfirm Foobar')
 
         self.command('!create', username='testuser2')
         self.command('!joinfirm Foobar', username='testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+
+        self.command('!create', username='testuser3')
+        self.command('!joinfirm Foobar', username='testuser3')
+
+        replies = self.command('!fire testuser3', username='testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_fire(MockInvestor('testuser3', '')))
+
+        sess = self.Session()
+        user = sess.query(Investor).filter(Investor.name == 'testuser3').first()
+        self.assertEqual(user.firm, 0)
+        self.assertEqual(user.firm_role, '')
+
+    def test_fire_assoc_as_exec(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+        self.command('!promote testuser2')
         self.command('!promote testuser2')
 
         self.command('!create', username='testuser3')
@@ -385,7 +564,35 @@ class TestFire(Test):
 
         replies = self.command('!fire testuser3', username='testuser2')
         self.assertEqual(len(replies), 1)
-        self.assertEqual(replies[0], message.not_ceo_org)
+        self.assertEqual(replies[0], message.modify_fire(MockInvestor('testuser3', '')))
+
+        sess = self.Session()
+        user = sess.query(Investor).filter(Investor.name == 'testuser3').first()
+        self.assertEqual(user.firm, 0)
+        self.assertEqual(user.firm_role, '')
+
+        firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
+        self.assertEqual(firm.size, 2)
+        self.assertEqual(firm.assocs, 0)
+
+    def test_fire_exec_as_exec(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+
+        self.command('!create', username='testuser3')
+        self.command('!joinfirm Foobar', username='testuser3')
+        self.command('!promote testuser3')
+        self.command('!promote testuser3')
+
+        replies = self.command('!fire testuser3', username='testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.not_ceo_or_coo_org)
 
     def test_fire_trader(self):
         self.command('!create')
@@ -404,7 +611,7 @@ class TestFire(Test):
         self.assertEqual(user.firm, 0)
         self.assertEqual(user.firm_role, '')
 
-    def test_fire_exec(self):
+    def test_fire_assoc(self):
         self.command('!create')
         self.set_balance(5000000)
         self.command('!createfirm Foobar')
@@ -424,9 +631,32 @@ class TestFire(Test):
 
         firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
         self.assertEqual(firm.size, 1)
+        self.assertEqual(firm.assocs, 0)
+
+    def test_fire_exec(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+
+        replies = self.command('!fire testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_fire(MockInvestor('testuser2', '')))
+
+        sess = self.Session()
+        user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
+        self.assertEqual(user.firm, 0)
+        self.assertEqual(user.firm_role, '')
+
+        firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
+        self.assertEqual(firm.size, 1)
         self.assertEqual(firm.execs, 0)
 
-    def test_fire_trader_as_exec(self):
+    def test_fire_trader_as_assoc(self):
         self.command('!create')
         self.set_balance(5000000)
         self.command('!createfirm Foobar')
@@ -440,12 +670,72 @@ class TestFire(Test):
 
         replies = self.command('!fire testuser3', username='testuser2')
         self.assertEqual(len(replies), 1)
-        self.assertEqual(replies[0], message.modify_fire(MockInvestor('testuser3', '')))
+        self.assertEqual(replies[0], message.not_ceo_or_exec_org)
 
         sess = self.Session()
         user = sess.query(Investor).filter(Investor.name == 'testuser3').first()
+        self.assertEqual(user.firm, 1)
+        self.assertEqual(user.firm_role, '')
+
+    def test_fire_trader_as_exec(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+        sess = self.Session()
+        user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
+        self.assertEqual(user.firm, 1)
+        self.assertEqual(user.firm_role, '')
+        self.command('!promote testuser2')
+        sess = self.Session()
+        user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
+        self.assertEqual(user.firm, 1)
+        self.assertEqual(user.firm_role, 'assoc')
+        self.command('!promote testuser2')
+        sess = self.Session()
+        user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
+        self.assertEqual(user.firm, 1)
+        self.assertEqual(user.firm_role, 'exec')
+
+        replies = self.command('!fire testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_fire(MockInvestor('testuser2', '')))
+
+        sess = self.Session()
+        user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
         self.assertEqual(user.firm, 0)
         self.assertEqual(user.firm_role, '')
+
+        firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
+        self.assertEqual(firm.size, 1)
+        self.assertEqual(firm.cfo, 0)
+
+    def test_fire_coo(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+
+        replies = self.command('!fire testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_fire(MockInvestor('testuser2', '')))
+
+        sess = self.Session()
+        user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
+        self.assertEqual(user.firm, 0)
+        self.assertEqual(user.firm_role, '')
+
+        firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
+        self.assertEqual(firm.size, 1)
+        self.assertEqual(firm.coo, 0)
 
 class TestJoinFirm(Test):
     def test_already_in_firm(self):
@@ -554,7 +844,7 @@ class TestInvite(Test):
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.no_firm_failure_org)
 
-    def test_not_ceo_or_exec(self):
+    def test_not_assoc(self):
         self.command('!create')
         self.set_balance(5000000)
         self.command('!createfirm foobar')
@@ -563,7 +853,7 @@ class TestInvite(Test):
         self.command('!joinfirm foobar', username='testuser2')
         replies = self.command('!invite thecsw', username='testuser2')
         self.assertEqual(len(replies), 1)
-        self.assertEqual(replies[0], message.not_ceo_or_exec_org)
+        self.assertEqual(replies[0], message.not_assoc_org)
 
     def test_not_private(self):
         self.command('!create')
@@ -611,6 +901,24 @@ class TestInvite(Test):
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_invite(MockInvestor('testuser2', ''), MockFirm('foobar')))
 
+    def test_assoc_invite(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm foobar')
+        self.command('!setprivate')
+
+        self.command('!create', username='testuser2')
+        self.command('!invite testuser2')
+        self.command('!joinfirm foobar', username='testuser2')
+        self.command('!promote testuser2')
+
+        self.command('!create', username='testuser3')
+        self.command('!joinfirm foobar', username='testuser3')
+
+        replies = self.command('!invite testuser3', username='testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_invite(MockInvestor('testuser3', ''), MockFirm('foobar')))
+
 class TestUpgrade(Test):
     def test_not_in_firm(self):
         self.command('!create')
@@ -619,7 +927,7 @@ class TestUpgrade(Test):
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.nofirm_failure_org)
 
-    def test_not_ceo(self):
+    def test_not_ceo_or_cfo(self):
         self.command('!create')
         self.set_balance(5000000)
         self.command('!createfirm Foobar')
@@ -629,7 +937,7 @@ class TestUpgrade(Test):
 
         replies = self.command('!upgrade', username='testuser2')
         self.assertEqual(len(replies), 1)
-        self.assertEqual(replies[0], message.not_ceo_org)
+        self.assertEqual(replies[0], message.not_ceo_or_cfo_org)
 
     def test_insufficient_funds(self):
         self.command('!create')
@@ -644,9 +952,10 @@ class TestUpgrade(Test):
         self.set_balance(5000000)
         self.command('!createfirm Foobar')
         self.set_firm_balance('Foobar', 5000000)
+
         replies = self.command('!upgrade')
         self.assertEqual(len(replies), 1)
-        self.assertEqual(replies[0], message.modify_upgrade(MockFirm('Foobar', balance=1000, rank=1), 16, 4))
+        self.assertEqual(replies[0], message.modify_upgrade(MockFirm('Foobar', balance=1000, rank=1), 16, 4, 6))
 
         sess = self.Session()
         firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
@@ -660,7 +969,7 @@ class TestTax(Test):
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.nofirm_failure_org)
 
-    def test_not_ceo(self):
+    def test_not_ceo_or_cfo(self):
         self.command('!create')
         self.set_balance(5000000)
         self.command('!createfirm Foobar')
@@ -670,7 +979,7 @@ class TestTax(Test):
 
         replies = self.command('!tax 50', username='testuser2')
         self.assertEqual(len(replies), 1)
-        self.assertEqual(replies[0], message.not_ceo_org)
+        self.assertEqual(replies[0], message.not_ceo_or_cfo_org)
 
     def test_tax_too_high(self):
         self.command('!create')
@@ -714,6 +1023,25 @@ class TestTax(Test):
         self.set_balance(5000000)
         self.command('!createfirm Footaxsucc')
         replies = self.command('!tax 37')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.TAX_SUCCESS)
+
+        sess = self.Session()
+        firm = sess.query(Firm).filter(Firm.name == 'Footaxsucc').first()
+        self.assertEqual(firm.tax, 37)
+
+    def test_tax_cfo_success(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Footaxsucc')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Footaxsucc', username='testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+
+        replies = self.command('!tax 37', username='testuser2')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.TAX_SUCCESS)
 
