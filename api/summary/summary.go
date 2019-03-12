@@ -16,5 +16,5 @@ func Summary(w http.ResponseWriter, r *http.Request) {
 	result["investments"]["active"] = investments.InvestmentsActiveReturn()
 	result["investments"]["total"] = -1
 	to_show, _ := json.Marshal(result)
-	fmt.Fprintf(w, "%s", string(to_show))	
+	fmt.Fprintf(w, "%s", string(to_show))
 }

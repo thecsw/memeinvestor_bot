@@ -2,6 +2,8 @@ package utils
 
 import (
 	"errors"
+	"gitlab.com/golang-commonmark/markdown"
+	"io/ioutil"
 	"net/url"
 	"os"
 	"strconv"
@@ -32,7 +34,7 @@ func GetTimeframes(path string) (int, int, error) {
 }
 
 func GetPagination(path string) (int, int, error) {
-	page_int, per_page_int := -1, -1
+	page_int, per_page_int := 0, 100
 	u, err := url.Parse(path)
 	if err != nil {
 		return -1, -1, errors.New("Failed parsing the URL.")
@@ -47,8 +49,14 @@ func GetPagination(path string) (int, int, error) {
 	if val, ok := queries["per_page"]; ok {
 		per_page_int, err = strconv.Atoi(val[0])
 		if err != nil || per_page_int > 100 || per_page_int < 0 {
-			per_page_int = 100;
+			per_page_int = 100
 		}
 	}
 	return page_int, per_page_int, nil
+}
+
+func GetDocumentation() string {
+	dat, _ := ioutil.ReadFile("../documentation.md")
+	md := markdown.New(markdown.HTML(true))
+	return md.RenderToString([]byte(string(dat)))
 }
