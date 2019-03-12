@@ -13,7 +13,8 @@ import (
 )
 
 func HelloThere(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, utils.GetDocumentation())
+     	fmt.Fprintf(w, "%s", utils.GetDocumentation())
+	w.WriteHeader(http.StatusOK)
 }
 
 func main() {
