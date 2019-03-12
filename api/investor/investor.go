@@ -82,7 +82,7 @@ func Investor(w http.ResponseWriter, r *http.Request) {
 	}
 	// Making it networth
 	query_net := fmt.Sprintf("SELECT COALESCE(SUM(amount),0) FROM Investments WHERE name = '%s' AND done = 0", name)
-	var active_coins int64	
+	var active_coins int64
 	err = conn.QueryRow(query_net).Scan(&active_coins)
 	temp.Balance += active_coins
 	result, _ := json.Marshal(temp)
@@ -120,7 +120,7 @@ func InvestorInvestments(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 	// Making it networth
-	query := fmt.Sprintf("SELECT * FROM Investments WHERE name = '%s' AND time > %d AND time < %d LIMIT %d OFFSET %d", name, from, to, per_page, per_page * page)
+	query := fmt.Sprintf("SELECT * FROM Investments WHERE name = '%s' AND time > %d AND time < %d LIMIT %d OFFSET %d", name, from, to, per_page, per_page*page)
 	rows, err := conn.Query(query)
 	if err != nil {
 		log.Print(err)
@@ -184,7 +184,7 @@ func InvestorInvestmentsActive(w http.ResponseWriter, r *http.Request) {
 		log.Print(err)
 	}
 	defer conn.Close()
-	query := fmt.Sprintf("SELECT * FROM Investments WHERE name = '%s' AND done = 0 AND time > %d AND time < %d LIMIT %d OFFSET %d", name, from, to, per_page, per_page * page)
+	query := fmt.Sprintf("SELECT * FROM Investments WHERE name = '%s' AND done = 0 AND time > %d AND time < %d LIMIT %d OFFSET %d", name, from, to, per_page, per_page*page)
 	rows, err := conn.Query(query)
 	if err != nil {
 		log.Print(err)

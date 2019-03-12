@@ -4,7 +4,8 @@ import (
 	"./coins"
 	"./investments"
 	"./investor"
-//	"./summary"
+	"./utils"
+	//	"./summary"
 	"fmt"
 	"github.com/gorilla/mux"
 	"log"
@@ -12,14 +13,14 @@ import (
 )
 
 func HelloThere(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello there! Welcome to u/MemeInvestor_bot api! Please see blablabla for details.")
+	fmt.Fprintf(w, utils.GetDocumentation())
 }
 
 func main() {
 	log.SetPrefix("Exception caught: ")
 	r := mux.NewRouter()
 	r.HandleFunc("/", HelloThere).Methods("GET")
-//	r.HandleFunc("/summary", summary.Summary).Methods("GET")
+	//	r.HandleFunc("/summary", summary.Summary).Methods("GET")
 	r.HandleFunc("/coins/invested", coins.CoinsInvested).Methods("GET")
 	r.HandleFunc("/coins/total", coins.CoinsTotal).Methods("GET")
 	r.HandleFunc("/investments", investments.Investments).Methods("GET")
