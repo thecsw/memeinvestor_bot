@@ -5,7 +5,6 @@ import (
 	"net/url"
 	"os"
 	"strconv"
-//	"fmt"
 )
 
 func GetDB() string {

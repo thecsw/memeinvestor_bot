@@ -41,14 +41,11 @@ func Investments(w http.ResponseWriter, r *http.Request) {
 		log.Print(err)
 		return
 	}
-
-	// Opening a db connection
 	conn, err := sql.Open("mysql", utils.GetDB())
 	if err != nil {
-		log.Print(err)
+		//log.Print(err)
 		return
 	}
-	defer conn.Close()
 	query := fmt.Sprintf("SELECT * FROM Investments WHERE time > %d AND time < %d LIMIT %d OFFSET %d;", from, to, per_page, per_page * page)
 	rows, err := conn.Query(query)
 	if err != nil {
