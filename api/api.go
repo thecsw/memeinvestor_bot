@@ -13,7 +13,9 @@ import (
 )
 
 func HelloThere(w http.ResponseWriter, r *http.Request) {
-     	fmt.Fprintf(w, "%s", utils.GetDocumentation())
+     	for _, v := range utils.GetDocumentation() {
+	      	fmt.Fprintf(w, "%s", v)   
+	}
 	w.WriteHeader(http.StatusOK)
 }
 

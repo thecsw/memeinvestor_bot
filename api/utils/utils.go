@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func GetDB() string {
@@ -55,8 +56,8 @@ func GetPagination(path string) (int, int, error) {
 	return page_int, per_page_int, nil
 }
 
-func GetDocumentation() string {
+func GetDocumentation() []string {
 	dat, _ := ioutil.ReadFile("../documentation.md")
 	md := markdown.New(markdown.HTML(true))
-	return md.RenderToString([]byte(string(dat)))
+	return strings.Split(md.RenderToString([]byte(string(dat))), "\n")
 }
