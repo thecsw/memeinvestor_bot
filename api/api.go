@@ -4,6 +4,7 @@ import (
 	"./coins"
 	"./investments"
 	"./investor"
+	"./investors"
 	"./utils"
 	//	"./summary"
 	"fmt"
@@ -34,5 +35,6 @@ func main() {
 	r.HandleFunc("/investor/{name}", investor.Investor).Methods("GET")
 	r.HandleFunc("/investor/{name}/investments", investor.InvestorInvestments).Methods("GET")
 	r.HandleFunc("/investor/{name}/active", investor.InvestorInvestmentsActive).Methods("GET")
+	r.HandleFunc("/investors/top", investors.InvestorsTop).Methods("GET")
 	log.Fatal(http.ListenAndServe(":5000", r))
 }
