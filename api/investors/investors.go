@@ -69,3 +69,42 @@ func InvestorsTop(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "%s", string(result))
 }
+
+func InvestorsTopReturn(top int) string {
+	conn, err := sql.Open("mysql", utils.GetDB())
+	if err != nil {
+		log.Print(err)
+	}
+	defer conn.Close()
+
+	query := fmt.Sprintf("SELECT Investors.id, Investors.name,  Investors.balance, Investors.completed, Investors.broke, Investors.badges, Investors.firm, Investors.firm_role, SUM(COALESCE(Investments.amount, 0)) + Investors.balance AS net_worth FROM Investors LEFT OUTER JOIN (SELECT * FROM Investments WHERE done = 0) AS Investments ON Investments.name = Investors.name GROUP BY Investors.id ORDER BY net_worth DESC LIMIT %d;", top)
+	fmt.Println(query)
+	rows, err := conn.Query(query)
+	if err != nil {
+		log.Print(err)
+		return ""
+	}
+	defer rows.Close()
+
+	wrapper := make([]investor, 0, 250)
+	temp := investor{}
+	for rows.Next() {
+		err := rows.Scan(
+			&temp.Id,
+			&temp.Name,
+			&temp.Balance,
+			&temp.Completed,
+			&temp.Broke,
+			&temp.Badges,
+			&temp.Firm,
+			&temp.Firm_role,
+			&temp.NetWorth,
+		)
+		if err != nil {
+			log.Print(err)
+		}
+		wrapper = append(wrapper, temp)
+	}
+	result, _ := json.Marshal(wrapper)
+	return string(result)
+}
