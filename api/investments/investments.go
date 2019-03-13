@@ -46,7 +46,7 @@ func Investments(w http.ResponseWriter, r *http.Request) {
 		//log.Print(err)
 		return
 	}
-	query := fmt.Sprintf("SELECT * FROM Investments WHERE time > %d AND time < %d LIMIT %d OFFSET %d;", from, to, per_page, per_page*page)
+	query := fmt.Sprintf("SELECT * FROM Investments WHERE time > %d AND time < %d LIMIT %d OFFSET %d ORDER BY time DESC;", from, to, per_page, per_page*page)
 	rows, err := conn.Query(query)
 	if err != nil {
 		log.Print(err)
@@ -205,7 +205,7 @@ func InvestmentsPost(w http.ResponseWriter, r *http.Request) {
 		log.Print(err)
 	}
 	defer conn.Close()
-	query := fmt.Sprintf("SELECT * FROM Investments WHERE time > %d AND time < %d AND post = '%s' LIMIT %d OFFSET %d;", from, to, post, per_page, per_page*page)
+	query := fmt.Sprintf("SELECT * FROM Investments WHERE time > %d AND time < %d AND post = '%s' LIMIT %d OFFSET %d ORDER BY time DESC;", from, to, post, per_page, per_page*page)
 	rows, err := conn.Query(query)
 	if err != nil {
 		log.Print(err)
