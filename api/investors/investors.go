@@ -65,7 +65,7 @@ func InvestorsTop(w http.ResponseWriter, r *http.Request) {
 		}
 		wrapper = append(wrapper, temp)
 	}
-	result, _ := json.Marshal(temp)
+	result, _ := json.Marshal(wrapper)
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "%s", string(result))
 }
