@@ -277,9 +277,9 @@ class CommentWorker():
             except ValueError:
                 return
 
-        # Sets the minimum investment to 10% of an investor's balance
-        minim = int(investor.balance / 10)
-        if amount < minim:
+        # Sets the minimum investment to 1% of an investor's balance or 100 Mc
+        minim = int(investor.balance / 100)
+        if amount < minim or amount < 100:
             return comment.reply_wrap(message.modify_min_invest(minim))
 
         author = comment.author.name
@@ -295,7 +295,7 @@ class CommentWorker():
             new_balance
         ))
 
-        # 0 upvotes is too strong, so what we do is make around 5 minumum
+        # 0 upvotes is too OP, so what we do is make around 5 minumum
         upvotes_now = int(comment.submission.ups)
         if upvotes_now < 5:
             upvotes_now = 5
