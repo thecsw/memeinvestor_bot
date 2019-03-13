@@ -120,7 +120,7 @@ func InvestorInvestments(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 	// Making it networth
-	query := fmt.Sprintf("SELECT * FROM Investments WHERE name = '%s' AND time > %d AND time < %d LIMIT %d OFFSET %d", name, from, to, per_page, per_page*page)
+	query := fmt.Sprintf("SELECT id, post, upvotes, comment, name, amount, time, done, response, COALESCE(final_upvotes, -1), success, profit FROM Investments WHERE name = '%s' AND time > %d AND time < %d ORDER BY time DESC LIMIT %d OFFSET %d", name, from, to, per_page, per_page*page)
 	rows, err := conn.Query(query)
 	if err != nil {
 		log.Print(err)
@@ -184,7 +184,7 @@ func InvestorInvestmentsActive(w http.ResponseWriter, r *http.Request) {
 		log.Print(err)
 	}
 	defer conn.Close()
-	query := fmt.Sprintf("SELECT * FROM Investments WHERE name = '%s' AND done = 0 AND time > %d AND time < %d LIMIT %d OFFSET %d", name, from, to, per_page, per_page*page)
+	query := fmt.Sprintf("SELECT id, post, upvotes, comment, name, amount, time, done, response, COALESCE(final_upvotes, -1), success, profit FROM Investments WHERE name = '%s' AND done = 0 AND time > %d AND time < %d ORDER BY time DESC LIMIT %d OFFSET %d", name, from, to, per_page, per_page*page)
 	rows, err := conn.Query(query)
 	if err != nil {
 		log.Print(err)
