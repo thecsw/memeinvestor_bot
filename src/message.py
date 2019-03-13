@@ -228,7 +228,7 @@ def modify_active(active_investments):
             remaining_string = str(td).split(".")[0] + " remaining"
         else:
             remaining_string = "processing"
-        post_url = f"https://www.reddit.com/r/MemeEconomy/comments/{inv.post}"
+        post_url = f"https://www.reddit.com/r/MemeEconomy/comments/{inv.post}/_/{inv.comment}"
         inv_string = f"[#{i}]({post_url}): {inv.amount} M¢ @ {inv.upvotes} %UPVOTES_WORD% ({remaining_string})"\
             .replace("%UPVOTES_WORD%", utils.upvote_string())
         investments_strings.append(inv_string)
