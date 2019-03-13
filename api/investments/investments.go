@@ -46,7 +46,7 @@ func Investments(w http.ResponseWriter, r *http.Request) {
 		//log.Print(err)
 		return
 	}
-	query := fmt.Sprintf("SELECT * FROM Investments WHERE time > %d AND time < %d LIMIT %d OFFSET %d;", from, to, per_page, per_page*page)
+	query := fmt.Sprintf("SELECT id, post, upvotes, comment, name, amount, time, done, response, COALESCE(final_upvotes, -1), success, profit FROM Investments WHERE time > %d AND time < %d LIMIT %d OFFSET %d;", from, to, per_page, per_page*page)
 	rows, err := conn.Query(query)
 	if err != nil {
 		log.Print(err)
@@ -93,7 +93,7 @@ func InvestmentsActive(w http.ResponseWriter, r *http.Request) {
 
 	var number int
 	wrapper := make(map[string]int)
-	query := "select count(1) from Investments where done = 0;"
+	query := "SELECT COUNT(1) FROM Investments WHERE done = 0;"
 	err = conn.QueryRow(query).Scan(&number)
 	if err != nil {
 		log.Print(err)
@@ -113,7 +113,7 @@ func InvestmentsActiveReturn() int {
 	defer conn.Close()
 
 	var number int
-	query := "select count(1) from Investments where done = 0;"
+	query := "SELECT COUNT(1) FROM Investments WHERE done = 0;"
 	err = conn.QueryRow(query).Scan(&number)
 	if err != nil {
 		log.Print(err)
@@ -205,7 +205,7 @@ func InvestmentsPost(w http.ResponseWriter, r *http.Request) {
 		log.Print(err)
 	}
 	defer conn.Close()
-	query := fmt.Sprintf("SELECT * FROM Investments WHERE time > %d AND time < %d AND post = '%s' LIMIT %d OFFSET %d;", from, to, post, per_page, per_page*page)
+	query := fmt.Sprintf("SELECT id, post, upvotes, comment, name, amount, time, done, response, COALESCE(final_upvotes, -1), success, profit FROM Investments WHERE time > %d AND time < %d AND post = '%s' LIMIT %d OFFSET %d;", from, to, post, per_page, per_page*page)
 	rows, err := conn.Query(query)
 	if err != nil {
 		log.Print(err)
