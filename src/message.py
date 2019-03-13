@@ -240,7 +240,7 @@ def modify_active(active_investments):
         replace("%INVESTMENTS_LIST%", investments_list)
 
 MIN_INVEST_ORG = """
-The minimum possible investment is %MIN% MemeCoins (10% of your balance).
+The minimum possible investment is %MIN% MemeCoins (1% of your balance) or 100 memecoins. Whatever is higher.
 """
 
 def modify_min_invest(minim):
