@@ -6,7 +6,7 @@ import (
 	"./investor"
 	"./investors"
 	"./utils"
-	//	"./summary"
+	"./summary"
 	"fmt"
 	"github.com/gorilla/mux"
 	"log"
@@ -24,7 +24,7 @@ func main() {
 	log.SetPrefix("Exception caught: ")
 	r := mux.NewRouter()
 	r.HandleFunc("/", HelloThere).Methods("GET")
-	//	r.HandleFunc("/summary", summary.Summary).Methods("GET")
+	r.HandleFunc("/summary", summary.Summary).Methods("GET")
 	r.HandleFunc("/coins/invested", coins.CoinsInvested).Methods("GET")
 	r.HandleFunc("/coins/total", coins.CoinsTotal).Methods("GET")
 	r.HandleFunc("/investments", investments.Investments).Methods("GET")
