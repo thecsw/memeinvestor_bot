@@ -46,7 +46,7 @@ func InvestorsTop(w http.ResponseWriter, r *http.Request) {
 	}
 	defer rows.Close()
 
-	wrapper := make([]investor, 0, 250)
+	wrapper := make([]investor, per_page)
 	temp := investor{}
 	for rows.Next() {
 		err := rows.Scan(
@@ -86,7 +86,7 @@ func InvestorsTopReturn(top int) string {
 	}
 	defer rows.Close()
 
-	wrapper := make([]investor, 0, 250)
+	wrapper := make([]investor, top)
 	temp := investor{}
 	for rows.Next() {
 		err := rows.Scan(
