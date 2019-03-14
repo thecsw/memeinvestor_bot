@@ -350,6 +350,16 @@ class TestPromote(Test):
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.promote_failure_org)
 
+    def test_promote_self(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        replies = self.command('!promote testuser')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.promote_failure_org)
+
+
     def test_promote_to_assoc(self):
         self.command('!create')
         self.set_balance(5000000)
@@ -360,7 +370,7 @@ class TestPromote(Test):
 
         replies = self.command('!promote testuser2')
         self.assertEqual(len(replies), 1)
-        self.assertEqual(replies[0], message.modify_promote(MockInvestor('testuser2', 'assoc')))
+        self.assertEqual(replies[0], message.modify_promote(MockInvestor('testuser2', 'assoc'), ''))
 
         sess = self.Session()
         user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
@@ -414,7 +424,7 @@ class TestPromote(Test):
 
         replies = self.command('!promote testuser4')
         self.assertEqual(len(replies), 1)
-        self.assertEqual(replies[0], message.modify_promote(MockInvestor('testuser4', 'assoc')))
+        self.assertEqual(replies[0], message.modify_promote(MockInvestor('testuser4', 'assoc'), ''))
 
         sess = self.Session()
         user = sess.query(Investor).filter(Investor.name == 'testuser3').first()
@@ -434,9 +444,215 @@ class TestPromote(Test):
         self.command('!joinfirm Foobar', username='testuser2')
         self.command('!promote testuser2')
         self.command('!promote testuser2')
-        replies = self.command('!promote testuser2', username='testuser')
+        replies = self.command('!promote testuser2')
         self.assertEqual(len(replies), 1)
-        self.assertEqual(replies[0], message.modify_promote(MockInvestor('testuser2', 'cfo')))
+        self.assertEqual(replies[0], message.modify_promote(MockInvestor('testuser2', 'cfo'), 'exec'))
+
+    def test_promote_to_cfo_full(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+
+        self.command('!create', username='testuser3')
+        self.command('!joinfirm Foobar', username='testuser3')
+        self.command('!promote testuser3')
+        self.command('!promote testuser3')
+
+        replies = self.command('!promote testuser3')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_promote(MockInvestor('testuser3', 'coo'), 'exec'))
+
+        sess = self.Session()
+        firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
+        self.assertEqual(firm.size, 3)
+        self.assertEqual(firm.execs, 0)
+        self.assertEqual(firm.cfo, 1)
+        self.assertEqual(firm.coo, 1)
+
+class TestDemote(Test):
+    def test_none(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        replies = self.command('!demote foo')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.firm_none_org)
+
+    def test_demote_trader(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+
+        replies = self.command('!demote testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.demote_failure_trader_org)
+
+    def test_not_ceo_or_exec(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+        self.command('!promote testuser2')
+
+        self.command('!create', username='testuser3')
+        self.command('!joinfirm Foobar', username='testuser3')
+        self.command('!promote testuser3')
+
+        replies = self.command('!demote testuser3', username='testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.not_ceo_or_exec_org)
+
+    def test_non_existent(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        replies = self.command('!demote foo')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.demote_failure_org)
+
+    def test_wrong_firm(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!createfirm Foobar2', username='testuser2')
+
+        replies = self.command('!demote testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.demote_failure_org)
+
+    def test_demote_self(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        replies = self.command('!demote testuser')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.demote_failure_org)
+
+    def test_demote_to_trader(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+        self.command('!promote testuser2')
+
+        replies = self.command('!demote testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_demote(MockInvestor('testuser2', ''), 'assoc'))
+
+        sess = self.Session()
+        user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
+        self.assertEqual(user.firm, 1)
+        self.assertEqual(user.firm_role, '')
+
+    def test_demote_to_assoc(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+
+        replies = self.command('!demote testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_demote(MockInvestor('testuser2', 'assoc'), 'exec'))
+
+        sess = self.Session()
+        user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
+        self.assertEqual(user.firm, 1)
+        self.assertEqual(user.firm_role, 'assoc')
+
+    def test_demote_execs_full(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+
+        self.command('!create', username='testuser3')
+        self.command('!joinfirm Foobar', username='testuser3')
+        self.command('!promote testuser3')
+        self.command('!promote testuser3')
+
+        self.command('!create', username='testuser4')
+        self.command('!joinfirm Foobar', username='testuser4')
+        self.command('!promote testuser4')
+        self.command('!promote testuser4')
+
+        replies = self.command('!demote testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_demote_execs_full(MockFirm('Foobar', execs=2)))
+
+        sess = self.Session()
+        user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
+        self.assertEqual(user.firm, 1)
+        self.assertEqual(user.firm_role, 'cfo')
+
+    def test_demote_to_cfo(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+
+        replies = self.command('!demote testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_demote(MockInvestor('testuser2', 'cfo'), 'coo'))
+
+    def test_demote_to_cfo_full(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command('!createfirm Foobar')
+
+        self.command('!create', username='testuser2')
+        self.command('!joinfirm Foobar', username='testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+        self.command('!promote testuser2')
+
+        self.command('!create', username='testuser3')
+        self.command('!joinfirm Foobar', username='testuser3')
+        self.command('!promote testuser3')
+        self.command('!promote testuser3')
+        self.command('!promote testuser3')
+
+        replies = self.command('!demote testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_demote(MockInvestor('testuser2', 'exec'), 'coo'))
+
+        sess = self.Session()
+        firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
+        self.assertEqual(firm.size, 3)
+        self.assertEqual(firm.execs, 1)
+        self.assertEqual(firm.cfo, 1)
+        self.assertEqual(firm.coo, 0)
 
 class TestFire(Test):
     def test_none(self):
@@ -505,7 +721,7 @@ class TestFire(Test):
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.fire_failure_org)
 
-    def test_self(self):
+    def test_fire_self(self):
         self.command('!create')
         self.set_balance(5000000)
         self.command('!createfirm Foobar')
