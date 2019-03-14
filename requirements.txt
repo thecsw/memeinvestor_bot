@@ -1,9 +1,4 @@
 praw
 fastnumbers
-flask
-flask-caching
-flask-cors
-flask-sqlalchemy
-gunicorn
 mysqlclient
 sqlalchemy
