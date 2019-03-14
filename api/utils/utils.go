@@ -16,7 +16,7 @@ func GetDB() string {
 }
 
 func GetTimeframes(path string) (int, int, error) {
-	from_int, to_int := 01, 4294967295
+	from_int, to_int := 0, 4294967295
 	u, err := url.Parse(path)
 	if err != nil {
 		return -1, -1, errors.New("Failed parsing the URL.")
