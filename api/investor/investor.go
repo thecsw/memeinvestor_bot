@@ -18,7 +18,7 @@ type investor struct {
 	Balance   int64  `json:"balance,omitempty"`
 	Completed int    `json:"completed,omitempty"`
 	Broke     int    `json:"broke,omitempty"`
-	Badges    string `json:"badges,omitempty"`
+	Badges    []string `json:"badges,omitempty"`
 	Firm      int    `json:"firm,omitempty"`
 	Firm_role string `json:"firm_role,omitempty"`
 }
@@ -65,6 +65,7 @@ func Investor(w http.ResponseWriter, r *http.Request) {
 	}
 	defer rows.Close()
 	temp := investor{}
+	var badges_temp string
 	for rows.Next() {
 		err := rows.Scan(
 			&temp.Id,
@@ -72,13 +73,14 @@ func Investor(w http.ResponseWriter, r *http.Request) {
 			&temp.Balance,
 			&temp.Completed,
 			&temp.Broke,
-			&temp.Badges,
+			&badges_temp,
 			&temp.Firm,
 			&temp.Firm_role,
 		)
 		if err != nil {
 			log.Print(err)
 		}
+		json.Unmarshal([]byte(badges_temp), &temp.Badges)
 	}
 	// Making it networth
 	query_net := fmt.Sprintf("SELECT COALESCE(SUM(amount),0) FROM Investments WHERE name = '%s' AND done = 0", name)

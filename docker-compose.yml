@@ -58,6 +58,7 @@ services:
         command: ["./api"]
         depends_on:
           - mysql
+          - http
 
     http:
         build:
@@ -67,8 +68,6 @@ services:
         restart: unless-stopped
         ports:
           - 2015:2015
-        depends_on:
-          - api
 
     mysql:
         image: mariadb:10.2.15
