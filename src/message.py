@@ -192,6 +192,7 @@ Here is a list of commands that summon me:
 - `!joinfirm <name>`
 - `!leavefirm`
 - `!promote <username>` **(Executive and up)**
+- `!demote <username>` **(Executive and up)**
 - `!fire <username>` **(Executive and up)**
 - `!upgrade` **(CEO and CFO only)**
 - `!setprivate` **(CEO and COO only)**
