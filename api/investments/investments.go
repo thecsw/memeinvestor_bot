@@ -53,7 +53,7 @@ func Investments(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer rows.Close()
-	wrapper := make([]investment, per_page)
+	wrapper := make([]investment, 0, per_page)
 	temp := investment{}
 	for rows.Next() {
 		err := rows.Scan(
@@ -212,7 +212,7 @@ func InvestmentsPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer rows.Close()
-	wrapper := make([]investment, per_page)
+	wrapper := make([]investment, 0, per_page)
 	temp := investment{}
 	for rows.Next() {
 		err := rows.Scan(
