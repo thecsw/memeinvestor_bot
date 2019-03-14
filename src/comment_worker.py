@@ -130,6 +130,7 @@ class CommentWorker():
         r"!joinfirm\s+(.+)",
         r"!leavefirm",
         r"!promote\s+(.+)",
+        r"!demote\s+(.+)",
         r"!fire\s+(.+)",
         r"!upgrade",
         r"!invite\s+(.+)",
@@ -595,14 +596,16 @@ class CommentWorker():
         user = sess.query(Investor).\
             filter(func.lower(Investor.name) == func.lower(to_promote)).\
             first()
-        if (user is None) or (user.firm != investor.firm):
+        if (user is None) or (user.name == investor.name) or (user.firm != investor.firm):
             return comment.reply_wrap(message.promote_failure_org)
 
         firm = sess.query(Firm).\
             filter(Firm.id == user.firm).\
             first()
 
-        if user.firm_role == "":
+        user_role = user.firm_role
+
+        if user_role == "":
             if (investor.firm_role == "") or (investor.firm_role == "assoc"):
                 return comment.reply_wrap(message.not_ceo_or_exec_org)
 
@@ -613,7 +616,7 @@ class CommentWorker():
             user.firm_role = "assoc"
             firm.assocs += 1
 
-        elif user.firm_role == "assoc":
+        elif user_role == "assoc":
             if investor.firm_role != "ceo" and investor.firm_role != "coo":
                 return comment.reply_wrap(message.not_ceo_or_coo_org)
 
@@ -625,18 +628,24 @@ class CommentWorker():
             firm.assocs -= 1
             firm.execs += 1
 
-        elif user.firm_role == "exec":
+        elif user_role == "exec":
             if investor.firm_role != "ceo":
                 return comment.reply_wrap(message.not_ceo_org)
 
+            # If the firm already has a CFO, the specified user will be promoted to COO
             if firm.cfo >= 1:
-                return comment.reply_wrap(message.promote_cfo_full_org)
+                if firm.coo >= 1:
+                    return comment.reply_wrap(message.promote_coo_full_org)
 
-            user.firm_role = "cfo"
-            firm.execs -= 1
-            firm.cfo += 1
+                user.firm_role = "coo"
+                firm.execs -= 1
+                firm.coo += 1
+            else:
+                user.firm_role = "cfo"
+                firm.execs -= 1
+                firm.cfo += 1
 
-        elif user.firm_role == "cfo":
+        elif user_role == "cfo":
             if investor.firm_role != "ceo":
                 return comment.reply_wrap(message.not_ceo_org)
 
@@ -647,7 +656,7 @@ class CommentWorker():
             firm.cfo -= 1
             firm.coo += 1
 
-        elif user.firm_role == "coo":
+        elif user_role == "coo":
             if investor.firm_role != "ceo":
                 return comment.reply_wrap(message.not_ceo_org)
 
@@ -685,7 +694,93 @@ class CommentWorker():
                 REDDIT.subreddit(subreddit).flair.set(user.name, f"{firm.name} | {flair_role_user}")
                 REDDIT.subreddit(subreddit).flair.set(investor.name, f"{firm.name} | {flair_role_investor}")
 
-        return comment.reply_wrap(message.modify_promote(user))
+        return comment.reply_wrap(message.modify_promote(user, user_role))
+
+    @req_user
+    def demote(self, sess, comment, investor, to_demote):
+        if investor.firm == 0:
+            return comment.reply_wrap(message.firm_none_org)
+
+        user = sess.query(Investor).\
+            filter(func.lower(Investor.name) == func.lower(to_demote)).\
+            first()
+        if (user is None) or (user.name == investor.name) or (user.firm != investor.firm):
+            return comment.reply_wrap(message.demote_failure_org)
+
+        firm = sess.query(Firm).\
+            filter(Firm.id == user.firm).\
+            first()
+
+        user_role = user.firm_role
+
+        if user_role == "":
+            return comment.reply_wrap(message.demote_failure_trader_org)
+        elif user_role == "assoc":
+            if (investor.firm_role == "") or (investor.firm_role == "assoc"):
+                return comment.reply_wrap(message.not_ceo_or_exec_org)
+
+            user.firm_role = ""
+            firm.assocs -= 1
+
+        elif user_role == "exec":
+            if investor.firm_role != "ceo" and investor.firm_role != "coo":
+                return comment.reply_wrap(message.not_ceo_or_coo_org)
+
+            max_assocs = max_assocs_for_rank(firm.rank)
+            if firm.assocs >= max_assocs:
+                return comment.reply_wrap(message.modify_demote_assocs_full(firm))
+
+            user.firm_role = "assoc"
+            firm.execs -= 1
+            firm.assocs += 1
+
+        elif user.firm_role == "cfo":
+            if investor.firm_role != "ceo":
+                return comment.reply_wrap(message.not_ceo_org)
+
+            max_execs = max_execs_for_rank(firm.rank)
+            if firm.execs >= max_execs:
+                return comment.reply_wrap(message.modify_demote_execs_full(firm))
+
+            user.firm_role = "exec"
+            firm.cfo -= 1
+            firm.execs += 1
+
+        elif user.firm_role == "coo":
+            if investor.firm_role != "ceo":
+                return comment.reply_wrap(message.not_ceo_org)
+
+            if firm.cfo >= 1:
+                max_execs = max_execs_for_rank(firm.rank)
+                if firm.execs >= max_execs:
+                    return comment.reply_wrap(message.modify_demote_execs_full(firm))
+
+                user.firm_role = "exec"
+                firm.coo -= 1
+                firm.execs += 1
+            else:
+                user.firm_role = "cfo"
+                firm.coo -= 1
+                firm.cfo += 1
+
+        # Updating the flair in subreddits
+        flair_role_user = ''
+        if user.firm_role == "ceo":
+            flair_role_user = "CEO"
+        elif user.firm_role == "coo":
+            flair_role_user = "COO"
+        elif user.firm_role == "cfo":
+            flair_role_user = "CFO"
+        elif user.firm_role == "exec":
+            flair_role_user = "Executive"
+        elif user.firm_role == "assoc":
+            flair_role_user = "Associate"
+
+        if not config.TEST:
+            for subreddit in config.SUBREDDITS:
+                REDDIT.subreddit(subreddit).flair.set(user.name, f"{firm.name} | {flair_role_user}")
+
+        return comment.reply_wrap(message.modify_demote(user, user_role))
 
     @req_user
     def fire(self, sess, comment, investor, to_fire):
