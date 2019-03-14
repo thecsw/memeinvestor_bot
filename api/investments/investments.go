@@ -43,7 +43,7 @@ func Investments(w http.ResponseWriter, r *http.Request) {
 	}
 	conn, err := sql.Open("mysql", utils.GetDB())
 	if err != nil {
-		//log.Print(err)
+		log.Print(err)
 		return
 	}
 	query := fmt.Sprintf("SELECT id, post, upvotes, comment, name, amount, time, done, response, COALESCE(final_upvotes, -1), success, profit FROM Investments WHERE time > %d AND time < %d ORDER BY time DESC LIMIT %d OFFSET %d;", from, to, per_page, per_page*page)
@@ -53,7 +53,7 @@ func Investments(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer rows.Close()
-	wrapper := make([]investment, 0, per_page)
+	wrapper := make([]investment, per_page)
 	temp := investment{}
 	for rows.Next() {
 		err := rows.Scan(
@@ -72,7 +72,7 @@ func Investments(w http.ResponseWriter, r *http.Request) {
 		)
 		if err != nil {
 			log.Print(err)
-			return
+			continue
 		}
 		wrapper = append(wrapper, temp)
 	}
@@ -212,7 +212,7 @@ func InvestmentsPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer rows.Close()
-	wrapper := make([]investment, 0, per_page)
+	wrapper := make([]investment, per_page)
 	temp := investment{}
 	for rows.Next() {
 		err := rows.Scan(
