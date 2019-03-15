@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>meme investor bot</title>
+    <meta charset="utf-8">
+    <meta name="application-name" content=""/>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="Start investing in memes with the best broker in r/MemeEconomy today!"/>
+    <meta name="theme-color" content="#212121"/>
+    <link rel="icon" type="image/png" href="resources/favicon/favicon-32x32.png" sizes="32x32"/>
+    <link rel="icon" type="image/png" href="resources/favicon/favicon-32x32.png" sizes="16x16"/>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- christmas snow -->
+    <!-- <script src="js/libs/snowstorm-min.js"></script> -->
+
+    <!-- materialize -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+    <!-- fancy charts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script src="js/libs/countup.min.js"></script>
+    <!-- page -->
+    <link type="text/css" rel="stylesheet" href="css/firm.css?c=2"/>
+    <script type="module" src="js/user.js?c=2"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+
+<body style="overflow-y:hidden">
+    <nav>
+        <div class="nav-wrapper">
+            <a href="./index.html" class="brand-logo"><img src="resources/logo240.png" class="logo-img"/><span
+                    class="hide-on-small-only logo-text">emeInvestor bot</span></a>
+            <a data-target="mobile-sidebar" class="sidenav-trigger"><i
+                    class="material-icons">menu</i></a>
+
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li>
+                  <div class="input-field">
+                    <input id="investor-username" class="custom-dark-search" type="search" placeholder="search user" >
+                    <label class="label-icon" for="search-nav"><i class="material-icons">search</i></label>
+                    <i class="material-icons" id="investor-username-search">send</i>
+                  </div>
+                </li>
+                <li><a href="./index.html">home</a></li>
+                <li><a href="./leaderboards.html">leaderboards</a></li>
+                <li>
+                  <a href="https://github.com/MemeInvestor/memeinvestor_bot/" target="_blank">
+                  <img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"/></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <ul class="sidenav" id="mobile-sidebar">
+        <li class="sidenav-top">
+         <h5>menu</h5>
+         <a class="sidenav-close" ><i class="material-icons">close</i></a>
+        </li>
+        <li><a id="without-this-everything-brokes">lol</a></li>
+        <li class="sidebar-search">
+          <!--TODO: update search to search for firms-->
+            <input id="investor-username-mobile" placeholder="search user" type="search"  >
+        </li>
+        <li><a href="./index.html">home</a></li>
+        <li><a href="./leaderboards.html">leaderboards</a></li>
+        <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/">
+        <img class="icon-32" src="resources/GitHub-Mark-Light-32px.png" target="_blank"></a></li>
+    </ul>
+    
+    <div id="announcements-modal" class="modal ">
+    </div>
+
+    <!-- PUT PAGE CODE HERE -->
+    <div class="overlay" id="overlay" >
+        <div class="oriz-center" id="overlay-content">
+          <h5> no firm selected </h5>
+          <p>Enter your firm or the name of another firm in the search bar </p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="section">
+          <div class="row">
+              <div class="col s12 m4 l2"> <!--TODO fix the medium sizing-->
+                <img class="firm-image" src="./resources/first.png" />
+                <button class="waves-effect waves-light btn grey lighten-2 grey-text text-darken-5 firm-item-edit">change</button>
+                 <!--TODO add textbox/javascript/submit-->  
+              </div>
+              <div class="col s12 m4 l5">
+                  <h3 class="orange-text text-lighten-1 firm-name" id="firm-name"><a id="username" target="_blank" href="" >JP Meme Chase</a></h3><br />
+                  <h5 class="orange-text text-lighten-1 firm-description" id="firm-description">The finest meme investment firm dedicated to memecoins</h5><br>
+                  <button class="waves-effect waves-light btn grey lighten-2 grey-text text-darken-5 firm-item-edit">edit</button>
+                  <!--TODO add textbox/javascript/submit-->                
+              </div>
+              <div class="col s12 m4 l5">
+                <h5 class="firm-upgrades">upgrades</h5>
+                <div id="badges-container" class="badges-container">
+                  <p class="grey-text">This firm doesn't have any upgrades.</p>
+                  <!--upgrades?-->
+                </div>
+              </div>
+          </div>       
+        </div>
+    </div>
+
+  
+  </body>  
+</html>   
