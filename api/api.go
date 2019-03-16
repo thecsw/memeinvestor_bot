@@ -5,8 +5,8 @@ import (
 	"./investments"
 	"./investor"
 	"./investors"
-	"./utils"
 	"./summary"
+	"./utils"
 	"fmt"
 	"github.com/gorilla/mux"
 	"log"
@@ -14,8 +14,8 @@ import (
 )
 
 func HelloThere(w http.ResponseWriter, r *http.Request) {
-     	for _, v := range utils.GetDocumentation() {
-	      	fmt.Fprintf(w, "%s\n", v)   
+	for _, v := range utils.GetDocumentation() {
+		fmt.Fprintf(w, "%s\n", v)
 	}
 	w.WriteHeader(http.StatusOK)
 }

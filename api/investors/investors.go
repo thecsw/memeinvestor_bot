@@ -37,7 +37,7 @@ func InvestorsTop(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 
-	query := fmt.Sprintf("SELECT Investors.id, Investors.name,  Investors.balance, Investors.completed, Investors.broke, Investors.badges, Investors.firm, Investors.firm_role, SUM(COALESCE(Investments.amount, 0)) + Investors.balance AS net_worth FROM Investors LEFT OUTER JOIN (SELECT * FROM Investments WHERE done = 0) AS Investments ON Investments.name = Investors.name GROUP BY Investors.id ORDER BY net_worth DESC LIMIT %d OFFSET %d;", per_page, per_page * page)
+	query := fmt.Sprintf("SELECT Investors.id, Investors.name,  Investors.balance, Investors.completed, Investors.broke, Investors.badges, Investors.firm, Investors.firm_role, SUM(COALESCE(Investments.amount, 0)) + Investors.balance AS net_worth FROM Investors LEFT OUTER JOIN (SELECT * FROM Investments WHERE done = 0) AS Investments ON Investments.name = Investors.name GROUP BY Investors.id ORDER BY net_worth DESC LIMIT %d OFFSET %d;", per_page, per_page*page)
 	fmt.Println(query)
 	rows, err := conn.Query(query)
 	if err != nil {
