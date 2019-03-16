@@ -191,13 +191,14 @@ Here is a list of commands that summon me:
 - `!createfirm <name>`
 - `!joinfirm <name>`
 - `!leavefirm`
+- `!invite <username>` **(Associate and up)**
 - `!promote <username>` **(Executive and up)**
 - `!demote <username>` **(Executive and up)**
 - `!fire <username>` **(Executive and up)**
 - `!upgrade` **(CEO and CFO only)**
+- `!tax <percent>` (CEO and CFO only)**
 - `!setprivate` **(CEO and COO only)**
 - `!setpublic` **(CEO and COO only)**
-- `!invite <username>` **(Associate and up)**
 
 To get help on a specific command, simply invoke `!help command`
 """
