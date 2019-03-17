@@ -13,27 +13,27 @@ import (
 )
 
 type firm struct {
-	Id         int    `json:"id,omitempty"`
-	Name       string `json:"name,omitempty"`
-	Balance    int64  `json:"balance,omitempty"`
-	Size       int    `json:"size,omitempty"`
-	Execs      int    `json:"execs,omitempty"`
-	Tax        int    `json:"tax,omitempty"`
-	Rank       int    `json:"rank,omitempty"`
-	Private    bool   `json:"private,omitempty"`
-	LastPayout int    `json:"last_payout,omitempty"`
+	Id         int    `json:"id"`
+	Name       string `json:"name"`
+	Balance    int64  `json:"balance"`
+	Size       int    `json:"size"`
+	Execs      int    `json:"execs"`
+	Tax        int    `json:"tax"`
+	Rank       int    `json:"rank"`
+	Private    bool   `json:"private"`
+	LastPayout int    `json:"last_payout"`
 }
 
 type investor struct {
-	Id        int      `json:"id,omitempty"`
-	Name      string   `json:"name,omitempty"`
-	Balance   int64    `json:"balance,omitempty"`
-	Completed int      `json:"completed,omitempty"`
-	Broke     int      `json:"broke,omitempty"`
-	Badges    []string `json:"badges,omitempty"`
-	Firm      int      `json:"firm,omitempty"`
-	Firm_role string   `json:"firm_role,omitempty"`
-	NetWorth  int64    `json:"networth,omitempty"`
+	Id        int      `json:"id"`
+	Name      string   `json:"name"`
+	Balance   int64    `json:"balance"`
+	Completed int      `json:"completed"`
+	Broke     int      `json:"broke"`
+	Badges    []string `json:"badges"`
+	Firm      int      `json:"firm"`
+	Firm_role string   `json:"firm_role"`
+	NetWorth  int64    `json:"networth"`
 }
 
 // Investments on time
