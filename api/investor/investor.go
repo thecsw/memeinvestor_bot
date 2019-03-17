@@ -21,6 +21,7 @@ type investor struct {
 	Badges    []string `json:"badges,omitempty"`
 	Firm      int      `json:"firm,omitempty"`
 	Firm_role string   `json:"firm_role,omitempty"`
+	NetWorth  int64    `json:"networth,omitempty"`
 }
 
 type investment struct {
@@ -93,7 +94,7 @@ func Investor() func(w http.ResponseWriter, r *http.Request) {
 		query_net := fmt.Sprintf("SELECT COALESCE(SUM(amount),0) FROM Investments WHERE name = '%s' AND done = 0", name)
 		var active_coins int64
 		err = conn.QueryRow(query_net).Scan(&active_coins)
-		temp.Balance += active_coins
+		temp.NetWorth = temp.Balance + active_coins
 		result, _ := json.Marshal(temp)
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "%s", string(result))
