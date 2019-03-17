@@ -8,6 +8,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"net/http"
+	"time"
 )
 
 type investor struct {
@@ -20,6 +21,11 @@ type investor struct {
 	Firm      int      `json:"firm"`
 	Firm_role string   `json:"firm_role"`
 	NetWorth  int64    `json:"networth"`
+}
+
+type investorProfit struct {
+	Name      string   `json:"name"`
+	Profit  int64    `json:"profit"`
 }
 
 func InvestorsTop() func(w http.ResponseWriter, r *http.Request) {
@@ -130,4 +136,50 @@ LIMIT %d OFFSET 0;`, top)
 	}
 	result, _ := json.Marshal(wrapper)
 	return string(result)
+}
+
+func InvestorsLast24() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		page, per_page := utils.GetPagination(r.RequestURI)
+		day_ago := time.Now().Unix() - 86400
+		conn, err := sql.Open("mysql", utils.GetDB())
+		if err != nil {
+			log.Print(err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		defer conn.Close()
+		query := fmt.Sprintf(`
+SELECT Investors.name, SUM(COALESCE(Investments.amount, 0))
+AS profit FROM Investors 
+LEFT OUTER JOIN (SELECT * FROM Investments WHERE done = 1 AND time > %d) 
+AS Investments ON Investments.name = Investors.name 
+GROUP BY Investors.id 
+ORDER BY profit DESC 
+LIMIT %d OFFSET %d;`, day_ago, per_page, per_page*page)
+		rows, err := conn.Query(query)
+		if err != nil {
+			log.Print(err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		defer rows.Close()
+		wrapper := make([]investorProfit, 0, per_page)
+		temp := investorProfit{}
+		for rows.Next() {
+			err := rows.Scan(
+				&temp.Name,
+				&temp.Profit,
+			)
+			if err != nil {
+				log.Print(err)
+				w.WriteHeader(http.StatusBadRequest)
+				continue
+			}
+			wrapper = append(wrapper, temp)
+		}
+		result, _ := json.Marshal(wrapper)
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "%s", string(result))
+	}
 }
