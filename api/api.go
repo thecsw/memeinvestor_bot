@@ -41,6 +41,7 @@ func main() {
 	r.HandleFunc("/investor/{name}/investments", investor.InvestorInvestments()).Methods("GET")
 	r.HandleFunc("/investor/{name}/active", investor.InvestorInvestmentsActive()).Methods("GET")
 	r.HandleFunc("/investors/top", investors.InvestorsTop()).Methods("GET")
+	r.HandleFunc("/investors/last24", investors.InvestorsLast24()).Methods("GET")
 	r.HandleFunc("/firms/top", firms.FirmsTop()).Methods("GET")
 	r.HandleFunc("/firm/{id}", firm.Firm()).Methods("GET")
 	r.HandleFunc("/firm/{id}/members", firm.FirmMembers()).Methods("GET")

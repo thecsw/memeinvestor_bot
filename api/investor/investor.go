@@ -86,7 +86,7 @@ func Investor() func(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Print(err)
 				w.WriteHeader(http.StatusBadRequest)
-				continue
+				return
 			}
 			json.Unmarshal([]byte(badges_temp), &temp.Badges)
 		}

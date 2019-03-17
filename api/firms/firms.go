@@ -61,7 +61,7 @@ LIMIT %d OFFSET %d;`, per_page, per_page*page)
 			)
 			if err != nil {
 				log.Print(err)
-				continue
+				return
 			}
 			wrapper = append(wrapper, temp)
 		}
