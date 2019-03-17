@@ -13,18 +13,18 @@ import (
 )
 
 type investment struct {
-	Id            int    `json:"id,omitempty"`
-	Post          string `json:"post,omitempty"`
-	Upvotes       int    `json:"upvotes,omitempty"`
-	Comment       string `json:"comment,omitempty"`
-	Name          string `json:"name,omitempty"`
-	Amount        int64  `json:"amount,omitempty"`
-	Time          int    `json:"time,omitempty"`
-	Done          bool   `json:"done,omitempty"`
-	Response      string `json:"response,omitempty"`
-	Final_upvotes int    `json:"final_upvotes,omitempty"`
-	Success       bool   `json:"success,omitempty"`
-	Profit        int64  `json:"profit,omitempty"`
+	Id            int    `json:"id"`
+	Post          string `json:"post"`
+	Upvotes       int    `json:"upvotes"`
+	Comment       string `json:"comment"`
+	Name          string `json:"name"`
+	Amount        int64  `json:"amount"`
+	Time          int    `json:"time"`
+	Done          bool   `json:"done"`
+	Response      string `json:"response"`
+	Final_upvotes int    `json:"final_upvotes"`
+	Success       bool   `json:"success"`
+	Profit        int64  `json:"profit"`
 }
 
 // Investments on time

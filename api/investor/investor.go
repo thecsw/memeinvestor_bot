@@ -13,30 +13,30 @@ import (
 )
 
 type investor struct {
-	Id        int      `json:"id,omitempty"`
-	Name      string   `json:"name,omitempty"`
-	Balance   int64    `json:"balance,omitempty"`
-	Completed int      `json:"completed,omitempty"`
-	Broke     int      `json:"broke,omitempty"`
-	Badges    []string `json:"badges,omitempty"`
-	Firm      int      `json:"firm,omitempty"`
-	Firm_role string   `json:"firm_role,omitempty"`
-	NetWorth  int64    `json:"networth,omitempty"`
+	Id        int      `json:"id"`
+	Name      string   `json:"name"`
+	Balance   int64    `json:"balance"`
+	Completed int      `json:"completed"`
+	Broke     int      `json:"broke"`
+	Badges    []string `json:"badges"`
+	Firm      int      `json:"firm"`
+	Firm_role string   `json:"firm_role"`
+	NetWorth  int64    `json:"networth"`
 }
 
 type investment struct {
-	Id            int    `json:"id,omitempty"`
-	Post          string `json:"post,omitempty"`
-	Upvotes       int    `json:"upvotes,omitempty"`
-	Comment       string `json:"comment,omitempty"`
-	Name          string `json:"name,omitempty"`
-	Amount        int64  `json:"amount,omitempty"`
-	Time          int    `json:"time,omitempty"`
-	Done          bool   `json:"done,omitempty"`
-	Response      string `json:"response,omitempty"`
-	Final_upvotes int    `json:"final_upvotes,omitempty"`
-	Success       bool   `json:"success,omitempty"`
-	Profit        int64  `json:"profit,omitempty"`
+	Id            int    `json:"id"`
+	Post          string `json:"post"`
+	Upvotes       int    `json:"upvotes"`
+	Comment       string `json:"comment"`
+	Name          string `json:"name"`
+	Amount        int64  `json:"amount"`
+	Time          int    `json:"time"`
+	Done          bool   `json:"done"`
+	Response      string `json:"response"`
+	Final_upvotes int    `json:"final_upvotes"`
+	Success       bool   `json:"success"`
+	Profit        int64  `json:"profit"`
 }
 
 func Investor() func(w http.ResponseWriter, r *http.Request) {
