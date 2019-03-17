@@ -71,7 +71,7 @@ LIMIT %d OFFSET %d;`, from, to, per_page, per_page*page)
 			)
 			if err != nil {
 				log.Print(err)
-				continue
+				return
 			}
 			wrapper = append(wrapper, temp)
 		}
@@ -241,7 +241,7 @@ LIMIT %d OFFSET %d;`, from, to, post, per_page, per_page*page)
 			if err != nil {
 				log.Print(err)
 				w.WriteHeader(http.StatusBadRequest)
-				continue
+				return
 			}
 			wrapper = append(wrapper, temp)
 		}

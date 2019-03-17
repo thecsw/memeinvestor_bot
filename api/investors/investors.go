@@ -24,8 +24,8 @@ type investor struct {
 }
 
 type investorProfit struct {
-	Name      string   `json:"name"`
-	Profit  int64    `json:"profit"`
+	Name   string `json:"name"`
+	Profit int64  `json:"profit"`
 }
 
 func InvestorsTop() func(w http.ResponseWriter, r *http.Request) {
@@ -75,7 +75,7 @@ LIMIT %d OFFSET %d;`, per_page, per_page*page)
 			if err != nil {
 				log.Print(err)
 				w.WriteHeader(http.StatusBadRequest)
-				continue
+				return
 			}
 			json.Unmarshal([]byte(badges_temp), &temp.Badges)
 			wrapper = append(wrapper, temp)
@@ -129,7 +129,7 @@ LIMIT %d OFFSET 0;`, top)
 		)
 		if err != nil {
 			log.Print(err)
-			continue
+			return
 		}
 		json.Unmarshal([]byte(badges_temp), &temp.Badges)
 		wrapper = append(wrapper, temp)
@@ -174,7 +174,7 @@ LIMIT %d OFFSET %d;`, day_ago, per_page, per_page*page)
 			if err != nil {
 				log.Print(err)
 				w.WriteHeader(http.StatusBadRequest)
-				continue
+				return
 			}
 			wrapper = append(wrapper, temp)
 		}
