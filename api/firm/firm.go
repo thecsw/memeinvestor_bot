@@ -87,7 +87,7 @@ LIMIT 1;`, firm_id)
 			)
 			if err != nil {
 				log.Print(err)
-				continue
+				return
 			}
 		}
 		result, _ := json.Marshal(temp)
@@ -144,7 +144,7 @@ LIMIT %d OFFSET %d`, firm_id, per_page, per_page*page)
 			)
 			if err != nil {
 				log.Print(err)
-				continue
+				return
 			}
 			json.Unmarshal([]byte(badges_temp), &temp.Badges)
 			wrapper = append(wrapper, temp)
@@ -214,7 +214,7 @@ LIMIT %d OFFSET %d;`, firm_id, per_page, per_page*page)
 			)
 			if err != nil {
 				log.Print(err)
-				continue
+				return
 			}
 			json.Unmarshal([]byte(badges_temp), &temp.Badges)
 			wrapper = append(wrapper, temp)
