@@ -10,18 +10,23 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"time"
+	"os"
+	"os/signal"
 )
 
-func HelloThere(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome to u/MemeInvestor_bot official RESTful API!\n")
-	w.WriteHeader(http.StatusOK)
+func HelloThere() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "%s\n", "Welcome to u/MemeInvestor_bot official RESTful API!\n")
+		fmt.Fprintf(w, "%s\n", "Please see https://github.com/MemeInvestor/memeinvestor_bot/wiki/API-Documentation for more information!")
+		w.WriteHeader(http.StatusOK)
+	}
 }
 
 func main() {
 	log.SetPrefix("Exception caught: ")
 	r := mux.NewRouter()
-	s := server.NewServer()
-	r.HandleFunc("/", HelloThere).Methods("GET")
+	r.HandleFunc("/", HelloThere()).Methods("GET")
 	r.HandleFunc("/summary", summary.Summary()).Methods("GET")
 	r.HandleFunc("/coins/invested", coins.CoinsInvested()).Methods("GET")
 	r.HandleFunc("/coins/total", coins.CoinsTotal()).Methods("GET")
@@ -34,5 +39,26 @@ func main() {
 	r.HandleFunc("/investor/{name}/investments", investor.InvestorInvestments()).Methods("GET")
 	r.HandleFunc("/investor/{name}/active", investor.InvestorInvestmentsActive()).Methods("GET")
 	r.HandleFunc("/investors/top", investors.InvestorsTop()).Methods("GET")
-	log.Fatal(http.ListenAndServe(":5000", r))
+	srv := &http.Server{
+		Handler:      r,
+		Addr:         ":5000",
+		// Good practice: enforce timeouts for servers you create!
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+	// Let it run
+	go func() {
+		if err := srv.ListenAndServe(); err != nil {
+			log.Println(err)
+		}
+	}()
+	c := make(chan os.Signal, 1)
+	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)
+	// SIGKILL, SIGQUIT or SIGTERM (Ctrl+/) will not be caught.
+	signal.Notify(c, os.Interrupt)
+	// Block until we receive our signal.
+	<-c
+	log.Println("shutting down")
+	os.Exit(0)
 }
