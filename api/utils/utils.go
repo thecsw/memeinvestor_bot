@@ -1,25 +1,31 @@
 package utils
 
 import (
-	"errors"
-	"gitlab.com/golang-commonmark/markdown"
-	"io/ioutil"
+	"fmt"
 	"net/url"
 	"os"
 	"strconv"
-	"strings"
 )
 
 func GetDB() string {
-	database := os.Getenv("MYSQL_USER") + ":" + os.Getenv("MYSQL_PASSWORD") + "@tcp(" + os.Getenv("MYSQL_HOST") + ":" + os.Getenv("MYSQL_PORT") + ")/" + os.Getenv("MYSQL_DATABASE")
+	// Follow the DSN (Data Source Name) PEAR DB format
+	// For more details, consult the database driver:
+	// https://github.com/go-sql-driver/mysql
+	database := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+		os.Getenv("MYSQL_USER"),
+		os.Getenv("MYSQL_PASSWORD"),
+		os.Getenv("MYSQL_HOST"),
+		os.Getenv("MYSQL_PORT"),
+		os.Getenv("MYSQL_DATABASE"))
 	return database
 }
 
-func GetTimeframes(path string) (int, int, error) {
+func GetTimeframes(path string) (int, int) {
 	from_int, to_int := 0, 4294967295
 	u, err := url.Parse(path)
+	// Even if it fails, fallback to default values
 	if err != nil {
-		return -1, -1, errors.New("Failed parsing the URL.")
+		return from_int, to_int
 	}
 	queries := u.Query()
 	if val, ok := queries["from"]; ok {
@@ -31,14 +37,16 @@ func GetTimeframes(path string) (int, int, error) {
 			to_int = 4294967295
 		}
 	}
-	return from_int, to_int, nil
+	return from_int, to_int
 }
 
-func GetPagination(path string) (int, int, error) {
+func GetPagination(path string) (int, int) {
+	// Pagination, default is the first page
+	// with 100 elements max
 	page_int, per_page_int := 0, 100
 	u, err := url.Parse(path)
 	if err != nil {
-		return -1, -1, errors.New("Failed parsing the URL.")
+		return page_int, per_page_int
 	}
 	queries := u.Query()
 	if val, ok := queries["page"]; ok {
@@ -53,11 +61,5 @@ func GetPagination(path string) (int, int, error) {
 			per_page_int = 100
 		}
 	}
-	return page_int, per_page_int, nil
-}
-
-func GetDocumentation() []string {
-	dat, _ := ioutil.ReadFile("../documentation.md")
-	md := markdown.New(markdown.HTML(true))
-	return strings.Split(md.RenderToString([]byte(string(dat))), "\n")
+	return page_int, per_page_int
 }
