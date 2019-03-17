@@ -129,7 +129,7 @@ LIMIT %d OFFSET 0;`, top)
 		)
 		if err != nil {
 			log.Print(err)
-			return
+			return ""
 		}
 		json.Unmarshal([]byte(badges_temp), &temp.Badges)
 		wrapper = append(wrapper, temp)
