@@ -2,12 +2,12 @@ package main
 
 import (
 	"./coins"
+	"./firm"
+	"./firms"
 	"./investments"
 	"./investor"
 	"./investors"
 	"./summary"
-	"./firms"
-	"./firm"
 	"fmt"
 	"github.com/gorilla/mux"
 	"log"

@@ -1,7 +1,6 @@
 package firm
 
 import (
-	"regexp"
 	"../utils"
 	"database/sql"
 	"encoding/json"
@@ -10,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"regexp"
 )
 
 type firm struct {
@@ -33,6 +33,7 @@ type investor struct {
 	Badges    []string `json:"badges,omitempty"`
 	Firm      int      `json:"firm,omitempty"`
 	Firm_role string   `json:"firm_role,omitempty"`
+	NetWorth  int64    `json:"networth,omitempty"`
 }
 
 // Investments on time
@@ -209,6 +210,7 @@ LIMIT %d OFFSET %d;`, firm_id, per_page, per_page*page)
 				&badges_temp,
 				&temp.Firm,
 				&temp.Firm_role,
+				&temp.NetWorth,
 			)
 			if err != nil {
 				log.Print(err)
@@ -218,7 +220,7 @@ LIMIT %d OFFSET %d;`, firm_id, per_page, per_page*page)
 			wrapper = append(wrapper, temp)
 		}
 		result, _ := json.Marshal(wrapper)
-		w.WriteHeader(http.StatusOK)		
+		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "%s", string(result))
 	}
 }

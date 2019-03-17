@@ -11,15 +11,15 @@ import (
 )
 
 type investor struct {
-	Id        int    `json:"id,omitempty"`
-	Name      string `json:"name,omitempty"`
-	Balance   int64  `json:"balance,omitempty"`
-	Completed int    `json:"completed,omitempty"`
-	Broke     int    `json:"broke,omitempty"`
+	Id        int      `json:"id,omitempty"`
+	Name      string   `json:"name,omitempty"`
+	Balance   int64    `json:"balance,omitempty"`
+	Completed int      `json:"completed,omitempty"`
+	Broke     int      `json:"broke,omitempty"`
 	Badges    []string `json:"badges,omitempty"`
-	Firm      int    `json:"firm,omitempty"`
-	Firm_role string `json:"firm_role,omitempty"`
-	NetWorth  int64  `json:"networth,omitempty"`
+	Firm      int      `json:"firm,omitempty"`
+	Firm_role string   `json:"firm_role,omitempty"`
+	NetWorth  int64    `json:"networth,omitempty"`
 }
 
 func InvestorsTop() func(w http.ResponseWriter, r *http.Request) {
