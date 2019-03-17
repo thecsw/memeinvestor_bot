@@ -13,7 +13,7 @@ import (
 )
 
 type investment struct {
-	Id            string `json:"id,omitempty"`
+	Id            int    `json:"id,omitempty"`
 	Post          string `json:"post,omitempty"`
 	Upvotes       int    `json:"upvotes,omitempty"`
 	Comment       string `json:"comment,omitempty"`
@@ -35,6 +35,7 @@ func Investments() func(w http.ResponseWriter, r *http.Request) {
 		conn, err := sql.Open("mysql", utils.GetDB())
 		if err != nil {
 			log.Print(err)
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		query := fmt.Sprintf(`
@@ -47,6 +48,7 @@ LIMIT %d OFFSET %d;`, from, to, per_page, per_page*page)
 		rows, err := conn.Query(query)
 		if err != nil {
 			log.Print(err)
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		defer rows.Close()
@@ -85,6 +87,7 @@ func InvestmentsActive() func(w http.ResponseWriter, r *http.Request) {
 		conn, err := sql.Open("mysql", utils.GetDB())
 		if err != nil {
 			log.Print(err)
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		defer conn.Close()
@@ -95,6 +98,8 @@ func InvestmentsActive() func(w http.ResponseWriter, r *http.Request) {
 		err = conn.QueryRow(query).Scan(&number)
 		if err != nil {
 			log.Print(err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
 		}
 		wrapper["investments"] = number
 		result, _ := json.Marshal(wrapper)
@@ -127,6 +132,7 @@ func InvestmentsAmount() func(w http.ResponseWriter, r *http.Request) {
 		conn, err := sql.Open("mysql", utils.GetDB())
 		if err != nil {
 			log.Print(err)
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		defer conn.Close()
@@ -137,6 +143,8 @@ func InvestmentsAmount() func(w http.ResponseWriter, r *http.Request) {
 		err = conn.QueryRow(query).Scan(&number)
 		if err != nil {
 			log.Print(err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
 		}
 		wrapper["coins"] = number
 		result, _ := json.Marshal(wrapper)
@@ -152,6 +160,7 @@ func InvestmentsTotal() func(w http.ResponseWriter, r *http.Request) {
 		conn, err := sql.Open("mysql", utils.GetDB())
 		if err != nil {
 			log.Print(err)
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		defer conn.Close()
@@ -162,6 +171,8 @@ func InvestmentsTotal() func(w http.ResponseWriter, r *http.Request) {
 		err = conn.QueryRow(query).Scan(&number)
 		if err != nil {
 			log.Print(err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
 		}
 		wrapper["investments"] = number
 		result, _ := json.Marshal(wrapper)
@@ -176,12 +187,14 @@ func InvestmentsPost() func(w http.ResponseWriter, r *http.Request) {
 		post, ok := params["post"]
 		if !ok {
 			log.Print("No post provided.")
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		// Check regexp
 		re := regexp.MustCompile(`^[a-z0-9]{6}$`)
 		if !re.Match([]byte(post)) {
 			log.Print("Provided post does not pass regex.")
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		from, to := utils.GetTimeframes(r.RequestURI)
@@ -189,6 +202,8 @@ func InvestmentsPost() func(w http.ResponseWriter, r *http.Request) {
 		conn, err := sql.Open("mysql", utils.GetDB())
 		if err != nil {
 			log.Print(err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
 		}
 		defer conn.Close()
 		query := fmt.Sprintf(`
@@ -202,6 +217,7 @@ LIMIT %d OFFSET %d;`, from, to, post, per_page, per_page*page)
 		rows, err := conn.Query(query)
 		if err != nil {
 			log.Print(err)
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		defer rows.Close()
@@ -224,6 +240,8 @@ LIMIT %d OFFSET %d;`, from, to, post, per_page, per_page*page)
 			)
 			if err != nil {
 				log.Print(err)
+				w.WriteHeader(http.StatusBadRequest)
+				continue
 			}
 			wrapper = append(wrapper, temp)
 		}

@@ -6,13 +6,15 @@ import (
 	"./investor"
 	"./investors"
 	"./summary"
+	"./firms"
+	"./firm"
 	"fmt"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"time"
 	"os"
 	"os/signal"
+	"time"
 )
 
 func HelloThere() func(w http.ResponseWriter, r *http.Request) {
@@ -39,9 +41,13 @@ func main() {
 	r.HandleFunc("/investor/{name}/investments", investor.InvestorInvestments()).Methods("GET")
 	r.HandleFunc("/investor/{name}/active", investor.InvestorInvestmentsActive()).Methods("GET")
 	r.HandleFunc("/investors/top", investors.InvestorsTop()).Methods("GET")
+	r.HandleFunc("/firms/top", firms.FirmsTop()).Methods("GET")
+	r.HandleFunc("/firm/{id}", firm.Firm()).Methods("GET")
+	r.HandleFunc("/firm/{id}/members", firm.FirmMembers()).Methods("GET")
+	r.HandleFunc("/firm/{id}/members/top", firm.FirmMembersTop()).Methods("GET")
 	srv := &http.Server{
-		Handler:      r,
-		Addr:         ":5000",
+		Handler: r,
+		Addr:    ":5000",
 		// Good practice: enforce timeouts for servers you create!
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,

@@ -16,6 +16,7 @@ func CoinsInvested() func(w http.ResponseWriter, r *http.Request) {
 		conn, err := sql.Open("mysql", utils.GetDB())
 		if err != nil {
 			log.Print(err)
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		defer conn.Close()
@@ -24,6 +25,7 @@ func CoinsInvested() func(w http.ResponseWriter, r *http.Request) {
 		err = conn.QueryRow("SELECT COALESCE(SUM(amount),0) FROM Investments WHERE done = 0;").Scan(&number)
 		if err != nil {
 			log.Print(err)
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		wrapper["coins"] = number

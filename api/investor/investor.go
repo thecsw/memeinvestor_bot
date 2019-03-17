@@ -13,7 +13,7 @@ import (
 )
 
 type investor struct {
-	Id        string   `json:"id,omitempty"`
+	Id        int      `json:"id,omitempty"`
 	Name      string   `json:"name,omitempty"`
 	Balance   int64    `json:"balance,omitempty"`
 	Completed int      `json:"completed,omitempty"`
@@ -24,7 +24,7 @@ type investor struct {
 }
 
 type investment struct {
-	Id            string `json:"id,omitempty"`
+	Id            int    `json:"id,omitempty"`
 	Post          string `json:"post,omitempty"`
 	Upvotes       int    `json:"upvotes,omitempty"`
 	Comment       string `json:"comment,omitempty"`
@@ -44,23 +44,28 @@ func Investor() func(w http.ResponseWriter, r *http.Request) {
 		name, ok := params["name"]
 		if !ok {
 			log.Print("No name provided.")
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		// Check regexp
 		re := regexp.MustCompile(`^[-_a-zA-Z0-9]+$`)
 		if !re.Match([]byte(name)) {
 			log.Print("Provided name does not pass regex.")
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		conn, err := sql.Open("mysql", utils.GetDB())
 		if err != nil {
 			log.Print(err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
 		}
 		defer conn.Close()
 		query := fmt.Sprintf("SELECT * FROM Investors WHERE name = '%s'", name)
 		rows, err := conn.Query(query)
 		if err != nil {
 			log.Print(err)
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		defer rows.Close()
@@ -79,6 +84,8 @@ func Investor() func(w http.ResponseWriter, r *http.Request) {
 			)
 			if err != nil {
 				log.Print(err)
+				w.WriteHeader(http.StatusBadRequest)
+				continue
 			}
 			json.Unmarshal([]byte(badges_temp), &temp.Badges)
 		}

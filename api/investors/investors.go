@@ -11,12 +11,12 @@ import (
 )
 
 type investor struct {
-	Id        string `json:"id,omitempty"`
+	Id        int    `json:"id,omitempty"`
 	Name      string `json:"name,omitempty"`
 	Balance   int64  `json:"balance,omitempty"`
 	Completed int    `json:"completed,omitempty"`
 	Broke     int    `json:"broke,omitempty"`
-	Badges    string `json:"badges,omitempty"`
+	Badges    []string `json:"badges,omitempty"`
 	Firm      int    `json:"firm,omitempty"`
 	Firm_role string `json:"firm_role,omitempty"`
 	NetWorth  int64  `json:"networth,omitempty"`
@@ -28,6 +28,8 @@ func InvestorsTop() func(w http.ResponseWriter, r *http.Request) {
 		conn, err := sql.Open("mysql", utils.GetDB())
 		if err != nil {
 			log.Print(err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
 		}
 		defer conn.Close()
 		query := fmt.Sprintf(`
@@ -42,16 +44,16 @@ AS Investments ON Investments.name = Investors.name
 GROUP BY Investors.id 
 ORDER BY net_worth DESC 
 LIMIT %d OFFSET %d;`, per_page, per_page*page)
-		fmt.Println(query)
 		rows, err := conn.Query(query)
 		if err != nil {
 			log.Print(err)
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		defer rows.Close()
-
 		wrapper := make([]investor, 0, per_page)
 		temp := investor{}
+		var badges_temp string
 		for rows.Next() {
 			err := rows.Scan(
 				&temp.Id,
@@ -59,14 +61,17 @@ LIMIT %d OFFSET %d;`, per_page, per_page*page)
 				&temp.Balance,
 				&temp.Completed,
 				&temp.Broke,
-				&temp.Badges,
+				&badges_temp,
 				&temp.Firm,
 				&temp.Firm_role,
 				&temp.NetWorth,
 			)
 			if err != nil {
 				log.Print(err)
+				w.WriteHeader(http.StatusBadRequest)
+				continue
 			}
+			json.Unmarshal([]byte(badges_temp), &temp.Badges)
 			wrapper = append(wrapper, temp)
 		}
 		result, _ := json.Marshal(wrapper)
@@ -79,6 +84,7 @@ func InvestorsTopReturn(top int) string {
 	conn, err := sql.Open("mysql", utils.GetDB())
 	if err != nil {
 		log.Print(err)
+		return ""
 	}
 	defer conn.Close()
 	query := fmt.Sprintf(`
@@ -102,6 +108,7 @@ LIMIT %d OFFSET 0;`, top)
 
 	wrapper := make([]investor, 0, top)
 	temp := investor{}
+	var badges_temp string
 	for rows.Next() {
 		err := rows.Scan(
 			&temp.Id,
@@ -109,14 +116,16 @@ LIMIT %d OFFSET 0;`, top)
 			&temp.Balance,
 			&temp.Completed,
 			&temp.Broke,
-			&temp.Badges,
+			&badges_temp,
 			&temp.Firm,
 			&temp.Firm_role,
 			&temp.NetWorth,
 		)
 		if err != nil {
 			log.Print(err)
+			continue
 		}
+		json.Unmarshal([]byte(badges_temp), &temp.Badges)
 		wrapper = append(wrapper, temp)
 	}
 	result, _ := json.Marshal(wrapper)
