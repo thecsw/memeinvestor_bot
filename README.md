@@ -122,8 +122,6 @@ Feel free to open the produced html file with any compatible browser. Even Netsc
 
   - [praw](https://github.com/praw-dev/praw), a Python package that allows for simple access to Reddit's API.
   - [fastnumbers](https://pypi.org/project/fastnumbers/), super-fast and clean conversions to numbers.
-  - [Flask](http://flask.pocoo.org/), a microframework for Python based on Werkzeug, Jinja 2 and good intentions.
-  - [gunicorn](http://gunicorn.org/), a Python WSGI HTTP Server for UNIX.
   - [mysqlclient](https://github.com/PyMySQL/mysqlclient-python), a MySQL database connector for Python (with Python 3 support).
   - [SQLAlchemy](http://www.sqlalchemy.org/), a Python SQL toolkit and Object Relational Mapper. 
 
@@ -139,12 +137,14 @@ Here is a graph of some recent contributions:
 
 ## Active contributors
 
-  - *Sagindyk Urazayev* - Core developer. Founder. Server, database, and system maintainer. - [thecsw](https://github.com/thecsw)
+  - *Sagindyk Urazayev* - Core developer. Founder. Server, database, and system maintainer. Wrote API in Go. - [thecsw](https://github.com/thecsw)
   - *Alberto Ventafridda* - Main front-end and web developer. Made our beautiful website. - [robalb](https://github.com/robalb)
+  - *Matt Bell* - Back-end developer. Implemented firms and unit tests. - [mappum](https://github.com/mappum)
+  - *lukenamop* - Outside contributor. Working on firms expansion and new commands. - [lukenamop](https://github.com/lukenamop)
 
 ## Past contributors
 
-  - *Dimitris Zervas* - Main back-end developer. Wrote our API module and introduced Docker. - [dzervas](https://github.com/dzervas)
+  - *Dimitris Zervas* - Back-end developer. Introduced Docker and Caddy. - [dzervas](https://github.com/dzervas)
   - *jimbobur* - Our maths guy. Can make really pretty graphs. - [jimbobur](https://github.com/jimbobur)
   - *rickles42* - Back-end and infrastructure developer. Heavy new features and debugging. - [rickles42](https://github.com/rickles42)
   - *TwinProduction* - Heavy outside contributor. - [TwinProduction](https://github.com/TwinProduction)
@@ -152,6 +152,7 @@ Here is a graph of some recent contributions:
   - *tcmal* - Added the daily profit ticker to our website.- [tcmal](https://github.com/tcmal)
   - *Matthew Sanetra* - Added suffixes support to the invest commands.- [matthewsanetra](https://github.com/matthewsanetra)
   - *Dylan Hanson* - Various contributions to the API module.- [jovialis](https://github.com/jovialis)
+  - *Timendum* - Made `!active` to deeplink to the user's comment. - [timendem](https://github.com/timendum)
 
 # 10 License
 
