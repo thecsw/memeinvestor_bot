@@ -2,7 +2,7 @@
 let options = {
    method: "GET",
    //url: "/api",
-   url: "https://memes.market/api",
+   url: "https://meme.market/api",
    //url: "http://localhost/memeinvestor_bot/docs/testApiData.json",
 }
 function makeRequest (param = '', options) {
