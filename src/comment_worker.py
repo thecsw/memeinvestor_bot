@@ -485,8 +485,14 @@ class CommentWorker():
 
         if not config.TEST:
             for subreddit in config.SUBREDDITS:
-                REDDIT.subreddit(subreddit).flair.set(investor.name, f"{flair_firm.name} | {flair_role}")
- 
+                REDDIT.subreddit(subreddit).flair.set(investor.name,
+                                                      f"{flair_firm.name} | {flair_role}")
+
+        # Redundancy system to null flair if investor is not in a firm
+        if not config.TEST and investor.firm == 0:
+            for subreddit in config.SUBREDDITS:
+                REDDIT.subreddit(subreddit).flair.set(investor.name, "")
+
         if firm_name is None:
             return comment.reply_wrap(
                 message.modify_firm_self(

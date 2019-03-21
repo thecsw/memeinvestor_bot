@@ -296,7 +296,7 @@ To prevent thread spam and other natural disasters, I only respond to direct rep
 
 ---
 
-- Visit [memes.market](https://memes.market) for help, market statistics, and investor profiles.
+- Visit [meme.market](https://meme.market) for help, market statistics, and investor profiles.
 
 - Visit /r/MemeInvestor_bot for questions or suggestions about me.
 
@@ -318,7 +318,7 @@ The author of this post paid **%MEMECOIN% MemeCoins** to post this.
 
 ---
 
-- Visit [memes.market](https://memes.market) for help, market statistics, and investor profiles.
+- Visit [meme.market](https://meme.market) for help, market statistics, and investor profiles.
 
 - Visit /r/MemeInvestor_bot for questions or suggestions about me.
 
