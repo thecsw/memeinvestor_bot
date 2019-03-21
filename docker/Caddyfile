@@ -1,4 +1,9 @@
+memes.market {
+	redir https://meme.market
+}
+
 {$CADDY_WEB_ADDRESS} {
+        cors
 	root /static
 	proxy /api/ api:5000 {
 		without /api/
