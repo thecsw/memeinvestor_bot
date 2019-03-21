@@ -1,9 +1,7 @@
 
 let options = {
    method: "GET",
-   //url: "/api",
-   url: "https://memes.market/api",
-   //url: "http://localhost/memeinvestor_bot/docs/testApiData.json",
+   url: "https://meme.market/api"
 }
 function makeRequest (param = '', options) {
   return new Promise(function (resolve, reject) {

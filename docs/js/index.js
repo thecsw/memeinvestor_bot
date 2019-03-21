@@ -1,6 +1,6 @@
 import {connectionErrorToast} from './modules/uiElements.js';
-import * as jsonApi from './modules/jsonApi.js?c=2';
-import {formatToUnits, iterateDays} from './modules/dataUtils.js?c=1';
+import * as jsonApi from './modules/jsonApi.js';
+import {formatToUnits, iterateDays} from './modules/dataUtils.js';
 import {Scheduler} from './modules/scheduler.js';
 
 let ticker = (function(){

@@ -1,6 +1,6 @@
 
 
-@import 'dark-base.css?c=1';
+@import 'dark-base.css';
 
 /* --[general]-- */
 body{
@@ -62,7 +62,7 @@ body{
 }
 
 .firm-image {
-  margin-top: 40px;
+  margin-top: 10px;
   max-height: 200px;
   max-width: 200px;
 }

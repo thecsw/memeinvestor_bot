@@ -1,5 +1,5 @@
 import {connectionErrorToast} from './modules/uiElements.js';
-import * as jsonApi from './modules/jsonApi.js?c=2';
+import * as jsonApi from './modules/jsonApi.js';
 import {formatToUnits, getSuffix} from './modules/dataUtils.js';
 import {seasons} from '../resources/leaderboards/seasons.js';
 

@@ -1,7 +1,7 @@
 import {connectionErrorToast} from './modules/uiElements.js';
-import * as jsonApi from './modules/jsonApi.js?c=2';
+import * as jsonApi from './modules/jsonApi.js';
 import {Scheduler} from './modules/scheduler.js';
-import {formatToUnits} from './modules/dataUtils.js';
+import {formatToUnits, getSuffix} from './modules/dataUtils.js';
 import {getFileName, getDescription} from './modules/badges.js';
 
 var getFirm = (function(){
@@ -29,8 +29,9 @@ let pageManager = (function(){
       overlay: 'overlay',
       overlayContent: 'overlay-content',
       firm: 'firm-name',
-      ceo: 'firm-ceo',
-      level: 'firm-level',
+      rank: 'firm-rank',
+      size: 'firm-size-suffix',
+      balance: 'firm-balance',
       image: 'firm-image'
    }
    let overviewUpdater = undefined;
@@ -55,9 +56,14 @@ let pageManager = (function(){
           </div>
          </div>`
       //search firm
-      //TODO: update api call
-      jsonApi.get('/investor/'+username)
-      .then(display)
+      jsonApi.get('/firm/'+firm)
+      .then(d=> {
+         if(d.id == 0) {
+            notFound();
+         }else{
+            display(d)
+         }
+      })
       .catch(er=>{
          if(er.status == 404){
             notFound();
@@ -87,19 +93,16 @@ let pageManager = (function(){
       
       //update name
       let nameEl = document.getElementById(ids.firm);
-      let ceoEl = document.getElementById(ids.ceo);
-      let levelEl = document.getElementById(ids.level);
-      let imageEl = document.getElementById(ids.image);
+      let sizeEl = document.getElementById(ids.size);
+      //let imageEl = document.getElementById(ids.image);
       nameEl.innerText = data.name
-      ceoEl.InnerText = data.ceo
-      levelEl.InnerText = data.level
-      imageEl.setAttribute('src',data.logo)
-      //update badges
-      upgrades.set(data.upgrades)
+      let maxSize = Math.pow(data.rank,2)
+      sizeEl.innerHTML = maxSize
+      overview.update(data)
       //update firm members
-      firmMembers.setFirm(data.name,data.firm-members);
+      firmMembers.setFirm(data.id,data.size);
       //update firm value
-      firmValue.setFirm(data.firm,data.firm-members);
+      //firmValue.setFirm(data.firm,data.firm-members);
    }
    return {
       init: init,
@@ -109,16 +112,22 @@ let pageManager = (function(){
 
 let overview = (function(){
    let counters = {
-      firmValue: undefined,
+      firmBalance: undefined,
+      firmRank: undefined,
+      firmSize: undefined
    }
    function init(data){
       counters = {
-         firmValue: new CountUp("firmvalue", 0, 0),
+         firmBalance: new CountUp("firm-balance", 0, 0),
+         firmRank: new CountUp("firm-rank",0,0),
+         firmSize: new CountUp("firm-size",0,0)
       }
       if(data)update(data);
    }
    function update(data){
-      counters.firmValue.update(data.firmvalue)
+      counters.firmBalance.update(data.balance)
+      counters.firmRank.update(data.rank)
+      counters.firmSize.update(data.size)
    }
    return {
       init:init,
@@ -169,30 +178,34 @@ let firmMembers = (function(){
    }
    let loading = false;
    
-   let name = '';
+   let id = '';
+
+   let showOverlayTimer;
+   let showingOverlay = false;
    
-   let perPage = 15;
+   let perPage = 100;
    let pages = 0;
    let page = 0;
+   let tFrom = '';
+   let tTo = '';
    
    function init(){
       document.getElementById(ids.page.previous).addEventListener('click',previous);
       document.getElementById(ids.page.next).addEventListener('click',next);
    }
    //initialize the table for a specific user
-   function setFirm(firmName,firmMembers){
-      name = firmName;
-      members = firmMembers
-      pages = Math.ceil(members.length/perPage);
+   function setFirm(firmId,firmSize){
+      id = firmId;
+      pages = Math.ceil(firmSize/perPage);
       page = 0;
       updatePageNumber();
-      render(members);
+      updateTable();
    }
    function previous(){
       if(!loading){
          page--
          updatePageNumber();
-         render(members);
+         updateTable();
       }
    }
    function updatePageNumber(){
@@ -212,25 +225,75 @@ let firmMembers = (function(){
       if(!loading){
          page++
          updatePageNumber();
-         render(members);
+         updateTable();
+      }
+   }
+   function updateTable(){
+      showOverlay()
+      let options = `?per_page=${perPage}&page=${page}&from=${tFrom}&to=${tTo}`
+      jsonApi.get(`/firm/${id}/members${options}`)
+      .then(d=>{
+         if(d.length>0)render(d)
+         removeOverlay()
+      })
+      .catch(er=>{
+         connectionErrorToast(er);
+      })      
+   }
+   function showOverlay(){
+      console.log(9)
+      loading = true;
+      //set a timer that displays the loading overlay after x milliseconds
+      showOverlayTimer = setTimeout(function(){
+         console.log(10)
+         showingOverlay = true;
+         document.getElementById(ids.table).style.opacity = 0.4
+         document.getElementById(ids.tableOverlay).style.opacity = 1      
+      },200//the max millis of time allowed to api calls before the loader overlay is shown
+      )
+   }
+   function removeOverlay(){
+      //remove the overlay if it is being shown
+      console.log(11)
+      if(showingOverlay){
+         console.log(12)
+         let overlay = document.getElementById(ids.tableOverlay)
+         document.getElementById(ids.table).style.opacity = 1
+         overlay.classList.add('pulse-out')
+         setTimeout(_=>{
+         showingOverlay = false;
+            loading = false;
+            overlay.style.opacity = 0
+            overlay.classList.remove('pulse-out')
+         },400)
+      }else{
+         loading = false;
+         //if the overlay is not not being shown (there is a timer that is about to show it)
+         //stop the timer 
+         clearTimeout(showOverlayTimer)
       }
    }
    function render(data){
-      console.log(data)
+      //console.log(data)
       let html = `
       <thead>
         <tr>
             <th>name</th>
             <th>position</th>
+            <th>balance</th>
+            <th>completed investments</th>
         </tr>
       </thead>
       <tbody>
       `
       for(let member of data){
+         let balance = getSuffix(member.balance);
          html += `
          <tr>
-            <td>${member.name}</td>
-            <td>${member.position}</td>
+            <td><a href="./user.html?account=${member.name}">${member.name}</a></td>
+            <td>${member.firm_role}</td>
+            <td>${balance.val} ${balance.suffix} M¢</td>
+            <td>${member.completed} investments</td>
             <td>`
          html += '</td></tr>'
       }
@@ -243,175 +306,12 @@ let firmMembers = (function(){
    }
 })();
 
-//TODO: update when we have the firm value API endpoint
-let firmValue = (function(){
-   
-   let name = '';
-   let members = '';
-
-   function setFirm(firmName,firmMembers){
-      name = firmName;
-      members = firmMembers
-      updateGraph();
-   }
-
-   function updateGraph(){
-      //TODO: update to firm value API call
-      let options = `?per_page=${perPage}&page=${page}&from=${tFrom}&to=${tTo}`
-      jsonApi.get(`/investor/${name}/investments${options}`)
-      .then(d=>{
-         if(d.length>0)profitChart.updateDataSet(d)
-         else noInvestments()
-         removeOverlay()
-      })
-      .catch(er=>{
-         removeOverlay()
-         connectionErrorToast(er);
-      })      
-   }
-   return {
-      setUser: setUser
-   }
-})();
-
-
-let profitChart = (function(){
-   let desktop = false;
-   const fields = ['profit','amount','upvotes','final_upvotes']
-   let field = fields[0]
-   let tempData;
-   let canvas1;
-   let ch1;
-   //the points displayed in the chart
-   let points = 15;
-   
-   let ids = {
-      chart: 'profit-graph',
-      dropdown: 'dataset-select'
-   }
-
-   function getScreenSize(){
-      let w = window,
-      d = document,
-      e = d.documentElement,
-      g = d.getElementsByTagName('body')[0],
-      x = w.innerWidth || e.clientWidth || g.clientWidth,
-      y = w.innerHeight|| e.clientHeight|| g.clientHeight;
-      return {x,y};
-   }
-   function update(){
-      if(desktop){
-         let chartDataSet = ch1.data.datasets[0];
-         let data = tempData;
-         for(let i=0; i<points; i++){
-            let inv = data[i] || {};
-            chartDataSet.data[points-i-1] = inv[field];
-         }
-         ch1.update();
-      }
-   }
-   function updateDataSet(data = []){
-      if(desktop){
-         tempData = data;
-         update();
-      }
-   }
-   function updateField(){
-      field = document.getElementById(ids.dropdown).value;
-      update();
-   }
-   function init(){
-      let x = getScreenSize().x;
-      //if on desktop
-      if(x>=800){
-      canvas1 = document.getElementById(ids.chart)
-      desktop = true
-      //init dropdown listener
-      let dropDown = document.getElementById(ids.dropdown);
-      dropDown.addEventListener('change',updateField)
-      field = dropDown.value
-      
-      let graphLabels = []
-      for(let i=0;i<points;i++){
-         graphLabels.push('')
-      }
-      let ctx = canvas1.getContext('2d');
-      ch1 = new Chart(ctx, {
-         type: 'line',
-         data: {
-            labels: graphLabels,
-            datasets: [{
-               //red dataset
-               data: [],
-               label: "amount",
-               yAxisID: "A",
-               backgroundColor: 'rgba(255, 167, 38, 0.0)',
-               borderColor: 'rgb(255, 167, 38)',
-               lineTension: 0,
-               borderWidth: 2,
-            }]
-         },
-         options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            
-            legend: {
-               display: false
-            },
-            tooltips: {
-               cornerRadius: 2,
-               backgroundColor: 'rgba(233, 164, 53, 0.8)',
-               displayColors: false
-              
-            },
-            scales: {
-               yAxes: [{
-                  id: 'A',
-                  type: 'linear',
-                  position: 'left',
-                  gridLines: {
-                     display: true,
-                     color: 'rgba(255,255,255,0.1)',
-                     zeroLineColor: 'rgba(255,255,255,0.0)'                     
-                  },
-                  ticks: {
-                     fontColor: 'rgba(255,255,255,0.4)',
-                     display: true,
-                     callback: val => formatToUnits(val)
-                  }
-               },],
-               xAxes: [{
-                  gridLines: {
-                     display: true,
-                     color: 'rgba(255,255,255,0.1)',
-                     zeroLineColor: 'rgba(255,255,255,0.0)'
-                  },                  
-                  ticks: {
-                     display: false,
-                     fontColor: 'rgba(255,255,255,0.4)',
-                  }                  
-               }]
-            }
-         }
-      });
-      
-      }
-   
-   }
-   return{
-      init: init,
-      update: update,
-      updateDataSet: updateDataSet
-   }
-})();
-
 
 (function(){
    document.addEventListener('DOMContentLoaded', function(){
-      getUser.init();
+      getFirm.show();
       pageManager.init();
       overview.init();
-      investments.init();
-      profitChart.init();
+      firmMembers.init();
    });
 })();
