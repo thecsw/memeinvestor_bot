@@ -11,8 +11,6 @@ We welcome contributions from the public! If you'd like to help improve the bot,
 our project and feel free to tackle any [Issues](https://github.com/MemeInvestor/memeinvestor_bot/issues).
 We also welcome feedback in the form of new issues, so feel free to create new ones for discussion.
 
-[![Waffle.io - Columns and their card count](https://badge.waffle.io/MemeInvestor/memeinvestor_bot.svg?columns=all)](https://waffle.io/MemeInvestor/memeinvestor_bot)
-
 # 2 Overview
 
 The bot is implemented as a set of loosely-connected microservices written in Python and
