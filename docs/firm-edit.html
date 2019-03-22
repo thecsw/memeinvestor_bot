@@ -18,15 +18,17 @@
     <!-- materialize -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
-    <!-- page -->
+    <!-- fancy charts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <script src="js/libs/countup.min.js"></script>
-    <link type="text/css" rel="stylesheet" href="css/leaderboards.css"/>
-    <script type="module" src="js/leaderboards.js"></script>
+    <!-- page -->
+    <link type="text/css" rel="stylesheet" href="css/firm.css"/>
+    <script type="module" src="js/user.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 
-<body>
+<body style="overflow-y:hidden">
     <nav>
         <div class="nav-wrapper">
             <a href="./index.html" class="brand-logo"><img src="resources/logo240.png" class="logo-img"/><span
@@ -60,9 +62,10 @@
         </li>
         <li><a id="without-this-everything-brokes">lol</a></li>
         <li class="sidebar-search">
+          <!--TODO: update search to search for firms-->
             <input id="investor-username-mobile" placeholder="search user" type="search"  >
         </li>
-        <li><a href="index.html">home</a></li>
+        <li><a href="./index.html">home</a></li>
         <li><a href="./leaderboards.html">investor leaderboards</a></li>
         <li><a href="./firm-leaderboard.html">firm leaderboard</a></li>
         <li><a href="https://github.com/MemeInvestor/memeinvestor_bot/">
@@ -72,101 +75,38 @@
     <div id="announcements-modal" class="modal ">
     </div>
 
-<!-- PUT PAGE CODE HERE -->
-    <div class="container" >
-      <div class="section center-align">
-        <h4 class="no-margin-top" >Top Traders wall</h4>
-        <div class="custom-select">
-          <select id="dataset-select" class="browser-default grey darken-3 btn">
-          </select>
+    <!-- PUT PAGE CODE HERE -->
+    <div class="overlay" id="overlay" >
+        <div class="oriz-center" id="overlay-content">
+          <h5> no firm selected </h5>
+          <p>Enter your firm or the name of another firm in the search bar </p>
         </div>
-
-        
-      <div class="row top3-cards">
-        <br>
-        <div class="top-card">
-          <img src="resources/first.png">
-          <h5 id="top-name">-</h5>
-          <p><span id="top-net-worth">0</span> <span id="top-net-worth-suffix"></span><br>
-          <a id="top-profile">profile</a></p>     
-        </div>   
-    
-        <div class="col s12 m6 l6 left-card">
-          <div class="divider hide-on-med-and-up"></div>
-          <img src="resources/2.png">
-          <h5 id="left-name">-</h5>
-          <p><span id="left-net-worth">0</span> <span id="left-net-worth-suffix"></span><br>
-          <a id="left-profile">profile</a></p> 
+    </div>
+    <div class="container">
+        <div class="section">
+          <div class="row">
+              <div class="col s12 m4 l2"> <!--TODO fix the medium sizing-->
+                <img class="firm-image" src="./resources/first.png" />
+                <button class="waves-effect waves-light btn grey lighten-2 grey-text text-darken-5 firm-item-edit">change</button>
+                 <!--TODO add textbox/javascript/submit-->  
+              </div>
+              <div class="col s12 m4 l5">
+                  <h3 class="orange-text text-lighten-1 firm-name" id="firm-name"><a id="username" target="_blank" href="" >JP Meme Chase</a></h3><br />
+                  <h5 class="orange-text text-lighten-1 firm-description" id="firm-description">The finest meme investment firm dedicated to memecoins</h5><br>
+                  <button class="waves-effect waves-light btn grey lighten-2 grey-text text-darken-5 firm-item-edit">edit</button>
+                  <!--TODO add textbox/javascript/submit-->                
+              </div>
+              <div class="col s12 m4 l5">
+                <h5 class="firm-upgrades">upgrades</h5>
+                <div id="badges-container" class="badges-container">
+                  <p class="grey-text">This firm doesn't have any upgrades.</p>
+                  <!--upgrades?-->
+                </div>
+              </div>
+          </div>       
         </div>
-        
-        <div class="col s12 m6 l6 right-card">
-          <div class="divider hide-on-med-and-up"></div>
-          <img src="resources/3.png">
-          <h5 id="right-name">-</h5>
-          <p><span id="right-net-worth">0</span> <span id="right-net-worth-suffix"></span><br>
-          <a id="right-profile">profile</a></p> 
-        </div>
-        
-
-        
-      </div>
-      
-      <div class="table-wrap" >
-        <table>
-            <thead>
-            <tr>
-                <th>Rank</th>
-                <th>Name</th>
-                <th>Net worth</th>
-                <th>Completed investments</th>
-            </tr>
-            </thead>
-            <tbody id="leaderboards-table">
-            <tr>
-                <td>--</td>
-                <td>----</td>
-                <td>--</td>
-                <td>--</td>
-            </tr>
-            <tr>
-                <td>--</td>
-                <td>----</td>
-                <td>--</td>
-                <td>--</td>
-            </tr>
-            <tr>
-                <td>--</td>
-                <td>----</td>
-                <td>--</td>
-                <td>--</td>
-            </tr>
-            <tr>
-                <td>--</td>
-                <td>----</td>
-                <td>--</td>
-                <td>--</td>
-            </tr>
-            <tr>
-                <td>--</td>
-                <td>----</td>
-                <td>--</td>
-                <td>--</td>
-            </tr>
-            <tr>
-                <td>--</td>
-                <td>----</td>
-                <td>--</td>
-                <td>--</td>
-            </tr>
-
-            
-            </tbody>
-        </table>        
-        </div>
-        <br>
-        <a id="scroll-top" class="btn-floating btn-large grey darken-3"><i class="material-icons">expand_less</i></a>
-      </div>
     </div>
 
+  
   </body>  
 </html>   

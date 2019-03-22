@@ -9,7 +9,7 @@ body{
 
 /* --[overlay]-- */
 .overlay{
-  display: block;
+  display: none;
   position: absolute;
   top: 65px;
   left: 0px;
@@ -60,6 +60,32 @@ body{
 .overview-text span {
   color: #9e9e9e;
 }
+
+.firm-image {
+  margin-top: 10px;
+  max-height: 200px;
+  max-width: 200px;
+}
+
+.firm-name {
+  margin-bottom: -15px;
+}
+
+.firm-description {
+  font-style: italic;
+  font-size: 19px
+}
+
+.firm-item-edit {
+  margin-top: 20px;
+  margin-right: 15px;
+  float: right;
+}
+
+.firm-upgrades {
+  margin-top: 40px
+}
+
 .badge{
   width: 100px;
   height: auto;

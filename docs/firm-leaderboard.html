@@ -21,7 +21,7 @@
     <!-- page -->
     <script src="js/libs/countup.min.js"></script>
     <link type="text/css" rel="stylesheet" href="css/leaderboards.css"/>
-    <script type="module" src="js/leaderboards.js"></script>
+    <script type="module" src="js/firm-leaderboard.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
@@ -75,11 +75,13 @@
 <!-- PUT PAGE CODE HERE -->
     <div class="container" >
       <div class="section center-align">
-        <h4 class="no-margin-top" >Top Traders wall</h4>
+        <h4 class="no-margin-top" >Top Firms</h4>
+    <!-- TODO item: remove dataset select from javascript
         <div class="custom-select">
           <select id="dataset-select" class="browser-default grey darken-3 btn">
           </select>
         </div>
+    -->
 
         
       <div class="row top3-cards">
@@ -87,24 +89,24 @@
         <div class="top-card">
           <img src="resources/first.png">
           <h5 id="top-name">-</h5>
-          <p><span id="top-net-worth">0</span> <span id="top-net-worth-suffix"></span><br>
-          <a id="top-profile">profile</a></p>     
+          <p><span id="top-balance">0</span> <span id="top-balance-suffix"></span><br>
+          <a id="top-profile">firm page</a></p>     
         </div>   
     
         <div class="col s12 m6 l6 left-card">
           <div class="divider hide-on-med-and-up"></div>
           <img src="resources/2.png">
           <h5 id="left-name">-</h5>
-          <p><span id="left-net-worth">0</span> <span id="left-net-worth-suffix"></span><br>
-          <a id="left-profile">profile</a></p> 
+          <p><span id="left-balance">0</span> <span id="left-balance-suffix"></span><br>
+          <a id="left-profile">firm page</a></p> 
         </div>
         
         <div class="col s12 m6 l6 right-card">
           <div class="divider hide-on-med-and-up"></div>
           <img src="resources/3.png">
           <h5 id="right-name">-</h5>
-          <p><span id="right-net-worth">0</span> <span id="right-net-worth-suffix"></span><br>
-          <a id="right-profile">profile</a></p> 
+          <p><span id="right-balance">0</span> <span id="right-balance-suffix"></span><br>
+          <a id="right-profile">firm page</a></p> 
         </div>
         
 
@@ -117,8 +119,9 @@
             <tr>
                 <th>Rank</th>
                 <th>Name</th>
-                <th>Net worth</th>
-                <th>Completed investments</th>
+                <th>Balance</th>
+                <th>Firm Level</th>
+                <th>Members</th>
             </tr>
             </thead>
             <tbody id="leaderboards-table">
@@ -127,22 +130,12 @@
                 <td>----</td>
                 <td>--</td>
                 <td>--</td>
-            </tr>
-            <tr>
-                <td>--</td>
-                <td>----</td>
-                <td>--</td>
                 <td>--</td>
             </tr>
             <tr>
                 <td>--</td>
                 <td>----</td>
                 <td>--</td>
-                <td>--</td>
-            </tr>
-            <tr>
-                <td>--</td>
-                <td>----</td>
                 <td>--</td>
                 <td>--</td>
             </tr>
@@ -151,10 +144,26 @@
                 <td>----</td>
                 <td>--</td>
                 <td>--</td>
+                <td>--</td>
             </tr>
             <tr>
                 <td>--</td>
                 <td>----</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>--</td>
+                <td>----</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>--</td>
+                <td>----</td>
+                <td>--</td>
                 <td>--</td>
                 <td>--</td>
             </tr>

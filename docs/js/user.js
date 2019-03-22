@@ -1,5 +1,5 @@
 import {connectionErrorToast} from './modules/uiElements.js';
-import * as jsonApi from './modules/jsonApi.js?c=2';
+import * as jsonApi from './modules/jsonApi.js';
 import {Scheduler} from './modules/scheduler.js';
 import {formatToUnits} from './modules/dataUtils.js';
 import {getFileName, getDescription} from './modules/badges.js';
@@ -64,7 +64,8 @@ let pageManager = (function(){
    let ids = {
       overlay: 'overlay',
       overlayContent: 'overlay-content',
-      username: 'username'
+      username: 'username',
+      firm: 'user-firm'
    }
    let overviewUpdater = undefined;
    function init(){
@@ -89,7 +90,17 @@ let pageManager = (function(){
          </div>`
       //search user
       jsonApi.get('/investor/'+username)
-      .then(display)
+      .then(d => {
+         jsonApi.get('/firm/'+d.firm)
+         .then(df => {display(d,df)})
+         .catch(er=>{
+            if(er.status == 404){
+               notFound();
+            }else{
+               connectionErrorToast(er)
+            }
+         })
+      })
       .catch(er=>{
          if(er.status == 404){
             notFound();
@@ -107,7 +118,7 @@ let pageManager = (function(){
       if(overviewUpdater)overviewUpdater.stop();
       overviewUpdater = undefined;
    }
-   function display(data){
+   function display(data, firmData){
       //remove overlay with animation
       let overlay = document.getElementById(ids.overlay);
       overlay.classList.add('fade-out')
@@ -118,14 +129,16 @@ let pageManager = (function(){
       },900)
       
       //update name
-      let nameEl = document.getElementById(ids.username);
+      let nameEl = document.getElementById(ids.username)
+      let firmEl = document.getElementById(ids.firm)
       nameEl.innerText = 'u/'+data.name
       nameEl.setAttribute('href','https://www.reddit.com/u/'+data.name)
+      firmEl.innerText = firmData.name
+      firmEl.setAttribute('href','./firm.html?firm='+firmData.id)
       //update badges
       badges.set(data.badges)
       //update investments
       investments.setUser(data.name,data.completed);
-      
       //kill old overview updater
       if(overviewUpdater)overviewUpdater.stop();
       //create a new one, for the new username
@@ -141,11 +154,13 @@ let pageManager = (function(){
       //call investments.init()
       //call activeInvestments.init()
    }
+
    return {
       init: init,
       search: search
    }
 })();
+
 
 let overview = (function(){
    let counters = {
@@ -338,11 +353,11 @@ let investments = (function(){
       })      
    }
    function showOverlay(){
-      console.log(9)
+      //console.log(9)
       loading = true;
       //set a timer that displays the loading overlay after x milliseconds
       showOverlayTimer = setTimeout(function(){
-         console.log(10)
+         //console.log(10)
          showingOverlay = true;
          document.getElementById(ids.table).style.opacity = 0.4
          document.getElementById(ids.tableOverlay).style.opacity = 1      
@@ -351,9 +366,9 @@ let investments = (function(){
    }
    function removeOverlay(){
       //remove the overlay if it is being shown
-      console.log(11)
+      //console.log(11)
       if(showingOverlay){
-         console.log(12)
+         //console.log(12)
          let overlay = document.getElementById(ids.tableOverlay)
          document.getElementById(ids.table).style.opacity = 1
          overlay.classList.add('pulse-out')
@@ -376,7 +391,7 @@ let investments = (function(){
       document.getElementById(ids.page.next).classList.add('disabled')
    }
    function render(data){
-      console.log(data)
+      //console.log(data)
       let html = `
       <thead>
         <tr>

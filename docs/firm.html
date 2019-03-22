@@ -22,8 +22,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <script src="js/libs/countup.min.js"></script>
     <!-- page -->
-    <link type="text/css" rel="stylesheet" href="css/user.css"/>
-    <script type="module" src="js/user.js"></script>
+    <link type="text/css" rel="stylesheet" href="css/firm.css"/>
+    <script type="module" src="js/firm.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
@@ -46,7 +46,7 @@
                 </li>
                 <li><a href="./index.html">home</a></li>
                 <li><a href="./leaderboards.html">investor leaderboards</a></li>
-                <li><a href="./firm-leaderboard.html">firm leaderboard</a></li>
+                <li><a href="./firm-leaderboard.html">firm leaderboard</a></li> 
                 <li>
                   <a href="https://github.com/MemeInvestor/memeinvestor_bot/" target="_blank">
                   <img class="icon-32" src="resources/GitHub-Mark-Light-32px.png"/></a>
@@ -62,6 +62,7 @@
         </li>
         <li><a id="without-this-everything-brokes">lol</a></li>
         <li class="sidebar-search">
+          <!--TODO: update search to search for firms-->
             <input id="investor-username-mobile" placeholder="search user" type="search"  >
         </li>
         <li><a href="./index.html">home</a></li>
@@ -77,33 +78,34 @@
     <!-- PUT PAGE CODE HERE -->
     <div class="overlay" id="overlay" >
         <div class="oriz-center" id="overlay-content">
-          <h5> no user selected </h5>
-          <p>Enter your username or the name of another investor in the search bar </p>
+          <h5> no firm selected </h5>
+          <p>Enter your firm or the name of another firm in the search bar </p>
         </div>
     </div>
     <div class="container">
         <div class="section">
           <div class="row">
-              <div class="col s12 m6 l4">
-                  <h5 class="orange-text text-lighten-1"><a id="username" target="_blank" href="" >----</a></h5>
+              <div class="col s12 m4 l2"> <!--TODO fix the medium sizing-->
+                <img id="firm-image" class="firm-image" src="./resources/logo240.png" />
+              </div>
+              <div class="col s12 m4 l5">
+                  <h3 class="orange-text text-lighten-1 firm-name" id="firm-name">JP Meme Chase</h3><br />
+                  <!--<h5 class="orange-text text-lighten-1 firm-description" id="firm-description">The finest meme investment firm dedicated to memecoins</h5> -->                
                   <p class="overview-text">
-                      net worth: <span id="net-worth">---</span> <span>M¢</span><br>
-                      balance: <span id="balance">---</span> <span>M¢</span><br>
-                      gone broke: <span id="gone-broke">--</span> <span id="fucking-plural-s">times</span><br>
-                      completed investments: <span id="completed-investments">--</span><br>
-                      firm: <a href="" id ="user-firm">--</a><br>
+                      rank: <span id="firm-rank">---</span><br>
+                      size: <span id="firm-size">---</span>
+                        <span> members</span> 
+                        <span>(</span>
+                        <span id="firm-size-suffix"></span>
+                        <span>max )</span><br>
+                      balance: <span id="firm-balance">---</span><span> M¢</span><br>
                   </p>
               </div>
-              <div class="col s12 m6 l8">
-                <h5>badges</h5>
-                <div id="badges-container" class="badges-container">
-                  <p class="grey-text">This account doesn't have any badges.</p>
-               <!--<img class="badge z-depth-2 tooltipped" data-position="top" data-tooltip="Billionaire during the first beta" src="./resources/beta.png"/>
-                  <img class="badge z-depth-2 tooltipped" data-position="top" data-tooltip="top trader of season 1" src="./resources/first.png"/>
-                  <img class="badge z-depth-2 tooltipped" data-position="top" data-tooltip="random trophy description yo" src="./resources/orange-rectanlge.png"/>
-                  <img class="badge z-depth-2 tooltipped" data-position="top" data-tooltip="random trophy description yo" src="./resources/laurel.png"/>
-                  <img class="badge z-depth-2 tooltipped" data-position="top" data-tooltip="random trophy description yo" src="./resources/first-decoration.png"/>
-                  -->
+              <div class="col s12 m4 l5">
+                <h5 class="firm-upgrades">upgrades</h5>
+                <div id="upgrades-container" class="badges-container">
+                  <p class="grey-text">This firm doesn't have any upgrades.</p>
+                  <!--upgrades?-->
                 </div>
               </div>
           </div>       
@@ -112,22 +114,13 @@
         <div class="section">
           <div class="row">
             <div class="col s12 m12 l6">
-              <h5>investment history</h5>
-              <a id="filters-show" class="waves-effect waves-light btn grey darken-3"><i class="material-icons left">expand_more</i> filters</a>
+              <h5>firm members</h5>
               <a id="page-previous" class="waves-effect waves-light btn grey darken-3 page-nav disabled"><i class="material-icons left">chevron_left</i></a>
               <a id="page-indicator" class="page-indicator grey-text">0/0</a>
               <a id="page-next" class="waves-effect waves-light btn grey darken-3 page-nav disabled"><i class="material-icons left">chevron_right</i></a>      
-             <div id="table-controls" class="table-controls">
-                <p>Select a time range</p>
-                <input id="date-from" type="text" placeholder="from" class="datepicker col s12 m3 l3">
-                <input id="date-to" type="text" placeholder="to" class="datepicker col s12 m3 l3">
-                <br><br><br>
-                <a id="filters-apply" class="waves-effect waves-light btn grey darken-3"><i class="material-icons left">arrow_right</i>apply</a>
-                <a id="filters-clear" class="waves-effect waves-light btn grey darken-3">clear</a>
-              </div>
               <div class="table-wrap">
                 <div id="investments-table-overlay" style="opacity:0" class="investments-table-overlay" >
-                  <h5>loading. </h5>
+                  <h5>loading </h5>
                   <div class="preloader-wrapper big active">
                     <div class="spinner-layer spinner-yellow-only">
                       <div class="circle-clipper left">
@@ -149,24 +142,6 @@
                   </tbody>                  
                 </table>
                 
-              </div>
-            </div>
-            <div class="col s12 m5 l6 ">
-              <div class="hide-on-med-and-down">
-                <h5 style="color:transparent">-</h5>
-                <div class="custom-select">
-                  <select id="dataset-select" class="browser-default grey darken-3 btn">
-                    <option selected value="profit">profit</option>
-                    <option value="amount">invested</option>
-                    <option value="upvotes">initial upvotes</option>
-                    <option value="final_upvotes">final upvotes</option>
-                  </select>
-                </div>
-                <div class="chart-wrap">
-                    <canvas id="profit-graph"></canvas>
-                    <!-- THIS RATIO ON MOBILE (max-width:640px) -->
-                    <!--<div class="ct-chart ct-perfect-fourth"></div> -->
-                </div>
               </div>
             </div>
           </div>
