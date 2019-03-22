@@ -96,7 +96,7 @@ let pageManager = (function(){
       let sizeEl = document.getElementById(ids.size);
       //let imageEl = document.getElementById(ids.image);
       nameEl.innerText = data.name
-      let maxSize = Math.pow(data.rank,2)
+      let maxSize = Math.pow(2,(data.rank+3))
       sizeEl.innerHTML = maxSize
       overview.update(data)
       //update firm members
