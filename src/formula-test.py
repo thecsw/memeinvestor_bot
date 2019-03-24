@@ -9,25 +9,27 @@ def main():
     parser.add_argument('u_init', metavar='u_init', type=int, help='Post upvotes at time of investment.')
     parser.add_argument('u_final', metavar='u_final', type=int, help='Post upvotes at maturation of investment.')
     parser.add_argument('invested', metavar='invested', type=int, help='MemeCoins Invested in post.')
+    parser.add_argument('net_worth', metavar='net_worth', type=int, help='Account\'s net worth.')
     parser.add_argument("-s", "--save-img", help="Save generated plot to file 'investment_performance.png'", action="store_true")
     args = parser.parse_args()
 
     print("Starting Upvotes:", args.u_init)
     print("Final Upvotes:", args.u_final)
     print("Amount Invested:", args.invested, "M¢")
-    inv_return = calculate(args.u_final,args.u_init) * args.invested
+    print("Net worth:", args.net_worth, "M¢")
+    inv_return = calculate(args.u_final, args.u_init, args.net_worth) * args.invested
     profit = inv_return - args.invested
     print(">> RETURN:", inv_return, "M¢ (Profit:", profit, "M¢)")
 
     #Generate data for performance plot
-    olds = list(range(args.u_init, args.u_final * 2, 1))# + list(range(args.u_final, args.u_final * 2, 10))
+    olds = list(range(args.u_init, args.u_final * 2, args.net_worth))# + list(range(args.u_final, args.u_final * 2, 10))
     x = []
     x2 = []
     y = []
     y2 = []
     for i in olds:
         x.append(i)
-        result = calculate(i,args.u_init) * args.invested
+        result = calculate(i, args.u_init, args.net_worth) * args.invested
         y.append(result)
         if i <= args.u_final:
             x2.append(i)
