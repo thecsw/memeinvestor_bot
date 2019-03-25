@@ -632,7 +632,7 @@ class CommentWorker():
             if investor.firm_role != "ceo":
                 return comment.reply_wrap(message.not_ceo_org)
 
-            # If the firm already has a CFO, the specified user will be promoted to COO
+            # If the firm already has a CFO, the user will be promoted to COO
             if firm.cfo >= 1:
                 if firm.coo >= 1:
                     return comment.reply_wrap(message.promote_coo_full_org)
@@ -668,25 +668,26 @@ class CommentWorker():
         flair_role_user = ''
         if user.firm_role == "ceo":
             flair_role_user = "CEO"
-        elif user.firm_role == "coo":
+        if user.firm_role == "coo":
             flair_role_user = "COO"
-        elif user.firm_role == "cfo":
+        if user.firm_role == "cfo":
             flair_role_user = "CFO"
-        elif user.firm_role == "exec":
+        if user.firm_role == "exec":
             flair_role_user = "Executive"
-        elif user.firm_role == "assoc":
+        if user.firm_role == "assoc":
             flair_role_user = "Associate"
 
+        # Investor role flair must be set in case COO and CEO roles are swapped
         flair_role_investor = ''
         if investor.firm_role == "ceo":
             flair_role_investor = "CEO"
-        elif investor.firm_role == "coo":
+        if investor.firm_role == "coo":
             flair_role_investor = "COO"
-        elif investor.firm_role == "cfo":
+        if investor.firm_role == "cfo":
             flair_role_investor = "CFO"
-        elif investor.firm_role == "exec":
+        if investor.firm_role == "exec":
             flair_role_investor = "Executive"
-        elif investor.firm_role == "assoc":
+        if investor.firm_role == "assoc":
             flair_role_investor = "Associate"
 
         if not config.TEST:
@@ -713,16 +714,18 @@ class CommentWorker():
 
         user_role = user.firm_role
 
+        # If user is already at the lowest rank, they cannot be demoted
         if user_role == "":
             return comment.reply_wrap(message.demote_failure_trader_org)
-        elif user_role == "assoc":
+        
+        if user_role == "assoc":
             if (investor.firm_role == "") or (investor.firm_role == "assoc"):
                 return comment.reply_wrap(message.not_ceo_or_exec_org)
 
             user.firm_role = ""
             firm.assocs -= 1
 
-        elif user_role == "exec":
+        if user_role == "exec":
             if investor.firm_role != "ceo" and investor.firm_role != "coo":
                 return comment.reply_wrap(message.not_ceo_or_coo_org)
 
@@ -734,7 +737,7 @@ class CommentWorker():
             firm.execs -= 1
             firm.assocs += 1
 
-        elif user.firm_role == "cfo":
+        if user.firm_role == "cfo":
             if investor.firm_role != "ceo":
                 return comment.reply_wrap(message.not_ceo_org)
 
@@ -746,10 +749,11 @@ class CommentWorker():
             firm.cfo -= 1
             firm.execs += 1
 
-        elif user.firm_role == "coo":
+        if user.firm_role == "coo":
             if investor.firm_role != "ceo":
                 return comment.reply_wrap(message.not_ceo_org)
 
+            # If the firm already has a CFO, the user will be demoted to Executive
             if firm.cfo >= 1:
                 max_execs = max_execs_for_rank(firm.rank)
                 if firm.execs >= max_execs:
@@ -767,13 +771,13 @@ class CommentWorker():
         flair_role_user = ''
         if user.firm_role == "ceo":
             flair_role_user = "CEO"
-        elif user.firm_role == "coo":
+        if user.firm_role == "coo":
             flair_role_user = "COO"
-        elif user.firm_role == "cfo":
+        if user.firm_role == "cfo":
             flair_role_user = "CFO"
-        elif user.firm_role == "exec":
+        if user.firm_role == "exec":
             flair_role_user = "Executive"
-        elif user.firm_role == "assoc":
+        if user.firm_role == "assoc":
             flair_role_user = "Associate"
 
         if not config.TEST:
