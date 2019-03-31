@@ -196,7 +196,7 @@ Here is a list of commands that summon me:
 - `!demote <username>` **(Executive and up)**
 - `!fire <username>` **(Executive and up)**
 - `!upgrade` **(CEO and CFO only)**
-- `!tax <percent>` (CEO and CFO only)**
+- `!tax <percent>` **(CEO and CFO only)**
 - `!setprivate` **(CEO and COO only)**
 - `!setpublic` **(CEO and COO only)**
 
@@ -633,7 +633,7 @@ def modify_demote_assocs_full(firm):
         replace("%LEVEL%", str(firm.rank + 1))
 
 demote_org = """
-Successfully demoted **/u/%NAME%** from **%OLDRANK%**to **%NEWRANK%**.
+Successfully demoted **/u/%NAME%** from **%OLDRANK%** to **%NEWRANK%**.
 """
 
 def modify_demote(user, old_role):
