@@ -7,7 +7,7 @@ class TestInvest(Test):
 
         replies = self.command('!invest 50')
         self.assertEqual(len(replies), 1)
-        self.assertEqual(replies[0], message.modify_min_invest(100))
+        self.assertEqual(replies[0], message.modify_min_invest(10))
 
     def test_negative(self):
         self.command('!create')

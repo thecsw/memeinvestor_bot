@@ -4,11 +4,12 @@ from test import Test
 import message
 
 class Investment():
-    def __init__(self, post, amount, upvotes, time):
+    def __init__(self, post, amount, upvotes, time, comment):
         self.post = post
         self.amount = amount
         self.upvotes = upvotes
         self.time = time
+        self.comment = comment
 
 class TestActive(Test):
     def test_active_none(self):
@@ -26,6 +27,6 @@ class TestActive(Test):
         replies = self.command('!active')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_active([
-            Investment('post1', 100, 100, time.time()),
-            Investment('post2', 100, 100, time.time())
+            Investment('post1', 100, 100, time.time(), 'post1/id'),
+            Investment('post2', 100, 100, time.time(), 'post2/id')
         ]))

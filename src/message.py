@@ -191,12 +191,14 @@ Here is a list of commands that summon me:
 - `!createfirm <name>`
 - `!joinfirm <name>`
 - `!leavefirm`
+- `!invite <username>` **(Associate and up)**
 - `!promote <username>` **(Executive and up)**
+- `!demote <username>` **(Executive and up)**
 - `!fire <username>` **(Executive and up)**
 - `!upgrade` **(CEO and CFO only)**
+- `!tax <percent>` (CEO and CFO only)**
 - `!setprivate` **(CEO and COO only)**
 - `!setpublic` **(CEO and COO only)**
-- `!invite <username>` **(Associate and up)**
 
 To get help on a specific command, simply invoke `!help command`
 """
@@ -240,7 +242,7 @@ def modify_active(active_investments):
         replace("%INVESTMENTS_LIST%", investments_list)
 
 MIN_INVEST_ORG = """
-The minimum possible investment is %MIN% MemeCoins (1% of your balance) or 100 memecoins. Whatever is higher.
+The minimum possible investment is %MIN% MemeCoins (1% of your balance) or 100 memecoins, whatever is higher.
 """
 
 def modify_min_invest(minim):
@@ -583,14 +585,62 @@ def modify_promote_assocs_full(firm):
         replace("%LEVEL%", str(firm.rank + 1))
 
 promote_org = """
-Successfully promoted **/u/%NAME%** to **%RANK%**.
+Successfully promoted **/u/%NAME%** from **%OLDRANK%** to **%NEWRANK%**.
 """
 
-def modify_promote(user):
-    rank_str = rank_strs[user.firm_role]
+def modify_promote(user, old_role):
     return promote_org.\
         replace("%NAME%", user.name).\
-        replace("%RANK%", rank_str)
+        replace("%OLDRANK%", rank_strs[old_role]).\
+        replace("%NEWRANK%", rank_strs[user.firm_role])
+
+demote_failure_org = """
+Failed to demote user, make sure you used the correct username.
+"""
+
+demote_failure_trader_org = """
+Failed to demote user, they are already a Floor Trader. Use `!fire <username>` if you would like to remove them from the firm.
+"""
+
+demote_cfo_full_org = """
+Could not demote this employee since the firm already has a CFO.
+"""
+
+demote_execs_full_org = """
+Could not demote this employee since the firm is at its maximum executive limit.
+**Number of executives:** %EXECS%
+**Firm level:** %LEVEL%
+
+The CEO or CFO of the firm can raise this limit by upgrading with `!upgrade`.
+"""
+
+def modify_demote_execs_full(firm):
+    return demote_execs_full_org.\
+        replace("%EXECS%", str(firm.execs)).\
+        replace("%LEVEL%", str(firm.rank + 1))
+
+demote_assocs_full_org = """
+Could not demote this employee since the firm is at its maximum associate limit.
+**Number of associates:** %ASSOCS%
+**Firm level:** %LEVEL%
+
+The CEO or CFO of the firm can raise this limit by upgrading with `!upgrade`.
+"""
+
+def modify_demote_assocs_full(firm):
+    return demote_assocs_full_org.\
+        replace("%ASSOCS%", str(firm.assocs)).\
+        replace("%LEVEL%", str(firm.rank + 1))
+
+demote_org = """
+Successfully demoted **/u/%NAME%** from **%OLDRANK%**to **%NEWRANK%**.
+"""
+
+def modify_demote(user, old_role):
+    return demote_org.\
+        replace("%NAME%", user.name).\
+        replace("%OLDRANK%", rank_strs[old_role]).\
+        replace("%NEWRANK%", rank_strs[user.firm_role])
 
 fire_org = """
 Successfully fired **/u/%NAME%** from the firm.
