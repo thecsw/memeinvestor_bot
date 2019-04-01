@@ -979,11 +979,7 @@ class CommentWorker():
             filter(Firm.id == investor.firm).\
             first()
 
-        # level 1 = 4,000,000
-        # level 2 = 16,000,000
-        # level 3 = 64,000,000
-        # etc.
-        upgrade_cost = 4 ** (firm.rank + 1) * 1000000
+        upgrade_cost = firm_price_for_rank(firm.rank)
         if firm.balance < upgrade_cost:
             return comment.reply_wrap(message.modify_upgrade_insufficient_funds_org(firm, upgrade_cost))
 
@@ -1000,23 +996,36 @@ def concat_names(investors):
     names = ["/u/" + i.name for i in investors]
     return ", ".join(names)
 
+# Notice that we have 12 entries for 11 levels. One additional element
+# is added at the beginning due to arrays starting to count from 0
+FIRMS_PRICES = [0, 0, 10e6, 50e6, 100e6, 1e9, 10e9, 100e9, 1e12, 10e12, 100e12, 50e15]
+def firm_price_for_rank(rank):
+    """
+    Provided by @Noerdy, the list of firm prices
+    Ranks start at one and we finish at 11
+    """
+    return FIRMS_PRICES[rank]
+
+FIRMS_SIZES = [0, 11, 20, 30, 40, 60, 80, 105, 135, 175, 240, 500]
 def max_members_for_rank(rank):
-    # level 1 = 8
-    # level 2 = 16
-    # level 3 = 32
-    # etc.
-    return int(2 ** (rank + 3))
+    """
+    Provided by @Noerdy, the list of firm sizes
+    Ranks start at one and we finish at 11
+    """
+    return FIRMS_SIZES[rank]
 
+FIRMS_ASSOC_SIZES = [0, 1, 2, 3, 4, 6, 8, 11, 14, 17, 20, 30]
 def max_assocs_for_rank(rank):
-    # level 1 = 2
-    # level 2 = 6
-    # level 3 = 14
-    # etc.
-    return int(((2 ** (rank + 3)) / 2) - 2)
+    """
+    Provided by @Noerdy, the list of firm assoc sizes
+    Ranks start at one and we finish at 11
+    """
+    return FIRMS_ASSOC_SIZES[rank]
 
+FIRMS_EXEC_SIZES = [0, 1, 2, 3, 4, 6, 8, 10, 12, 14, 16, 26]
 def max_execs_for_rank(rank):
-    # level 1 = 2
-    # level 2 = 4
-    # level 3 = 8
-    # etc.
-    return int(2 ** (rank + 1))
+    """
+    Provided by @Noerdy, the list of firm exec sizes
+    Ranks start at one and we finish at 11
+    """
+    return FIRMS_EXEC_SIZES[rank]
