@@ -1053,6 +1053,21 @@ class TestJoinFirm(Test):
         self.assertEqual(user.firm, 1)
         self.assertEqual(user.firm_role, '')
 
+    def test_joinfirm_quotes(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command("!createfirm 'Name with many words'")
+
+        self.command('!create', username='testuser2')
+        replies = self.command("!joinfirm 'Name with many words'", username='testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_joinfirm(MockFirm('Name with many words')))
+
+        sess = self.Session()
+        user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
+        self.assertEqual(user.firm, 1)
+        self.assertEqual(user.firm_role, '')
+
 class TestInvite(Test):
     def test_not_in_firm(self):
         self.command('!create')
