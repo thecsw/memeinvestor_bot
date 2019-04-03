@@ -35,8 +35,8 @@ func FirmsTop() func(w http.ResponseWriter, r *http.Request) {
 		query := fmt.Sprintf(`
 SELECT id, name, balance, size, execs,
 tax, rank, private, last_payout
-WHERE size > 0
 FROM Firms
+WHERE size > 0
 ORDER BY balance DESC 
 LIMIT %d OFFSET %d;`, per_page, per_page*page)
 		rows, err := conn.Query(query)
