@@ -1082,7 +1082,7 @@ class TestJoinFirm(Test):
         replies = self.command('!joinfirm Foobar', username='testuser2')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_joinfirm(MockFirm('Foobar')))
-
+        
     def test_joinfirm_quotes(self):
         self.command('!create')
         self.set_balance(5000000)
