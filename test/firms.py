@@ -3,7 +3,8 @@ from models import Investor, Firm
 import message
 
 class MockFirm():
-    def __init__(self, name, size=1, assocs=0, execs=0, cfo=0, coo=0, rank=0, balance=1234):
+    def __init__(self, name, id=1, size=1, assocs=0, execs=0, cfo=0, coo=0, rank=0, balance=1234):
+        self.id = id
         self.name = name
         self.size = size
         self.rank = rank
