@@ -414,7 +414,7 @@ You can create a new one with the **!createfirm <FIRM NAME>** command, or reques
 """
 
 firm_other_org = """
-Firm: [**%FIRM_NAME%**](https://meme.market/firm.html?firm=**%FIRM_ID%**)
+Firm: [**%FIRM_NAME%**](https://meme.market/firm.html?firm=%FIRM_ID%)
 
 Firm balance: **%BALANCE%** Memecoins
 
@@ -459,7 +459,7 @@ def modify_firm_other(firm, ceo, coo, cfo, execs, assocs, traders):
 
 
 firm_self_org = """
-Firm: [**%FIRM_NAME%**](https://meme.market/firm.html?firm=**%FIRM_ID%**)
+Firm: [**%FIRM_NAME%**](https://meme.market/firm.html?firm=%FIRM_ID%)
 
 Firm balance: **%BALANCE%** Memecoins
 
