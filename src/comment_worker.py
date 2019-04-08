@@ -723,7 +723,7 @@ class CommentWorker():
         # If user is already at the lowest rank, they cannot be demoted
         if user_role == "":
             return comment.reply_wrap(message.demote_failure_trader_org)
-        
+
         if user_role == "assoc":
             if (investor.firm_role == "") or (investor.firm_role == "assoc"):
                 return comment.reply_wrap(message.not_ceo_or_exec_org)

@@ -840,7 +840,7 @@ The firm does not have enough funds to upgrade.
 def modify_upgrade_insufficient_funds_org(firm, cost):
     return upgrade_insufficient_funds_org. \
         replace("%BALANCE%", format(int(firm.balance), ",d")). \
-        replace("%LEVEL%", str(firm.rank + 2)). \  
+        replace("%LEVEL%", str(firm.rank + 2)). \
         replace("%COST%", format(int(cost), ",d"))
 
 
