@@ -395,8 +395,8 @@ Your current balance is **%MEMECOINS% MemeCoins**.
 
 
 def modify_pay_to_post(balance):
-    return PAY_TO_POST_ORG. \
-        replace("%MEMECOINS%", str(balance))
+    return PAY_TO_POST_ORG.\
+        replace("%MEMECOINS%", format(int(balance), ",d"))
 
 
 MAINTENANCE_ORG = """
@@ -759,8 +759,8 @@ FIRM_TAX_ORG = """
 
 
 def modify_firm_tax(tax_amount, firm_name):
-    return FIRM_TAX_ORG. \
-        replace("%AMOUNT%", str(tax_amount)). \
+    return FIRM_TAX_ORG.\
+        replace("%AMOUNT%", format(int(tax_amount), ",d")). \
         replace("%NAME%", firm_name)
 
 
@@ -839,9 +839,9 @@ The firm does not have enough funds to upgrade.
 
 def modify_upgrade_insufficient_funds_org(firm, cost):
     return upgrade_insufficient_funds_org. \
-        replace("%BALANCE%", str(firm.balance)). \
+        replace("%BALANCE%", format(int(firm.balance), ",d")). \
         replace("%LEVEL%", str(firm.rank + 2)). \
-        replace("%COST%", str(cost))
+        replace("%COST%", format(int(cost), ",d"))
 
 
 upgrade_org = """
