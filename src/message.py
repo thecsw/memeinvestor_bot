@@ -419,41 +419,13 @@ Firm: [**%FIRM_NAME%**](https://meme.market/firm.html?firm=%FIRM_ID%)
 Firm balance: **%BALANCE%** Memecoins
 
 Firm level: **%LEVEL%**
-
-----
-
-## Members:
-
-*CEO:*
-%CEO%
-
-*COO:*
-%COO%
-
-*CFO:*
-%CFO%
-
-*Executives:*
-%EXECS%
-
-*Associates:*
-%ASSOCS%
-
-*Floor Traders:*
-%TRADERS%
 """
 
 
-def modify_firm_other(firm, ceo, coo, cfo, execs, assocs, traders):
+def modify_firm_other(firm):
     return firm_other_org. \
         replace("%FIRM_NAME%", firm.name). \
         replace("%FIRM_ID%", str(firm.id)). \
-        replace("%CEO%", ceo). \
-        replace("%COO%", coo). \
-        replace("%CFO%", cfo). \
-        replace("%EXECS%", execs). \
-        replace("%ASSOCS%", assocs). \
-        replace("%TRADERS%", traders). \
         replace("%BALANCE%", "{:,}".format(firm.balance)). \
         replace("%LEVEL%", str(firm.rank + 1))
 
@@ -467,46 +439,16 @@ Firm level: **%LEVEL%**
 
 Your Rank: **%RANK%**
 
-----
-
-## Members:
-
-*CEO:*
-%CEO%
-
-*COO:*
-%COO%
-
-*CFO:*
-%CFO%
-
-*Executives:*
-%EXECS%
-
-*Associates:*
-%ASSOCS%
-
-*Floor Traders:*
-%TRADERS%
-
-----
-
 You can leave this firm with the **!leavefirm** command.
 """
 
 
-def modify_firm_self(rank, firm, ceo, coo, cfo, execs, assocs, traders):
+def modify_firm_self(rank, firm):
     rank_str = rank_strs[rank]
     return firm_self_org. \
         replace("%RANK%", rank_str). \
         replace("%FIRM_NAME%", firm.name). \
         replace("%FIRM_ID%", str(firm.id)). \
-        replace("%CEO%", ceo). \
-        replace("%COO%", coo). \
-        replace("%CFO%", cfo). \
-        replace("%EXECS%", execs). \
-        replace("%ASSOCS%", assocs). \
-        replace("%TRADERS%", traders). \
         replace("%BALANCE%", "{:,}".format(firm.balance)). \
         replace("%LEVEL%", str(firm.rank + 1))
 

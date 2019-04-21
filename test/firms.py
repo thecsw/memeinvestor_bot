@@ -106,13 +106,7 @@ class TestFirm(Test):
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_firm_self(
             'ceo',
-            MockFirm('Foobar', balance=1000),
-            '/u/testuser',
-            '',
-            '',
-            '',
-            '',
-            ''))
+            MockFirm('Foobar', balance=1000)))
 
     def test_firm_assoc(self):
         self.command('!create')
@@ -133,13 +127,7 @@ class TestFirm(Test):
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_firm_self(
             'assoc',
-            MockFirm('Foobar', balance=1000),
-            '/u/testuser',
-            '',
-            '',
-            '',
-            '/u/testuser2',
-            '/u/testuser3, /u/testuser4'))
+            MockFirm('Foobar', balance=1000)))
 
     def test_firm_cfo(self):
         self.command('!create')
@@ -162,13 +150,7 @@ class TestFirm(Test):
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_firm_self(
             'cfo',
-            MockFirm('Foobar', balance=1000),
-            '/u/testuser',
-            '',
-            '/u/testuser2',
-            '',
-            '',
-            '/u/testuser3, /u/testuser4'))
+            MockFirm('Foobar', balance=1000)))
 
     def test_lookup(self):
         self.command('!create')
@@ -179,13 +161,7 @@ class TestFirm(Test):
         replies = self.command('!firm Foobar', username='testuser2')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_firm_other(
-            MockFirm('Foobar', balance=1000),
-            '/u/testuser',
-            '',
-            '',
-            '',
-            '',
-            ''))
+            MockFirm('Foobar', balance=1000)))
 
     def test_lookup_different_case(self):
         self.command('!create')
@@ -196,13 +172,7 @@ class TestFirm(Test):
         replies = self.command('!firm foobar', username='testuser2')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_firm_other(
-            MockFirm('Foobar', balance=1000),
-            '/u/testuser',
-            '',
-            '',
-            '',
-            '',
-            ''))
+            MockFirm('Foobar', balance=1000)))
 
     def test_lookup_invalid(self):
         self.command('!create')
