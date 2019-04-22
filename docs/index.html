@@ -202,7 +202,7 @@
                         <h4>Commands</h4>
                         <p>To invoke a command, reply to either the top-level u/MemeInvestor_bot comment in the comment
                             section of any r/MemeEconomy post or to one of its subsequent replies to your command
-                            comment.<br>
+                            comment. For a more detailed list of commands, invoke the !help command.<br>
                             <span class=" yellow-text text-darken-3 "> commands that are not direct replies to the bot will be ignored</span>
                         </p>
                         <p>The bot has the following commands:</p>
@@ -210,8 +210,8 @@
                             <li>
                                 <div class="collapsible-header"><i class="material-icons">expand_more</i>!invest AMOUNT
                                 </div>
-                                <div class="collapsible-body"><span>Invests AMOUNT in the meme (post). 4 hours after the investment, the meme growth will be evaluated 
-                                and your investment can profit you or make you bankrupt. Minimum possible investment is 100 MemeCoins.
+                                <div class="collapsible-body"><span>Invests AMOUNT (can be percentage or integer) in the meme (post). 4 hours after the investment, the meme growth will be evaluated 
+                                and your investment can profit you or make you bankrupt. Minimum possible investment is 1% of your balance or 100 MemeCoins, whatever is higher.
                                 </span>
                                 </div>
                             </li>
@@ -232,9 +232,23 @@
                                 <div class="collapsible-header"><i class="material-icons">expand_more</i>!top</div>
                                 <div class="collapsible-body"><span>Returns the top 5 meme investors. You can view the full leaderboards <a href="./leaderboards.html">here</a></span></div>
                             </li>
+                            <li>
+                                <div class="collapsible-header"><i class="material-icons">expand_more</i>!firm</div>
+                                <div class="collapsible-body"><span>Returns information about your firm (if you are in one) as well as your rank in the firm.</span></div>
+                            </li>
+                            <li>
+                                <div class="collapsible-header"><i class="material-icons">expand_more</i>!joinfirm FIRM_NAME</div>
+                                <div class="collapsible-body"><span>Joins the firm with the given name. If the firm is private, you'll have to be invited by one of its leaders first.</span></div>
+                            </li>
+                            <li>
+                                <div class="collapsible-header"><i class="material-icons">expand_more</i>!leavefirm</div>
+                                <div class="collapsible-body"><span>Removes you from the firm you are in.</span></div>
+                            </li>
+                            <li>
+                                <div class="collapsible-header"><i class="material-icons">expand_more</i>!help</div>
+                                <div class="collapsible-body"><span>Returns a detailed list of commands, including more advanced commands not listed here.</span></div>
+                            </li>
                         </ul>
-
-
                     </div>
                     <div class="col s12 m6 l6">
                         <h4 id="info2">Investment Behaviour</h4>
