@@ -58,9 +58,9 @@ services:
         command: ["./api"]
         depends_on:
           - mysql
-          - http
+          - caddy
 
-    http:
+    caddy:
         build:
             context: .
             dockerfile: docker/Dockerfile-caddy
@@ -68,6 +68,9 @@ services:
         restart: unless-stopped
         ports:
           - 2015:2015
+        volumes:
+          - ./caddy-logs:/var/log
+          - ./goaccess/html:/site/goaccess
 
     mysql:
         image: mariadb:10.2.15
@@ -76,3 +79,12 @@ services:
         ports:
           - 127.0.0.1:3306:3306
 
+    goaccess:
+       build:
+           context: .
+           dockerfile: docker/Dockerfile-goaccess
+       volumes:
+          - ./goaccess/data:/srv/data
+          - ./goaccess/html:/srv/report
+          - ./caddy-logs:/srv/logs
+       entrypoint: goaccess --config-file=/etc/.goaccess.caddy.conf

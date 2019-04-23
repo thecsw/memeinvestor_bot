@@ -1,16 +1,4 @@
-FROM alpine
+FROM abiosoft/caddy
 
-RUN apk add --update --no-cache \
-    bash \
-    curl
-
-RUN curl https://getcaddy.com | bash -s personal http.cors
-
-WORKDIR /caddy
-
-COPY ./docker/Caddyfile /caddy
-COPY ./docs /static
-
-EXPOSE 80 443 2015
-
-CMD [ "caddy" ]
+COPY ./docker/Caddyfile /etc
+COPY ./docs /srv
