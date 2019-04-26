@@ -15,9 +15,19 @@ services:
           - 443:443
         volumes:
           - /data/memeinvestor/caddy/data:/root/.caddy
+	  - /data/memeinvestor/caddy/logs:/var/log
+	  - /data/memeinvestor/goaccess/html:/site/goaccess
 
     # When running in production, map the database files onto the host so they
-    # doesn't get lost when we use 'docker-compose down'.
+    # do not get lost when we use 'docker-compose down'.
     mysql:
         volumes:
           - /data/memeinvestor/mysql:/var/lib/mysql
+
+    # When running the caddy web-server, make sure that we save the logs
+    # and real time analyze them with goaccess
+    goaccess:
+        volumes:
+	  - /data/memeinvestor/caddy/logs:/srv/logs
+          - /data/memeinvestor/goaccess/data:/srv/data
+          - /data/memeinvestor/goaccess/html:/srv/report

@@ -69,7 +69,6 @@ services:
         ports:
           - 2015:2015
         volumes:
-          - ./caddy-logs:/var/log
           - ./goaccess/html:/site/goaccess
 
     mysql:
@@ -83,8 +82,4 @@ services:
        build:
            context: .
            dockerfile: docker/Dockerfile-goaccess
-       volumes:
-          - ./goaccess/data:/srv/data
-          - ./goaccess/html:/srv/report
-          - ./caddy-logs:/srv/logs
        entrypoint: goaccess --config-file=/etc/.goaccess.caddy.conf
