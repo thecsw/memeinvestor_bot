@@ -58,9 +58,9 @@ services:
         command: ["./api"]
         depends_on:
           - mysql
-          - caddy
+          - http
 
-    caddy:
+    http:
         build:
             context: .
             dockerfile: docker/Dockerfile-caddy
