@@ -1,13 +1,14 @@
 package firms
 
 import (
-	"../utils"
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"net/http"
+
+	"../utils"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type firm struct {
