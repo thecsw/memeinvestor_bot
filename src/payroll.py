@@ -79,10 +79,11 @@ def main():
 
             # 100% of remaining paid to associates (21% of total payroll)
             trader_total = remaining_amount
-            trader_amount = int(trader_total / max(firm.size - firm.execs, 1))
+            tradernbr = firm.size - firm.execs - firm.assocs - firm.ceo - firm.cfo - firm.coo
+            trader_amount = int(trader_total / max(tradernbr, 1))
 
             logging.info(" -- firm '%s': paying out %s each to %s trader(s), %s each to %s associate(s), %s each to %s executive(s), and %s each to %s board member(s)",\
-                firm.name, trader_amount, firm.size - firm.execs, assoc_amount, firm.assocs, exec_amount, firm.execs, board_amount, board_members)
+                firm.name, trader_amount, tradernbr, assoc_amount, firm.assocs, exec_amount, firm.execs, board_amount, board_members)
 
             employees = sess.query(Investor).\
                 filter(Investor.firm == firm.id).\
