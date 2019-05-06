@@ -167,7 +167,8 @@ All investments invested in the specified post. The post string is sanitized wit
   ],
   "firm": 0,
   "firm_role": "",
-  "networth": 11000
+  "networth": 11000,
+  "rank": 1
  }
  ```
 
