@@ -167,14 +167,16 @@ let overview = (function(){
       netWorth: undefined,
       balance: undefined,
       investmentsActive: undefined,
-      goneBroke: undefined
+      goneBroke: undefined,
+      rank: undefined
    }
    function init(data){
       counters = {
          netWorth: new CountUp("net-worth", 0, 0),
          balance: new CountUp("balance", 0, 0),
          completedInvestments: new CountUp("completed-investments", 0, 0),
-         goneBroke: new CountUp("gone-broke", 0, 0)
+         goneBroke: new CountUp("gone-broke", 0, 0),
+         rank: new CountUp("rank", 0, 0)
       }
       if(data)update(data);
    }
@@ -183,6 +185,7 @@ let overview = (function(){
       counters.balance.update(data.balance)
       counters.completedInvestments.update(data.completed)
       counters.goneBroke.update(data.broke)
+      counters.rank.update(data.rank)
    }
    return {
       init:init,
