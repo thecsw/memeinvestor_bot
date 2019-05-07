@@ -115,10 +115,6 @@ SELECT position FROM (
 		var rank int64
 		err = conn.QueryRow(query_rank).Scan(&rank)
 
-		if err != nil {
-			log.Print(err)
-		}
-
 		temp.Rank = rank
 
 		result, _ := json.Marshal(temp)
