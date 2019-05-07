@@ -99,14 +99,26 @@ func Investor() func(w http.ResponseWriter, r *http.Request) {
 
 		// Calculate the investor's rank
 		query_rank := fmt.Sprintf(`
-SELECT RowNr FROM (
-	SELECT ROW_NUMBER() OVER (ORDER BY balance DESC) AS RowNr,
-	id
-	FROM Investors
-) WHERE id = %d;
-`, temp.Id)
+SELECT position FROM (
+  SELECT ROW_NUMBER() OVER (ORDER BY networth DESC) AS position, name, networth FROM (
+    SELECT
+    Investors.name, SUM(COALESCE(Investments.amount, 0)) + Investors.balance AS networth
+    FROM Investors 
+    LEFT OUTER JOIN (SELECT * FROM Investments WHERE done = 0) 
+    AS Investments ON Investments.name = Investors.name 
+    GROUP BY Investors.id
+    ORDER BY networth DESC
+  )sub
+)sub1 WHERE name = '%s';
+`, temp.Name)
+
 		var rank int64
 		err = conn.QueryRow(query_rank).Scan(&rank)
+
+		if err != nil {
+			log.Print(err)
+		}
+
 		temp.Rank = rank
 
 		result, _ := json.Marshal(temp)
