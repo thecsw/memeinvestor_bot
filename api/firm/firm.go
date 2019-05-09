@@ -58,6 +58,7 @@ func Firm() func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
+		defer conn.Close()
 		query := fmt.Sprintf(`
 SELECT id, name, balance, size, execs,
 tax, rank, private, last_payout
@@ -118,6 +119,7 @@ func FirmMembers() func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
+		defer conn.Close()
 		query := fmt.Sprintf(`
 SELECT * FROM Investors WHERE firm = '%s'
 LIMIT %d OFFSET %d`, firm_id, per_page, per_page*page)
@@ -177,6 +179,7 @@ func FirmMembersTop() func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
+		defer conn.Close()
 		query := fmt.Sprintf(`
 SELECT Investors.id, Investors.name,  Investors.balance, 
 Investors.completed, Investors.broke, Investors.badges, 

@@ -32,6 +32,7 @@ func FirmsTop() func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
+		defer conn.Close()
 		query := fmt.Sprintf(`
 SELECT id, name, balance, size, execs,
 tax, rank, private, last_payout
