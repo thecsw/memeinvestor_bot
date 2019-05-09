@@ -33,6 +33,7 @@ func Investments() func(w http.ResponseWriter, r *http.Request) {
 		from, to := utils.GetTimeframes(r.RequestURI)
 		page, per_page := utils.GetPagination(r.RequestURI)
 		conn, err := sql.Open("mysql", utils.GetDB())
+		defer conn.Close()
 		if err != nil {
 			log.Print(err)
 			w.WriteHeader(http.StatusBadRequest)
