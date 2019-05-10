@@ -22,6 +22,7 @@ type investor struct {
 	Firm      int      `json:"firm"`
 	Firm_role string   `json:"firm_role"`
 	NetWorth  int64    `json:"networth"`
+	Rank      int64    `json:"rank"`
 }
 
 type investment struct {
@@ -95,6 +96,27 @@ func Investor() func(w http.ResponseWriter, r *http.Request) {
 		var active_coins int64
 		err = conn.QueryRow(query_net).Scan(&active_coins)
 		temp.NetWorth = temp.Balance + active_coins
+
+		// Calculate the investor's rank
+		query_rank := fmt.Sprintf(`
+SELECT position FROM (
+  SELECT ROW_NUMBER() OVER (ORDER BY networth DESC) AS position, name, networth FROM (
+    SELECT
+    Investors.name, SUM(COALESCE(Investments.amount, 0)) + Investors.balance AS networth
+    FROM Investors 
+    LEFT OUTER JOIN (SELECT * FROM Investments WHERE done = 0) 
+    AS Investments ON Investments.name = Investors.name 
+    GROUP BY Investors.id
+    ORDER BY networth DESC
+  )sub
+)sub1 WHERE name = '%s';
+`, temp.Name)
+
+		var rank int64
+		err = conn.QueryRow(query_rank).Scan(&rank)
+
+		temp.Rank = rank
+
 		result, _ := json.Marshal(temp)
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "%s", string(result))
