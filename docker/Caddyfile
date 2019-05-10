@@ -1,16 +1,17 @@
 {$CADDY_WEB_ADDRESS} {
         cors
 	root /srv
+	gzip
 	proxy /api/ api:5000 {
 		without /api/
 		transparent
 	}
 
-	log / /var/log/caddy.log "{combined}"
+	log / /var/log/access.log "{combined}"
 	errors stdout
 }
 
-goaccess.{$CADDY_WEB_ADDRESS} {
+{$CADDY_WEB_ADDRESS}/go {
         basicauth / admin password
         root /site/goaccess
         gzip
