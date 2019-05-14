@@ -18,6 +18,9 @@ type firm struct {
 	Balance    int64  `json:"balance"`
 	Size       int    `json:"size"`
 	Execs      int    `json:"execs"`
+	Assocs     int    `json:"assocs"`
+	Coo        int    `json:"coo"`
+	Cfo        int    `json:"cfo"`
 	Tax        int    `json:"tax"`
 	Rank       int    `json:"rank"`
 	Private    bool   `json:"private"`
@@ -81,6 +84,9 @@ LIMIT 1;`, firm_id)
 				&temp.Balance,
 				&temp.Size,
 				&temp.Execs,
+				&temp.Assocs,
+				&temp.Coo,
+				&temp.Cfo,
 				&temp.Tax,
 				&temp.Rank,
 				&temp.Private,
