@@ -359,7 +359,7 @@ $ curl 'https://meme.market/api/firm/10'
  "execs": 3,
  "assocs": 0,
  "coo": 1,
- "cfo": 1
+ "cfo": 1,
  "tax": 10,
  "rank": 1,
  "private": false,
