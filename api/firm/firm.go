@@ -63,8 +63,8 @@ func Firm() func(w http.ResponseWriter, r *http.Request) {
 		}
 		defer conn.Close()
 		query := fmt.Sprintf(`
-SELECT id, name, balance, size, execs,
-tax, rank, private, last_payout
+SELECT id, name, balance, size, execs, assocs, 
+coo, cfo, tax, rank, private, last_payout
 FROM Firms
 WHERE id = %s
 ORDER BY balance DESC 
