@@ -9,7 +9,25 @@ memes.market {
 		without /api/
 		transparent
 	}
-
+	
+	header / {
+		# Enable HTTP Strict Transport Security (HSTS) to force clients to always     
+		# connect via HTTPS (we may have to discuss this)
+		Strict-Transport-Security "max-age=31536000;"
+		# Enable cross-site filter (XSS) and tell browser to block detected attacks
+		X-XSS-Protection "1; mode=block"
+		# Prevent some browsers from MIME-sniffing a response away from the declared Content-Type
+		X-Content-Type-options "nosniff"
+		# Disallow the site to be rendered within a frame (clickjacking protection)
+		X-Frame-Options "nosniff"
+		#strip any path information from the referrer information when navigating to other urls
+		Referrer-Policy "strict-origin"
+		#restrict the use of the following features to js
+		Feature-Policy "accelerometer 'none'; camera 'none'; geolocation 'none; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'"
+		#defines approved sources of content that the browser may load.
+		#may need to test with Report-Only
+		Content-Security-Policy "default-src 'self';script-src 'self' cdnjs.cloudflare.com;style-src 'self' cdnjs.cloudflare.com fonts.googleapis.com;font-src 'self' cdnjs.cloudflare.com fonts.gstatic.com fonts.googleapis.com'; upgrade-insecure-requests
+	}
 	log / stdout
 	errors stdout
 }
