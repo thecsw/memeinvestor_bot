@@ -414,9 +414,13 @@ You can create a new one with the **!createfirm <FIRM NAME>** command, or reques
 """
 
 firm_other_org = """
-Firm: [**%FIRM_NAME%**](https://meme.market/firm.html?firm=%FIRM_ID%)
+#[**%FIRM_NAME%**](https://meme.market/firm.html?firm=%FIRM_ID%)
 
 Firm balance: **%BALANCE%** Memecoins
+
+Firm tax rate: **%TAX%%**
+
+Firm size: **%MEMBERS% members**
 
 Firm level: **%LEVEL%**
 """
@@ -427,15 +431,21 @@ def modify_firm_other(firm):
         replace("%FIRM_NAME%", firm.name). \
         replace("%FIRM_ID%", str(firm.id)). \
         replace("%BALANCE%", "{:,}".format(firm.balance)). \
+        replace("%TAX%", str(firm.tax)) \
+        replace("%MEMBERS%", str(firm.size)) \
         replace("%LEVEL%", str(firm.rank + 1))
 
 
 firm_self_org = """
-Firm: [**%FIRM_NAME%**](https://meme.market/firm.html?firm=%FIRM_ID%)
+#[**%FIRM_NAME%**](https://meme.market/firm.html?firm=%FIRM_ID%)
 
 Firm balance: **%BALANCE%** Memecoins
 
 Firm level: **%LEVEL%**
+
+Firm tax rate: **%TAX%%**
+
+Firm size: **%MEMBERS% members**
 
 Your Rank: **%RANK%**
 
@@ -450,6 +460,8 @@ def modify_firm_self(rank, firm):
         replace("%FIRM_NAME%", firm.name). \
         replace("%FIRM_ID%", str(firm.id)). \
         replace("%BALANCE%", "{:,}".format(firm.balance)). \
+        replace("%TAX%", str(firm.tax)) \
+        replace("%MEMBERS%", str(firm.size)) \
         replace("%LEVEL%", str(firm.rank + 1))
 
 
