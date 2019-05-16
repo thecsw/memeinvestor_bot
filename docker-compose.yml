@@ -68,6 +68,12 @@ services:
         restart: unless-stopped
         ports:
           - 2015:2015
+          - 80:80
+          - 443:443
+        volumes:
+          - "/data/memeinvestor/caddy/data:/root/.caddy"
+          - "/data/memeinvestor/caddy/logs:/var/log"
+          - "/data/memeinvestor/goaccess/html:/site/goaccess"
 
     mysql:
         image: mariadb:10.2.15
@@ -75,4 +81,17 @@ services:
         restart: unless-stopped
         ports:
           - 127.0.0.1:3306:3306
+        volumes:
+          - "/data/memeinvestor/mysql:/var/lib/mysql"
 
+    goaccess:
+       build:
+           context: .
+           dockerfile: docker/Dockerfile-goaccess
+       entrypoint: goaccess --config-file=/etc/.goaccess.caddy.conf
+       volumes:
+         - "/data/memeinvestor/caddy/logs:/srv/logs"
+         - "/data/memeinvestor/goaccess/data:/srv/data"
+         - "/data/memeinvestor/goaccess/html:/srv/report"
+       depends_on:
+         - http

@@ -1,14 +1,15 @@
 package summary
 
 import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+
 	"../coins"
 	"../investments"
 	"../investors"
 	"../utils"
-	"encoding/json"
-	"fmt"
 	_ "github.com/go-sql-driver/mysql"
-	"net/http"
 )
 
 func Summary() func(w http.ResponseWriter, r *http.Request) {

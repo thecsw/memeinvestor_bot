@@ -1,15 +1,18 @@
-memes.market {
-	redir https://meme.market
-}
-
 {$CADDY_WEB_ADDRESS} {
         cors
-	root /static
+	root /srv
+	gzip
 	proxy /api/ api:5000 {
 		without /api/
 		transparent
 	}
 
-	log / stdout
+	log / /var/log/access.log "{combined}"
 	errors stdout
+}
+
+{$CADDY_WEB_ADDRESS}/go {
+        basicauth / admin password
+        root /site/goaccess
+        gzip
 }
