@@ -283,6 +283,9 @@ class CommentWorker():
         if amount < minim or amount < 100:
             return comment.reply_wrap(message.modify_min_invest(minim))
 
+        if amount > 1e9:
+            return comment.reply_wrap("Investing limit is 1 billion")
+
         author = comment.author.name
         new_balance = investor.balance - amount
 
