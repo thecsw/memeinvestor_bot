@@ -1,3 +1,6 @@
+# Ignore login conf files
+login.conf
+
 # Ignore test directory
 .virtualenv/
 
