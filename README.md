@@ -11,8 +11,6 @@ We welcome contributions from the public! If you'd like to help improve the bot,
 our project and feel free to tackle any [Issues](https://github.com/MemeInvestor/memeinvestor_bot/issues).
 We also welcome feedback in the form of new issues, so feel free to create new ones for discussion.
 
-[![Waffle.io - Columns and their card count](https://badge.waffle.io/MemeInvestor/memeinvestor_bot.svg?columns=all)](https://waffle.io/MemeInvestor/memeinvestor_bot)
-
 # 2 Overview
 
 The bot is implemented as a set of loosely-connected microservices written in Python and
@@ -128,10 +126,6 @@ Feel free to open the produced html file with any compatible browser. Even Netsc
 # 8 Contributions
 
 MemeInvestor_bot is a community-driven and community-supported project. We need *you* to keep it live and well. Thank you for all your support!
-
-Here is a graph of some recent contributions:
-
-[![Throughput Graph](https://graphs.waffle.io/MemeInvestor/memeinvestor_bot/throughput.svg)](https://waffle.io/MemeInvestor/memeinvestor_bot/metrics/throughput)
 
 # 9 Authors
 
