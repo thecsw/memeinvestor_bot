@@ -1,10 +1,7 @@
-memes.market {
-	redir https://meme.market
-}
-
 {$CADDY_WEB_ADDRESS} {
         cors
-	root /static
+	root /srv
+	gzip
 	proxy /api/ api:5000 {
 		without /api/
 		transparent
@@ -35,6 +32,12 @@ memes.market {
 	     #once the policy have been tested, the '-report-only' suffix can be removed, leaving only 'Content-Security-Policy'
 	     Content-Security-Policy-Report-Only "default-src 'self';script-src 'self' cdnjs.cloudflare.com;style-src 'self' cdnjs.cloudflare.com fonts.googleapis.com;font-src 'self' cdnjs.cloudflare.com fonts.gstatic.com fonts.googleapis.com; upgrade-insecure-requests"
 	}
-	log / stdout
+	log / /var/log/access.log "{combined}"
 	errors stdout
+}
+
+{$CADDY_WEB_ADDRESS}/go {
+        basicauth / admin password
+        root /site/goaccess
+        gzip
 }

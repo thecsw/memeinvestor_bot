@@ -1,15 +1,16 @@
 package investor
 
 import (
-	"../utils"
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"regexp"
+
+	"../utils"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/mux"
 )
 
 type investor struct {

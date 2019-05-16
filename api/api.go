@@ -1,6 +1,13 @@
 package main
 
 import (
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"time"
+
 	"./coins"
 	"./firm"
 	"./firms"
@@ -8,13 +15,7 @@ import (
 	"./investor"
 	"./investors"
 	"./summary"
-	"fmt"
 	"github.com/gorilla/mux"
-	"log"
-	"net/http"
-	"os"
-	"os/signal"
-	"time"
 )
 
 func HelloThere() func(w http.ResponseWriter, r *http.Request) {
