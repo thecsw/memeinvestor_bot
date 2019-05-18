@@ -431,8 +431,8 @@ def modify_firm_other(firm):
         replace("%FIRM_NAME%", firm.name).\
         replace("%FIRM_ID%", str(firm.id)).\
         replace("%BALANCE%", "{:,}".format(firm.balance)).\
-        replace("%TAX%", str(firm.tax)) \
-        replace("%MEMBERS%", str(firm.size)) \
+        replace("%TAX%", str(firm.tax)).\
+        replace("%MEMBERS%", str(firm.size)).\
         replace("%LEVEL%", str(firm.rank + 1))
 
 
@@ -460,8 +460,8 @@ def modify_firm_self(rank, firm):
         replace("%FIRM_NAME%", firm.name).\
         replace("%FIRM_ID%", str(firm.id)).\
         replace("%BALANCE%", "{:,}".format(firm.balance)).\
-        replace("%TAX%", str(firm.tax)) \
-        replace("%MEMBERS%", str(firm.size)) \
+        replace("%TAX%", str(firm.tax)).\
+        replace("%MEMBERS%", str(firm.size)).\
         replace("%LEVEL%", str(firm.rank + 1))
 
 
