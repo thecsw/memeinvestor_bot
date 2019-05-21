@@ -79,7 +79,7 @@ def main():
 
             # 100% of remaining paid to associates (21% of total payroll)
             trader_total = remaining_amount
-            tradernbr = firm.size - firm.execs - firm.assocs - firm.ceo - firm.cfo - firm.coo
+            tradernbr = firm.size - firm.execs - firm.assocs - 1 - firm.cfo - firm.coo
             trader_amount = int(trader_total / max(tradernbr, 1))
 
             logging.info(" -- firm '%s': paying out %s each to %s trader(s), %s each to %s associate(s), %s each to %s executive(s), and %s each to %s board member(s)",\
