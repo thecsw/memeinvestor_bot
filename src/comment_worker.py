@@ -283,8 +283,16 @@ class CommentWorker():
         if amount < minim or amount < 100:
             return comment.reply_wrap(message.modify_min_invest(minim))
 
+        # Limiting investing in order to control the markets
         if amount / investor.balance > 0.5:
             return comment.reply_wrap("Investing limit is 50% of your current balance.")
+
+        num_inv_same_post = sess.query(Investment).\
+            filter(Investment.post == comment.submission).\
+            filter(Investment.name == Investor.name).\
+            count()
+        if num_inv_same_post >= 2:
+            return comment.reply_wrap("You are only allowed to invest twice in the same post.")
 
         author = comment.author.name
         new_balance = investor.balance - amount
