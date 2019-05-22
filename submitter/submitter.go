@@ -5,8 +5,8 @@ import (
 	"github.com/thecsw/mira"
 	"os"
 	"os/signal"
-//	"strings"
 	"time"
+	"strings"
 )
 
 func main() {
@@ -20,7 +20,7 @@ func main() {
 			post := <-c
 			start := time.Now()
 			to_post := StickyComment
-//			to_post = strings.Replace(to_post, "%MY COMMENT%", "hello, world", 1)
+			to_post += strings.ReplaceAll(AttachSource, "%NAME%", post.GetAuthor())
 			comment, _ := r.Comment(post.GetId(), to_post)
 			r.Distinguish(comment.GetId(), "yes", true)
 			finish := time.Now()
@@ -46,15 +46,3 @@ func main() {
 	time.Sleep(r.Stream.PostListInterval)
 	os.Exit(0)
 }
-
-const (
-	StickyComment = `**INVESTMENTS GO HERE - ONLY DIRECT REPLIES TO ME WILL BE PROCESSED**
-
-To prevent thread spam and other natural disasters, I only respond to direct replies. Other commands will be ignored and may be penalized. Let's keep our marketplace clean!
-
----
-- Visit [meme.market](https://meme.market) for help, market statistics, and investor profiles.
-- Visit /r/MemeInvestor_bot for questions or suggestions about me.
-- Support the project via our [patreon](https://www.patreon.com/memeinvestor_bot)
-- New user? Lost or confused? Reply '!help' to this message, or visit the [Wiki](https://www.reddit.com/r/MemeEconomy/wiki/index) for a more in depth explanation.`
-)
