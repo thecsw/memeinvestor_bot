@@ -170,7 +170,7 @@ class CommentWorker():
 
         # Parse the comment body for a command
         for reg in self.regexes:
-            matches = reg.fullmatch(comment.body.strip())
+            matches = reg.fullmatch(re.sub(r"![Ii]\s+", "!invest ", comment.body.strip()))
             if not matches:
                 continue
 
@@ -291,7 +291,7 @@ class CommentWorker():
 
         # Limiting investing in order to control the markets
         maxim = int(investor.balance / 2)
-        if amount / investor.balance > 0.5 and amount > 1e9:
+        if amount > maxim and amount > 1e9:
             return comment.reply_wrap(message.modify_max_invest(maxim))
 
         num_inv_same_post = sess.query(Investment).\
