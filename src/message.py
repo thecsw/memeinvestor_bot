@@ -38,15 +38,18 @@ INVEST_ORG = """
 Your investment is active. I'll evaluate your return in %TIME%and update this comment. Stay tuned!
 
 Your current balance is **%BALANCE% MemeCoins**.
+
+You have %NUM_INV% investment(s) in this post. The maximum number of investments per post is 2.
 """.replace("%TIME%", INVESTMENT_DURATION_VAR).\
     replace("%UPVOTES_WORD%", utils.upvote_string())
 
 
-def modify_invest(amount, initial_upvotes, new_balance):
+def modify_invest(amount, initial_upvotes, new_balance, num_inv_same_post):
     return INVEST_ORG.\
         replace("%AMOUNT%", format(amount, ",d")).\
         replace("%INITIAL_UPVOTES%", format(initial_upvotes, ",d")).\
-        replace("%BALANCE%", format(new_balance, ",d"))
+        replace("%BALANCE%", format(new_balance, ",d")).\
+        replace("%NUM_INV%", format(num_inv_same_post, ",d"))
 
 
 INVEST_WIN_ORG = """
@@ -269,6 +272,17 @@ The minimum possible investment is %MIN% MemeCoins (1% of your balance) or 100 m
 def modify_min_invest(minim):
     return MIN_INVEST_ORG.\
         replace("%MIN%", format(int(minim), ",d"))
+
+
+MAX_INVEST_ORG = """
+The maximum possible investment is %MAX% MemeCoins (50% of your balance) or 1,000,000,000 memecoins, whatever is higher.
+"""
+
+
+def modify_max_invest(maxim):
+    return MAX_INVEST_ORG.\
+        replace("%MAX%", format(int(maxim), ",d"))
+
 
 
 MARKET_ORG = """
