@@ -286,7 +286,7 @@ class CommentWorker():
         # Limiting investing in order to control the markets
         if amount / investor.balance > 0.5 and amount > 1e9:
             return comment.\
-                reply_wrap("For amounts bigger than 1 billion, investing limit is 50% of your current balance.")
+                reply_wrap("Investments above 1 billion MemeCoins are limited to 50% of the investor's balance.")
 
         num_inv_same_post = sess.query(Investment).\
             filter(Investment.post == comment.submission).\
