@@ -284,8 +284,9 @@ class CommentWorker():
             return comment.reply_wrap(message.modify_min_invest(minim))
 
         # Limiting investing in order to control the markets
-        if amount / investor.balance > 0.5:
-            return comment.reply_wrap("Investing limit is 50% of your current balance.")
+        if amount / investor.balance > 0.5 and amount > 1e9:
+            return comment.\
+                reply_wrap("For amounts bigger than 1 billion, investing limit is 50% of your current balance.")
 
         num_inv_same_post = sess.query(Investment).\
             filter(Investment.post == comment.submission).\
