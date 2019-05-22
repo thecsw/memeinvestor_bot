@@ -284,9 +284,9 @@ class CommentWorker():
             return comment.reply_wrap(message.modify_min_invest(minim))
 
         # Limiting investing in order to control the markets
+        maxim = int(investor.balance / 2)
         if amount / investor.balance > 0.5 and amount > 1e9:
-            return comment.\
-                reply_wrap("Investments above 1 billion MemeCoins are limited to 50% of the investor's balance.")
+            return comment.reply_wrap(message.modify_max_invest(maxim))
 
         num_inv_same_post = sess.query(Investment).\
             filter(Investment.post == comment.submission).\
@@ -305,7 +305,8 @@ class CommentWorker():
         response = comment.reply_wrap(message.modify_invest(
             amount,
             comment.submission.ups,
-            new_balance
+            new_balance,
+            num_inv_same_post
         ))
 
         # 0 upvotes is too OP, so what we do is make around 5 minumum
