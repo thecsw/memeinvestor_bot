@@ -275,7 +275,7 @@ class CommentWorker():
             amount = max(int(investor.balance / 100), 100)
             
         # Allows input such as '!invest 100%' and '!invest 50%'
-        if suffix == '%':
+        elif suffix == '%':
             amount = int((investor.balance / 100) * int(amount))
         else:
             try:
