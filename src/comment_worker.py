@@ -269,7 +269,7 @@ class CommentWorker():
                 return comment.reply_wrap(message.INSIDE_TRADING_ORG)
 
         if re.match(r"max", amount, re.IGNORECASE):
-            amount = max(int(investor.balance / 2), 1e9)
+            amount = min(max(int(investor.balance / 2), 1e9), investor.balance)
             
         elif re.match(r"min", amount, re.IGNORECASE):
             amount = max(int(investor.balance / 100), 100)
