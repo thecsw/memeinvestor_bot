@@ -4,6 +4,7 @@ import (
 	"github.com/thecsw/mira"
 )
 
-func balance(r *mira.Reddit, comment mira.CommentListingDataChildren) {
+func balance(r *mira.Reddit, comment mira.CommentListingDataChildren) error {
 	r.Reply(comment.GetId(), "You are rich!")
+	return nil
 }
