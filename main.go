@@ -1,1 +1,0 @@
-package memeinvestor_bot
