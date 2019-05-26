@@ -119,7 +119,7 @@ class CommentWorker():
         r"!create",
         r"!help\s*!?(.+)?",
         r"!ignore",
-        r"!invest\s+(?:(max)|(min)|([\d,.]+)\s*(%s)?)(?:\s|$)" % "|".join(multipliers),
+        r"!invest\s+([\d,.]+)\s*(%s)?(?:\s|$)" % "|".join(multipliers),
         r"!market",
         r"!top",
         r"!version",
@@ -267,15 +267,9 @@ class CommentWorker():
         if config.PREVENT_INSIDERS:
             if comment.submission.author.name == comment.author.name:
                 return comment.reply_wrap(message.INSIDE_TRADING_ORG)
-
-        if re.match(r"max", amount, re.IGNORECASE):
-            amount = min(max(int(investor.balance / 2), 1e9), investor.balance)
-            
-        elif re.match(r"min", amount, re.IGNORECASE):
-            amount = max(int(investor.balance / 100), 100)
             
         # Allows input such as '!invest 100%' and '!invest 50%'
-        elif suffix == '%':
+        if suffix == '%':
             amount = int((investor.balance / 100) * int(amount))
         else:
             try:
