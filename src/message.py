@@ -284,7 +284,6 @@ def modify_max_invest(maxim):
         replace("%MAX%", format(int(maxim), ",d"))
 
 
-
 MARKET_ORG = """
 The market has **%NUMBER%** active investments.
 
