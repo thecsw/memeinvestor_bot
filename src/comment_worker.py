@@ -170,7 +170,7 @@ class CommentWorker():
 
         # Parse the comment body for a command
         for reg in self.regexes:
-            matches = reg.fullmatch(re.sub(r"![Ii]\s+", "!invest ", comment.body.strip()))
+            matches = reg.fullmatch(comment.body.strip())
             if not matches:
                 continue
 
