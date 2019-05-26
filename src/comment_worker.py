@@ -509,6 +509,7 @@ class CommentWorker():
         investor.balance -= 100000
         investor.firm = firm.id
         investor.firm_role = "ceo"
+        investor.ceo = investor.name
         firm.size += 1
 
         # Setting up the flair in subreddits
@@ -536,9 +537,9 @@ class CommentWorker():
 
         firm.size -= 1
         if investor.firm_role == 'coo':
-            firm.coo -= 1
+            firm.coo = None
         elif investor.firm_role == 'cfo':
-            firm.cfo -= 1
+            firm.cfo = None
         elif investor.firm_role == 'exec':
             firm.execs -= 1
         elif investor.firm_role == 'assoc':
@@ -598,28 +599,28 @@ class CommentWorker():
                 return comment.reply_wrap(message.not_ceo_org)
 
             # If the firm already has a CFO, the user will be promoted to COO
-            if firm.cfo >= 1:
-                if firm.coo >= 1:
+            if firm.cfo is not None:
+                if len(firm.coo) is not None:
                     return comment.reply_wrap(message.promote_coo_full_org)
 
                 user.firm_role = "coo"
                 firm.execs -= 1
-                firm.coo += 1
+                firm.coo = investor.name
             else:
                 user.firm_role = "cfo"
                 firm.execs -= 1
-                firm.cfo += 1
+                firm.cfo = investor.name
 
         elif user_role == "cfo":
             if investor.firm_role != "ceo":
                 return comment.reply_wrap(message.not_ceo_org)
 
-            if firm.coo >= 1:
+            if firm.coo is not None:
                 return comment.reply_wrap(message.promote_coo_full_org)
 
             user.firm_role = "coo"
-            firm.cfo -= 1
-            firm.coo += 1
+            firm.cfo = None
+            firm.coo = investor.name
 
         elif user_role == "coo":
             if investor.firm_role != "ceo":
@@ -711,7 +712,7 @@ class CommentWorker():
                 return comment.reply_wrap(message.modify_demote_execs_full(firm))
 
             user.firm_role = "exec"
-            firm.cfo -= 1
+            firm.cfo = None
             firm.execs += 1
 
         if user.firm_role == "coo":
@@ -719,18 +720,18 @@ class CommentWorker():
                 return comment.reply_wrap(message.not_ceo_org)
 
             # If the firm already has a CFO, the user will be demoted to Executive
-            if firm.cfo >= 1:
+            if firm.cfo is not None:
                 max_execs = max_execs_for_rank(firm.rank)
                 if firm.execs >= max_execs:
                     return comment.reply_wrap(message.modify_demote_execs_full(firm))
 
                 user.firm_role = "exec"
-                firm.coo -= 1
+                firm.coo = None
                 firm.execs += 1
             else:
                 user.firm_role = "cfo"
-                firm.coo -= 1
-                firm.cfo += 1
+                firm.coo = None
+                firm.cfo = investor.name
 
         # Updating the flair in subreddits
         flair_role_user = ''
@@ -786,13 +787,13 @@ class CommentWorker():
             if (investor.firm_role != "ceo"):
                 return comment.reply_wrap(message.not_ceo_org)
 
-            firm.cfo -= 1
+            firm.cfo = None
 
         elif user.firm_role == "coo":
             if (investor.firm_role != "ceo"):
                 return comment.reply_wrap(message.not_ceo_org)
 
-            firm.coo -= 1
+            firm.coo = None
 
         firm.size -= 1
         user.firm_role = ""

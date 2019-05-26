@@ -3,7 +3,7 @@ from models import Investor, Firm
 import message
 
 class MockFirm():
-    def __init__(self, name, id=1, size=1, assocs=0, execs=0, cfo=0, coo=0, rank=0, balance=1234):
+    def __init__(self, name, id=1, size=1, assocs=0, execs=0, cfo=None, coo=None, ceo="", rank=0, balance=1234):
         self.id = id
         self.name = name
         self.size = size
@@ -12,6 +12,7 @@ class MockFirm():
         self.execs = execs
         self.cfo = cfo
         self.coo = coo
+        self.ceo = ceo
         self.balance = balance
 
 class MockInvestor():
@@ -443,8 +444,8 @@ class TestPromote(Test):
         firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
         self.assertEqual(firm.size, 3)
         self.assertEqual(firm.execs, 0)
-        self.assertEqual(firm.cfo, 1)
-        self.assertEqual(firm.coo, 1)
+        self.assertEqual(firm.cfo, "testuser2")
+        self.assertEqual(firm.coo, "testuser3")
 
 class TestDemote(Test):
     def test_none(self):
@@ -622,8 +623,8 @@ class TestDemote(Test):
         firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
         self.assertEqual(firm.size, 3)
         self.assertEqual(firm.execs, 1)
-        self.assertEqual(firm.cfo, 1)
-        self.assertEqual(firm.coo, 0)
+        self.assertEqual(firm.cfo, "testuser3")
+        self.assertEqual(firm.coo, None)
 
 class TestFire(Test):
     def test_none(self):
@@ -897,7 +898,7 @@ class TestFire(Test):
 
         firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
         self.assertEqual(firm.size, 1)
-        self.assertEqual(firm.cfo, 0)
+        self.assertEqual(firm.cfo, None)
 
     def test_fire_coo(self):
         self.command('!create')
@@ -922,7 +923,7 @@ class TestFire(Test):
 
         firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
         self.assertEqual(firm.size, 1)
-        self.assertEqual(firm.coo, 0)
+        self.assertEqual(firm.coo, None)
 
 class TestJoinFirm(Test):
     def test_already_in_firm(self):
