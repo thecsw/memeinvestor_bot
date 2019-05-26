@@ -1,16 +1,15 @@
 package firm
 
 import (
+	"../utils"
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"regexp"
-
-	"../utils"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/gorilla/mux"
 )
 
 type firm struct {
@@ -19,13 +18,22 @@ type firm struct {
 	Balance    int64  `json:"balance"`
 	Size       int    `json:"size"`
 	Execs      int    `json:"execs"`
-	Assocs     int    `json:"assocs"`
-	Coo        int    `json:"coo"`
-	Cfo        int    `json:"cfo"`
 	Tax        int    `json:"tax"`
 	Rank       int    `json:"rank"`
 	Private    bool   `json:"private"`
 	LastPayout int    `json:"last_payout"`
+}
+
+type investorNet struct {
+	Id        int      `json:"id"`
+	Name      string   `json:"name"`
+	Balance   int64    `json:"balance"`
+	Completed int      `json:"completed"`
+	Broke     int      `json:"broke"`
+	Badges    []string `json:"badges"`
+	Firm      int      `json:"firm"`
+	Firm_role string   `json:"firm_role"`
+	NetWorth  int64    `json:"networth"`
 }
 
 type investor struct {
@@ -37,7 +45,6 @@ type investor struct {
 	Badges    []string `json:"badges"`
 	Firm      int      `json:"firm"`
 	Firm_role string   `json:"firm_role"`
-	NetWorth  int64    `json:"networth"`
 }
 
 // Investments on time
@@ -64,8 +71,8 @@ func Firm() func(w http.ResponseWriter, r *http.Request) {
 		}
 		defer conn.Close()
 		query := fmt.Sprintf(`
-SELECT id, name, balance, size, execs, assocs, 
-coo, cfo, tax, rank, private, last_payout
+SELECT id, name, balance, size, execs,
+tax, rank, private, last_payout
 FROM Firms
 WHERE id = %s
 ORDER BY balance DESC 
@@ -85,9 +92,6 @@ LIMIT 1;`, firm_id)
 				&temp.Balance,
 				&temp.Size,
 				&temp.Execs,
-				&temp.Assocs,
-				&temp.Coo,
-				&temp.Cfo,
 				&temp.Tax,
 				&temp.Rank,
 				&temp.Private,
@@ -207,8 +211,8 @@ LIMIT %d OFFSET %d;`, firm_id, per_page, per_page*page)
 			return
 		}
 		defer rows.Close()
-		wrapper := make([]investor, 0, per_page)
-		temp := investor{}
+		wrapper := make([]investorNet, 0, per_page)
+		temp := investorNet{}
 		var badges_temp string
 		for rows.Next() {
 			err := rows.Scan(
