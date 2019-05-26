@@ -1,16 +1,15 @@
 package firm
 
 import (
+	"../utils"
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"regexp"
-
-	"../utils"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/gorilla/mux"
 )
 
 type firm struct {
@@ -29,7 +28,7 @@ type firm struct {
 	LastPayout int    `json:"last_payout"`
 }
 
-type investor struct {
+type investorNet struct {
 	Id        int      `json:"id"`
 	Name      string   `json:"name"`
 	Balance   int64    `json:"balance"`
@@ -39,6 +38,17 @@ type investor struct {
 	Firm      int      `json:"firm"`
 	Firm_role string   `json:"firm_role"`
 	NetWorth  int64    `json:"networth"`
+}
+
+type investor struct {
+	Id        int      `json:"id"`
+	Name      string   `json:"name"`
+	Balance   int64    `json:"balance"`
+	Completed int      `json:"completed"`
+	Broke     int      `json:"broke"`
+	Badges    []string `json:"badges"`
+	Firm      int      `json:"firm"`
+	Firm_role string   `json:"firm_role"`
 }
 
 // Investments on time
@@ -209,8 +219,8 @@ LIMIT %d OFFSET %d;`, firm_id, per_page, per_page*page)
 			return
 		}
 		defer rows.Close()
-		wrapper := make([]investor, 0, per_page)
-		temp := investor{}
+		wrapper := make([]investorNet, 0, per_page)
+		temp := investorNet{}
 		var badges_temp string
 		for rows.Next() {
 			err := rows.Scan(
