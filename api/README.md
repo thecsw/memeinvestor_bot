@@ -60,7 +60,7 @@ _Example:_
 ## 3. Investments
 
 **NOTE:** All `/investments` handlers support request variables listed above.
- **NOTE:** 'firm_tax' equals 0 when the user isn't in a firm.
+ **NOTE:** 'firm_tax' equals 0 when the user isn't in a firm or when the investment isn't done yet.
 
  - `/investments`
  
