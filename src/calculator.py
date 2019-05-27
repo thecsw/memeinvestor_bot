@@ -112,7 +112,14 @@ def main():
 
         new_balance = int(balance + (amount * factor))
         change = new_balance - balance
-        profit = change - amount
+        if investor.firm != 0:
+            firm = sess.query(Firm).\
+                filter(Firm.id == investor.firm).\
+                first()
+            profit = change - amount
+            profit *= int(firm.tax / 100)
+        else:
+            profit = change - amount
         percent_str = f"{int((profit/amount)*100)}%"
 
         # Updating the investor's variables
