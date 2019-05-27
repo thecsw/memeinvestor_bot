@@ -116,8 +116,9 @@ def main():
             firm = sess.query(Firm).\
                 filter(Firm.id == investor.firm).\
                 first()
-            profit = change - amount
-            profit *= int(firm.tax / 100)
+            original_profit = change - amount
+            # Display user profit, then add firm profit
+            profit = int(profit * ((100 - firm.tax) / 100))
         else:
             profit = change - amount
         percent_str = f"{int((profit/amount)*100)}%"
@@ -142,10 +143,10 @@ def main():
                     first()
                 firm_name = firm.name
 
-                user_profit = int(profit * ((100 - firm.tax) / 100))
+                user_profit = int(original_profit * ((100 - firm.tax) / 100))
                 investor.balance += user_profit + amount
 
-                firm_profit = int(profit * (firm.tax / 100))
+                firm_profit = int(original_profit * (firm.tax / 100))
                 firm.balance += firm_profit
             else:
                 investor.balance = new_balance
@@ -177,6 +178,7 @@ def main():
 
         investment.success = (profit > 0)
         investment.profit = profit
+        investment.firm_profit = firm_profit
         investment.done = True
 
         sess.commit()

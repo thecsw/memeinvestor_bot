@@ -26,6 +26,7 @@ type investment struct {
 	Final_upvotes int    `json:"final_upvotes"`
 	Success       bool   `json:"success"`
 	Profit        int64  `json:"profit"`
+	Firm_profit   int64  `json:"firm_profit"`
 }
 
 // Investments on time
@@ -43,7 +44,7 @@ func Investments() func(w http.ResponseWriter, r *http.Request) {
 		query := fmt.Sprintf(`
 SELECT id, post, upvotes, comment, 
 name, amount, time, done, response, 
-COALESCE(final_upvotes, -1), success, profit 
+COALESCE(final_upvotes, -1), success, profit, firm_profit
 FROM Investments WHERE time > %d AND time < %d
 ORDER BY time DESC 
 LIMIT %d OFFSET %d;`, from, to, per_page, per_page*page)
@@ -70,6 +71,7 @@ LIMIT %d OFFSET %d;`, from, to, per_page, per_page*page)
 				&temp.Final_upvotes,
 				&temp.Success,
 				&temp.Profit,
+				&temp.Firm_profit,
 			)
 			if err != nil {
 				log.Print(err)
@@ -211,7 +213,7 @@ func InvestmentsPost() func(w http.ResponseWriter, r *http.Request) {
 		query := fmt.Sprintf(`
 SELECT id, post, upvotes, comment, 
 name, amount, time, done, response, 
-COALESCE(final_upvotes, -1), success, profit 
+COALESCE(final_upvotes, -1), success, profit, firm_profit
 FROM Investments 
 WHERE time > %d AND time < %d AND post = '%s' 
 ORDER BY time DESC 
@@ -239,6 +241,7 @@ LIMIT %d OFFSET %d;`, from, to, post, per_page, per_page*page)
 				&temp.Final_upvotes,
 				&temp.Success,
 				&temp.Profit,
+				&temp.Firm_profit,
 			)
 			if err != nil {
 				log.Print(err)
