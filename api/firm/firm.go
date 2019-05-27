@@ -19,9 +19,9 @@ type firm struct {
 	Size       int    `json:"size"`
 	Execs      int    `json:"execs"`
 	Assocs     int    `json:"assocs"`
-	Cfo        string  `json:"cfo"`
-	Coo        string  `json:"coo"`
 	Ceo        string  `json:"ceo"`
+	Coo        string    `json:"coo"`
+	Cfo        string    `json:"cfo"`
 	Tax        int    `json:"tax"`
 	Rank       int    `json:"rank"`
 	Private    bool   `json:"private"`
@@ -75,8 +75,8 @@ func Firm() func(w http.ResponseWriter, r *http.Request) {
 		}
 		defer conn.Close()
 		query := fmt.Sprintf(`
-SELECT id, name, balance, size, execs, assocs,
-cfo, coo, ceo, tax, rank, private, last_payout
+SELECT id, name, balance, size, execs, assocs, 
+ceo, coo, cfo, tax, rank, private, last_payout
 FROM Firms
 WHERE id = %s
 ORDER BY balance DESC 
@@ -97,9 +97,9 @@ LIMIT 1;`, firm_id)
 				&temp.Size,
 				&temp.Execs,
 				&temp.Assocs,
-				&temp.Cfo,
-				&temp.Coo,
 				&temp.Ceo,
+				&temp.Coo,
+				&temp.Cfo,
 				&temp.Tax,
 				&temp.Rank,
 				&temp.Private,
