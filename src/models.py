@@ -46,7 +46,7 @@ class Investment(Base):
     final_upvotes = Column(Integer)
     success = Column(Boolean, default=False)
     profit = Column(BigInteger, default=0)
-    firm_profit = Column(BigInteger, default=0)
+    firm_tax = Column(Integer, default=0)
 
 
 class Investor(Base):

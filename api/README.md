@@ -60,6 +60,7 @@ _Example:_
 ## 3. Investments
 
 **NOTE:** All `/investments` handlers support request variables listed above.
+ **NOTE:** 'firm_tax' equals 0 when the user isn't in a firm.
 
  - `/investments`
  
@@ -82,7 +83,8 @@ _Example:_
    "response": "eivt9wu",
    "final_upvotes": -1,
    "success": false,
-   "profit": 0
+   "profit": 0,
+   "firm_tax": 0
   }
  ]
  ```
@@ -132,17 +134,18 @@ All investments invested in the specified post. The post string is sanitized wit
  
  [
   {
-   "id":"1",
-   "post":"aibu3z",
-   "upvotes":3,
-   "comment":"eemjre5",
-   "name":"Noerdy",
-   "amount":100,
-   "time":1548089163,
-   "done":true,
-   "response":"eemjs3d",
-   "final_upvotes":9,
-   "profit":-94
+   "id": "1",
+   "post": "aibu3z",
+   "upvotes": 3,
+   "comment": "eemjre5",
+   "name": "Noerdy",
+   "amount": 100,
+   "time": 1548089163,
+   "done": true,
+   "response": "eemjs3d",
+   "final_upvotes": 9,
+   "profit": -94,
+   "firm_tax": 15
   }
  ]
  ```
@@ -181,18 +184,19 @@ $ curl 'https://meme.market/api/investor/mappum/investments?per_page=1&page=0'
 
 [
  {
-  "id":"912",
-  "post":"aio25g",
-  "upvotes":308,
-  "comment":"eephr20",
-  "name":"mappum",
-  "amount":1000,
-  "time":1548181211,
-  "done":true,
-  "response":"eephrsx",
-  "final_upvotes":10137,
-  "success":true,
-  "profit":25
+  "id": "912",
+  "post": "aio25g",
+  "upvotes": 308,
+  "comment": "eephr20",
+  "name": "mappum",
+  "amount": 1000,
+  "time": 1548181211,
+  "done": true,
+  "response": "eephrsx",
+  "final_upvotes": 10137,
+  "success": true,
+  "profit": 25,
+  "firm_tax": 0
  }
 ]
 ```
@@ -205,17 +209,21 @@ Returns an array of active investments made by that user. Request variables are 
 $ curl 'https://meme.market/api/investor/DyspraxicRob/active?per_page=1&page=0'
 
 [
- {
-  "id":"116818",
-  "post":"b0770b",
-  "upvotes":13308,
-  "comment":"eie1a84",
-  "name":"DyspraxicRob",
-  "amount":5000,
-  "time":1552432030,
-  "response":"eie1anw",
-  "final_upvotes":-1
- }
+    {
+     "id": 284742,
+     "post": "btibwv",
+     "upvotes": 9,
+     "comment": "eoy9nzm",
+     "name": "Keanu73",
+     "amount": 292230346394,
+     "time": 1558936744,
+     "done": false,
+     "response": "eoy9obp",
+     "final_upvotes": -1,
+     "success": false,
+     "profit": 0,
+     "firm_tax": 15
+    }
 ]
 ```
 
