@@ -134,7 +134,7 @@ class CommentWorker():
         r"!demote\s+(.+)",
         r"!fire\s+(.+)",
         r"!upgrade",
-        r"!invite\s+([a-zA-Z0-9_]+)",
+        r"!invite\s+([a-zA-Z0-9_-]+)",
         r"!setprivate",
         r"!setpublic",
         r"!tax\s+(\d+)"
