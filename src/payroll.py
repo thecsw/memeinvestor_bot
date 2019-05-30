@@ -77,7 +77,7 @@ def main():
                 assoc_amount = int(assoc_total / firm.assocs)
                 remaining_amount -= assoc_total
 
-            # 100% of remaining paid to associates (21% of total payroll)
+            # 100% of remaining paid to floor traders (21% of total payroll)
             trader_total = remaining_amount
             tradernbr = firm.size - firm.execs - firm.assocs - 1 - firm.cfo - firm.coo
             trader_amount = int(trader_total / max(tradernbr, 1))
