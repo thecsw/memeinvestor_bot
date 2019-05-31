@@ -6,10 +6,12 @@ import (
 )
 
 func main() {
-	fmt.Printf("Sleeping for 10 seconds until database is online... ")
-	time.Sleep(10 * time.Second)
+	// Waiting for the database to turn on
+	fmt.Printf("Sleeping for 20 seconds until database is online... ")
+	time.Sleep(20 * time.Second)
 	fmt.Printf("DONE!\n")
+	// Investor
 	fmt.Printf("Creating Investor... ")
-	CreateInvestor()
+	InitInvestor()
 	fmt.Printf("DONE!\n")
 }
