@@ -6,9 +6,7 @@ services:
     image: postgres:latest
     env_file: .env
     restart: unless-stopped
-    ports:
-      - 5432:5432
-    
+
   app:
     build: .
     env_file: .env
