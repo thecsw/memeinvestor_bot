@@ -18,13 +18,13 @@
 //  - NETWORTH: Balance of the user with all assets included. This is just assets.
 //  - BROKE: If a user gone broke, this is an array of UNIX timestamps when user was broke.
 //  - FIRM: If the user is in a firm, it will have a value other than 0.
+//  - PREV_FIRMS: An array of previous firms' IDs.
 //  - FIRM_ROLE: If the user is in a firm he will have a position there. Like 'ceo'.
 //  - BADGES: Array of badges' names. Something like ['donor', 'contributor']
 //  - LAST_ACTIVE: UNIX timestamp of last command issued by the user.
 //  - LAST_SHARE: UNIX timestamp of last bought share/stock.
 //  - BANNED: If the user is banned. If true, do not serve them.
 //  - ADMIN: If the user is admin. Full admin privileges from CLI.
-//  - MODERATOR: If the usir is moderator. Moderate privileges from CLI.
 //  - VERIFIED: If the user is verified. If they register on the website,
 // this just confirms that their web account is linked to their reddit account.
 //  - EMAIL: Email address of the user.
@@ -41,20 +41,20 @@ const (
 	statement = `
 CREATE TABLE IF NOT EXISTS Investor (
           ID             SERIAL    NOT NULL PRIMARY KEY,
-          NAME           TEXT      NOT NULL,
+          NAME           TEXT      NOT NULL UNIQUE,
           CREATED_UTC    INT       NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW() AT TIME ZONE 'utc'),
           SOURCE         TEXT      NOT NULL DEFAULT 'none',
           BALANCE        BIGINT    NOT NULL DEFAULT 1000,
           NETWORTH       BIGINT    NOT NULL DEFAULT 1000,
           BROKE          INT[]     NOT NULL DEFAULT ARRAY[]::INT[],
           FIRM           INT       NOT NULL DEFAULT 0,
+          PREV_FIRMS     INT[]     NOT NULL DEFAULT ARRAY[]::INT[],
           FIRM_ROLE      TEXT      NOT NULL DEFAULT 'none',
           BADGES         TEXT[]    NOT NULL DEFAULT ARRAY[]::TEXT[],
           LAST_ACTIVE    INT       NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW() AT TIME ZONE 'utc'),
           LAST_SHARE     INT       NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW() AT TIME ZONE 'utc'),
           BANNED         BOOL      NOT NULL DEFAULT FALSE,
           ADMIN          BOOL      NOT NULL DEFAULT FALSE,
-          MODERATOR      BOOL      NOT NULL DEFAULT FALSE,
           VERIFIED       BOOL      NOT NULL DEFAULT FALSE,
           EMAIL          TEXT      NOT NULL DEFAULT 'none',
           MORE_OPTIONS   TEXT[]    NOT NULL DEFAULT ARRAY[]::TEXT[]
