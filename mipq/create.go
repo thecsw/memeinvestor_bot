@@ -1,4 +1,4 @@
-package main
+package mipq
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ func getsl(p reflect.Type) string {
 	return fmt.Sprintf("%s", p)
 }
 
-func createTable(param interface{}) string {
+func CreateTable(param interface{}) string {
 	t := reflect.TypeOf(param)
 	tagname := "migdo"
 	defreg, _ := regexp.Compile(`default=(.+),`)
