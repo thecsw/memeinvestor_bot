@@ -13,7 +13,7 @@ func getsl(p reflect.Type) string {
 
 func CreateTable(param interface{}) string {
 	t := reflect.TypeOf(param)
-	tagname := "migdo"
+	tagname := "mipq"
 	defreg, _ := regexp.Compile(`default=(.+),`)
 	create := "CREATE TABLE IF NOT EXISTS "
 	create += t.Name() + " ("
@@ -42,6 +42,8 @@ func CreateTable(param interface{}) string {
 			newtype = "TEXT"
 		case "bool":
 			newtype = "BOOL"
+		case "byte":
+			newtype = "BYTEA"
 		}
 		// Check if it is serial
 		if tmp, _ := regexp.Match(`serial`, []byte(options)); tmp {
@@ -70,6 +72,7 @@ func CreateTable(param interface{}) string {
 		// Set empty array default if it's an array
 		if tmp, _ := regexp.Match(`\[]`, []byte(fulltype)); tmp {
 			defval = "ARRAY[]::" + newtype + "[]"
+			newtype += "[]"
 		}
 		// If default value exists, prepend DEFAULT string
 		if defval != "" {

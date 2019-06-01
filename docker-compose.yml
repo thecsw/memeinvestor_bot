@@ -1,6 +1,7 @@
 version: '3'
 
 services:
+<<<<<<< HEAD
     bot:
         build: .
         env_file: .env
@@ -95,3 +96,25 @@ services:
          - "/data/memeinvestor/goaccess/html:/srv/report"
        depends_on:
          - http
+=======
+  database:
+    build:
+      context: .
+      dockerfile: Dockerfile-database
+    env_file: .env
+    depends_on:
+      - postgres
+
+  bot:
+    build: .
+    env_file: .env
+    restart: always
+    depends_on:
+      - postgres
+      - database
+
+  postgres:
+    image: postgres:latest
+    env_file: .env
+    restart: unless-stopped
+>>>>>>> Big changes. Full rewrite
