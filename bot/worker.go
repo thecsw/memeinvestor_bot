@@ -1,14 +1,14 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"regexp"
 	"time"
-		"database/sql"
 
-	"github.com/thecsw/mira"
-	_ "github.com/lib/pq"
 	"../utils"
+	_ "github.com/lib/pq"
+	"github.com/thecsw/mira"
 )
 
 const (
@@ -21,7 +21,7 @@ func worker(r *mira.Reddit, comment mira.CommentListingDataChildren) {
 	//
 	// ### NO ACCOUNT NEEDED ###
 	//
-	
+
 	// !template (.+)
 	template_r, _ := regexp.Match(`!template (.+)`, []byte(comment.GetBody()))
 	if template_r {
@@ -43,7 +43,7 @@ func worker(r *mira.Reddit, comment mira.CommentListingDataChildren) {
 		r.Reply(comment.GetId(), NeedAccount)
 		return
 	}
-	
+
 	// !balance
 	balance_r, _ := regexp.Match(`!balance`, []byte(comment.GetBody()))
 	if balance_r {
