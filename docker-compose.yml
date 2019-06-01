@@ -10,7 +10,9 @@ services:
       - postgres
 
   bot:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile-bot
     env_file: .env
     restart: always
     depends_on:
