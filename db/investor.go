@@ -35,19 +35,20 @@ import (
 	"database/sql"
 	"fmt"
 
+	"../mipq"
 	"../models"
 	_ "github.com/lib/pq"
 )
 
 func InitInvestor() {
-	fmt.Println(createTable(models.Investor{}))
+	fmt.Println(mipq.CreateTable(models.Investor{}))
 	connStr := "user=test password='1234' dbname=db host=postgres port=5432 sslmode=disable"
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	_, err = db.Exec(createTable(models.Investor{}))
+	_, err = db.Exec(mipq.CreateTable(models.Investor{}))
 	if err != nil {
 		fmt.Println(err)
 		return
