@@ -7,6 +7,6 @@ USER appuser
 RUN go get -u github.com/lib/pq
 
 COPY . .
-RUN go build -o db_exec ./db
+RUN go build -o db_exec ./database
 
 CMD [ "./db_exec" ]

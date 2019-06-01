@@ -100,7 +100,7 @@ services:
   database:
     build:
       context: .
-      dockerfile: Dockerfile-database
+      dockerfile: dockerfiles/Dockerfile-database
     env_file: .env
     depends_on:
       - postgres
@@ -108,7 +108,7 @@ services:
   bot:
     build:
       context: .
-      dockerfile: Dockerfile-bot
+      dockerfile: dockerfiles/Dockerfile-bot
     env_file: .env
     restart: always
     depends_on:
