@@ -15,11 +15,14 @@ func balance(r *mira.Reddit, comment mira.CommentListingDataChildren) error {
 		return err
 	}
 	bal := 0
-	statement := "select balance from investors where name = $1;"
+	statement := "select balance from investor where name = $1;"
 	err = db.QueryRow(statement, comment.GetAuthor()).Scan(&bal)
 	if err != nil {
 		return err
 	}
-	r.Reply(comment.GetId(), fmt.Sprintf("Your balance is %s Mc", bal))
+	message := fmt.Sprintf("Your balance is %d Mc",
+		bal,
+	)
+	r.Reply(comment.GetId(), message)
 	return nil
 }
