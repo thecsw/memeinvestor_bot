@@ -1,4 +1,0 @@
-praw
-fastnumbers
-mysqlclient
-sqlalchemy
