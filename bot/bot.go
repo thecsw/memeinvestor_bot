@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	r, _ := mira.Init(mira.ReadCredsFromFile("login.conf"))
+	r, _ := mira.Init(mira.ReadCredsFromEnv())
 	fmt.Println("source | [time] | thing_id | author | submitter | request | time elapsed | status")
 	c, stop := r.StreamCommentReplies()
 	go func() {

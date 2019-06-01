@@ -1,13 +1,13 @@
-FROM python:alpine
+FROM golang
 
-RUN apk add --update --no-cache \
-    g++ \
-    mariadb-dev
+RUN useradd --create-home appuser
+WORKDIR /home/appuser
+USER appuser
 
-RUN adduser -D user
-USER user
-WORKDIR /home/user
-COPY --chown="user:user" requirements.txt .
-RUN pip install --user --no-cache-dir --no-warn-script-location -r requirements.txt
+RUN go get -u github.com/lib/pq
+RUN go get github.com/thecsw/mira
 
-COPY --chown="user:user" src/ .
+COPY . .
+RUN go build -o bot_exec ./bot
+
+CMD [ "./bot_exec" ]

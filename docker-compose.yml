@@ -1,78 +1,23 @@
 version: '3'
 
 services:
-    bot:
-        build: .
-        env_file: .env
-        restart: always
-        command: ["python", "main.py"]
-        depends_on:
-          - mysql
+  database:
+    build:
+      context: .
+      dockerfile: Dockerfile-database
+    env_file: .env
+    depends_on:
+      - postgres
 
-    calculator:
-        build: .
-        env_file: .env
-        restart: unless-stopped
-        command: ["python", "calculator.py"]
-        depends_on:
-          - mysql
+  bot:
+    build: .
+    env_file: .env
+    restart: always
+    depends_on:
+      - postgres
+      - database
 
-    submitter:
-        build: .
-        env_file: .env
-        restart: always
-        command: ["python", "submitter.py"]
-        depends_on:
-          - mysql
-
-    leaderboard:
-        build: .
-        env_file: .env
-        restart: unless-stopped
-        command: ["python", "leaderboard.py"]
-        depends_on:
-          - mysql
-
-    payroll:
-        build: .
-        env_file: .env
-        restart: unless-stopped
-        command: ["python", "payroll.py"]
-        depends_on:
-          - mysql
-
-    dummy:
-        build: .
-        env_file: .env
-        restart: on-failure
-        command: ["python", "dummy.py"]
-        depends_on:
-          - mysql
-
-    api:
-        build:
-          context: .
-          dockerfile: docker/Dockerfile-golang
-        env_file: .env
-        restart: unless-stopped
-        command: ["./api"]
-        depends_on:
-          - mysql
-          - http
-
-    http:
-        build:
-            context: .
-            dockerfile: docker/Dockerfile-caddy
-        env_file: .env
-        restart: unless-stopped
-        ports:
-          - 2015:2015
-
-    mysql:
-        image: mariadb:10.2.15
-        env_file: .env
-        restart: unless-stopped
-        ports:
-          - 127.0.0.1:3306:3306
-
+  postgres:
+    image: postgres:latest
+    env_file: .env
+    restart: unless-stopped

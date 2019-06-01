@@ -3,20 +3,20 @@ package main
 import (
 	"database/sql"
 	"fmt"
+
+	"../utils"
 	_ "github.com/lib/pq"
 	"github.com/thecsw/mira"
 )
 
 func balance(r *mira.Reddit, comment mira.CommentListingDataChildren) error {
-	bal := 0
-	connStr := "user=test password='1234' dbname=db host=postgres port=5432 sslmode=disable"
-	db, err := sql.Open("postgres", connStr)
+	db, err := sql.Open("postgres", utils.GetDB())
 	if err != nil {
 		return err
 	}
-	err = db.QueryRow(`
-select balance from investors where name = $1;
-`, comment.GetAuthor()).Scan(&bal)
+	bal := 0
+	statement := "select balance from investors where name = $1;"
+	err = db.QueryRow(statement, comment.GetAuthor()).Scan(&bal)
 	if err != nil {
 		return err
 	}
