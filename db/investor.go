@@ -34,41 +34,40 @@ package main
 import (
 	"database/sql"
 	"fmt"
+
 	_ "github.com/lib/pq"
 )
 
-const (
-	statement = `
-CREATE TABLE IF NOT EXISTS Investor (
-          ID             SERIAL    NOT NULL PRIMARY KEY,
-          NAME           TEXT      NOT NULL UNIQUE,
-          CREATED_UTC    INT       NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW() AT TIME ZONE 'utc'),
-          SOURCE         TEXT      NOT NULL DEFAULT 'none',
-          BALANCE        BIGINT    NOT NULL DEFAULT 1000,
-          NETWORTH       BIGINT    NOT NULL DEFAULT 1000,
-          BROKE          INT[]     NOT NULL DEFAULT ARRAY[]::INT[],
-          FIRM           INT       NOT NULL DEFAULT 0,
-          PREV_FIRMS     INT[]     NOT NULL DEFAULT ARRAY[]::INT[],
-          FIRM_ROLE      TEXT      NOT NULL DEFAULT 'none',
-          BADGES         TEXT[]    NOT NULL DEFAULT ARRAY[]::TEXT[],
-          LAST_ACTIVE    INT       NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW() AT TIME ZONE 'utc'),
-          LAST_SHARE     INT       NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW() AT TIME ZONE 'utc'),
-          BANNED         BOOL      NOT NULL DEFAULT FALSE,
-          ADMIN          BOOL      NOT NULL DEFAULT FALSE,
-          VERIFIED       BOOL      NOT NULL DEFAULT FALSE,
-          EMAIL          TEXT      NOT NULL DEFAULT 'none',
-          MORE_OPTIONS   TEXT[]    NOT NULL DEFAULT ARRAY[]::TEXT[]
-        );
-`)
+type Investor struct {
+	Id           int      `migdo:"primary,serial"`
+	Name         string   `migdo:"unique"`
+	Created_utc  int      `migdo:"unix"`
+	Source       string   `migdo:"default='none',"`
+	Balance      int64    `migdo:"default=1000,"`
+	Networth     int64    `migdo:"default=1000,"`
+	Broke        []int    `migdo:""`
+	Firm         int      `migdo:"default=0,"`
+	Prev_firms   []int    `migdo:""`
+	Firm_role    string   `migdo:"default='none',"`
+	Badges       []string `migdo:""`
+	Last_active  int      `migdo:"unix"`
+	Last_share   int      `migdo:"unix"`
+	Banned       bool     `migdo:"default=false"`
+	Admin        bool     `migdo:"default=false"`
+	Verified     bool     `migdo:"default=false"`
+	Email        string   `migdo:"default='none',"`
+	More_options []string `migdo:""`
+}
 
 func InitInvestor() {
+	fmt.Println(createTable(Investor{}))
 	connStr := "user=test password='1234' dbname=db host=postgres port=5432 sslmode=disable"
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	_, err = db.Exec(statement)
+	_, err = db.Exec(createTable(Investor{}))
 	if err != nil {
 		fmt.Println(err)
 		return
