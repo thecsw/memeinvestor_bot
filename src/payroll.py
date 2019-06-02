@@ -56,7 +56,7 @@ def main():
 
             # 30% paid to board members (CEO, COO, CFO) (30% of total payroll)
             board_total = payout_amount * 0.3
-            board_members = 1 + firm.coo + firm.cfo
+            board_members = 3
             board_amount = int(board_total / board_members)
 
             remaining_amount = payout_amount - board_total
@@ -79,7 +79,7 @@ def main():
 
             # 100% of remaining paid to floor traders (21% of total payroll)
             trader_total = remaining_amount
-            tradernbr = firm.size - firm.execs - firm.assocs - 1 - firm.cfo - firm.coo
+            tradernbr = firm.size - firm.execs - firm.assocs - board_members
             trader_amount = int(trader_total / max(tradernbr, 1))
 
             logging.info(" -- firm '%s': paying out %s each to %s trader(s), %s each to %s associate(s), %s each to %s executive(s), and %s each to %s board member(s)",\
