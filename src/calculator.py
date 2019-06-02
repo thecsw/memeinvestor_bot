@@ -170,6 +170,13 @@ def main():
 
         investment.success = (profit > 0)
         investment.profit = profit
+        if investor.firm != 0:
+            firm = sess.query(Firm).\
+                filter(Firm.id == investor.firm).\
+                first()
+            investment.firm_tax = firm.tax
+        else:
+            investment.firm_tax = 0
         investment.done = True
 
         sess.commit()
