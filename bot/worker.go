@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"time"
 
-	"../utils"
+	"github.com/thecsw/memeinvestor_bot/utils"
 	_ "github.com/lib/pq"
 	"github.com/thecsw/mira"
 )
