@@ -275,7 +275,7 @@ let investmentsCalculator = (function() {
    function calc(){
       let start = parseInt(document.getElementById('investment-start-score').value);
       let end = parseInt(document.getElementById('investment-end-score').value);
-      let amount = parseInt(document.getElementById('investment-amount').value);
+      let amount = parseInt(document.getElementById('investment-amount').value) ** -0.155 * 6;
       if(start>=0 && end>=0 && amount >= 100){
          //creates a spinning loader
          document.getElementById('investment-result').innerHTML =
@@ -355,8 +355,3 @@ let investmentsCalculator = (function() {
    });
    
 }());
-
-
-
-
-
