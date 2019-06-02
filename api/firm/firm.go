@@ -1,15 +1,16 @@
 package firm
 
 import (
-	"../utils"
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"regexp"
+
+	"../utils"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/mux"
 )
 
 type firm struct {
@@ -19,9 +20,9 @@ type firm struct {
 	Size       int    `json:"size"`
 	Execs      int    `json:"execs"`
 	Assocs     int    `json:"assocs"`
-	Ceo        string  `json:"ceo"`
-	Coo        string    `json:"coo"`
-	Cfo        string    `json:"cfo"`
+	Ceo        string `json:"ceo"`
+	Coo        string `json:"coo"`
+	Cfo        string `json:"cfo"`
 	Tax        int    `json:"tax"`
 	Rank       int    `json:"rank"`
 	Private    bool   `json:"private"`
