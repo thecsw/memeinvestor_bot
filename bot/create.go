@@ -12,6 +12,11 @@ import (
 
 func create(r *mira.Reddit, comment mira.CommentListingDataChildren) error {
 	author := comment.GetAuthor()
+	exists, _ := userExists(author)
+	if exists {
+		r.Reply(comment.GetId(), "You already have an account!")
+		return nil
+	}
 	statement := "insert into investor (name, source) values ($1, 'reddit');"
 	db, err := sql.Open("postgres", utils.GetDB())
 	if err != nil {
