@@ -1,5 +1,5 @@
 
-cc = ""
+cc =
 
 default: help
 
@@ -10,6 +10,7 @@ help:
 	@echo 'logs    [OPTIONAL: cc=services]  - force tail the logs'
 	@echo 'stop    [OPTIONAL: cc=services]  - stop the containers'
 	@echo 'down                             - stop and wipe out the network'
+	@echo 'status                           - get statuses on all containers'
 
 build:
 	docker-compose build $(cc)
@@ -25,3 +26,6 @@ stop:
 
 down:
 	docker-compose down
+
+status:
+	docker-compose ps

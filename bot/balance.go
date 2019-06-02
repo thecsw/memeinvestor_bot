@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/thecsw/memeinvestor_bot/utils"
+	"../utils"
 	_ "github.com/lib/pq"
 	"github.com/thecsw/mira"
 )
