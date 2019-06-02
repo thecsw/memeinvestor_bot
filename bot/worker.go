@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/thecsw/memeinvestor_bot/utils"
+	"../utils"
 	_ "github.com/lib/pq"
 	"github.com/thecsw/mira"
 )
@@ -17,7 +17,6 @@ const (
 
 func worker(r *mira.Reddit, comment mira.CommentListingDataChildren) {
 	start := time.Now()
-	var status error = nil
 	//
 	// ### NO ACCOUNT NEEDED ###
 	//
@@ -25,12 +24,14 @@ func worker(r *mira.Reddit, comment mira.CommentListingDataChildren) {
 	// !template (.+)
 	template_r, _ := regexp.Match(`!template (.+)`, []byte(comment.GetBody()))
 	if template_r {
-		status = template(r, comment)
+		process(start, comment, template(r, comment))
+		return
 	}
 	// !create
 	create_r, _ := regexp.Match(`!create`, []byte(comment.GetBody()))
 	if create_r {
-		status = create(r, comment)
+		process(start, comment, create(r, comment))
+		return
 	}
 
 	//
@@ -47,8 +48,12 @@ func worker(r *mira.Reddit, comment mira.CommentListingDataChildren) {
 	// !balance
 	balance_r, _ := regexp.Match(`!balance`, []byte(comment.GetBody()))
 	if balance_r {
-		status = balance(r, comment)
+		process(start, comment, balance(r, comment))
+		return
 	}
+}
+
+func process(start time.Time, comment mira.CommentListingDataChildren, status error) {
 	finish := time.Now()
 	// Output the worker log
 	fmt.Printf("%v [%v] %v %v %v \"%v\" %v \"%v\"\n",
@@ -69,7 +74,7 @@ func userExists(author string) (bool, error) {
 		return false, err
 	}
 	num := 0
-	statement := "select count(1) from investor where name=$1"
+	statement := "select count(1) from investor where name=$1;"
 	db.QueryRow(statement, author).Scan(&num)
 	if num == 0 {
 		return false, nil

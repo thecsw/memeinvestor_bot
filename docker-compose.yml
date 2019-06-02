@@ -115,6 +115,16 @@ services:
       - postgres
       - database
 
+  submitter:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile-submitter
+    env_file: .env
+    restart: always
+    depends_on:
+      - postgres
+      - database
+
   postgres:
     image: postgres:latest
     env_file: .env
