@@ -39,7 +39,7 @@ func FirmsTop() func(w http.ResponseWriter, r *http.Request) {
 		}
 		defer conn.Close()
 		query := fmt.Sprintf(`
-SELECT id, name, balance, size, execs,
+SELECT id, name, balance, size, execs, assocs,
 cfo, coo, ceo, tax, rank, private, last_payout
 FROM Firms
 WHERE size > 0
@@ -62,7 +62,6 @@ LIMIT %d OFFSET %d;`, per_page, per_page*page)
 				&temp.Size,
 				&temp.Execs,
 				&temp.Assocs,
-				&temp.Execs,
 				&temp.Cfo,
 				&temp.Coo,
 				&temp.Ceo,
