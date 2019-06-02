@@ -5,7 +5,7 @@ import (
 
 	"errors"
 
-	"../utils"
+	"github.com/thecsw/memeinvestor_bot/utils"
 	_ "github.com/lib/pq"
 	"github.com/thecsw/mira"
 )

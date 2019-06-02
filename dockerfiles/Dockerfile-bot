@@ -1,13 +1,13 @@
 FROM golang
 
 RUN useradd --create-home appuser
-WORKDIR /home/appuser
+WORKDIR /home/appuser/go/src/github.com/thecsw/memeinvestor_bot/bot
 USER appuser
 
 RUN go get -u github.com/lib/pq
 RUN go get github.com/thecsw/mira
+RUN go get github.com/thecsw/memeinvestor_bot
 
-COPY . .
-RUN go build -o bot_exec ./bot
+RUN go build
 
-CMD [ "./bot_exec" ]
+CMD [ "./bot" ]
