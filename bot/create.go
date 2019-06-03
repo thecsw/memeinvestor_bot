@@ -12,7 +12,7 @@ import (
 
 func create(r *mira.Reddit, comment mira.CommentListingDataChildren) error {
 	author := comment.GetAuthor()
-	exists, _ := userExists(author)
+	exists, _ := utils.UserExists(author)
 	if exists {
 		r.Reply(comment.GetId(), "You already have an account!")
 		return nil

@@ -6,12 +6,12 @@ import (
 
 	"../mipq"
 	"../models"
+	"../utils"
 	_ "github.com/lib/pq"
 )
 
 func InitInvestor() {
-	connStr := "user=test password='1234' dbname=db host=postgres port=5432 sslmode=disable"
-	db, err := sql.Open("postgres", connStr)
+	db, err := sql.Open("postgres", utils.GetDB())
 	if err != nil {
 		fmt.Println(err)
 		return
