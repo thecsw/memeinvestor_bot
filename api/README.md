@@ -206,7 +206,7 @@ $ curl 'https://meme.market/api/investor/mappum/investments?per_page=1&page=0'
 Returns an array of active investments made by that user. Request variables are supported.
 
 ``` bash
-$ curl 'https://meme.market/api/investor/DyspraxicRob/active?per_page=1&page=0'
+$ curl 'https://meme.market/api/investor/Keanu73/active?per_page=1&page=0'
 
 [
     {
@@ -222,12 +222,13 @@ $ curl 'https://meme.market/api/investor/DyspraxicRob/active?per_page=1&page=0'
      "final_upvotes": -1,
      "success": false,
      "profit": 0,
-     "firm_tax": 15
+     "firm_tax": -1
     }
 ]
 ```
 
 **NOTE:** final_upvotes is -1 because the entry does not exist and all `NULL` values in the table are replaced with -1
+**ANOTHER NOTE:** firm_tax is -1 as the firm tax is only taken into account once the investment is complete. (if user isn't in firm, will return 0)
 
 ## 5. Investors
 
