@@ -150,7 +150,7 @@ func InvestorInvestments() func(w http.ResponseWriter, r *http.Request) {
 		query := fmt.Sprintf(`
 SELECT id, post, upvotes, comment, 
 name, amount, time, done, response, 
-COALESCE(final_upvotes, -1), success, profit, firm_tax
+COALESCE(final_upvotes, -1), success, profit, COALESCE(firm_tax, -1)
 FROM Investments 
 WHERE name = '%s' AND time > %d AND time < %d 
 ORDER BY time DESC 
