@@ -9,12 +9,7 @@ function makeRequest (param = '', options) {
     let url = options.url+param;
     xhr.open(options.method, url);
     xhr.onload = function () {
-      if (this.status >= 200 && this.status < 300) {
-        if (!JSON.parse(xhr.response)) reject({
-          status: this.status,
-          statusText: xhr.statusText
-        })
-        
+      if (this.status >= 200 && this.status < 300 && JSON.parse(xhr.response)) {
         resolve(JSON.parse(xhr.response));
       } else {
         reject({
