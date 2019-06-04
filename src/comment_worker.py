@@ -628,7 +628,9 @@ class CommentWorker():
 
             # Swapping roles
             investor.firm_role = "coo"
+            firm.coo = investor.name
             user.firm_role = "ceo"
+            firm.ceo = user.name
 
         # Updating the flair in subreddits
         flair_role_user = ''
