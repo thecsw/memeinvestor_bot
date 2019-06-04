@@ -4,22 +4,22 @@ import {formatToUnits, getSuffix} from './modules/dataUtils.js';
 import {seasons} from '../resources/leaderboards/seasons.js';
 
 let getLeaderboard = (function(){
-   function init(){
+   function init() {
       jsonApi.get('/firms/top?per_page=100')
       .then(d => leaderboard.update(d))
       .catch(connectionErrorToast)
    }
-   return{
+   return {
       init: init
    }
 })();
 
 
-let leaderboard = (function(){
+let leaderboard = (function() {
    let ids = {
       table: 'leaderboards-table',
       cards: {
-         prefix: ['top','left','right'],
+         prefix: ['top', 'left', 'right'],
          name: 'name',
          balance: 'balance',
          balanceSuffix: 'balance-suffix',
@@ -28,18 +28,18 @@ let leaderboard = (function(){
    }
    let cardElements = {};
 
-   function init(){
+   function init() {
       //init card elements
-      for(let prefix of ids.cards.prefix){
+      for (let prefix of ids.cards.prefix) {
          cardElements[prefix] = {
-            name: document.getElementById(prefix+'-'+ids.cards.name),
-            balance: new CountUp(prefix+'-'+ids.cards.balance,0, 0, 1),
-            balanceSuffix: document.getElementById(prefix+'-'+ids.cards.balanceSuffix),
-            profile: document.getElementById(prefix+'-'+ids.cards.profile)
+            name: document.getElementById(`${prefix}-${ids.cards.name}`),
+            balance: new CountUp(`${prefix}-${ids.cards.balance}`, 0, 0, 1),
+            balanceSuffix: document.getElementById(`${prefix}-${ids.cards.balanceSuffix}`),
+            profile: document.getElementById(`${prefix}-${ids.cards.profile}`)
          }
       }
    }
-   function update(data){
+   function update(data) {
       renderCards(data)
       renderTable(data)
    }

@@ -10,6 +10,11 @@ function makeRequest (param = '', options) {
     xhr.open(options.method, url);
     xhr.onload = function () {
       if (this.status >= 200 && this.status < 300) {
+        if (!JSON.parse(xhr.response)) reject({
+          status: this.status,
+          statusText: xhr.statusText
+        })
+        
         resolve(JSON.parse(xhr.response));
       } else {
         reject({
@@ -35,4 +40,3 @@ export function getAll(){
 export function get(param, newOptions = options){
    return makeRequest(param, newOptions);
 }
-
