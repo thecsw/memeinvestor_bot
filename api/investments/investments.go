@@ -44,7 +44,7 @@ func Investments() func(w http.ResponseWriter, r *http.Request) {
 		query := fmt.Sprintf(`
 SELECT id, post, upvotes, comment, 
 name, amount, time, done, response, 
-COALESCE(final_upvotes, -1), success, profit, firm_tax
+COALESCE(final_upvotes, -1), success, profit, COALESCE(firm_tax, -1)
 FROM Investments WHERE time > %d AND time < %d
 ORDER BY time DESC 
 LIMIT %d OFFSET %d;`, from, to, per_page, per_page*page)
@@ -213,7 +213,7 @@ func InvestmentsPost() func(w http.ResponseWriter, r *http.Request) {
 		query := fmt.Sprintf(`
 SELECT id, post, upvotes, comment, 
 name, amount, time, done, response, 
-COALESCE(final_upvotes, -1), success, profit, firm_tax
+COALESCE(final_upvotes, -1), success, profit, COALESCE(firm_tax, -1)
 FROM Investments 
 WHERE time > %d AND time < %d AND post = '%s' 
 ORDER BY time DESC 
