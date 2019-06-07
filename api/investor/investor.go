@@ -177,7 +177,7 @@ LIMIT %d OFFSET %d`, name, from, to, per_page, per_page*page)
 				&temp.Final_upvotes,
 				&temp.Success,
 				&temp.Profit,
-				&temp.Firm_tax
+				&temp.Firm_tax,
 			)
 			if err != nil {
 				log.Print(err)
@@ -242,7 +242,7 @@ LIMIT %d OFFSET %d`, name, from, to, per_page, per_page*page)
 				&temp.Final_upvotes,
 				&temp.Success,
 				&temp.Profit,
-				&temp.Firm_tax
+				&temp.Firm_tax,
 			)
 			if err != nil {
 				log.Print(err)
