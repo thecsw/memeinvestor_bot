@@ -599,8 +599,8 @@ class CommentWorker():
                 return comment.reply_wrap(message.not_ceo_org)
 
             # If the firm already has a CFO, the user will be promoted to COO
-            if firm.cfo is not None:
-                if len(firm.coo) is not None:
+            if firm.cfo != '':
+                if firm.coo != '':
                     return comment.reply_wrap(message.promote_coo_full_org)
 
                 user.firm_role = "coo"
@@ -615,11 +615,11 @@ class CommentWorker():
             if investor.firm_role != "ceo":
                 return comment.reply_wrap(message.not_ceo_org)
 
-            if firm.coo is not None:
+            if firm.coo != '':
                 return comment.reply_wrap(message.promote_coo_full_org)
 
             user.firm_role = "coo"
-            firm.cfo = None
+            firm.cfo = ''
             firm.coo = investor.name
 
         elif user_role == "coo":
