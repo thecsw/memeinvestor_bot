@@ -1,5 +1,5 @@
 
-cc =
+cc = ""
 
 default: help
 
@@ -10,16 +10,11 @@ help:
 	@echo 'logs    [OPTIONAL: cc=services]  - force tail the logs'
 	@echo 'stop    [OPTIONAL: cc=services]  - stop the containers'
 	@echo 'down                             - stop and wipe out the network'
-	@echo 'status                           - get statuses on all containers'
-	@echo 'format                           - format all go files in this directory'
 
 build:
 	docker-compose build $(cc)
 
 deploy:
-	docker-compose up -d postgres
-	@echo 'Sleeping for 20 seconds...'
-	sleep 20
 	docker-compose up -d $(cc)
 
 logs:
@@ -30,9 +25,3 @@ stop:
 
 down:
 	docker-compose down
-
-status:
-	docker-compose ps
-
-format:
-	find . -type f | grep '\.go$' | xargs gofmt -w && find . -type f | grep '\.go$' | xargs goimports -w

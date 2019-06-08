@@ -1,15 +1,18 @@
-FROM golang
+FROM golang:1.12.5-alpine3.9
 
-RUN useradd --create-home appuser
-WORKDIR /home/appuser
+RUN apk add --no-cache \
+			git
+
+RUN adduser -D appuser
 USER appuser
+WORKDIR /home/appuser
 
-RUN go get -u github.com/lib/pq
+RUN go get -u github.com/jinzhu/gorm
+RUN go get github.com/lib/pq
 RUN go get github.com/thecsw/mira
-#RUN go get github.com/thecsw/memeinvestor_bot
 
-#WORKDIR /go/src/github.com/thecsw/memeinvestor_bot/bot
 COPY . .
-RUN go build -o bbot ./bot
 
-CMD [ "./bbot" ]
+RUN go build -o exec ./bot
+
+CMD [ "./exec" ]

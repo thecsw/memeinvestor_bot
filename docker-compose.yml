@@ -1,14 +1,6 @@
 version: '3'
 
 services:
-  database:
-    build:
-      context: .
-      dockerfile: dockerfiles/Dockerfile-database
-    env_file: .env
-    depends_on:
-      - postgres
-
   bot:
     build:
       context: .
@@ -17,19 +9,10 @@ services:
     restart: always
     depends_on:
       - postgres
-      - database
-
-  submitter:
-    build:
-      context: .
-      dockerfile: dockerfiles/Dockerfile-submitter
-    env_file: .env
-    restart: always
-    depends_on:
-      - postgres
-      - database
 
   postgres:
-    image: postgres:latest
+    image: postgres:11.3-alpine
     env_file: .env
     restart: unless-stopped
+    ports:
+      - 5432:5432
