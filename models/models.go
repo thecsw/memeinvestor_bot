@@ -5,6 +5,8 @@ import (
 
 	"../utils"
 	"github.com/jinzhu/gorm"
+
+	// Register Postgres dialect
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
@@ -13,6 +15,7 @@ var (
 	once sync.Once
 )
 
+// Initialize initializes the database
 func Initialize() {
 	var err error
 	once.Do(func() {
@@ -28,6 +31,7 @@ func Initialize() {
 	}
 }
 
+// Close closes the database connection
 func Close() {
 	db.Close()
 }
