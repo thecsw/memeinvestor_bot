@@ -16,7 +16,7 @@ const (
 	ErrNoAccount = "no account"
 )
 
-func worker(r *mira.Reddit, comment mira.CommentListingDataChildren) {
+func worker(r *mira.Reddit, comment mira.Comment) {
 	start := time.Now()
 	body := comment.GetBody()
 	author := comment.GetAuthor()
@@ -41,7 +41,7 @@ func worker(r *mira.Reddit, comment mira.CommentListingDataChildren) {
 	}
 }
 
-func process(start time.Time, comment mira.CommentListingDataChildren, status error) {
+func process(start time.Time, comment mira.Comment, status error) {
 	finish := time.Now()
 	// Output the worker log
 	fmt.Printf("%v [%v] %v %v %v \"%v\" %v \"%v\"\n",

@@ -20,6 +20,7 @@ func Initialize() {
 		db.AutoMigrate(
 			&Investor{},
 			&BrokeHistory{},
+			&Badge{},
 		)
 	})
 	if err != nil {
