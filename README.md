@@ -133,6 +133,7 @@ MemeInvestor_bot is a community-driven and community-supported project. We need 
   - *Alberto Ventafridda* - Main front-end and web developer. Made our beautiful website. - [robalb](https://github.com/robalb)
   - *Matt Bell* - Back-end developer. Implemented firms and unit tests. - [mappum](https://github.com/mappum)
   - *Keanu C.* - Heavy outside contributor. Implemented fixes and breaking changes to API and DB. - [Keanu73](https://github.com/Keanu73)
+  - *Jacob Padley* - Back-end developer. Worked on Go rewrite, MIRA and new API features. - [JPadley18](https://github.com/jpadley18)
 
 ## Past contributors
 
