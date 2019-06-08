@@ -1,4 +1,4 @@
-# Welcome to meme investments!
+# Welcome to the MemeInvestor_Bot repository!
 
 Welcome to the source code repository of [/u/MemeInvestor_bot](https://www.reddit.com/user/MemeInvestor_bot). 
 This bot has been developed exclusively for [/r/MemeEconomy](https://reddit.com/r/MemeEconomy/). It allows users
@@ -13,7 +13,7 @@ We also welcome feedback in the form of new issues, so feel free to create new o
 
 # 2 Overview
 
-The bot is implemented as a set of loosely-connected microservices written in Python and
+The bot is implemented as a set of loosely-connected microservices written in Go and
 deployed with Docker. Each component handles a single job, such as:
 
   - Monitoring /r/MemeEconomy for new meme submissions
@@ -60,7 +60,7 @@ serving the informational website.
 You should be able to view the website at http://localhost:2015. By default the stats will be
 boring (no investors and no investments) but you can interact with your test bot on Reddit to
 populate the database. Alternatively you can manually set up investor accounts by modifying the
-database with Python or a database manager like `adminer`.
+database with Go or a database manager like `adminer`.
 
 # 6 Maintenance
 
@@ -118,10 +118,8 @@ Feel free to open the produced html file with any compatible browser. Even Netsc
 
 # 7 Built with
 
-  - [praw](https://github.com/praw-dev/praw), a Python package that allows for simple access to Reddit's API.
-  - [fastnumbers](https://pypi.org/project/fastnumbers/), super-fast and clean conversions to numbers.
-  - [mysqlclient](https://github.com/PyMySQL/mysqlclient-python), a MySQL database connector for Python (with Python 3 support).
-  - [SQLAlchemy](http://www.sqlalchemy.org/), a Python SQL toolkit and Object Relational Mapper. 
+  - [mira](https://github.com/thecsw/mira), a Go package that allows for simple access to Reddit's API.
+  - [gorm](https://github.com/jinzhu/gorm), a Go SQL toolkit and Object Relational Mapper. 
 
 # 8 Contributions
 
@@ -134,10 +132,11 @@ MemeInvestor_bot is a community-driven and community-supported project. We need 
   - *Sagindyk Urazayev* - Core developer. Founder. Server, database, and system maintainer. Wrote API in Go. - [thecsw](https://github.com/thecsw)
   - *Alberto Ventafridda* - Main front-end and web developer. Made our beautiful website. - [robalb](https://github.com/robalb)
   - *Matt Bell* - Back-end developer. Implemented firms and unit tests. - [mappum](https://github.com/mappum)
-  - *lukenamop* - Outside contributor. Working on firms expansion and new commands. - [lukenamop](https://github.com/lukenamop)
+  - *Keanu C.* - Heavy outside contributor. Implemented fixes and breaking changes to API and DB. - [Keanu73](https://github.com/Keanu73)
 
 ## Past contributors
 
+  - *lukenamop* - Outside contributor. Worked on firms expansion and new commands. - [lukenamop](https://github.com/lukenamop)
   - *Dimitris Zervas* - Back-end developer. Introduced Docker and Caddy. - [dzervas](https://github.com/dzervas)
   - *jimbobur* - Our maths guy. Can make really pretty graphs. - [jimbobur](https://github.com/jimbobur)
   - *rickles42* - Back-end and infrastructure developer. Heavy new features and debugging. - [rickles42](https://github.com/rickles42)
