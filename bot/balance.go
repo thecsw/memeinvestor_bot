@@ -3,18 +3,20 @@ package main
 import (
 	"fmt"
 
-	"../models"
+	"../commands"
+	"../commands/wrap"
 	"github.com/thecsw/mira"
 )
 
 func balance(r *mira.Reddit, comment mira.Comment) error {
-	author := comment.GetAuthor()
-	investor, err := models.Investors.GetUser(author)
+	bal, err := commands.BalanceInvestor(wrap.BalanceInvestorWrap{
+		Name: comment.GetAuthor(),
+	})
 	if err != nil {
 		return err
 	}
 	message := fmt.Sprintf("Your balance is %d Mc",
-		investor.Balance,
+		bal,
 	)
 	r.Reply(comment.GetId(), message)
 	return nil

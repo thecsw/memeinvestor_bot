@@ -1,21 +1,20 @@
 package main
 
 import (
-	"../models"
+	"../commands"
+	"../commands/wrap"
 	"github.com/thecsw/mira"
 )
 
 func create(r *mira.Reddit, comment mira.Comment) error {
-	author := comment.GetAuthor()
-	if models.Investors.Exists(comment.GetAuthor()) {
-		r.Reply(comment.GetId(), "You already have an account!")
-		return nil
-	}
-	err := models.Investors.Create(&models.Investor{
-		Name:   author,
+	err := commands.CreateInvestor(wrap.CreateInvestorWrap{
+		Name: comment.GetAuthor(),
 		Source: "reddit",
 	})
 	if err != nil {
+		if err.Error() == "Account already exists." {
+			r.Reply(comment.GetId(), err.Error())
+		}
 		return err
 	}
 	message := "Account successfully created!"

@@ -14,8 +14,5 @@ services:
     image: postgres:11.3-alpine
     env_file: .env
     restart: unless-stopped
-<<<<<<< HEAD
-=======
     ports:
       - 5432:5432
->>>>>>> bc425fe995e9ba2defa61a76330c1b790f0729a6
