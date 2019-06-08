@@ -9,12 +9,13 @@ import (
 	"regexp"
 
 	"../utils"
+	// Register MySQL driver
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
 
 type investment struct {
-	Id            int    `json:"id"`
+	ID            int    `json:"id"`
 	Post          string `json:"post"`
 	Upvotes       int    `json:"upvotes"`
 	Comment       string `json:"comment"`
@@ -23,10 +24,10 @@ type investment struct {
 	Time          int    `json:"time"`
 	Done          bool   `json:"done"`
 	Response      string `json:"response"`
-	Final_upvotes int    `json:"final_upvotes"`
+	FinalUpvotes  int    `json:"final_upvotes"`
 	Success       bool   `json:"success"`
 	Profit        int64  `json:"profit"`
-	Firm_tax      int64  `json:"firm_tax"`
+	FirmTax       int64  `json:"firm_tax"`
 }
 
 // Investments on time

@@ -9,19 +9,21 @@ import (
 	"time"
 
 	"../utils"
+	// Register MySQL driver
 	_ "github.com/go-sql-driver/mysql"
 )
 
 type investor struct {
-	Id        int      `json:"id"`
+	ID        int      `json:"id"`
 	Name      string   `json:"name"`
 	Balance   int64    `json:"balance"`
 	Completed int      `json:"completed"`
 	Broke     int      `json:"broke"`
 	Badges    []string `json:"badges"`
 	Firm      int      `json:"firm"`
-	Firm_role string   `json:"firm_role"`
+	FirmRole  string   `json:"firm_role"`
 	NetWorth  int64    `json:"networth"`
+	Rank      int64    `json:"rank"`
 }
 
 type investorProfit struct {
@@ -29,9 +31,10 @@ type investorProfit struct {
 	Profit int64  `json:"profit"`
 }
 
-func InvestorsTop() func(w http.ResponseWriter, r *http.Request) {
+// Top returns the top investors of r/MemeEconomy
+func Top() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		page, per_page := utils.GetPagination(r.RequestURI)
+		page, perPage := utils.GetPagination(r.RequestURI)
 		conn, err := sql.Open("mysql", utils.GetDB())
 		if err != nil {
 			log.Print(err)
@@ -50,7 +53,7 @@ LEFT OUTER JOIN (SELECT * FROM Investments WHERE done = 0)
 AS Investments ON Investments.name = Investors.name 
 GROUP BY Investors.id 
 ORDER BY net_worth DESC 
-LIMIT %d OFFSET %d;`, per_page, per_page*page)
+LIMIT %d OFFSET %d;`, perPage, perPage*page)
 		rows, err := conn.Query(query)
 		if err != nil {
 			log.Print(err)
@@ -58,19 +61,19 @@ LIMIT %d OFFSET %d;`, per_page, per_page*page)
 			return
 		}
 		defer rows.Close()
-		wrapper := make([]investor, 0, per_page)
+		wrapper := make([]investor, 0, perPage)
 		temp := investor{}
-		var badges_temp string
+		var badgesTemp string
 		for rows.Next() {
 			err := rows.Scan(
-				&temp.Id,
+				&temp.ID,
 				&temp.Name,
 				&temp.Balance,
 				&temp.Completed,
 				&temp.Broke,
-				&badges_temp,
+				&badgesTemp,
 				&temp.Firm,
-				&temp.Firm_role,
+				&temp.FirmRole,
 				&temp.NetWorth,
 			)
 			if err != nil {
@@ -78,16 +81,38 @@ LIMIT %d OFFSET %d;`, per_page, per_page*page)
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
-			json.Unmarshal([]byte(badges_temp), &temp.Badges)
+			json.Unmarshal([]byte(badgesTemp), &temp.Badges)
 			wrapper = append(wrapper, temp)
 		}
+
+			// Calculate the investor's rank
+		queryRank := fmt.Sprintf(`
+SELECT position FROM (
+  SELECT ROW_NUMBER() OVER (ORDER BY networth DESC) AS position, name, networth FROM (
+    SELECT
+    Investors.name, SUM(COALESCE(Investments.amount, 0)) + Investors.balance AS networth
+    FROM Investors 
+    LEFT OUTER JOIN (SELECT * FROM Investments WHERE done = 0) 
+    AS Investments ON Investments.name = Investors.name 
+    GROUP BY Investors.id
+    ORDER BY networth DESC
+  )sub
+)sub1 WHERE name = '%s';
+`, temp.Name)
+
+		var rank int64
+		err = conn.QueryRow(queryRank).Scan(&rank)
+
+		temp.Rank = rank
+
 		result, _ := json.Marshal(wrapper)
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "%s", string(result))
 	}
 }
 
-func InvestorsTopReturn(top int) string {
+// Returns 
+func TopNetWorth(top int) string {
 	conn, err := sql.Open("mysql", utils.GetDB())
 	if err != nil {
 		log.Print(err)
@@ -115,34 +140,56 @@ LIMIT %d OFFSET 0;`, top)
 
 	wrapper := make([]investor, 0, top)
 	temp := investor{}
-	var badges_temp string
+	var badgesTemp string
 	for rows.Next() {
 		err := rows.Scan(
-			&temp.Id,
+			&temp.ID,
 			&temp.Name,
 			&temp.Balance,
 			&temp.Completed,
 			&temp.Broke,
-			&badges_temp,
+			&badgesTemp,
 			&temp.Firm,
-			&temp.Firm_role,
+			&temp.FirmRole,
 			&temp.NetWorth,
 		)
 		if err != nil {
 			log.Print(err)
 			return ""
 		}
-		json.Unmarshal([]byte(badges_temp), &temp.Badges)
+		json.Unmarshal([]byte(badgesTemp), &temp.Badges)
 		wrapper = append(wrapper, temp)
 	}
+
+			// Calculate the investor's rank
+		queryRank := fmt.Sprintf(`
+SELECT position FROM (
+  SELECT ROW_NUMBER() OVER (ORDER BY networth DESC) AS position, name, networth FROM (
+    SELECT
+    Investors.name, SUM(COALESCE(Investments.amount, 0)) + Investors.balance AS networth
+    FROM Investors 
+    LEFT OUTER JOIN (SELECT * FROM Investments WHERE done = 0) 
+    AS Investments ON Investments.name = Investors.name 
+    GROUP BY Investors.id
+    ORDER BY networth DESC
+  )sub
+)sub1 WHERE name = '%s';
+`, temp.Name)
+
+	var rank int64
+	err = conn.QueryRow(queryRank).Scan(&rank)
+
+	temp.Rank = rank
+
 	result, _ := json.Marshal(wrapper)
 	return string(result)
 }
 
-func InvestorsLast24() func(w http.ResponseWriter, r *http.Request) {
+// PastDay returns investors who've invested in the past day
+func PastDay() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		page, per_page := utils.GetPagination(r.RequestURI)
-		day_ago := time.Now().Unix() - 86400
+		page, perPage := utils.GetPagination(r.RequestURI)
+		dayAgo := time.Now().Unix() - 86400
 		conn, err := sql.Open("mysql", utils.GetDB())
 		if err != nil {
 			log.Print(err)
@@ -157,7 +204,7 @@ LEFT OUTER JOIN (SELECT * FROM Investments WHERE done = 1 AND time > %d)
 AS Investments ON Investments.name = Investors.name 
 GROUP BY Investors.id 
 ORDER BY profit DESC 
-LIMIT %d OFFSET %d;`, day_ago, per_page, per_page*page)
+LIMIT %d OFFSET %d;`, dayAgo, perPage, perPage*page)
 		rows, err := conn.Query(query)
 		if err != nil {
 			log.Print(err)
@@ -165,7 +212,7 @@ LIMIT %d OFFSET %d;`, day_ago, per_page, per_page*page)
 			return
 		}
 		defer rows.Close()
-		wrapper := make([]investorProfit, 0, per_page)
+		wrapper := make([]investorProfit, 0, perPage)
 		temp := investorProfit{}
 		for rows.Next() {
 			err := rows.Scan(

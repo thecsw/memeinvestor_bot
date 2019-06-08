@@ -18,10 +18,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// HelloThere sends a greeting to the API user
 func HelloThere() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "%s\n", "Welcome to u/MemeInvestor_bot official RESTful API!\n")
-		fmt.Fprintf(w, "%s\n", "Please see https://github.com/MemeInvestor/memeinvestor_bot/wiki/API-Documentation for more information!")
+		fmt.Fprintf(w, "%s\n", "Please see https://github.com/thecsw/memeinvestor_bot/wiki/API-Documentation for more information!")
 		w.WriteHeader(http.StatusOK)
 	}
 }
@@ -39,14 +40,14 @@ func main() {
 	r.HandleFunc("/investments/amount", investments.InvestmentsAmount()).Methods("GET")
 	r.HandleFunc("/investments/post/{post}", investments.InvestmentsPost()).Methods("GET")
 	r.HandleFunc("/investor/{name}", investor.Investor()).Methods("GET")
-	r.HandleFunc("/investor/{name}/investments", investor.InvestorInvestments()).Methods("GET")
-	r.HandleFunc("/investor/{name}/active", investor.InvestorInvestmentsActive()).Methods("GET")
-	r.HandleFunc("/investors/top", investors.InvestorsTop()).Methods("GET")
-	r.HandleFunc("/investors/last24", investors.InvestorsLast24()).Methods("GET")
-	r.HandleFunc("/firms/top", firms.FirmsTop()).Methods("GET")
+	r.HandleFunc("/investor/{name}/investments", investor.Investments()).Methods("GET")
+	r.HandleFunc("/investor/{name}/active", investor.InvestmentsActive()).Methods("GET")
+	r.HandleFunc("/investors/top", investors.Top()).Methods("GET")
+	r.HandleFunc("/investors/pastday", investors.PastDay()).Methods("GET")
+	r.HandleFunc("/firms/top", firms.Top()).Methods("GET")
 	r.HandleFunc("/firm/{id}", firm.Firm()).Methods("GET")
-	r.HandleFunc("/firm/{id}/members", firm.FirmMembers()).Methods("GET")
-	r.HandleFunc("/firm/{id}/members/top", firm.FirmMembersTop()).Methods("GET")
+	r.HandleFunc("/firm/{id}/members", firm.Members()).Methods("GET")
+	r.HandleFunc("/firm/{id}/members/top", firm.MembersTop()).Methods("GET")
 	srv := &http.Server{
 		Handler: r,
 		Addr:    ":5000",

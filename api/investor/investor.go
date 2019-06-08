@@ -9,25 +9,26 @@ import (
 	"regexp"
 
 	"../utils"
+	// Register MySQL driver
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
 
 type investor struct {
-	Id        int      `json:"id"`
+	ID        int      `json:"id"`
 	Name      string   `json:"name"`
 	Balance   int64    `json:"balance"`
 	Completed int      `json:"completed"`
 	Broke     int      `json:"broke"`
 	Badges    []string `json:"badges"`
 	Firm      int      `json:"firm"`
-	Firm_role string   `json:"firm_role"`
+	FirmRole  string   `json:"firm_role"`
 	NetWorth  int64    `json:"networth"`
 	Rank      int64    `json:"rank"`
 }
 
 type investment struct {
-	Id            int    `json:"id"`
+	ID            int    `json:"id"`
 	Post          string `json:"post"`
 	Upvotes       int    `json:"upvotes"`
 	Comment       string `json:"comment"`
@@ -36,12 +37,13 @@ type investment struct {
 	Time          int    `json:"time"`
 	Done          bool   `json:"done"`
 	Response      string `json:"response"`
-	Final_upvotes int    `json:"final_upvotes"`
+	FinalUpvotes  int    `json:"final_upvotes"`
 	Success       bool   `json:"success"`
 	Profit        int64  `json:"profit"`
-	Firm_tax      int64  `json:"firm_tax"`
+	FirmTax       int64  `json:"firm_tax"`
 }
 
+// Investor returns investor object
 func Investor() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
@@ -74,33 +76,33 @@ func Investor() func(w http.ResponseWriter, r *http.Request) {
 		}
 		defer rows.Close()
 		temp := investor{}
-		var badges_temp string
+		var badgesTemp string
 		for rows.Next() {
 			err := rows.Scan(
-				&temp.Id,
+				&temp.ID,
 				&temp.Name,
 				&temp.Balance,
 				&temp.Completed,
 				&temp.Broke,
-				&badges_temp,
+				&badgesTemp,
 				&temp.Firm,
-				&temp.Firm_role,
+				&temp.FirmRole,
 			)
 			if err != nil {
 				log.Print(err)
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
-			json.Unmarshal([]byte(badges_temp), &temp.Badges)
+			json.Unmarshal([]byte(badgesTemp), &temp.Badges)
 		}
 		// Making it networth
-		query_net := fmt.Sprintf("SELECT COALESCE(SUM(amount),0) FROM Investments WHERE name = '%s' AND done = 0", name)
-		var active_coins int64
-		err = conn.QueryRow(query_net).Scan(&active_coins)
-		temp.NetWorth = temp.Balance + active_coins
+		queryNet := fmt.Sprintf("SELECT COALESCE(SUM(amount),0) FROM Investments WHERE name = '%s' AND done = 0", name)
+		var activeCoins int64
+		err = conn.QueryRow(queryNet).Scan(&activeCoins)
+		temp.NetWorth = temp.Balance + activeCoins
 
 		// Calculate the investor's rank
-		query_rank := fmt.Sprintf(`
+		queryRank := fmt.Sprintf(`
 SELECT position FROM (
   SELECT ROW_NUMBER() OVER (ORDER BY networth DESC) AS position, name, networth FROM (
     SELECT
@@ -115,7 +117,7 @@ SELECT position FROM (
 `, temp.Name)
 
 		var rank int64
-		err = conn.QueryRow(query_rank).Scan(&rank)
+		err = conn.QueryRow(queryRank).Scan(&rank)
 
 		temp.Rank = rank
 
@@ -125,10 +127,11 @@ SELECT position FROM (
 	}
 }
 
-func InvestorInvestments() func(w http.ResponseWriter, r *http.Request) {
+// Investments returns an investor's investment history
+func Investments() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		from, to := utils.GetTimeframes(r.RequestURI)
-		page, per_page := utils.GetPagination(r.RequestURI)
+		page, perPage := utils.GetPagination(r.RequestURI)
 		params := mux.Vars(r)
 		name, ok := params["name"]
 		if !ok {
@@ -154,18 +157,18 @@ COALESCE(final_upvotes, -1), success, profit, COALESCE(firm_tax, -1)
 FROM Investments 
 WHERE name = '%s' AND time > %d AND time < %d 
 ORDER BY time DESC 
-LIMIT %d OFFSET %d`, name, from, to, per_page, per_page*page)
+LIMIT %d OFFSET %d`, name, from, to, perPage, perPage*page)
 		rows, err := conn.Query(query)
 		if err != nil {
 			log.Print(err)
 			return
 		}
 		defer rows.Close()
-		wrapper := make([]investment, 0, per_page)
+		wrapper := make([]investment, 0, perPage)
 		temp := investment{}
 		for rows.Next() {
 			err := rows.Scan(
-				&temp.Id,
+				&temp.ID,
 				&temp.Post,
 				&temp.Upvotes,
 				&temp.Comment,
@@ -174,10 +177,10 @@ LIMIT %d OFFSET %d`, name, from, to, per_page, per_page*page)
 				&temp.Time,
 				&temp.Done,
 				&temp.Response,
-				&temp.Final_upvotes,
+				&temp.FinalUpvotes,
 				&temp.Success,
 				&temp.Profit,
-				&temp.Firm_tax,
+				&temp.FirmTax,
 			)
 			if err != nil {
 				log.Print(err)
@@ -191,10 +194,11 @@ LIMIT %d OFFSET %d`, name, from, to, per_page, per_page*page)
 	}
 }
 
-func InvestorInvestmentsActive() func(w http.ResponseWriter, r *http.Request) {
+// InvestmentsActive returns investor's active investments
+func InvestmentsActive() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		from, to := utils.GetTimeframes(r.RequestURI)
-		page, per_page := utils.GetPagination(r.RequestURI)
+		page, perPage := utils.GetPagination(r.RequestURI)
 		params := mux.Vars(r)
 		name, ok := params["name"]
 		if !ok {
@@ -219,18 +223,18 @@ COALESCE(final_upvotes, -1), success, profit, COALESCE(firm_tax, -1)
 FROM Investments 
 WHERE name = '%s' AND done = 0 AND time > %d AND time < %d 
 ORDER BY time DESC 
-LIMIT %d OFFSET %d`, name, from, to, per_page, per_page*page)
+LIMIT %d OFFSET %d`, name, from, to, perPage, perPage*page)
 		rows, err := conn.Query(query)
 		if err != nil {
 			log.Print(err)
 			return
 		}
 		defer rows.Close()
-		wrapper := make([]investment, 0, per_page)
+		wrapper := make([]investment, 0, perPage)
 		temp := investment{}
 		for rows.Next() {
 			err := rows.Scan(
-				&temp.Id,
+				&temp.ID,
 				&temp.Post,
 				&temp.Upvotes,
 				&temp.Comment,
@@ -239,10 +243,10 @@ LIMIT %d OFFSET %d`, name, from, to, per_page, per_page*page)
 				&temp.Time,
 				&temp.Done,
 				&temp.Response,
-				&temp.Final_upvotes,
+				&temp.FinalUpvotes,
 				&temp.Success,
 				&temp.Profit,
-				&temp.Firm_tax,
+				&temp.FirmTax,
 			)
 			if err != nil {
 				log.Print(err)

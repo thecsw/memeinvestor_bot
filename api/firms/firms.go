@@ -8,11 +8,12 @@ import (
 	"net/http"
 
 	"../utils"
+	// Register MySQL DB driver
 	_ "github.com/go-sql-driver/mysql"
 )
 
 type firm struct {
-	Id         int    `json:"id"`
+	ID         int    `json:"id"`
 	Name       string `json:"name"`
 	Balance    int64  `json:"balance"`
 	Size       int    `json:"size"`
@@ -22,15 +23,16 @@ type firm struct {
 	Coo        string `json:"coo"`
 	Cfo        string `json:"cfo"`
 	Tax        int    `json:"tax"`
-	Rank       int    `json:"rank"`
+	Level      int    `json:"level"`
 	Private    bool   `json:"private"`
 	LastPayout int    `json:"last_payout"`
+	Rank       int64  `json:"rank"`
 }
 
-// Investments on time
-func FirmsTop() func(w http.ResponseWriter, r *http.Request) {
+// Top gets the top firms
+func Top() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		page, per_page := utils.GetPagination(r.RequestURI)
+		page, perPage := utils.GetPagination(r.RequestURI)
 		conn, err := sql.Open("mysql", utils.GetDB())
 		if err != nil {
 			log.Print(err)
@@ -40,11 +42,11 @@ func FirmsTop() func(w http.ResponseWriter, r *http.Request) {
 		defer conn.Close()
 		query := fmt.Sprintf(`
 SELECT id, name, balance, size, execs, assocs, 
-ceo, coo, cfo, tax, rank, private, last_payout
+ceo, coo, cfo, tax, level, private, last_payout
 FROM Firms
 WHERE size > 0
 ORDER BY balance DESC 
-LIMIT %d OFFSET %d;`, per_page, per_page*page)
+LIMIT %d OFFSET %d;`, perPage, perPage*page)
 		rows, err := conn.Query(query)
 		if err != nil {
 			log.Print(err)
@@ -52,11 +54,11 @@ LIMIT %d OFFSET %d;`, per_page, per_page*page)
 			return
 		}
 		defer rows.Close()
-		wrapper := make([]firm, 0, per_page)
+		wrapper := make([]firm, 0, perPage)
 		temp := firm{}
 		for rows.Next() {
 			err := rows.Scan(
-				&temp.Id,
+				&temp.ID,
 				&temp.Name,
 				&temp.Balance,
 				&temp.Size,
@@ -66,7 +68,7 @@ LIMIT %d OFFSET %d;`, per_page, per_page*page)
 				&temp.Coo,
 				&temp.Cfo,
 				&temp.Tax,
-				&temp.Rank,
+				&temp.Level,
 				&temp.Private,
 				&temp.LastPayout,
 			)
@@ -76,6 +78,24 @@ LIMIT %d OFFSET %d;`, per_page, per_page*page)
 			}
 			wrapper = append(wrapper, temp)
 		}
+
+				// Calculate the firm's rank
+		queryRank := fmt.Sprintf(`
+SELECT position FROM (
+  SELECT ROW_NUMBER() OVER (ORDER BY balance DESC) AS position, id, balance FROM (
+    SELECT
+    Firms.id, Firms.balance AS balance
+    FROM Firms
+    ORDER BY balance DESC
+  )sub
+)sub1 WHERE id = %d;
+`, temp.ID)
+
+		var rank int64
+		err = conn.QueryRow(queryRank).Scan(&rank)
+
+		temp.Rank = rank
+
 		result, _ := json.Marshal(wrapper)
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "%s", string(result))
