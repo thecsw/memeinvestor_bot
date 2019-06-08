@@ -37,17 +37,17 @@ func (p *InvestorPlayer) GetBrokeHistory(name string) []BrokeHistory {
 	return brokes
 }
 
-func (p *InvestorPlayer) GoneBroke(name string) {
+func (p *InvestorPlayer) GoneBroke(name string) error {
 	investor, _ := p.GetUser(name)
-	p.DB().Create(&BrokeHistory{
+	return p.DB().Create(&BrokeHistory{
 		Name:    investor.Name,
 		Balance: investor.Balance,
-	})
+	}).Error
 }
 
-func (p *InvestorPlayer) Update(value interface{}) {
+func (p *InvestorPlayer) Update(value interface{}) error {
 	investor := &Investor{}
-	p.DB().Model(investor).Save(value)
+	return p.DB().Model(investor).Save(value).Error
 }
 
 func (p *InvestorPlayer) DB() *gorm.DB {

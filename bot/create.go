@@ -5,7 +5,7 @@ import (
 	"github.com/thecsw/mira"
 )
 
-func create(r *mira.Reddit, comment mira.CommentListingDataChildren) error {
+func create(r *mira.Reddit, comment mira.Comment) error {
 	author := comment.GetAuthor()
 	if models.Investors.Exists(comment.GetAuthor()) {
 		r.Reply(comment.GetId(), "You already have an account!")

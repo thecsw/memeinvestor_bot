@@ -7,7 +7,7 @@ import (
 	"github.com/thecsw/mira"
 )
 
-func invest(r *mira.Reddit, comment mira.CommentListingDataChildren) error {
+func invest(r *mira.Reddit, comment mira.Comment) error {
 	author := comment.GetAuthor()
 	investor, err := models.Investors.GetUser(author)
 	if err != nil {

@@ -16,7 +16,7 @@ const (
 	TemplateErrEdit      = `Failed editing the root sticky: %v`
 )
 
-func template(r *mira.Reddit, comment mira.CommentListingDataChildren) error {
+func template(r *mira.Reddit, comment mira.Comment) error {
 	link_r, _ := regexp.Compile(`!template (.+)`)
 	link := link_r.FindStringSubmatch(comment.GetBody())[1]
 	// Check if its a valid http link
