@@ -13,6 +13,6 @@ type Badge struct {
 	gorm.Model
 
 	InvestorID int
-	Name string
-	Title string
+	Name       string
+	Title      string
 }
