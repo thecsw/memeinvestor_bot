@@ -31,7 +31,7 @@ Psst, u/%NAME%, you can invoke '!template https://imgur.com/...' command to publ
 
 func main() {
 	// Authenticate
-	r, _ := mira.Init(mira.ReadCredsFromEnv())
+	r, _ := mira.Init(mira.ReadCredsFromFile("login.conf"))
 	// Get handler to listen
 	c, stop := r.StreamNewPosts("memeinvestor_test")
 	var status error = nil

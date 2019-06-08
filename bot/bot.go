@@ -7,10 +7,12 @@ import (
 	"os/signal"
 	"time"
 
+	"../models"
 	"github.com/thecsw/mira"
 )
 
 func main() {
+	models.Initialize()
 	r, _ := mira.Init(mira.ReadCredsFromEnv())
 	fmt.Println("source | [time] | thing_id | author | submitter | request | time elapsed | status")
 	c, stop := r.StreamCommentReplies()

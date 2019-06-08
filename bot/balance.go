@@ -1,27 +1,20 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 
-	"../utils"
-	_ "github.com/lib/pq"
+	"../models"
 	"github.com/thecsw/mira"
 )
 
 func balance(r *mira.Reddit, comment mira.CommentListingDataChildren) error {
-	db, err := sql.Open("postgres", utils.GetDB())
-	if err != nil {
-		return err
-	}
-	bal := 0
-	statement := "select balance from investor where name = $1;"
-	err = db.QueryRow(statement, comment.GetAuthor()).Scan(&bal)
+	author := comment.GetAuthor()
+	investor, err := models.Investors.GetUser(author)
 	if err != nil {
 		return err
 	}
 	message := fmt.Sprintf("Your balance is %d Mc",
-		bal,
+		investor.Balance,
 	)
 	r.Reply(comment.GetId(), message)
 	return nil

@@ -1,42 +1,43 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
-	"errors"
-
+	"../models"
 	"../utils"
 	"github.com/thecsw/mira"
 )
 
 const (
 	NeedAccount = "You don't have an account with us to perform the action. Please invoke '!create' to create an account!"
+
+	ErrNoAccount = "no account"
 )
 
 func worker(r *mira.Reddit, comment mira.CommentListingDataChildren) {
 	start := time.Now()
-	text := comment.GetBody()
-	exists, _ := utils.UserExists(comment.GetAuthor())
+	body := comment.GetBody()
+	author := comment.GetAuthor()
+	commentId := comment.GetId()
 	switch {
-	// No account required
-	case utils.RegMatch(`!template (.+)`, text):
+	case utils.RegMatch(`!template (.+)`, body):
 		process(start, comment, template(r, comment))
-		return
-	case utils.RegMatch(`!create`, text):
+		break
+	case utils.RegMatch(`!create`, body):
 		process(start, comment, create(r, comment))
-		return
-
-		// Check if user has an account
-	case !exists:
-		process(start, comment, errors.New("Account required."))
-		r.Reply(comment.GetId(), NeedAccount)
-		return
-
-		// Account required
-	case utils.RegMatch(`!balance`, text):
+		break
+	case !models.Investors.Exists(author):
+		process(start, comment, errors.New(ErrNoAccount))
+		r.Reply(commentId, NeedAccount)
+		break
+	case utils.RegMatch(`!balance`, body):
 		process(start, comment, balance(r, comment))
-		return
+		break
+	case utils.RegMatch(`!invest`, body):
+		process(start, comment, invest(r, comment))
+		break
 	}
 }
 
