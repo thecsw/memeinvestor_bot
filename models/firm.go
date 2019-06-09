@@ -43,7 +43,6 @@ type Firm struct {
 	Tax     int    `gorm:"not null;default:15"`
 	Level   int    `gorm:"not null;default:1"`
 	Private bool   `gorm:"not null;default:false"`
-	Created int    `gorm:"not null;unix"`
 	Payouts []Payout
 	Badges  []Badge
 }
