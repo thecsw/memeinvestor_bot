@@ -233,7 +233,7 @@ let investmentsCalculator = (function() {
       calc: 'calculator'
    }
    function init(){
-      for (var i of document.querySelectorAll('#calculator input'))
+      for (var i of document.querySelectorAll('#' + ids.calc + ' input'))
          i.addEventListener('input', e => calc());
    }
    // formula functions are converted to JS from formula.py
