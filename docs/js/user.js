@@ -414,14 +414,14 @@ let investments = (function(){
          <tr>
             <td><a href="https://redd.it/${inv.post}">${inv.post}</a></td>
             <td><span class="grey-text">${time}<br>${date}</span></td>
-            <td>${formatToUnits(inv.amount)} M¢<br>${formatToUnits(inv.upvotes)} upvotes</td>
+            <td>${formatToUnits(inv.amount)} M¢<br>${formatToUnits(inv.upvotes)} &uarr;</td>
             <td>`
          if(inv.done){
             let color = inv.success? 'green-text' : 'red-text text-lighten-1'
             let sign = inv.success? '<i class="material-icons">arrow_drop_up</i>' : '<i class="material-icons">arrow_drop_down</i>'
             let profit = sign+formatToUnits(Math.abs(inv.profit))
             let finalUpvotes = inv.final_upvotes? formatToUnits(inv.final_upvotes) : '--';
-            html += `<span class="${color}">${profit} M¢</span><br>${finalUpvotes} upvotes`
+            html += `<span class="${color}">${profit} M¢</span><br>${finalUpvotes} &uarr;`
          }else{
             let currentTime = new Date();
             //14400000 == 4h
@@ -433,7 +433,7 @@ let investments = (function(){
                let timeLeftString = hoursLeftString+':'+minutesLeftString;
                html += `<span><i class="material-icons">access_time</i> ${timeLeftString} left</span>`
             }else{
-               html += '<span><i class="material-icons">layers</i> processsing..</span>'
+               html += '<span><i class="material-icons">layers</i> processing&hellip;</span>'
             }
          }
          html += '</td></tr>'
