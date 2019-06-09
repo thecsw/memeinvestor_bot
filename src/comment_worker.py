@@ -293,7 +293,7 @@ class CommentWorker():
         # Sending a confirmation
         response = comment.reply_wrap(message.modify_invest(
             amount,
-            comment.submission.ups,
+            None if time.time() < comment.submission.created_utc + 7200 else comment.submission.ups,
             new_balance
         ))
 

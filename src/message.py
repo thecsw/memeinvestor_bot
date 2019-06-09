@@ -45,7 +45,7 @@ Your current balance is **%BALANCE% MemeCoins**.
 def modify_invest(amount, initial_upvotes, new_balance):
     return INVEST_ORG.\
         replace("%AMOUNT%", format(amount, ",d")).\
-        replace("%INITIAL_UPVOTES%", format(initial_upvotes, ",d")).\
+        replace("%INITIAL_UPVOTES%", "???" if initial_upvotes is None else format(initial_upvotes, ",d")).\
         replace("%BALANCE%", format(new_balance, ",d"))
 
 
