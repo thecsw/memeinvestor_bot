@@ -134,7 +134,9 @@ MemeInvestor_bot is a community-driven and community-supported project. We need 
   - *Sagindyk Urazayev* - Core developer. Founder. Server, database, and system maintainer. Wrote API in Go. - [thecsw](https://github.com/thecsw)
   - *Alberto Ventafridda* - Main front-end and web developer. Made our beautiful website. - [robalb](https://github.com/robalb)
   - *Matt Bell* - Back-end developer. Implemented firms and unit tests. - [mappum](https://github.com/mappum)
-  - *lukenamop* - Outside contributor. Working on firms expansion and new commands. - [lukenamop](https://github.com/lukenamop)
+  - *Jacob Padley* - Back-end developer. Worked on Go rewrite, MIRA and new API features. - [JPadley18](https://github.com/jpadley18)
+  - *lukenamop* - Outside contributor. Worked on firms expansion and new commands. - [lukenamop](https://github.com/lukenamop)
+  - *Keanu C.* - Outside contributor. Implemented fixes and breaking changes to API and DB. - [Keanu73](https://github.com/Keanu73)
 
 ## Past contributors
 

@@ -229,11 +229,12 @@ let investmentsCalculator = (function() {
          amount: 'investment-amount'
       },
       output: 'investment-result', */
-      button: 'investment-calc'
+      button: 'investment-calc',
+      calc: 'calculator'
    }
    function init(){
-      let calcButton = document.getElementById(ids.button);
-      calcButton.addEventListener('click', e=> calc() );
+      for (var i of document.querySelectorAll('#' + ids.calc + ' input'))
+         i.addEventListener('input', e => calc());
    }
    // formula functions are converted to JS from formula.py
    // the function names follow the paper on memes.market
@@ -275,7 +276,7 @@ let investmentsCalculator = (function() {
    function calc(){
       let start = parseInt(document.getElementById('investment-start-score').value);
       let end = parseInt(document.getElementById('investment-end-score').value);
-      let amount = parseInt(document.getElementById('investment-amount').value) ** -0.155 * 6;
+      let amount = parseInt(document.getElementById('investment-amount').value);
       if(start>=0 && end>=0 && amount >= 100){
          //creates a spinning loader
          document.getElementById('investment-result').innerHTML =
@@ -297,12 +298,7 @@ let investmentsCalculator = (function() {
          //replaces the spinning loader with the calculated result
          document.getElementById('investment-result').innerText = output;
       }else{
-         document.getElementById('investment-result').innerText = 'invalid data';
-         let toastHTML = 'you have to fill all the fields with a valid number'
-         if(amount<100){
-            toastHTML = 'you can\'t invest less than 100 M¢'
-         }
-         M.toast({html: toastHTML,displayLength:2000, classes:"dark-toast"}); 
+         document.getElementById('investment-result').innerText = amount < 100 ? 'invest at least 100 M¢' : 'fill all boxes';
       }
    }
    return {
