@@ -19,7 +19,7 @@ func (Payout) TableName() string {
 type Payout struct {
 	gorm.Model
 
-	FirmID       int
+	FirmID       uint
 	TraderSize   int64 `gorm:"not null;default:0"`
 	TraderAmount int64 `gorm:"not null;default:0"`
 	AssocSize    int64 `gorm:"not null;default:0"`

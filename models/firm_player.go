@@ -17,38 +17,44 @@ var (
 	Firms = &FirmPlayer{db: nil}
 )
 
-// Create creates an Firm object
+// Create creates a Firm object
 func (p *FirmPlayer) Create(val interface{}) error {
 	return p.DB().Create(val).Error
 }
 
-// Get gets an Firm object
+// Get gets a Firm object
 func (p *FirmPlayer) Get(id int) (*Firm, error) {
-	Firm := &Firm{}
-	err := p.DB().Where("id = ?", id).First(Firm).Error
-	return Firm, err
+	firm := &Firm{}
+	err := p.DB().Where("id = ?", id).First(firm).Error
+	return firm, err
+}
+
+// Get gets a Firm object
+func (p *FirmPlayer) GetByName(name string) (*Firm, error) {
+	firm := &Firm{}
+	err := p.DB().Where("name = ?", name).First(firm).Error
+	return firm, err
 }
 
 // Exists checks if a certain Firm exists
-func (p *FirmPlayer) Exists(id int) bool {
+func (p *FirmPlayer) Exists(name string) bool {
 	var count int
-	var Firm Firm
-	p.DB().Where("id = ?", id).Find(&Firm).Count(&count)
+	firm := &Firm{}
+	p.DB().Where("name = ?", name).Find(firm).Count(&count)
 	return count > 0
 }
 
 // GetPayouts returns the Firm's history of going broke
 func (p *FirmPlayer) GetPayouts(name string) []Payout {
-	Firm := &Firm{}
+	firm, _ := p.GetByName(name)
 	payouts := make([]Payout, 0, 10)
-	p.DB().Model(Firm).Related(&payouts)
+	p.DB().Model(firm).Related(&payouts)
 	return payouts
 }
 
 // Update updates a value of an Firm object
 func (p *FirmPlayer) Update(value interface{}) error {
-	Firm := &Firm{}
-	return p.DB().Model(Firm).Save(value).Error
+	return p.DB().Save(value).Error
 }
 
 // DB returns the gorm DB model.

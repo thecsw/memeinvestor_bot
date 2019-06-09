@@ -19,7 +19,7 @@ func (BrokeHistory) TableName() string {
 type BrokeHistory struct {
 	gorm.Model
 
-	InvestorID int
+	InvestorID uint
 	Name       string
 	Balance    int64
 }

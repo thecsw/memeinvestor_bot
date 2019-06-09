@@ -16,6 +16,7 @@ func invest(r *mira.Reddit, comment mira.Comment) error {
 	investor.Balance -= 100
 	models.Investors.Update(&investor)
 	models.Investors.GoneBroke(author)
+	models.Investors.GrantBadge(author, `tester`)
 	arr := models.Investors.GetBrokeHistory(author)
 	fmt.Println(len(arr))
 	fmt.Println(arr)

@@ -18,8 +18,8 @@ func (Badge) TableName() string {
 type Badge struct {
 	gorm.Model
 
-	InvestorID int
-	FirmID     int
+	InvestorID uint
+	FirmID uint
 	Name       string
 	Title      string
 }
