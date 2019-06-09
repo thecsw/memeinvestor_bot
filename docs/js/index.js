@@ -229,11 +229,12 @@ let investmentsCalculator = (function() {
          amount: 'investment-amount'
       },
       output: 'investment-result', */
-      button: 'investment-calc'
+      button: 'investment-calc',
+      calc: 'calculator'
    }
    function init(){
-      let calcButton = document.getElementById(ids.button);
-      calcButton.addEventListener('click', e=> calc() );
+      for (var i of document.querySelectorAll('#calculator input'))
+         i.addEventListener('input', e => calc());
    }
    // formula functions are converted to JS from formula.py
    // the function names follow the paper on memes.market
