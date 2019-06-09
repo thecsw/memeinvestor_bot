@@ -5,7 +5,6 @@ import (
 	"./wrap"
 )
 
-
 func BalanceInvestor(params wrap.BalanceInvestorWrap) (int64, error) {
 	investor, err := models.Investors.GetUser(params.Name)
 	if err != nil {

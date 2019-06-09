@@ -8,7 +8,7 @@ import (
 
 func create(r *mira.Reddit, comment mira.Comment) error {
 	err := commands.CreateInvestor(wrap.CreateInvestorWrap{
-		Name: comment.GetAuthor(),
+		Name:   comment.GetAuthor(),
 		Source: "reddit",
 	})
 	if err != nil {

@@ -1,11 +1,11 @@
 package commands
 
 import (
+	"errors"
+
 	"../models"
 	"./wrap"
-	"errors"
 )
-
 
 func CreateInvestor(params wrap.CreateInvestorWrap) error {
 	if models.Investors.Exists(params.Name) {

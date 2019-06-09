@@ -12,7 +12,7 @@ func (Firm) TableName() string {
 	return "firms"
 }
 
-// Firm defines firms SQL table 
+// Firm defines firms SQL table
 // Name: string for firm name
 // Balance: int64 for amount of Memecoins (default 1000)
 // Size: int for amount of members in firm (default 0)
@@ -31,19 +31,19 @@ func (Firm) TableName() string {
 type Firm struct {
 	gorm.Model
 
-	Name      string `gorm:"not null;unique"`
-	Balance   int64  `gorm:"not null;default:1000"`
-	Size      int    `gorm:"not null;default:0"`
-	Ceo       string `gorm:"not null;default:''"`
-	Coo       string `gorm:"not null;default:''"`
-	Cfo       string `gorm:"not null;default:''"`
-	Execs     int    `gorm:"not null;default:0"`
-	Assocs    int    `gorm:"not null;default:0"`
-	Traders   int    `gorm:"not null;default:0"`
-	Tax       int    `gorm:"not null;default:15"`
-	Level     int    `gorm:"not null;default:1"`
-	Private   bool   `gorm:"not null;default:false"`
-	Created   int  `gorm:"not null;unix"`
-	Payouts   []Payout
-	Badges    []Badge
+	Name    string `gorm:"not null;unique"`
+	Balance int64  `gorm:"not null;default:1000"`
+	Size    int    `gorm:"not null;default:0"`
+	Ceo     string `gorm:"not null;default:''"`
+	Coo     string `gorm:"not null;default:''"`
+	Cfo     string `gorm:"not null;default:''"`
+	Execs   int    `gorm:"not null;default:0"`
+	Assocs  int    `gorm:"not null;default:0"`
+	Traders int    `gorm:"not null;default:0"`
+	Tax     int    `gorm:"not null;default:15"`
+	Level   int    `gorm:"not null;default:1"`
+	Private bool   `gorm:"not null;default:false"`
+	Created int    `gorm:"not null;unix"`
+	Payouts []Payout
+	Badges  []Badge
 }

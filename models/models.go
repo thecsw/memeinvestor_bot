@@ -3,7 +3,6 @@ package models
 import (
 	"sync"
 
-	"../utils"
 	"github.com/jinzhu/gorm"
 
 	// Register Postgres dialect
@@ -16,17 +15,11 @@ var (
 )
 
 // Initialize initializes the database
-func Initialize() {
+func Initialize(dbCreds string) {
 	var err error
 	once.Do(func() {
-		db, err = gorm.Open("postgres", utils.GetDB())
-		db.AutoMigrate(
-			&Investor{},
-			&BrokeHistory{},
-			&Badge{},
-			&Payout{},
-			&Firm{},
-		)
+		db, err = gorm.Open("postgres", dbCreds)
+		AutoMigrate(db)
 	})
 	if err != nil {
 		panic(err)
@@ -36,4 +29,14 @@ func Initialize() {
 // Close closes the database connection
 func Close() {
 	db.Close()
+}
+
+func AutoMigrate(temp *gorm.DB) {
+	temp.AutoMigrate(
+		&Investor{},
+		&BrokeHistory{},
+		&Badge{},
+		&Payout{},
+		&Firm{},
+	)
 }

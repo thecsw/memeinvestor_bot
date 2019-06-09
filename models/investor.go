@@ -12,7 +12,7 @@ func (Investor) TableName() string {
 	return "investors"
 }
 
-// Investor defines investors SQL table 
+// Investor defines investors SQL table
 // Name: string for Reddit username
 // Password: string for password field for external clients
 // Source: string for source of account ("reddit" or "client")
@@ -30,17 +30,17 @@ func (Investor) TableName() string {
 type Investor struct {
 	gorm.Model
 
-	Name      string `gorm:"not null;unique"`
-	Password  string `gorm:"not null;default:''"`
-	Source    string `gorm:"not null;default:''"`
-	Balance   int64  `gorm:"not null;default:1000"`
-	Networth  int64  `gorm:"not null;default:1000"`
-	Firm      int    `gorm:"not null;default:0"`
-	FirmRole  string `gorm:"not null;default:''"`
-	Banned    bool   `gorm:"not null;default:false"`
-	Admin     bool   `gorm:"not null;default:false"`
-	Verified  bool   `gorm:"not null;default:false"`
-	Email     string `gorm:"not null;default:''"`
-	Broke     []BrokeHistory
-	Badges    []Badge
+	Name     string `gorm:"not null;unique"`
+	Password string `gorm:"not null;default:''"`
+	Source   string `gorm:"not null;default:''"`
+	Balance  int64  `gorm:"not null;default:1000"`
+	Networth int64  `gorm:"not null;default:1000"`
+	Firm     int    `gorm:"not null;default:0"`
+	FirmRole string `gorm:"not null;default:''"`
+	Banned   bool   `gorm:"not null;default:false"`
+	Admin    bool   `gorm:"not null;default:false"`
+	Verified bool   `gorm:"not null;default:false"`
+	Email    string `gorm:"not null;default:''"`
+	Broke    []BrokeHistory
+	Badges   []Badge
 }

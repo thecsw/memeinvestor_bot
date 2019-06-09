@@ -16,3 +16,14 @@ services:
     restart: unless-stopped
     ports:
       - 5432:5432
+
+  testPostgres:
+    image: postgres:11.3-alpine
+    environment:
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=db
+      - POSTGRES_HOST=testPostgres
+      - POSTGRES_PORT=5432
+    ports:
+      - 9123:5432

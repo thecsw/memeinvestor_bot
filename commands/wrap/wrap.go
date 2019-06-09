@@ -2,12 +2,12 @@ package wrap
 
 // CreateInvestorWrap does.. something?
 type CreateInvestorWrap struct {
-	Name string
+	Name   string
 	Source string
 }
 
 // BalanceInvestorWrap does.. stuff
 type BalanceInvestorWrap struct {
-	Name string
+	Name   string
 	Source string
 }

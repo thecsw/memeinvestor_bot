@@ -14,12 +14,12 @@ func (Badge) TableName() string {
 
 // Badge defines badges SQL table
 // InvestorID: int for ID of investor in Investors
-// Name: 
+// Name:
 type Badge struct {
 	gorm.Model
 
 	InvestorID int
-	FirmID int
+	FirmID     int
 	Name       string
 	Title      string
 }

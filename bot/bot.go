@@ -8,11 +8,12 @@ import (
 	"time"
 
 	"../models"
+	"../utils"
 	"github.com/thecsw/mira"
 )
 
 func main() {
-	models.Initialize()
+	models.Initialize(utils.GetDB())
 	r, _ := mira.Init(mira.ReadCredsFromEnv())
 	fmt.Println("source | [time] | thing_id | author | submitter | request | time elapsed | status")
 	c, stop := r.StreamCommentReplies()
