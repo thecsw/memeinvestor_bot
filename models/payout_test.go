@@ -10,7 +10,7 @@ import (
 func TestPayout_TableName(t *testing.T) {
 	type fields struct {
 		Model        gorm.Model
-		FirmID       int
+		FirmID       uint
 		TraderSize   int64
 		TraderAmount int64
 		AssocSize    int64

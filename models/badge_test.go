@@ -10,8 +10,8 @@ import (
 func TestBadge_TableName(t *testing.T) {
 	type fields struct {
 		Model      gorm.Model
-		InvestorID int
-		FirmID     int
+		InvestorID uint
+		FirmID     uint
 		Name       string
 		Title      string
 	}

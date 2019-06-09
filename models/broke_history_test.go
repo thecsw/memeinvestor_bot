@@ -10,7 +10,7 @@ import (
 func TestBrokeHistory_TableName(t *testing.T) {
 	type fields struct {
 		Model      gorm.Model
-		InvestorID int
+		InvestorID uint
 		Name       string
 		Balance    int64
 	}
