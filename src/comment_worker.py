@@ -290,10 +290,12 @@ class CommentWorker():
         if new_balance < 0:
             return comment.reply_wrap(message.modify_insuff(investor.balance))
 
+        reveal_time = comment.submission.created_utc + 7200;
+
         # Sending a confirmation
         response = comment.reply_wrap(message.modify_invest(
             amount,
-            None if time.time() < comment.submission.created_utc + 7200 else comment.submission.ups,
+            None if time.time() < vote_reveal_time else comment.submission.ups,
             new_balance
         ))
 
@@ -304,6 +306,7 @@ class CommentWorker():
 
         sess.add(Investment(
             post=comment.submission,
+            reveal_time=int(reveal_time),
             upvotes=upvotes_now,
             comment=comment,
             name=author,

@@ -414,7 +414,7 @@ let investments = (function(){
          <tr>
             <td><a href="https://redd.it/${inv.post}">${inv.post}</a></td>
             <td><span class="grey-text">${time}<br>${date}</span></td>
-            <td>${formatToUnits(inv.amount)} M¢<br>${formatToUnits(inv.upvotes)} upvotes</td>
+            <td>${formatToUnits(inv.amount)} M¢<br>${inv.upvotes == null ? '???' : formatToUnits(inv.upvotes)} upvotes</td>
             <td>`
          if(inv.done){
             let color = inv.success? 'green-text' : 'red-text text-lighten-1'

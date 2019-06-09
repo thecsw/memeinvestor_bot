@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"time"
 
 	"../utils"
 	_ "github.com/go-sql-driver/mysql"
@@ -148,7 +149,7 @@ func InvestorInvestments() func(w http.ResponseWriter, r *http.Request) {
 		defer conn.Close()
 		// Making it networth
 		query := fmt.Sprintf(`
-SELECT id, post, upvotes, comment, 
+SELECT id, post, reveal_time, upvotes, comment, 
 name, amount, time, done, response, 
 COALESCE(final_upvotes, -1), success, profit, COALESCE(firm_tax, -1)
 FROM Investments 
@@ -163,10 +164,13 @@ LIMIT %d OFFSET %d`, name, from, to, per_page, per_page*page)
 		defer rows.Close()
 		wrapper := make([]investment, 0, per_page)
 		temp := investment{}
+		ctime := time.Now()
 		for rows.Next() {
+			var rtime int
 			err := rows.Scan(
 				&temp.Id,
 				&temp.Post,
+				&rtime,
 				&temp.Upvotes,
 				&temp.Comment,
 				&temp.Name,
@@ -182,6 +186,9 @@ LIMIT %d OFFSET %d`, name, from, to, per_page, per_page*page)
 			if err != nil {
 				log.Print(err)
 				return
+			}
+			if rtime != nil && rtime > ctime {
+				temp.Upvotes = nil
 			}
 			wrapper = append(wrapper, temp)
 		}
@@ -213,7 +220,7 @@ func InvestorInvestmentsActive() func(w http.ResponseWriter, r *http.Request) {
 		}
 		defer conn.Close()
 		query := fmt.Sprintf(`
-SELECT id, post, upvotes, comment, 
+SELECT id, post, reveal_time, upvotes, comment, 
 name, amount, time, done, response, 
 COALESCE(final_upvotes, -1), success, profit, COALESCE(firm_tax, -1)
 FROM Investments 
@@ -228,10 +235,13 @@ LIMIT %d OFFSET %d`, name, from, to, per_page, per_page*page)
 		defer rows.Close()
 		wrapper := make([]investment, 0, per_page)
 		temp := investment{}
+		ctime := time.Now()
 		for rows.Next() {
+			var rtime int
 			err := rows.Scan(
 				&temp.Id,
 				&temp.Post,
+				&rtime,
 				&temp.Upvotes,
 				&temp.Comment,
 				&temp.Name,
@@ -247,6 +257,9 @@ LIMIT %d OFFSET %d`, name, from, to, per_page, per_page*page)
 			if err != nil {
 				log.Print(err)
 				return
+			}
+			if rtime != nil && rtime > ctime {
+				temp.Upvotes = nil
 			}
 			wrapper = append(wrapper, temp)
 		}

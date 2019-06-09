@@ -36,6 +36,7 @@ class Investment(Base):
 
     id = Column(Integer, primary_key=True)
     post = Column(String(11), nullable=False)
+    reveal_time = Column(Integer, nullable=True)
     upvotes = Column(Integer, default=0)
     comment = Column(String(11), nullable=False, unique=True)
     name = Column(String(20), nullable=False, index=True)
