@@ -22,7 +22,6 @@ func TestFirm_TableName(t *testing.T) {
 		Tax     int
 		Level   int
 		Private bool
-		Created int
 		Payouts []Payout
 		Badges  []Badge
 	}
@@ -49,7 +48,6 @@ func TestFirm_TableName(t *testing.T) {
 				Tax:     tt.fields.Tax,
 				Level:   tt.fields.Level,
 				Private: tt.fields.Private,
-				Created: tt.fields.Created,
 				Payouts: tt.fields.Payouts,
 				Badges:  tt.fields.Badges,
 			}
