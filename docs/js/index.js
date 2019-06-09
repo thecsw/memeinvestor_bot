@@ -298,7 +298,7 @@ let investmentsCalculator = (function() {
          //replaces the spinning loader with the calculated result
          document.getElementById('investment-result').innerText = output;
       }else{
-         document.getElementById('investment-result').innerText = amount < 100 ? 'can\'t invest that little' : 'invalid data';
+         document.getElementById('investment-result').innerText = amount < 100 ? 'invest at least 100 M¢' : 'fill all boxes';
       }
    }
    return {
