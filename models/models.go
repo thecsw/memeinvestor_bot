@@ -24,6 +24,8 @@ func Initialize() {
 			&Investor{},
 			&BrokeHistory{},
 			&Badge{},
+			&Payout{},
+			&Firm{},
 		)
 	})
 	if err != nil {

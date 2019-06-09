@@ -41,7 +41,6 @@ type Investor struct {
 	Admin     bool   `gorm:"not null;default:false"`
 	Verified  bool   `gorm:"not null;default:false"`
 	Email     string `gorm:"not null;default:''"`
-	Created   int  `gorm:"not null;unix"`
 	Broke     []BrokeHistory
 	Badges    []Badge
 }
