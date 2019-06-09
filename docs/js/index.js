@@ -298,12 +298,7 @@ let investmentsCalculator = (function() {
          //replaces the spinning loader with the calculated result
          document.getElementById('investment-result').innerText = output;
       }else{
-         document.getElementById('investment-result').innerText = 'invalid data';
-         let toastHTML = 'you have to fill all the fields with a valid number'
-         if(amount<100){
-            toastHTML = 'you can\'t invest less than 100 M¢'
-         }
-         M.toast({html: toastHTML,displayLength:2000, classes:"dark-toast"}); 
+         document.getElementById('investment-result').innerText = amount < 100 ? 'can\'t invest that little' : 'invalid data';
       }
    }
    return {
