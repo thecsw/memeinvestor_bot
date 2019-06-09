@@ -34,7 +34,7 @@ type investment struct {
 func Investments() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		from, to := utils.GetTimeframes(r.RequestURI)
-		page, per_page := utils.GetPagination(r.RequestURI)
+		page, perPage := utils.GetPagination(r.RequestURI)
 		conn, err := sql.Open("mysql", utils.GetDB())
 		defer conn.Close()
 		if err != nil {
@@ -48,7 +48,7 @@ name, amount, time, done, response,
 COALESCE(final_upvotes, -1), success, profit, COALESCE(firm_tax, -1)
 FROM Investments WHERE time > %d AND time < %d
 ORDER BY time DESC 
-LIMIT %d OFFSET %d;`, from, to, per_page, per_page*page)
+LIMIT %d OFFSET %d;`, from, to, perPage, perPage*page)
 		rows, err := conn.Query(query)
 		if err != nil {
 			log.Print(err)
@@ -56,11 +56,11 @@ LIMIT %d OFFSET %d;`, from, to, per_page, per_page*page)
 			return
 		}
 		defer rows.Close()
-		wrapper := make([]investment, 0, per_page)
+		wrapper := make([]investment, 0, perPage)
 		temp := investment{}
 		for rows.Next() {
 			err := rows.Scan(
-				&temp.Id,
+				&temp.ID,
 				&temp.Post,
 				&temp.Upvotes,
 				&temp.Comment,
@@ -69,10 +69,10 @@ LIMIT %d OFFSET %d;`, from, to, per_page, per_page*page)
 				&temp.Time,
 				&temp.Done,
 				&temp.Response,
-				&temp.Final_upvotes,
+				&temp.FinalUpvotes,
 				&temp.Success,
 				&temp.Profit,
-				&temp.Firm_tax,
+				&temp.FirmTax,
 			)
 			if err != nil {
 				log.Print(err)
@@ -203,7 +203,7 @@ func InvestmentsPost() func(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		from, to := utils.GetTimeframes(r.RequestURI)
-		page, per_page := utils.GetPagination(r.RequestURI)
+		page, perPage := utils.GetPagination(r.RequestURI)
 		conn, err := sql.Open("mysql", utils.GetDB())
 		if err != nil {
 			log.Print(err)
@@ -218,7 +218,7 @@ COALESCE(final_upvotes, -1), success, profit, COALESCE(firm_tax, -1)
 FROM Investments 
 WHERE time > %d AND time < %d AND post = '%s' 
 ORDER BY time DESC 
-LIMIT %d OFFSET %d;`, from, to, post, per_page, per_page*page)
+LIMIT %d OFFSET %d;`, from, to, post, perPage, perPage*page)
 		rows, err := conn.Query(query)
 		if err != nil {
 			log.Print(err)
@@ -226,11 +226,11 @@ LIMIT %d OFFSET %d;`, from, to, post, per_page, per_page*page)
 			return
 		}
 		defer rows.Close()
-		wrapper := make([]investment, 0, per_page)
+		wrapper := make([]investment, 0, perPage)
 		temp := investment{}
 		for rows.Next() {
 			err := rows.Scan(
-				&temp.Id,
+				&temp.ID,
 				&temp.Post,
 				&temp.Upvotes,
 				&temp.Comment,
@@ -239,10 +239,10 @@ LIMIT %d OFFSET %d;`, from, to, post, per_page, per_page*page)
 				&temp.Time,
 				&temp.Done,
 				&temp.Response,
-				&temp.Final_upvotes,
+				&temp.FinalUpvotes,
 				&temp.Success,
 				&temp.Profit,
-				&temp.Firm_tax,
+				&temp.FirmTax,
 			)
 			if err != nil {
 				log.Print(err)
