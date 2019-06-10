@@ -401,8 +401,8 @@ let investments = (function(){
         <tr>
             <th>post</th>
             <th>date</th>
-            <th>in</th>
-            <th>result</th>
+            <th class="invest-values">in</th>
+            <th class="invest-values">result</th>
         </tr>
       </thead>
       <tbody>
@@ -415,12 +415,12 @@ let investments = (function(){
          <tr>
             <td><a href="https://redd.it/${inv.post}">${inv.post}</a></td>
             <td><span class="grey-text">${time}<br>${date}</span></td>
-            <td>
+            <td class="invest-values">
                 <span title="${commafy(inv.amount)} MemeCoins">${formatToUnits(inv.amount)} M&cent;</span>
                 <br>
                 <span title="${commafy(inv.upvotes)} upvotes">${formatToUnits(inv.upvotes)} &uarr;</span>
             </td>
-            <td>`
+            <td class="invest-values">`
          if(inv.done){
             let color = inv.success? 'green-text' : 'red-text text-lighten-1'
             let sign = inv.success? '<i class="material-icons">arrow_drop_up</i>' : '<i class="material-icons">arrow_drop_down</i>'
