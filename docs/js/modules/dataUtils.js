@@ -5,14 +5,13 @@ export function formatToUnits(val) {
 
 export function getSuffix(val){
    let number = parseInt(val);
-   let abbrev = ['', 'K', 'M', 'B', 'T', 'q', 'Q', 's', 'S'];
+   let abbrev = ['', 'k', 'M', 'B', 'T', 'q', 'Q', 's', 'S'];
    let unrangifiedOrder = Math.floor(Math.log10(Math.abs(number)) / 3);
-   let order = Math.max(0, Math.min(unrangifiedOrder, abbrev.length -1 ));
-   let suffix = abbrev[order];
-   let precision = suffix ? 1 : 0;
+   let order = Math.max(0, Math.min(unrangifiedOrder, abbrev.length - 1));
+   let toDisplay = number / Math.pow(10, order * 3);
    return {
-      val: (number / Math.pow(10, order * 3)).toFixed(precision),
-      suffix: suffix
+      val: unrangifiedOrder > 0 && unrangifiedOrder < abbrev.length ? toDisplay.toPrecision(3) : toDisplay.toFixed(0),
+      suffix: abbrev[order]
    }  
 }
 
