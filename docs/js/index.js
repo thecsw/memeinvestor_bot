@@ -1,6 +1,6 @@
 import {connectionErrorToast} from './modules/uiElements.js';
 import * as jsonApi from './modules/jsonApi.js';
-import {formatToUnits, iterateDays} from './modules/dataUtils.js';
+import {formatToUnits, commafy, iterateDays} from './modules/dataUtils.js';
 import {Scheduler} from './modules/scheduler.js';
 
 let ticker = (function(){
@@ -210,7 +210,7 @@ let leaderboard = (function(){
              //broke badge
              let badge = top[i].broke>0? '<span class="red bankrupt-badge white-text">'+top[i].broke+'</span>':"";
              html += '<tr><td><a href="./user.html?account='+top[i].name+'">'+top[i].name+"</a>"+badge+"</td>"+
-                         "<td>"+formatToUnits(top[i].networth)+"</td>"+
+                         '<td title="'+commafy(top[i].networth)+' M&cent;">'+formatToUnits(top[i].networth)+"</td>"+
                          "<td>"+top[i].completed+"</td></tr>"
           }
       tb.innerHTML = html
