@@ -10,6 +10,7 @@ WORKDIR /home/appuser
 RUN go get -u github.com/jinzhu/gorm
 RUN go get github.com/lib/pq
 RUN go get github.com/thecsw/mira
+RUN go get github.com/dustin/go-humanize
 
 COPY . .
 
