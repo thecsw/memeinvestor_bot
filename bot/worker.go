@@ -28,6 +28,9 @@ func worker(r *mira.Reddit, comment mira.Comment) {
 	case utils.RegMatch(`!create`, body):
 		process(start, comment, create(r, comment))
 		break
+	case utils.RegMatch(`!top`, body):
+		process(start, comment, top(r, comment))
+		break
 	case !models.Investors.Exists(author):
 		process(start, comment, errors.New(ErrNoAccount))
 		r.Reply(commentId, NeedAccount)
