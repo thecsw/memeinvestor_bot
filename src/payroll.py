@@ -56,7 +56,11 @@ def main():
 
             # 30% paid to board members (CEO, COO, CFO) (30% of total payroll)
             board_total = payout_amount * 0.3
-            board_members = 3
+            board_members = 1
+            if firm.coo != "" or firm.coo != "0":
+                board_members += 1
+            if firm.cfo != "" or firm.cfo != "0":
+                board_members += 1
             board_amount = int(board_total / board_members)
 
             remaining_amount = payout_amount - board_total
