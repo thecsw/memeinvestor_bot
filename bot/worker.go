@@ -41,6 +41,9 @@ func worker(r *mira.Reddit, comment mira.Comment) {
 	case utils.RegMatch(`!invest`, body):
 		process(start, comment, invest(r, comment))
 		break
+	case utils.RegMatch(`!summary`, body):
+		process(start, comment, summary(r, comment))
+		break
 	}
 }
 
