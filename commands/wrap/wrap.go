@@ -11,3 +11,8 @@ type BalanceInvestorWrap struct {
 	Name   string
 	Source string
 }
+
+type CreateFirmWrap struct{
+	Name    string
+	Creator string
+}

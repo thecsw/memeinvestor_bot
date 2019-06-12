@@ -25,7 +25,7 @@ func worker(r *mira.Reddit, comment mira.Comment) {
 	case utils.RegMatch(`!template (.+)`, body):
 		process(start, comment, template(r, comment))
 		break
-	case utils.RegMatch(`!create`, body):
+	case utils.RegMatch(`!create`, body) && !utils.RegMatch(`!createfirm (.+)`, body):
 		process(start, comment, create(r, comment))
 		break
 	case utils.RegMatch(`!top`, body):
@@ -44,6 +44,8 @@ func worker(r *mira.Reddit, comment mira.Comment) {
 	case utils.RegMatch(`!summary`, body):
 		process(start, comment, summary(r, comment))
 		break
+	case utils.RegMatch(`!createfirm (.+)`, body):
+		process(start, comment, createfirm(r, comment))
 	}
 }
 
