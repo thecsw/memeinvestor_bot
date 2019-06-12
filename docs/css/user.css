@@ -141,6 +141,10 @@ td span .material-icons{
     vertical-align: top;
 }
 
+.invest-values {
+  text-align: right;
+}
+
 /* --[graph row]-- */
 .custom-select{
   width:200px;
