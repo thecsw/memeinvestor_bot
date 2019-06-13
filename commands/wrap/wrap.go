@@ -16,3 +16,12 @@ type CreateFirmWrap struct{
 	Name    string
 	Creator string
 }
+
+type LeaveFirmWrap struct{
+	Name string
+}
+
+type LeaveFirmReturnWrap struct{
+	FirmName   string
+	NewCeoName string
+}

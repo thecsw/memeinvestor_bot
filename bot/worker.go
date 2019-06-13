@@ -46,6 +46,10 @@ func worker(r *mira.Reddit, comment mira.Comment) {
 		break
 	case utils.RegMatch(`!createfirm (.+)`, body):
 		process(start, comment, createfirm(r, comment))
+		break
+	case utils.RegMatch(`!leavefirm`, body):
+		process(start, comment, leavefirm(r, comment))
+		break
 	}
 }
 

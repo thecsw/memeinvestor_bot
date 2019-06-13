@@ -52,6 +52,11 @@ func (p *FirmPlayer) GetPayouts(name string) []Payout {
 	return payouts
 }
 
+// Disbands the firm
+func (p *FirmPlayer) Disband(id int) error{
+	return p.DB().Where("id = ?", id).Delete(&Firm{}).Error
+}
+
 // Update updates a value of an Firm object
 func (p *FirmPlayer) Update(value interface{}) error {
 	return p.DB().Save(value).Error
