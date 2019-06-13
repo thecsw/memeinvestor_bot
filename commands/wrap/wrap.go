@@ -25,3 +25,8 @@ type LeaveFirmReturnWrap struct{
 	FirmName   string
 	NewCeoName string
 }
+
+type JoinFirmWrap struct{
+	Name     string
+	FirmName string
+}
