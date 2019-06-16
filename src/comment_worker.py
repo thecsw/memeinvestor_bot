@@ -722,7 +722,7 @@ class CommentWorker():
                 return comment.reply_wrap(message.not_ceo_org)
 
             # If the firm already has a CFO, the user will be demoted to Executive
-            if firm.cfo is not None:
+            if firm.cfo != '':
                 max_execs = max_execs_for_rank(firm.rank)
                 if firm.execs >= max_execs:
                     return comment.reply_wrap(message.modify_demote_execs_full(firm))
