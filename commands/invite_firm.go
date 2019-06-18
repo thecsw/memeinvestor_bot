@@ -12,6 +12,7 @@ const (
 	AlreadyInvited = "User already invited"
 	InFirm         = "User already in firm"
 	UserNotFound   = "User not found"
+	FirmNotPrivate = "Firm not private"
 )
 
 func InviteFirm(params wrap.InviteFirmWrap) (wrap.InviteFirmReturnWrap, error) {
@@ -34,6 +35,11 @@ func InviteFirm(params wrap.InviteFirmWrap) (wrap.InviteFirmReturnWrap, error) {
 	// Check that target isn't already in the firm
 	if target.Firm == int(firm.Model.ID) {
 		return wrap.InviteFirmReturnWrap{}, errors.New(InFirm)
+	}
+
+	// Check that firm isn't public
+	if !firm.Private {
+		return wrap.InviteFirmReturnWrap{}, errors.New(FirmNotPrivate)
 	}
 
 	// Check that target isnt already invited
