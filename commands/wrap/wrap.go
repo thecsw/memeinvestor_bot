@@ -30,3 +30,13 @@ type JoinFirmWrap struct{
 	Name     string
 	FirmName string
 }
+
+type InviteFirmWrap struct{
+	Name   string
+	Target string
+}
+
+type InviteFirmReturnWrap struct{
+	Name     string
+	FirmName string
+}

@@ -53,7 +53,7 @@ func (p *FirmPlayer) GetPayouts(name string) []Payout {
 }
 
 // Disbands the firm
-func (p *FirmPlayer) Disband(id int) error{
+func (p *FirmPlayer) Disband(id int) error {
 	return p.DB().Where("id = ?", id).Delete(&Firm{}).Error
 }
 

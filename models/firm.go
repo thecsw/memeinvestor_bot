@@ -26,6 +26,7 @@ func (Firm) TableName() string {
 // Level: int for firm upgrade level that CEO has upgraded to (default 1)
 // Private: bool for whether firm is private (true, false)
 // Created: int for UNIX timestamp of creation
+// Invites: []FirmInvites to store all invited users
 // Payouts: []Payout for history of investor payouts ([InvestorID, Name, Balance])
 // Badges: []Badge for badges list ([InvestorID, Name, Title])
 type Firm struct {

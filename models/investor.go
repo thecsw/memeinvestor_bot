@@ -25,24 +25,22 @@ func (Investor) TableName() string {
 // Verified: bool for e-mail verification (true, false)
 // Email: string for e-mail
 // Created: int for UNIX timestamp of creation
-// FirmInvites: []int for IDs of all firms this user is invited to join
 // Broke: []BrokeHistory for history of going broke ([InvestorID, Name, Balance])
 // Badges: []Badge for badges list (Traders, Assocs, Execs, BoardMems)
 type Investor struct {
 	gorm.Model
 
-	Name        string `gorm:"not null;unique"`
-	Password    string `gorm:"not null;default:''"`
-	Source      string `gorm:"not null;default:''"`
-	Balance     int64  `gorm:"not null;default:1000"`
-	Networth    int64  `gorm:"not null;default:1000"`
-	Firm        int    `gorm:"not null;default:0"`
-	FirmRole    string `gorm:"not null;default:''"`
-	Banned      bool   `gorm:"not null;default:false"`
-	Admin       bool   `gorm:"not null;default:false"`
-	Verified    bool   `gorm:"not null;default:false"`
-	Email       string `gorm:"not null;default:''"`
-	FirmInvites []int
-	Broke       []BrokeHistory
-	Badges      []Badge
+	Name     string `gorm:"not null;unique"`
+	Password string `gorm:"not null;default:''"`
+	Source   string `gorm:"not null;default:''"`
+	Balance  int64  `gorm:"not null;default:1000"`
+	Networth int64  `gorm:"not null;default:1000"`
+	Firm     int    `gorm:"not null;default:0"`
+	FirmRole string `gorm:"not null;default:''"`
+	Banned   bool   `gorm:"not null;default:false"`
+	Admin    bool   `gorm:"not null;default:false"`
+	Verified bool   `gorm:"not null;default:false"`
+	Email    string `gorm:"not null;default:''"`
+	Broke    []BrokeHistory
+	Badges   []Badge
 }

@@ -38,5 +38,6 @@ func AutoMigrate(temp *gorm.DB) {
 		&Badge{},
 		&Payout{},
 		&Firm{},
+		&FirmInvite{},
 	)
 }
