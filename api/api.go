@@ -45,8 +45,8 @@ func main() {
 	r.HandleFunc("/investors/last24", investors.InvestorsLast24()).Methods("GET")
 	r.HandleFunc("/firms/top", firms.FirmsTop()).Methods("GET")
 	r.HandleFunc("/firm/{id}", firm.Firm()).Methods("GET")
-	r.HandleFunc("/firm/{id}/members", firm.FirmMembers()).Methods("GET")
-	r.HandleFunc("/firm/{id}/members/top", firm.FirmMembersTop()).Methods("GET")
+	r.HandleFunc("/firm/{id}/members", firm.Members()).Methods("GET")
+	r.HandleFunc("/firm/{id}/members/top", firm.MembersTop()).Methods("GET")
 	srv := &http.Server{
 		Handler: r,
 		Addr:    ":5000",
