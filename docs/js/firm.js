@@ -114,13 +114,15 @@ let overview = (function(){
    let counters = {
       firmBalance: undefined,
       firmRank: undefined,
-      firmSize: undefined
+      firmSize: undefined,
+      firmTax: undefined
    }
    function init(data){
       counters = {
          firmBalance: new CountUp("firm-balance", 0, 0),
          firmRank: new CountUp("firm-rank",0,0),
-         firmSize: new CountUp("firm-size",0,0)
+         firmSize: new CountUp("firm-size", 0, 0),
+         firmTax: new CountUp("firm-tax", 0, 0)
       }
       if(data)update(data);
    }
@@ -128,6 +130,7 @@ let overview = (function(){
       counters.firmBalance.update(data.balance)
       counters.firmRank.update(data.rank)
       counters.firmSize.update(data.size)
+      counters.firmTax.update(data.tax)
    }
    return {
       init:init,

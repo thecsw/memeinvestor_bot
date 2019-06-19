@@ -54,6 +54,7 @@ let leaderboard = (function() {
                      <td title="${commafy(firm.balance)} M&cent;">${formatToUnits(firm.balance)}</td>
                      <td>${firm.rank}</td>
                      <td>${firm.size}</td>
+                     <td>${firm.tax}%</td>
                   </tr>`
       }
       document.getElementById(ids.table).innerHTML = html  
