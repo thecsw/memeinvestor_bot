@@ -5,7 +5,7 @@ import {seasons} from "../resources/leaderboards/seasons.js"
 
 const getLeaderboard = (function() {
 	function init() {
-		jsonApi.get("/firms/top?per_page=100")
+		jsonApi.get("/firms/top?per_page=50")
 			.then(d => leaderboard.update(d))
 			.catch(connectionErrorToast)
 	}
