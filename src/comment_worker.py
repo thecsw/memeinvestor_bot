@@ -605,11 +605,11 @@ class CommentWorker():
 
                 user.firm_role = "coo"
                 firm.execs -= 1
-                firm.coo = investor.name
+                firm.coo = user.name
             else:
                 user.firm_role = "cfo"
                 firm.execs -= 1
-                firm.cfo = investor.name
+                firm.cfo = user.name
 
         elif user_role == "cfo":
             if investor.firm_role != "ceo":
@@ -620,7 +620,7 @@ class CommentWorker():
 
             user.firm_role = "coo"
             firm.cfo = ''
-            firm.coo = investor.name
+            firm.coo = user.name
 
         elif user_role == "coo":
             if investor.firm_role != "ceo":
@@ -728,12 +728,12 @@ class CommentWorker():
                     return comment.reply_wrap(message.modify_demote_execs_full(firm))
 
                 user.firm_role = "exec"
-                firm.cfo = ''
+                firm.coo = ''
                 firm.execs += 1
             else:
                 user.firm_role = "cfo"
                 firm.coo = ''
-                firm.cfo = investor.name
+                firm.cfo = user.name
 
         # Updating the flair in subreddits
         flair_role_user = ''
