@@ -268,14 +268,15 @@ class CommentWorker():
         if config.PREVENT_INSIDERS:
             if comment.submission.author.name == comment.author.name:
                 return comment.reply_wrap(message.INSIDE_TRADING_ORG)
+        multiplier = CommentWorker.multipliers.get(suffix, 1)
 
         # Allows input such as '!invest 100%' and '!invest 50%'
-        if suffix == '%':
-            amount = int((investor.balance / 100) * int(amount))
+        if multiplier == '%':
+            amount = int(investor.balance * (int(amount)/100))
         else:
             try:
-                amount = float(amount.replace(',', ''))
-                amount = int(amount * CommentWorker.multipliers.get(suffix, 1))
+                amount = int(amount.replace(',', ''))
+                amount = amount * multiplier
             except ValueError:
                 return
 
