@@ -26,7 +26,7 @@ export function commafy(val) {
    } else {
       // switch to scientific notation
       let magnitude = Math.floor(Math.log10(Math.abs(val)));
-      return val / Math.pow(10, magnitude) + '&times;10' + magnitude.replace(/./g, m => '&' + ['#8304', 'sup1', 'sup2', 'sup3', '#8308', '#8309', '#8310', '#8311', '#8312', '#8313'][m] + ';');
+      return val / Math.pow(10, magnitude) + '&times;10' + String(magnitude).replace(/./g, m => '&' + ['#8304', 'sup1', 'sup2', 'sup3', '#8308', '#8309', '#8310', '#8311', '#8312', '#8313'][m] + ';');
    }
 }
 
