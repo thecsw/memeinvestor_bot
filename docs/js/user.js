@@ -262,7 +262,6 @@ let investments = (function(){
       document.getElementById(ids.clearFilters).addEventListener('click',clearFilters);
       document.getElementById(ids.page.previous).addEventListener('click',previous);
       document.getElementById(ids.page.next).addEventListener('click',next);
-      setInterval(60000, updateTable);
    }
    //initialize the table for a specific user
    function setUser(userName,amount){
