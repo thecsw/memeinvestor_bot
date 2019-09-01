@@ -60,6 +60,7 @@ _Example:_
 ## 3. Investments
 
 **NOTE:** All `/investments` handlers support request variables listed above.
+ **NOTE:** 'firm_tax' equals 0 when the user isn't in a firm or when the investment isn't done yet.
 
  - `/investments`
  
@@ -82,7 +83,8 @@ _Example:_
    "response": "eivt9wu",
    "final_upvotes": -1,
    "success": false,
-   "profit": 0
+   "profit": 0,
+   "firm_tax": 0
   }
  ]
  ```
@@ -132,17 +134,18 @@ All investments invested in the specified post. The post string is sanitized wit
  
  [
   {
-   "id":"1",
-   "post":"aibu3z",
-   "upvotes":3,
-   "comment":"eemjre5",
-   "name":"Noerdy",
-   "amount":100,
-   "time":1548089163,
-   "done":true,
-   "response":"eemjs3d",
-   "final_upvotes":9,
-   "profit":-94
+   "id": "1",
+   "post": "aibu3z",
+   "upvotes": 3,
+   "comment": "eemjre5",
+   "name": "Noerdy",
+   "amount": 100,
+   "time": 1548089163,
+   "done": true,
+   "response": "eemjs3d",
+   "final_upvotes": 9,
+   "profit": -94,
+   "firm_tax": 15
   }
  ]
  ```
@@ -167,7 +170,8 @@ All investments invested in the specified post. The post string is sanitized wit
   ],
   "firm": 0,
   "firm_role": "",
-  "networth": 11000
+  "networth": 11000,
+  "rank": 1
  }
  ```
 
@@ -180,18 +184,19 @@ $ curl 'https://meme.market/api/investor/mappum/investments?per_page=1&page=0'
 
 [
  {
-  "id":"912",
-  "post":"aio25g",
-  "upvotes":308,
-  "comment":"eephr20",
-  "name":"mappum",
-  "amount":1000,
-  "time":1548181211,
-  "done":true,
-  "response":"eephrsx",
-  "final_upvotes":10137,
-  "success":true,
-  "profit":25
+  "id": "912",
+  "post": "aio25g",
+  "upvotes": 308,
+  "comment": "eephr20",
+  "name": "mappum",
+  "amount": 1000,
+  "time": 1548181211,
+  "done": true,
+  "response": "eephrsx",
+  "final_upvotes": 10137,
+  "success": true,
+  "profit": 25,
+  "firm_tax": 0
  }
 ]
 ```
@@ -201,24 +206,29 @@ $ curl 'https://meme.market/api/investor/mappum/investments?per_page=1&page=0'
 Returns an array of active investments made by that user. Request variables are supported.
 
 ``` bash
-$ curl 'https://meme.market/api/investor/DyspraxicRob/active?per_page=1&page=0'
+$ curl 'https://meme.market/api/investor/Keanu73/active?per_page=1&page=0'
 
 [
- {
-  "id":"116818",
-  "post":"b0770b",
-  "upvotes":13308,
-  "comment":"eie1a84",
-  "name":"DyspraxicRob",
-  "amount":5000,
-  "time":1552432030,
-  "response":"eie1anw",
-  "final_upvotes":-1
- }
+    {
+     "id": 284742,
+     "post": "btibwv",
+     "upvotes": 9,
+     "comment": "eoy9nzm",
+     "name": "Keanu73",
+     "amount": 292230346394,
+     "time": 1558936744,
+     "done": false,
+     "response": "eoy9obp",
+     "final_upvotes": -1,
+     "success": false,
+     "profit": 0,
+     "firm_tax": -1
+    }
 ]
 ```
 
 **NOTE:** final_upvotes is -1 because the entry does not exist and all `NULL` values in the table are replaced with -1
+**ANOTHER NOTE:** firm_tax is -1 as the firm tax is only taken into account once the investment is complete. (if user isn't in firm, will return 0)
 
 ## 5. Investors
 
@@ -356,6 +366,10 @@ $ curl 'https://meme.market/api/firm/10'
  "balance": 387820,
  "size": 10,
  "execs": 3,
+ "assocs": 0,
+ "cfo": Null,
+ "coo": Null,
+ "ceo": "London_Dry",
  "tax": 10,
  "rank": 1,
  "private": false,

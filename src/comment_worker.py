@@ -104,6 +104,7 @@ class CommentWorker():
     websites = [
         "imgur.com",
         "i.imgur.com",
+        "m.imgur.com",
         "reddit.com",
         "i.reddit.com",
         "v.reddit.com",
@@ -126,14 +127,14 @@ class CommentWorker():
         r"!grant\s+(\S+)\s+(\S+)",
         r"!template\s+(%s)" % "|".join(template_sources),
         r"!firm\s*(.+)?",
-        r"!createfirm\s+(.+)",
-        r"!joinfirm\s+(.+)",
+        r"!createfirm\s+'?([^']+)'?",
+        r"!joinfirm\s+'?([^']+)'?",
         r"!leavefirm",
         r"!promote\s+(.+)",
         r"!demote\s+(.+)",
         r"!fire\s+(.+)",
         r"!upgrade",
-        r"!invite\s+(.+)",
+        r"!invite\s+([a-zA-Z0-9_-]+)",
         r"!setprivate",
         r"!setpublic",
         r"!tax\s+(\d+)"
@@ -267,14 +268,15 @@ class CommentWorker():
         if config.PREVENT_INSIDERS:
             if comment.submission.author.name == comment.author.name:
                 return comment.reply_wrap(message.INSIDE_TRADING_ORG)
+        multiplier = CommentWorker.multipliers.get(suffix, 1)
 
         # Allows input such as '!invest 100%' and '!invest 50%'
-        if suffix == '%':
-            amount = int((investor.balance / 100) * int(amount))
+        if multiplier == '%':
+            amount = int(investor.balance * (int(amount)/100))
         else:
             try:
-                amount = float(amount.replace(',', ''))
-                amount = int(amount * CommentWorker.multipliers.get(suffix, 1))
+                amount = int(amount.replace(',', ''))
+                amount = amount * multiplier
             except ValueError:
                 return
 
@@ -431,37 +433,6 @@ class CommentWorker():
             if firm is None:
                 return comment.reply_wrap(message.firm_notfound_org)
 
-        ceo = "/u/" + sess.query(Investor).\
-            filter(Investor.firm == firm.id).\
-            filter(Investor.firm_role == "ceo").\
-            first().\
-            name
-        coo = concat_names(
-            sess.query(Investor).\
-                filter(Investor.firm == firm.id).\
-                filter(Investor.firm_role == "coo").\
-                all())
-        cfo = concat_names(
-            sess.query(Investor).\
-                filter(Investor.firm == firm.id).\
-                filter(Investor.firm_role == "cfo").\
-                all())
-        execs = concat_names(
-            sess.query(Investor).\
-                filter(Investor.firm == firm.id).\
-                filter(Investor.firm_role == "exec").\
-                all())
-        assocs = concat_names(
-            sess.query(Investor).\
-                filter(Investor.firm == firm.id).\
-                filter(Investor.firm_role == "assoc").\
-                all())
-        traders = concat_names(
-            sess.query(Investor).\
-                filter(Investor.firm == firm.id).\
-                filter(Investor.firm_role == "").\
-                all())
-
         # Sometimes flairs can get broken, !firm should reinitiate
         # the flair on the user
         # Updating the flair in subreddits
@@ -498,23 +469,12 @@ class CommentWorker():
             return comment.reply_wrap(
                 message.modify_firm_self(
                     investor.firm_role,
-                    firm,
-                    ceo,
-                    coo,
-                    cfo,
-                    execs,
-                    assocs,
-                    traders))
-        else:
-            return comment.reply_wrap(
-                message.modify_firm_other(
-                    firm,
-                    ceo,
-                    coo,
-                    cfo,
-                    execs,
-                    assocs,
-                    traders))
+                    firm))
+
+        # Otherwise
+        return comment.reply_wrap(
+            message.modify_firm_other(
+                firm))
 
     @req_user
     def createfirm(self, sess, comment, investor, firm_name):
@@ -550,6 +510,7 @@ class CommentWorker():
         investor.balance -= 100000
         investor.firm = firm.id
         investor.firm_role = "ceo"
+        firm.ceo = investor.name
         firm.size += 1
 
         # Setting up the flair in subreddits
@@ -577,9 +538,9 @@ class CommentWorker():
 
         firm.size -= 1
         if investor.firm_role == 'coo':
-            firm.coo -= 1
+            firm.coo = ''
         elif investor.firm_role == 'cfo':
-            firm.cfo -= 1
+            firm.cfo = ''
         elif investor.firm_role == 'exec':
             firm.execs -= 1
         elif investor.firm_role == 'assoc':
@@ -639,28 +600,28 @@ class CommentWorker():
                 return comment.reply_wrap(message.not_ceo_org)
 
             # If the firm already has a CFO, the user will be promoted to COO
-            if firm.cfo >= 1:
-                if firm.coo >= 1:
+            if firm.cfo != '' and firm.cfo != 0:
+                if firm.coo != '' and firm.coo != 0:
                     return comment.reply_wrap(message.promote_coo_full_org)
 
                 user.firm_role = "coo"
                 firm.execs -= 1
-                firm.coo += 1
+                firm.coo = user.name
             else:
                 user.firm_role = "cfo"
                 firm.execs -= 1
-                firm.cfo += 1
+                firm.cfo = user.name
 
         elif user_role == "cfo":
             if investor.firm_role != "ceo":
                 return comment.reply_wrap(message.not_ceo_org)
 
-            if firm.coo >= 1:
+            if firm.coo != '' and firm.coo != 0:
                 return comment.reply_wrap(message.promote_coo_full_org)
 
             user.firm_role = "coo"
-            firm.cfo -= 1
-            firm.coo += 1
+            firm.cfo = ''
+            firm.coo = user.name
 
         elif user_role == "coo":
             if investor.firm_role != "ceo":
@@ -668,7 +629,9 @@ class CommentWorker():
 
             # Swapping roles
             investor.firm_role = "coo"
+            firm.coo = investor.name
             user.firm_role = "ceo"
+            firm.ceo = user.name
 
         # Updating the flair in subreddits
         flair_role_user = ''
@@ -723,7 +686,7 @@ class CommentWorker():
         # If user is already at the lowest rank, they cannot be demoted
         if user_role == "":
             return comment.reply_wrap(message.demote_failure_trader_org)
-        
+
         if user_role == "assoc":
             if (investor.firm_role == "") or (investor.firm_role == "assoc"):
                 return comment.reply_wrap(message.not_ceo_or_exec_org)
@@ -752,7 +715,7 @@ class CommentWorker():
                 return comment.reply_wrap(message.modify_demote_execs_full(firm))
 
             user.firm_role = "exec"
-            firm.cfo -= 1
+            firm.cfo = ''
             firm.execs += 1
 
         if user.firm_role == "coo":
@@ -760,18 +723,18 @@ class CommentWorker():
                 return comment.reply_wrap(message.not_ceo_org)
 
             # If the firm already has a CFO, the user will be demoted to Executive
-            if firm.cfo >= 1:
+            if firm.cfo != '' and firm.cfo != 0:
                 max_execs = max_execs_for_rank(firm.rank)
                 if firm.execs >= max_execs:
                     return comment.reply_wrap(message.modify_demote_execs_full(firm))
 
                 user.firm_role = "exec"
-                firm.coo -= 1
+                firm.coo = ''
                 firm.execs += 1
             else:
                 user.firm_role = "cfo"
-                firm.coo -= 1
-                firm.cfo += 1
+                firm.coo = ''
+                firm.cfo = user.name
 
         # Updating the flair in subreddits
         flair_role_user = ''
@@ -827,13 +790,13 @@ class CommentWorker():
             if (investor.firm_role != "ceo"):
                 return comment.reply_wrap(message.not_ceo_org)
 
-            firm.cfo -= 1
+            firm.cfo = ''
 
         elif user.firm_role == "coo":
             if (investor.firm_role != "ceo"):
                 return comment.reply_wrap(message.not_ceo_org)
 
-            firm.coo -= 1
+            firm.coo = ''
 
         firm.size -= 1
         user.firm_role = ""

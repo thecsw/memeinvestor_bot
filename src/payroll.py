@@ -56,7 +56,11 @@ def main():
 
             # 30% paid to board members (CEO, COO, CFO) (30% of total payroll)
             board_total = payout_amount * 0.3
-            board_members = 1 + firm.coo + firm.cfo
+            board_members = 1
+            if firm.coo != "" or firm.coo != "0":
+                board_members += 1
+            if firm.cfo != "" or firm.cfo != "0":
+                board_members += 1
             board_amount = int(board_total / board_members)
 
             remaining_amount = payout_amount - board_total
@@ -77,12 +81,13 @@ def main():
                 assoc_amount = int(assoc_total / firm.assocs)
                 remaining_amount -= assoc_total
 
-            # 100% of remaining paid to associates (21% of total payroll)
+            # 100% of remaining paid to floor traders (21% of total payroll)
             trader_total = remaining_amount
-            trader_amount = int(trader_total / max(firm.size - firm.execs, 1))
+            tradernbr = firm.size - firm.execs - firm.assocs - board_members
+            trader_amount = int(trader_total / max(tradernbr, 1))
 
             logging.info(" -- firm '%s': paying out %s each to %s trader(s), %s each to %s associate(s), %s each to %s executive(s), and %s each to %s board member(s)",\
-                firm.name, trader_amount, firm.size - firm.execs, assoc_amount, firm.assocs, exec_amount, firm.execs, board_amount, board_members)
+                firm.name, trader_amount, tradernbr, assoc_amount, firm.assocs, exec_amount, firm.execs, board_amount, board_members)
 
             employees = sess.query(Investor).\
                 filter(Investor.firm == firm.id).\

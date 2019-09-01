@@ -11,8 +11,6 @@ We welcome contributions from the public! If you'd like to help improve the bot,
 our project and feel free to tackle any [Issues](https://github.com/MemeInvestor/memeinvestor_bot/issues).
 We also welcome feedback in the form of new issues, so feel free to create new ones for discussion.
 
-[![Waffle.io - Columns and their card count](https://badge.waffle.io/MemeInvestor/memeinvestor_bot.svg?columns=all)](https://waffle.io/MemeInvestor/memeinvestor_bot)
-
 # 2 Overview
 
 The bot is implemented as a set of loosely-connected microservices written in Python and
@@ -129,10 +127,6 @@ Feel free to open the produced html file with any compatible browser. Even Netsc
 
 MemeInvestor_bot is a community-driven and community-supported project. We need *you* to keep it live and well. Thank you for all your support!
 
-Here is a graph of some recent contributions:
-
-[![Throughput Graph](https://graphs.waffle.io/MemeInvestor/memeinvestor_bot/throughput.svg)](https://waffle.io/MemeInvestor/memeinvestor_bot/metrics/throughput)
-
 # 9 Authors
 
 ## Active contributors
@@ -140,7 +134,9 @@ Here is a graph of some recent contributions:
   - *Sagindyk Urazayev* - Core developer. Founder. Server, database, and system maintainer. Wrote API in Go. - [thecsw](https://github.com/thecsw)
   - *Alberto Ventafridda* - Main front-end and web developer. Made our beautiful website. - [robalb](https://github.com/robalb)
   - *Matt Bell* - Back-end developer. Implemented firms and unit tests. - [mappum](https://github.com/mappum)
-  - *lukenamop* - Outside contributor. Working on firms expansion and new commands. - [lukenamop](https://github.com/lukenamop)
+  - *Jacob Padley* - Back-end developer. Worked on Go rewrite, MIRA and new API features. - [JPadley18](https://github.com/jpadley18)
+  - *lukenamop* - Outside contributor. Worked on firms expansion and new commands. - [lukenamop](https://github.com/lukenamop)
+  - *Keanu C.* - Outside contributor. Implemented fixes and breaking changes to API and DB. - [Keanu73](https://github.com/Keanu73)
 
 ## Past contributors
 

@@ -1,13 +1,14 @@
 package firms
 
 import (
-	"../utils"
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"net/http"
+
+	"../utils"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type firm struct {
@@ -16,6 +17,10 @@ type firm struct {
 	Balance    int64  `json:"balance"`
 	Size       int    `json:"size"`
 	Execs      int    `json:"execs"`
+	Assocs     int    `json:"assocs"`
+	Ceo        string `json:"ceo"`
+	Coo        string `json:"coo"`
+	Cfo        string `json:"cfo"`
 	Tax        int    `json:"tax"`
 	Rank       int    `json:"rank"`
 	Private    bool   `json:"private"`
@@ -32,10 +37,12 @@ func FirmsTop() func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
+		defer conn.Close()
 		query := fmt.Sprintf(`
-SELECT id, name, balance, size, execs,
-tax, rank, private, last_payout
+SELECT id, name, balance, size, execs, assocs, 
+ceo, coo, cfo, tax, rank, private, last_payout
 FROM Firms
+WHERE size > 0
 ORDER BY balance DESC 
 LIMIT %d OFFSET %d;`, per_page, per_page*page)
 		rows, err := conn.Query(query)
@@ -54,6 +61,10 @@ LIMIT %d OFFSET %d;`, per_page, per_page*page)
 				&temp.Balance,
 				&temp.Size,
 				&temp.Execs,
+				&temp.Assocs,
+				&temp.Ceo,
+				&temp.Coo,
+				&temp.Cfo,
 				&temp.Tax,
 				&temp.Rank,
 				&temp.Private,

@@ -3,7 +3,8 @@ from models import Investor, Firm
 import message
 
 class MockFirm():
-    def __init__(self, name, size=1, assocs=0, execs=0, cfo=0, coo=0, rank=0, balance=1234):
+    def __init__(self, name, id=1, size=1, assocs=0, execs=0, cfo=None, coo=None, ceo="", rank=0, balance=1234):
+        self.id = id
         self.name = name
         self.size = size
         self.rank = rank
@@ -11,6 +12,7 @@ class MockFirm():
         self.execs = execs
         self.cfo = cfo
         self.coo = coo
+        self.ceo = ceo
         self.balance = balance
 
 class MockInvestor():
@@ -105,13 +107,7 @@ class TestFirm(Test):
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_firm_self(
             'ceo',
-            MockFirm('Foobar', balance=1000),
-            '/u/testuser',
-            '',
-            '',
-            '',
-            '',
-            ''))
+            MockFirm('Foobar', balance=1000)))
 
     def test_firm_assoc(self):
         self.command('!create')
@@ -132,13 +128,7 @@ class TestFirm(Test):
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_firm_self(
             'assoc',
-            MockFirm('Foobar', balance=1000),
-            '/u/testuser',
-            '',
-            '',
-            '',
-            '/u/testuser2',
-            '/u/testuser3, /u/testuser4'))
+            MockFirm('Foobar', balance=1000)))
 
     def test_firm_cfo(self):
         self.command('!create')
@@ -161,13 +151,7 @@ class TestFirm(Test):
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_firm_self(
             'cfo',
-            MockFirm('Foobar', balance=1000),
-            '/u/testuser',
-            '',
-            '/u/testuser2',
-            '',
-            '',
-            '/u/testuser3, /u/testuser4'))
+            MockFirm('Foobar', balance=1000)))
 
     def test_lookup(self):
         self.command('!create')
@@ -178,13 +162,7 @@ class TestFirm(Test):
         replies = self.command('!firm Foobar', username='testuser2')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_firm_other(
-            MockFirm('Foobar', balance=1000),
-            '/u/testuser',
-            '',
-            '',
-            '',
-            '',
-            ''))
+            MockFirm('Foobar', balance=1000)))
 
     def test_lookup_different_case(self):
         self.command('!create')
@@ -195,13 +173,7 @@ class TestFirm(Test):
         replies = self.command('!firm foobar', username='testuser2')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_firm_other(
-            MockFirm('Foobar', balance=1000),
-            '/u/testuser',
-            '',
-            '',
-            '',
-            '',
-            ''))
+            MockFirm('Foobar', balance=1000)))
 
     def test_lookup_invalid(self):
         self.command('!create')
@@ -472,8 +444,8 @@ class TestPromote(Test):
         firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
         self.assertEqual(firm.size, 3)
         self.assertEqual(firm.execs, 0)
-        self.assertEqual(firm.cfo, 1)
-        self.assertEqual(firm.coo, 1)
+        self.assertEqual(firm.cfo, "testuser2")
+        self.assertEqual(firm.coo, "testuser3")
 
 class TestDemote(Test):
     def test_none(self):
@@ -651,8 +623,8 @@ class TestDemote(Test):
         firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
         self.assertEqual(firm.size, 3)
         self.assertEqual(firm.execs, 1)
-        self.assertEqual(firm.cfo, 1)
-        self.assertEqual(firm.coo, 0)
+        self.assertEqual(firm.cfo, "testuser3")
+        self.assertEqual(firm.coo, None)
 
 class TestFire(Test):
     def test_none(self):
@@ -926,7 +898,7 @@ class TestFire(Test):
 
         firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
         self.assertEqual(firm.size, 1)
-        self.assertEqual(firm.cfo, 0)
+        self.assertEqual(firm.cfo, None)
 
     def test_fire_coo(self):
         self.command('!create')
@@ -951,7 +923,7 @@ class TestFire(Test):
 
         firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
         self.assertEqual(firm.size, 1)
-        self.assertEqual(firm.coo, 0)
+        self.assertEqual(firm.coo, None)
 
 class TestJoinFirm(Test):
     def test_already_in_firm(self):
@@ -1047,6 +1019,21 @@ class TestJoinFirm(Test):
         replies = self.command('!joinfirm Foobar', username='testuser2')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_joinfirm(MockFirm('Foobar')))
+
+        sess = self.Session()
+        user = sess.query(Investor).filter(Investor.name == 'testuser2').first()
+        self.assertEqual(user.firm, 1)
+        self.assertEqual(user.firm_role, '')
+
+    def test_joinfirm_quotes(self):
+        self.command('!create')
+        self.set_balance(5000000)
+        self.command("!createfirm 'Name with many words'")
+
+        self.command('!create', username='testuser2')
+        replies = self.command("!joinfirm 'Name with many words'", username='testuser2')
+        self.assertEqual(len(replies), 1)
+        self.assertEqual(replies[0], message.modify_joinfirm(MockFirm('Name with many words')))
 
         sess = self.Session()
         user = sess.query(Investor).filter(Investor.name == 'testuser2').first()

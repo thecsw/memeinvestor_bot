@@ -46,6 +46,7 @@ class Investment(Base):
     final_upvotes = Column(Integer)
     success = Column(Boolean, default=False)
     profit = Column(BigInteger, default=0)
+    firm_tax = Column(Integer, default=0)
 
 
 class Investor(Base):
@@ -71,8 +72,9 @@ class Firm(Base):
     name = Column(String(32), nullable=False, unique=True)
     balance = Column(BigInteger, default=1000)
     size = Column(Integer, default=0)
-    coo = Column(Integer, default=0)
-    cfo = Column(Integer, default=0)
+    ceo = Column(String(20), nullable=False, default='')
+    coo = Column(String(20), nullable=False, default='')
+    cfo = Column(String(20), nullable=False, default='')
     execs = Column(Integer, default=0)
     assocs = Column(Integer, default=0)
     tax = Column(Integer, default=15)

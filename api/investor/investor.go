@@ -1,15 +1,16 @@
 package investor
 
 import (
-	"../utils"
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"regexp"
+
+	"../utils"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/mux"
 )
 
 type investor struct {
@@ -22,6 +23,7 @@ type investor struct {
 	Firm      int      `json:"firm"`
 	Firm_role string   `json:"firm_role"`
 	NetWorth  int64    `json:"networth"`
+	Rank      int64    `json:"rank"`
 }
 
 type investment struct {
@@ -37,6 +39,7 @@ type investment struct {
 	Final_upvotes int    `json:"final_upvotes"`
 	Success       bool   `json:"success"`
 	Profit        int64  `json:"profit"`
+	Firm_tax      int64  `json:"firm_tax"`
 }
 
 func Investor() func(w http.ResponseWriter, r *http.Request) {
@@ -95,6 +98,27 @@ func Investor() func(w http.ResponseWriter, r *http.Request) {
 		var active_coins int64
 		err = conn.QueryRow(query_net).Scan(&active_coins)
 		temp.NetWorth = temp.Balance + active_coins
+
+		// Calculate the investor's rank
+		query_rank := fmt.Sprintf(`
+SELECT position FROM (
+  SELECT ROW_NUMBER() OVER (ORDER BY networth DESC) AS position, name, networth FROM (
+    SELECT
+    Investors.name, SUM(COALESCE(Investments.amount, 0)) + Investors.balance AS networth
+    FROM Investors 
+    LEFT OUTER JOIN (SELECT * FROM Investments WHERE done = 0) 
+    AS Investments ON Investments.name = Investors.name 
+    GROUP BY Investors.id
+    ORDER BY networth DESC
+  )sub
+)sub1 WHERE name = '%s';
+`, temp.Name)
+
+		var rank int64
+		err = conn.QueryRow(query_rank).Scan(&rank)
+
+		temp.Rank = rank
+
 		result, _ := json.Marshal(temp)
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "%s", string(result))
@@ -126,7 +150,7 @@ func InvestorInvestments() func(w http.ResponseWriter, r *http.Request) {
 		query := fmt.Sprintf(`
 SELECT id, post, upvotes, comment, 
 name, amount, time, done, response, 
-COALESCE(final_upvotes, -1), success, profit 
+COALESCE(final_upvotes, -1), success, profit, COALESCE(firm_tax, -1)
 FROM Investments 
 WHERE name = '%s' AND time > %d AND time < %d 
 ORDER BY time DESC 
@@ -153,6 +177,7 @@ LIMIT %d OFFSET %d`, name, from, to, per_page, per_page*page)
 				&temp.Final_upvotes,
 				&temp.Success,
 				&temp.Profit,
+				&temp.Firm_tax,
 			)
 			if err != nil {
 				log.Print(err)
@@ -190,7 +215,7 @@ func InvestorInvestmentsActive() func(w http.ResponseWriter, r *http.Request) {
 		query := fmt.Sprintf(`
 SELECT id, post, upvotes, comment, 
 name, amount, time, done, response, 
-COALESCE(final_upvotes, -1), success, profit 
+COALESCE(final_upvotes, -1), success, profit, COALESCE(firm_tax, -1)
 FROM Investments 
 WHERE name = '%s' AND done = 0 AND time > %d AND time < %d 
 ORDER BY time DESC 
@@ -217,6 +242,7 @@ LIMIT %d OFFSET %d`, name, from, to, per_page, per_page*page)
 				&temp.Final_upvotes,
 				&temp.Success,
 				&temp.Profit,
+				&temp.Firm_tax,
 			)
 			if err != nil {
 				log.Print(err)

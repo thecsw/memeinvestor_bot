@@ -1,6 +1,6 @@
 import {connectionErrorToast} from './modules/uiElements.js';
 import * as jsonApi from './modules/jsonApi.js';
-import {formatToUnits, getSuffix} from './modules/dataUtils.js';
+import {formatToUnits, getSuffix, commafy} from './modules/dataUtils.js';
 import {seasons} from '../resources/leaderboards/seasons.js';
 
 let getSeason = (function(){
@@ -96,7 +96,7 @@ let leaderboard = (function(){
          html += `<tr>
                      <td>#${i+1}</td>
                      <td><a href="./user.html?account=${user.name}">${user.name} ${badge}</a></td>
-                     <td>${formatToUnits(user.networth)}</td>
+                     <td title="${commafy(user.networth)} M&cent;">${formatToUnits(user.networth)}</td>
                      <td>${user.completed}</td>
                   </tr>`
       }

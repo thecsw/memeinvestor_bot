@@ -1,15 +1,43 @@
-memes.market {
-	redir https://meme.market
-}
-
 {$CADDY_WEB_ADDRESS} {
         cors
-	root /static
+	root /srv
+	gzip
 	proxy /api/ api:5000 {
 		without /api/
 		transparent
 	}
+	
+	header / {
+	     # Enable HTTP Strict Transport Security (HSTS) to force clients to always
+	     # connect via HTTPS (we may have to discuss this)
+	     Strict-Transport-Security "max-age=31536000;"
 
-	log / stdout
+	     # Enable cross-site filter (XSS) and tell browser to block detected attacks
+	     X-XSS-Protection "1; mode=block"
+
+	     # Prevent some browsers from MIME-sniffing a response away from the declared Content-Type
+	     X-Content-Type-Options "nosniff"
+
+	     # Disallow the site to be rendered within a frame (clickjacking protection)
+	     X-Frame-Options "DENY"
+
+	     #strip any path information from the referrer information when navigating to other urls
+	     Referrer-Policy "strict-origin"
+
+	     #restrict the use of the following features to js
+	     Feature-Policy "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'"
+
+	     #defines approved sources of content that the browser may load.
+	     #'-Report-Only' mode won't apply the policy, but just report blocked resources in the console
+	     #once the policy have been tested, the '-report-only' suffix can be removed, leaving only 'Content-Security-Policy'
+	     Content-Security-Policy-Report-Only "default-src 'self';script-src 'self' cdnjs.cloudflare.com;style-src 'self' cdnjs.cloudflare.com fonts.googleapis.com;font-src 'self' cdnjs.cloudflare.com fonts.gstatic.com fonts.googleapis.com; upgrade-insecure-requests"
+	}
+	log / /var/log/access.log "{combined}"
 	errors stdout
+}
+
+{$CADDY_WEB_ADDRESS}/go {
+        basicauth / admin password
+        root /site/goaccess
+        gzip
 }

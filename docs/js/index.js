@@ -1,6 +1,6 @@
 import {connectionErrorToast} from './modules/uiElements.js';
 import * as jsonApi from './modules/jsonApi.js';
-import {formatToUnits, iterateDays} from './modules/dataUtils.js';
+import {formatToUnits, commafy, iterateDays} from './modules/dataUtils.js';
 import {Scheduler} from './modules/scheduler.js';
 
 let ticker = (function(){
@@ -210,7 +210,7 @@ let leaderboard = (function(){
              //broke badge
              let badge = top[i].broke>0? '<span class="red bankrupt-badge white-text">'+top[i].broke+'</span>':"";
              html += '<tr><td><a href="./user.html?account='+top[i].name+'">'+top[i].name+"</a>"+badge+"</td>"+
-                         "<td>"+formatToUnits(top[i].networth)+"</td>"+
+                         '<td title="'+commafy(top[i].networth)+' M&cent;">'+formatToUnits(top[i].networth)+"</td>"+
                          "<td>"+top[i].completed+"</td></tr>"
           }
       tb.innerHTML = html
@@ -229,11 +229,12 @@ let investmentsCalculator = (function() {
          amount: 'investment-amount'
       },
       output: 'investment-result', */
-      button: 'investment-calc'
+      button: 'investment-calc',
+      calc: 'calculator'
    }
    function init(){
-      let calcButton = document.getElementById(ids.button);
-      calcButton.addEventListener('click', e=> calc() );
+      for (var i of document.querySelectorAll('#' + ids.calc + ' input'))
+         i.addEventListener('input', e => calc());
    }
    // formula functions are converted to JS from formula.py
    // the function names follow the paper on memes.market
@@ -297,12 +298,7 @@ let investmentsCalculator = (function() {
          //replaces the spinning loader with the calculated result
          document.getElementById('investment-result').innerText = output;
       }else{
-         document.getElementById('investment-result').innerText = 'invalid data';
-         let toastHTML = 'you have to fill all the fields with a valid number'
-         if(amount<100){
-            toastHTML = 'you can\'t invest less than 100 M¢'
-         }
-         M.toast({html: toastHTML,displayLength:2000, classes:"dark-toast"}); 
+         document.getElementById('investment-result').innerText = amount < 100 ? 'invest at least 100 M¢' : 'fill all boxes';
       }
    }
    return {
@@ -355,8 +351,3 @@ let investmentsCalculator = (function() {
    });
    
 }());
-
-
-
-
-
