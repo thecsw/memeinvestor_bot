@@ -78,6 +78,7 @@ class Firm(Base):
     execs = Column(Integer, default=0)
     assocs = Column(Integer, default=0)
     tax = Column(Integer, default=15)
+    payout = Column(Integer, default=50)
     rank = Column(Integer, default=0)
     private = Column(Boolean, default=False)
     last_payout = Column(Integer, server_default=unix_timestamp())
