@@ -3,7 +3,7 @@ from models import Investor, Firm
 import message
 
 class MockFirm():
-    def __init__(self, name, id=1, size=1, assocs=0, execs=0, cfo=None, coo=None, ceo="", rank=0, balance=1234):
+    def __init__(self, name, id=1, size=1, assocs=0, execs=0, cfo=None, coo=None, ceo="", rank=0, balance=1234,tax=15):
         self.id = id
         self.name = name
         self.size = size
@@ -14,6 +14,7 @@ class MockFirm():
         self.coo = coo
         self.ceo = ceo
         self.balance = balance
+        self.tax = tax
 
 class MockInvestor():
     def __init__(self, name, firm_role):
@@ -128,7 +129,7 @@ class TestFirm(Test):
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_firm_self(
             'assoc',
-            MockFirm('Foobar', balance=1000)))
+            MockFirm('Foobar', balance=1000,size=4)))
 
     def test_firm_cfo(self):
         self.command('!create')
@@ -151,7 +152,7 @@ class TestFirm(Test):
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.modify_firm_self(
             'cfo',
-            MockFirm('Foobar', balance=1000)))
+            MockFirm('Foobar', balance=1000,size=4)))
 
     def test_lookup(self):
         self.command('!create')
@@ -624,7 +625,7 @@ class TestDemote(Test):
         self.assertEqual(firm.size, 3)
         self.assertEqual(firm.execs, 1)
         self.assertEqual(firm.cfo, "testuser3")
-        self.assertEqual(firm.coo, None)
+        self.assertEqual(firm.coo, '')
 
 class TestFire(Test):
     def test_none(self):
@@ -898,7 +899,7 @@ class TestFire(Test):
 
         firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
         self.assertEqual(firm.size, 1)
-        self.assertEqual(firm.cfo, None)
+        self.assertEqual(firm.cfo, '')
 
     def test_fire_coo(self):
         self.command('!create')
@@ -923,7 +924,7 @@ class TestFire(Test):
 
         firm = sess.query(Firm).filter(Firm.name == 'Foobar').first()
         self.assertEqual(firm.size, 1)
-        self.assertEqual(firm.coo, None)
+        self.assertEqual(firm.coo, '')
 
 class TestJoinFirm(Test):
     def test_already_in_firm(self):
@@ -1188,17 +1189,9 @@ class TestTax(Test):
         self.command('!create')
         self.set_balance(5000000)
         self.command('!createfirm Foohigh')
-        replies = self.command('!tax 100')
+        replies = self.command('!tax 101')
         self.assertEqual(len(replies), 1)
         self.assertEqual(replies[0], message.TAX_TOO_HIGH)
-
-    def test_tax_too_low(self):
-        self.command('!create')
-        self.set_balance(5000000)
-        self.command('!createfirm Foolow')
-        replies = self.command('!tax 0')
-        self.assertEqual(len(replies), 1)
-        self.assertEqual(replies[0], message.TAX_TOO_LOW)
 
     def test_tax_neg_value(self):
         self.command('!create')
