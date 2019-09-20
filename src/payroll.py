@@ -47,8 +47,8 @@ def main():
             # 10% of firm coins are burned as a tax
             firm.balance -= int(0.1 * firm.balance)
 
-            # 50% of remaining firm coins are paid out
-            payout_amount = int(0.5 * firm.balance)
+            # the firm payout percentage of remaining firm coins are paid out
+            payout_amount = int(firm.payout/100 * firm.balance)
             if payout_amount == 0:
                 # handle broke firms
                 firm.last_payout = now

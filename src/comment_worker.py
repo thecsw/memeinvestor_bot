@@ -137,7 +137,8 @@ class CommentWorker():
         r"!invite\s+([a-zA-Z0-9_-]+)",
         r"!setprivate",
         r"!setpublic",
-        r"!tax\s+(\d+)"
+        r"!tax\s+(\d+)",
+        r"!payout\s+(\d+)"
     ]
 
     # allowed: alphanumeric, spaces, dashes
@@ -912,9 +913,9 @@ class CommentWorker():
             first()
 
         # Defining some tax limits, so
-        # 5 <= firm.tax <= 75
-        lower = 5
-        upper = 75
+        # 0 <= firm.tax <= 100
+        lower = 0
+        upper = 100
 
         new_tax = int(tax_temp)
 
@@ -926,6 +927,34 @@ class CommentWorker():
 
         firm.tax = new_tax
         return comment.reply_wrap(message.TAX_SUCCESS)
+
+    @req_user
+    def payout(self, sess, comment, investor, payout_temp):
+        if investor.firm == 0:
+            return comment.reply_wrap(message.no_firm_failure_org)
+
+        if (investor.firm_role != "ceo") and (investor.firm_role != "cfo"):
+            return comment.reply_wrap(message.not_ceo_or_cfo_org)
+
+        firm = sess.query(Firm).\
+            filter(Firm.id == investor.firm).\
+            first()
+
+        # Defining some payout limits, so
+        # 0 <= firm.payout <= 100
+        lower = 0
+        upper = 100
+
+        new_payout = int(payout_temp)
+
+        # Checking the boundaries
+        if new_payout > upper:
+            return comment.reply_wrap(message.PAYOUT_TOO_HIGH)
+        if new_payout < lower:
+            return comment.reply_wrap(message.PAYOUT_TOO_LOW)
+
+        firm.payout = new_payout
+        return comment.reply_wrap(message.PAYOUT_SUCCESS)
 
     @req_user
     def upgrade(self, sess, comment, investor):
