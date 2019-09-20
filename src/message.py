@@ -824,27 +824,15 @@ def modify_deploy_version(date):
 
 
 TAX_TOO_HIGH = """
-The tax rate is too high. The tax should be between 0% and 100%.
+The tax rate is too high. The tax should be between 5% and 75%.
 """
 
 TAX_TOO_LOW = """
-The tax rate is too low. The tax should be between 0% and 100%.
+The tax rate is too low. The tax should be between 5% and 75%.
 """
 
 TAX_SUCCESS = """
 The new tax rate has been set successfully.
-"""
-
-PAYOUT_TOO_HIGH = """
-The payout rate is too high. The payout should be between 0% and 100%.
-"""
-
-PAYOUT_TOO_LOW = """
-The payout rate is too low. The payout should be between 0% and 100%.
-"""
-
-PAYOUT_SUCCESS = """
-The new payout rate has been set successfully.
 """
 
 TEMPLATE_SUCCESS = """
