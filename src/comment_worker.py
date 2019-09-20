@@ -266,19 +266,20 @@ class CommentWorker():
         """
         This function invests
         """
-        if config.PREVENT_INSIDERS and comment.submission.author.name == comment.author.name:
-            return comment.reply_wrap(message.INSIDE_TRADING_ORG)
+        if config.PREVENT_INSIDERS:
+            if comment.submission.author.name == comment.author.name:
+                return comment.reply_wrap(message.INSIDE_TRADING_ORG)
+        multiplier = CommentWorker.multipliers.get(suffix, 1)
 
         # Allows input such as '!invest 100%' and '!invest 50%'
-        multiplier = CommentWorker.multipliers.get(suffix, 1)
-        try:
-            input_amount = int(amount.replace(',', ''))
-            if multiplier == '%':
-                multiplier = float(input_amount/100) if amount < 100 else 1
-                input_amount = int(investor.balance)
-            amount = input_amount * multiplier
-        except ValueError:
-            return
+        if multiplier == '%':
+            amount = int(investor.balance * (int(amount)/100))
+        else:
+            try:
+                amount = int(amount.replace(',', ''))
+                amount = amount * multiplier
+            except ValueError:
+                return
 
         # Sets the minimum investment to 1% of an investor's balance or 100 Mc
         minim = int(investor.balance / 100)
@@ -299,7 +300,9 @@ class CommentWorker():
         ))
 
         # 0 upvotes is too OP, so what we do is make around 5 minumum
-        upvotes_now = 5 if int(comment.submission.ups) < 5 else int(comment.submission.ups)
+        upvotes_now = int(comment.submission.ups)
+        if upvotes_now < 5:
+            upvotes_now = 5
 
         sess.add(Investment(
             post=comment.submission,
