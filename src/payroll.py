@@ -108,9 +108,10 @@ def main():
 
             firm.balance -= payout_amount
             firm.last_payout = now
-            sess.commit()
 
+        sess.commit()
         sess.close()
+
         time.sleep(10 * 60)
 
 if __name__ == "__main__":
