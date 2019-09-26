@@ -731,9 +731,9 @@ Sorry, you have to *directly* reply to the bot's sticky.
 """
 
 TEMPLATE_OP = """
----
-
 OP %NAME% has posted *[THE LINK TO THE TEMPLATE](%LINK%)*, Hurray!
+
+
 """
 
 
