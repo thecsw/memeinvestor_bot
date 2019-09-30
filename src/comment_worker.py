@@ -111,7 +111,6 @@ class CommentWorker():
         "i.redd.it",
         "v.redd.it"
     ]
-    template_sources = [f"https://{website}\S+" for website in websites]
 
     commands = [
         r"!active",
@@ -125,7 +124,7 @@ class CommentWorker():
         r"!top",
         r"!version",
         r"!grant\s+(\S+)\s+(\S+)",
-        r"!template\s+(%s)" % "|".join(template_sources),
+        r"!template\s+(((https|http):\/\/)?(www.)?(%s)\S+)" % "|".join(websites),
         r"!firm\s*(.+)?",
         r"!createfirm\s+'?([^']+)'?",
         r"!joinfirm\s+'?([^']+)'?",
