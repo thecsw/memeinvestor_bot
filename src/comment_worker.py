@@ -124,7 +124,7 @@ class CommentWorker():
         r"!top",
         r"!version",
         r"!grant\s+(\S+)\s+(\S+)",
-        r"!template\s+(((https|http):\/\/)?(www.)?(%s)\S+)" % "|".join(websites),
+        r"!template\s+(((https|http)://)?(www.)?(%s)\S+)" % "|".join(websites),
         r"!firm\s*(.+)?",
         r"!createfirm\s+'?([^']+)'?",
         r"!joinfirm\s+'?([^']+)'?",
