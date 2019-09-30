@@ -402,9 +402,8 @@ class CommentWorker():
             return comment.reply_wrap(message.TEMPLATE_ALREADY_DONE)
 
         # If OP posted a template, replace the hint
-        edited_response = comment.parent().body.replace(message.TEMPLATE_HINT_ORG.
-                                                        replace("%NAME%", f"u/{comment.author.name}"), '')
-        edited_response += message.modify_template_op(link, f"u/{comment.author.name}")
+        edited_response = message.modify_template_op(link, f"u/{comment.author.name}")
+        edited_response += message.INVEST_PLACE_HERE_NO_FEE
 
         comment.parent().edit_wrap(edited_response)
         return comment.reply_wrap(message.TEMPLATE_SUCCESS)
