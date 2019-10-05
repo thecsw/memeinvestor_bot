@@ -101,12 +101,6 @@ class CommentWorker():
     }
 
     # Allowed websites for !template command
-    website_prefixes = [
-    "https://",
-    "http://",
-    "https://www.",
-    "http://www."
-    ]
     websites = [
         "imgur.com",
         "i.imgur.com",
@@ -117,10 +111,6 @@ class CommentWorker():
         "i.redd.it",
         "v.redd.it"
     ]
-
-    template_sources = []
-    for website in websites:
-        template_sources.append(f"{website_prefix}{website}\S+" for website_prefix in website_prefixes)
 
     commands = [
         r"!active",
@@ -134,7 +124,7 @@ class CommentWorker():
         r"!top",
         r"!version",
         r"!grant\s+(\S+)\s+(\S+)",
-        r"!template\s+(%s)" % "|".join(template_sources),
+        r"!template\s+(((https|http):\/\/)?(www.)?(%s)\S+)" % "|".join(websites),
         r"!firm\s*(.+)?",
         r"!createfirm\s+'?([^']+)'?",
         r"!joinfirm\s+'?([^']+)'?",
