@@ -1,3 +1,9 @@
+# THIS IS A LEGACY CODEBASE
+
+*IMPORTANT:* This is a legacy codebase for MIB. The deployment of this version has been discontinued since
+October 2019. Final versions can be submitted but this projects will be or is archived. Any regarding this,
+contact @thecsw
+
 # Welcome to meme investments!
 
 Welcome to the source code repository of [/u/MemeInvestor_bot](https://www.reddit.com/user/MemeInvestor_bot). 
