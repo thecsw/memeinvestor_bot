@@ -17,16 +17,11 @@ export function getSuffix(val){
 
 export function commafy(val) {
    if (Number.isSafeInteger(val)) {
-      let s = Math.abs(val).toFixed(0); // toString might use the large-number format when it's not needed
-      for (let i = s.length - 3; i > 0; i -= 3)
-         s = s.substring(0, i) + ',' + s.substring(i);
-      if (val < 0)
-         s = '-' + s;
-      return s;
+     //transform the number into a language-sensitive format
+     return val.toLocaleString()
    } else {
       // switch to scientific notation
-      let magnitude = Math.floor(Math.log10(Math.abs(val)));
-      return val / Math.pow(10, magnitude) + '&times;10' + String(magnitude).replace(/./g, m => '&' + ['#8304', 'sup1', 'sup2', 'sup3', '#8308', '#8309', '#8310', '#8311', '#8312', '#8313'][m] + ';');
+      return val.toExponential(4).replace(/e\+?/, ' &times;10^')
    }
 }
 
